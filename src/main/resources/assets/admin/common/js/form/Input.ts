@@ -1,5 +1,3 @@
-import {Value} from '../data/Value';
-import {ValueTypes} from '../data/ValueTypes';
 import {Equitable} from '../Equitable';
 import {InputJson} from './json/InputJson';
 import {ObjectHelper} from '../ObjectHelper';
@@ -16,21 +14,11 @@ export class InputBuilder {
 
     label: string;
 
-    immutable: boolean = false;
-
     occurrences: Occurrences;
-
-    indexed: boolean = true;
-
-    validationRegex: string;
 
     helpText: string;
 
     inputTypeConfig: object;
-
-    maximizeUIInputWidth: boolean;
-
-    defaultValue: Value;
 
     setName(value: string): InputBuilder {
         this.name = value;
@@ -47,23 +35,8 @@ export class InputBuilder {
         return this;
     }
 
-    setImmutable(value: boolean): InputBuilder {
-        this.immutable = value;
-        return this;
-    }
-
     setOccurrences(value: Occurrences): InputBuilder {
         this.occurrences = value;
-        return this;
-    }
-
-    setIndexed(value: boolean): InputBuilder {
-        this.indexed = value;
-        return this;
-    }
-
-    setValidationRegex(value: string): InputBuilder {
-        this.validationRegex = value;
         return this;
     }
 
@@ -77,26 +50,13 @@ export class InputBuilder {
         return this;
     }
 
-    setMaximizeUIInputWidth(value: boolean): InputBuilder {
-        this.maximizeUIInputWidth = value;
-        return this;
-    }
-
     fromJson(json: InputJson): InputBuilder {
         this.name = json.name;
         this.inputType = InputTypeName.parseInputTypeName(json.inputType);
         this.label = json.label;
-        this.immutable = json.immutable;
         this.occurrences = Occurrences.fromJson(json.occurrences);
-        this.indexed = json.indexed;
-        this.validationRegex = json.validationRegexp;
         this.helpText = json.helpText;
         this.inputTypeConfig = json.config;
-        this.maximizeUIInputWidth = json.maximizeUIInputWidth;
-        if (json.defaultValue) {
-            let type = ValueTypes.fromName(json.defaultValue.type);
-            this.defaultValue = type.fromJsonValue(json.defaultValue.value);
-        }
         return this;
     }
 
@@ -121,34 +81,19 @@ export class Input
 
     private label: string;
 
-    private immutable: boolean;
-
     private occurrences: Occurrences;
-
-    private indexed: boolean;
-
-    private validationRegex: string;
 
     private helpText: string;
 
     private inputTypeConfig: object;
-
-    private maximizeUIInputWidth: boolean;
-
-    private defaultValue: Value;
 
     constructor(builder: InputBuilder) {
         super(builder.name);
         this.inputType = builder.inputType;
         this.inputTypeConfig = builder.inputTypeConfig;
         this.label = builder.label;
-        this.immutable = builder.immutable;
         this.occurrences = builder.occurrences;
-        this.indexed = builder.indexed;
-        this.validationRegex = builder.validationRegex;
         this.helpText = builder.helpText;
-        this.maximizeUIInputWidth = builder.maximizeUIInputWidth;
-        this.defaultValue = builder.defaultValue;
     }
 
     static fromJson(json: InputJson): Input {
@@ -165,24 +110,8 @@ export class Input
         return this.label;
     }
 
-    isImmutable(): boolean {
-        return this.immutable;
-    }
-
     getOccurrences(): Occurrences {
         return this.occurrences;
-    }
-
-    isIndexed(): boolean {
-        return this.indexed;
-    }
-
-    isMaximizeUIInputWidth(): boolean {
-        return this.maximizeUIInputWidth;
-    }
-
-    getValidationRegex(): string {
-        return this.validationRegex;
     }
 
     getHelpText(): string {
@@ -191,10 +120,6 @@ export class Input
 
     getInputTypeConfig(): object {
         return this.inputTypeConfig;
-    }
-
-    getDefaultValue(): Value {
-        return this.defaultValue;
     }
 
     equals(o: Equitable): boolean {
@@ -217,19 +142,7 @@ export class Input
             return false;
         }
 
-        if (!ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
-            return false;
-        }
-
         if (!ObjectHelper.equals(this.occurrences, other.occurrences)) {
-            return false;
-        }
-
-        if (!ObjectHelper.booleanEquals(this.indexed, other.indexed)) {
-            return false;
-        }
-
-        if (!ObjectHelper.stringEquals(this.validationRegex, other.validationRegex)) {
             return false;
         }
 
@@ -246,14 +159,10 @@ export class Input
             Input: {
                 name: this.getName(),
                 helpText: this.getHelpText(),
-                immutable: this.isImmutable(),
-                indexed: this.isIndexed(),
                 label: this.getLabel(),
                 occurrences: this.getOccurrences().toJson(),
-                validationRegexp: this.getValidationRegex(),
                 inputType: this.getInputType().toJson(),
                 config: this.getInputTypeConfig(),
-                maximizeUIInputWidth: this.isMaximizeUIInputWidth()
             }
         };
     }

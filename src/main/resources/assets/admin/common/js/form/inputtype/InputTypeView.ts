@@ -30,6 +30,12 @@ export interface InputTypeView {
 
     newInitialValue(): Value;
 
+    getDefaultValue(): Value;
+
+    getRawDefaultValue(): unknown;
+
+    createDefaultValue(raw: unknown): Value;
+
     /*
      * Whether the InputTypeView it self is managing adding new occurrences or not.
      * If false, then this is expected to implement interface InputTypeViewNotManagingOccurrences.

@@ -108,16 +108,23 @@ export class RadioButton
 
     protected readInputConfig():  void {
         const options: RadioButtonOption[] = [];
-        const optionValues: Record<string, string>[] = this.context.inputConfig['option'] || [];
+        const optionValues: Record<string, unknown>[] = this.context.inputConfig['options'] || [];
         const l: number = optionValues.length;
-        let optionValue: Record<string, string>;
+        let optionValue: Record<string, unknown>;
 
         for (let i = 0; i < l; i++) {
             optionValue = optionValues[i];
-            options.push({label: optionValue['value'], value: optionValue['@value']});
+            options.push({label: optionValue['value'] as string, value: optionValue['@value'] as string});
         }
 
         this.radioButtonOptions = options;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
     }
 
     private createRadioElement(name: string, property: Property): RadioGroup {

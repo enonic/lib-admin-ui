@@ -17,6 +17,7 @@ import './form/inputtype/time/Date';
 import './form/inputtype/time/DateTime';
 import './form/inputtype/time/DateTimeRange';
 import './form/inputtype/time/Time';
+import './form/inputtype/time/Instant';
 
 const hasJQuery = Store.instance().has('$');
 if (!hasJQuery) {

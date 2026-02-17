@@ -17,13 +17,11 @@ import {Class} from '../../../Class';
 import {InputTypeName} from '../../InputTypeName';
 import {TimeHM} from '../../../util/TimeHM';
 import {ObjectHelper} from '../../../ObjectHelper';
-import {ArrayHelper} from '../../../util/ArrayHelper';
 
 declare const Date: DateConstructor;
 
 export class DateTimeRange
     extends BaseInputTypeNotManagingAdd {
-
     private useTimezone: boolean;
     private from: DateTime | LocalDateTime;
     private to: DateTime | LocalDateTime;
@@ -52,6 +50,10 @@ export class DateTimeRange
 
     static getName(): InputTypeName {
         return new InputTypeName('DateTimeRange', false);
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        return this.getValueType().newNullValue();
     }
 
     getValueType(): ValueType {

@@ -13,8 +13,9 @@ import {Link} from '../util/Link';
 import {PropertySet} from './PropertySet';
 import {ValueType} from './ValueType';
 import {Typable} from './Typable';
+import {Instant} from '../util/Instant';
 
-export type ValueData = string | number | boolean | PropertySet | Reference | BinaryReference | GeoPoint | Date | DateTime | LocalDate | LocalDateTime | LocalTime | Link;
+export type ValueData = string | number | boolean | PropertySet | Reference | BinaryReference | GeoPoint | Date | Instant | DateTime | LocalDate | LocalDateTime | LocalTime | Link;
 
 export class Value
     implements Equitable, Cloneable, Typable {
@@ -143,6 +144,13 @@ export class Value
             return null;
         }
         return this.value as Link;
+    }
+
+    getInstant(): Instant {
+        if (this.isNull()) {
+            return null;
+        }
+        return this.value as Instant;
     }
 
     equals(o: Equitable): boolean {

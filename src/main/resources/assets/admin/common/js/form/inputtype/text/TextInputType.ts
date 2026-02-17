@@ -9,7 +9,6 @@ import {FormInputEl} from '../../../dom/FormInputEl';
 import {Locale} from '../../../locale/Locale';
 import {TextInput} from '../../../ui/text/TextInput';
 import {i18n} from '../../../util/Messages';
-import {NumberHelper} from '../../../util/NumberHelper';
 import {StringHelper} from '../../../util/StringHelper';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
@@ -34,14 +33,20 @@ export abstract class TextInputType
         return ValueTypes.STRING;
     }
 
-    protected readConfig(inputConfig: Record<string, Record<string, string>[]>): void {
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+        return this.getValueType().newValue(rawValue);
+    }
+
+    protected readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
         const maxLengthConfig: object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
-        const maxLength: number = NumberHelper.toNumber(maxLengthConfig['value']);
+        const maxLength: number = maxLengthConfig['value'];
         this.maxLength = maxLength > 0 ? maxLength : -1;
 
         const showCounterConfig: object = inputConfig['showCounter'] ? inputConfig['showCounter'][0] : {};
-        const value: string = showCounterConfig['value'] || '';
-        this.showTotalCounter = value.toLowerCase() === 'true';
+        this.showTotalCounter = showCounterConfig['value'] || false;
     }
 
     protected updateFormInputElValue(occurrence: FormInputEl, property: Property) {

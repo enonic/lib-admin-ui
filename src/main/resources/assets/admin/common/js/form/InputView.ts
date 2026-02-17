@@ -95,10 +95,6 @@ export class InputView
             }
         }
 
-        if (this.input.isMaximizeUIInputWidth() === false) {
-            this.addClass('label-inline');
-        }
-
         this.propertyArray = this.getPropertyArray(this.parentPropertySet);
 
         return this.inputTypeView.layout(this.input, this.propertyArray).then(() => {
@@ -213,7 +209,8 @@ export class InputView
 
     hasNonDefaultValues(): boolean {
         return this.propertyArray.some((property: Property) => {
-            return !StringHelper.isEmpty(property.getValue().getString()) && !property.getValue().equals(this.input.getDefaultValue());
+            return !StringHelper.isEmpty(property.getValue().getString()) &&
+                   !property.getValue().equals(this.inputTypeView.getDefaultValue());
         });
     }
 
@@ -304,10 +301,11 @@ export class InputView
 
             propertySet.addPropertyArray(array);
 
-            let initialValue = this.input.getDefaultValue();
-            if (!initialValue) {
-                initialValue = this.inputTypeView.newInitialValue();
-            }
+            const rawDefaultValue = this.inputTypeView.getRawDefaultValue();
+            const initialValue = rawDefaultValue
+                                 ? this.inputTypeView.createDefaultValue(rawDefaultValue)
+                                 : this.inputTypeView.newInitialValue();
+
             if (initialValue) {
                 array.add(initialValue);
             }

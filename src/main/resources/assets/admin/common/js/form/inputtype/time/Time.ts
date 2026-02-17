@@ -14,6 +14,7 @@ import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import {TimeHMS} from '../../../util/TimeHMS';
 import {TimeHM} from '../../../util/TimeHM';
+import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
  * Uses [[ValueType]] [[ValueTypeLocalTime]].
@@ -21,16 +22,32 @@ import {TimeHM} from '../../../util/TimeHM';
 export class Time
     extends BaseInputTypeNotManagingAdd {
 
-    getDefaultValue(): Date {
-        const defaultTime: LocalTime = this.getContext().input.getDefaultValue()?.getLocalTime();
+    private static readonly PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
+
+    resolveDefaultValue(): Date {
+        const defaultTime: LocalTime = this.getDefaultValue()?.getLocalTime();
         if (!defaultTime) {
             return null;
         }
+
         const result: Date = new Date();
         result.setHours(defaultTime.getHours());
         result.setMinutes(defaultTime.getMinutes());
 
         return result;
+    }
+
+    createDefaultValue(rawValue: unknown): Value {
+        if (typeof rawValue !== 'string') {
+            return this.getValueType().newNullValue();
+        }
+
+        if (Time.PATTERN.test(rawValue)) {
+            return this.getValueType().newValue(rawValue);
+        } else {
+            const value = LocalTime.fromDate(RelativeTimeParser.parseToTime(rawValue));
+            return new Value(value, ValueTypes.LOCAL_TIME);
+        }
     }
 
     getValueType(): ValueType {
@@ -48,7 +65,7 @@ export class Time
             timePickerBuilder.setHours(value.hours).setMinutes(value.minutes);
         }
 
-        const defaultDate: Date = this.getDefaultValue();
+        const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
             timePickerBuilder.setDefaultValue(defaultDate);
         }
