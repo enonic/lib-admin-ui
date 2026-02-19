@@ -1,0 +1,18 @@
+{
+    "extends": "./tsconfig.json",
+    "include": [
+        "src/main/resources/assets/admin/common/js/**/*.ts",
+        "src/main/resources/assets/admin/common/js/**/*.tsx",
+        "src/test/**/*.ts"
+    ],
+    "compilerOptions": {
+        "types": [
+            "dompurify",
+            "jquery",
+            "jqueryui",
+            "mousetrap",
+            "q",
+            "vitest/globals"
+        ]
+    }
+}
