@@ -44,8 +44,6 @@ export class ValueTypeConverter {
             return ValueTypeConverter.convertToReference(value);
         } else if (toType === ValueTypes.BINARY_REFERENCE) {
             return ValueTypeConverter.convertToBinaryReference(value);
-        } else if (toType === ValueTypes.INSTANT) {
-            return ValueTypeConverter.convertToInstant(value);
         }
 
         throw Error(`Unknown ValueType: ${toType.toString()}`);
@@ -155,27 +153,12 @@ export class ValueTypeConverter {
         if (value.getType() === ValueTypes.STRING && ValueTypes.DATE_TIME.isConvertible(value.getString())) { // from string
             return ValueTypes.DATE_TIME.newValue(value.getString());
         } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
-            return ValueTypes.DATE_TIME.newValue(`${value.getString()}T00:00:00`);
-        } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
-            let dateTime = value.getString();
-            return ValueTypes.DATE_TIME.newValue(dateTime);
-        }
-        return ValueTypes.DATE_TIME.newNullValue();
-    }
-
-    private static convertToInstant(value: Value): Value {
-        if (value.getType() === ValueTypes.STRING && ValueTypes.INSTANT.isConvertible(value.getString())) { // from string
-            return ValueTypes.INSTANT.newValue(value.getString());
-        } else if (value.getType() === ValueTypes.LOCAL_DATE && value.isNotNull()) { // from LocalDate
-            return ValueTypes.INSTANT.newValue(`${value.getString()}T00:00:00Z`);
+            return ValueTypes.DATE_TIME.newValue(`${value.getString()}T00:00:00Z`);
         } else if (value.getType() === ValueTypes.LOCAL_DATE_TIME && value.isNotNull()) { // from LocalDateTime
             const localDateTime = new Date(value.getString());
-            return ValueTypes.INSTANT.newValue(localDateTime.toISOString());
-        } else if (value.getType() === ValueTypes.DATE_TIME && value.isNotNull()) {
-            const dateTime = new Date(value.getString());
-            return ValueTypes.INSTANT.newValue(dateTime.toISOString());
+            return ValueTypes.DATE_TIME.newValue(localDateTime.toISOString());
         } else {
-            return ValueTypes.INSTANT.newNullValue();
+            return ValueTypes.DATE_TIME.newNullValue();
         }
     }
 

@@ -1,13 +1,11 @@
-import {StringHelper} from './StringHelper';
 import {Equitable} from '../Equitable';
-import {Timezone} from './Timezone';
+import {StringHelper} from './StringHelper';
 import {ObjectHelper} from '../ObjectHelper';
-import {DateHelper} from './DateHelper';
 
 export class DateTime
     implements Equitable {
 
-    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z$/;
 
     private static DATE_TIME_SEPARATOR: string = 'T';
 
@@ -50,34 +48,19 @@ export class DateTime
     }
 
     /**
-     * Parsed passed string into DateTime object
-     * @param s - date to parse in ISO format
+     * Parses passed string into DateTime object
+     * @param s - date to parse in ISO 8601 instant format (UTC, with 'Z')
      * @returns {DateTime}
      */
     static fromString(s: string): DateTime {
         if (!DateTime.isValidDateTime(s)) {
-            throw new Error('Cannot parse DateTime from string: ' + s);
+            throw new Error('Cannot parse Instant from string: ' + s);
         }
 
-        let date;
+        const date = new Date(s);
 
-        if (DateHelper.isUTCdate(s)) {
-            date = DateHelper.makeDateFromUTCString(s);
-            if (DateHelper.isDST(date)) { // when converting from UTC date, Date object may have an extra hour added due to DST
-                date.setHours(date.getHours() - 1);
-            }
-        } else {
-            date = DateHelper.parseLongDateTime(
-                DateTime.trimTZ(s),
-                DateTime.DATE_TIME_SEPARATOR,
-                DateTime.DATE_SEPARATOR,
-                DateTime.TIME_SEPARATOR,
-                DateTime.FRACTION_SEPARATOR
-            );
-        }
-
-        if (!date) {
-            throw new Error('Cannot parse DateTime from string: ' + s);
+        if (isNaN(date.getTime())) {
+            throw new Error('Invalid date string for Instant: ' + s);
         }
 
         return DateTime.fromDate(date);
@@ -85,35 +68,18 @@ export class DateTime
 
     static fromDate(s: Date): DateTime {
         return DateTime.create()
-            .setYear(s.getFullYear())
-            .setMonth(s.getMonth())
-            .setDay(s.getDate())
-            .setHours(s.getHours())
-            .setMinutes(s.getMinutes())
-            .setSeconds(s.getSeconds())
-            .setFractions(s.getMilliseconds())
+            .setYear(s.getUTCFullYear())
+            .setMonth(s.getUTCMonth())
+            .setDay(s.getUTCDate())
+            .setHours(s.getUTCHours())
+            .setMinutes(s.getUTCMinutes())
+            .setSeconds(s.getUTCSeconds())
+            .setFractions(s.getUTCMilliseconds())
             .build();
     }
 
     public static create(): DateTimeBuilder {
         return new DateTimeBuilder();
-    }
-
-    private static trimTZ(dateString: string): string {
-        let tzStartIndex = dateString.indexOf('+');
-        if (tzStartIndex > 0) {
-            return dateString.substr(0, tzStartIndex);
-        } else if (dateString.split('-').length === 4) {
-            // case when there is a negative tz (2015-02-29T12:05:59.001-01:00)
-            tzStartIndex = dateString.lastIndexOf('-');
-            return dateString.substr(0, tzStartIndex);
-        } else {
-            tzStartIndex = dateString.toLowerCase().indexOf('z');
-            if (tzStartIndex > 0) {
-                return dateString.substr(0, tzStartIndex);
-            }
-        }
-        return dateString;
     }
 
     getYear(): number {
@@ -151,16 +117,17 @@ export class DateTime
     }
 
     timeToString(): string {
-        let fractions = this.fractions ? DateTime.FRACTION_SEPARATOR + this.padNumber(this.fractions, 3) : StringHelper.EMPTY_STRING;
+        let fractions = this.fractions
+                        ? DateTime.FRACTION_SEPARATOR + this.fractions.toString().padStart(3, '0')
+                        : StringHelper.EMPTY_STRING;
 
         return this.padNumber(this.hours) + DateTime.TIME_SEPARATOR +
                this.padNumber(this.minutes) + DateTime.TIME_SEPARATOR +
                this.padNumber(this.seconds ? this.seconds : 0) + fractions;
     }
 
-    /** Returns date in ISO format. Month value is incremented because ISO month range is 1-12, whereas JS Date month range is 0-11 */
     toString(): string {
-        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString();
+        return this.dateToString() + DateTime.DATE_TIME_SEPARATOR + this.timeToString() + 'Z';
     }
 
     equals(o: Equitable): boolean {
@@ -178,13 +145,7 @@ export class DateTime
     }
 
     toDate(): Date {
-        return DateHelper.parseLongDateTime(
-            DateTime.trimTZ(this.toString()),
-            DateTime.DATE_TIME_SEPARATOR,
-            DateTime.DATE_SEPARATOR,
-            DateTime.TIME_SEPARATOR,
-            DateTime.FRACTION_SEPARATOR
-        );
+        return new Date(this.toString());
     }
 
     private padNumber(num: number, length: number = 2): string {
@@ -213,8 +174,6 @@ export class DateTimeBuilder {
     seconds: number;
 
     fractions: number;
-
-    timezone: Timezone;
 
     public setYear(value: number): DateTimeBuilder {
         this.year = value;
@@ -247,7 +206,7 @@ export class DateTimeBuilder {
     }
 
     public setFractions(value: number): DateTimeBuilder {
-        if (this.seconds && value > 0) {
+        if (value > 0) {
             this.fractions = value;
         }
         return this;
