@@ -6,6 +6,8 @@ import {ObjectHelper} from '../ObjectHelper';
 export class LocalDateTime
     implements Equitable {
 
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
+
     private static DATE_TIME_SEPARATOR: string = 'T';
 
     private static DATE_SEPARATOR: string = '-';
@@ -14,19 +16,19 @@ export class LocalDateTime
 
     private static FRACTION_SEPARATOR: string = '.';
 
-    private year: number;
+    private readonly year: number;
 
-    private month: number; // 0-11
+    private readonly month: number; // 0-11
 
-    private day: number;
+    private readonly day: number;
 
-    private hours: number;
+    private readonly hours: number;
 
-    private minutes: number;
+    private readonly minutes: number;
 
-    private seconds: number;
+    private readonly seconds: number;
 
-    private fractions: number;
+    private readonly fractions: number;
 
     constructor(builder: LocalDateTimeBuilder) {
         this.year = builder.year;
@@ -43,11 +45,14 @@ export class LocalDateTime
             return false;
         }
 
-         
-        const regex = /^(\d{2}|([12]\d{3}))(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(T)([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})?(?:.)?(\d{3})?/;
-        return regex.test(s);
+        return this.PATTERN.test(s);
     }
 
+    /**
+     * Parsed passed string into DateTime object
+     * @param s - date to parse in ISO format
+     * @returns {DateTime}
+     */
     static fromString(s: string): LocalDateTime {
         if (!LocalDateTime.isValidDateTime(s)) {
             throw new Error('Cannot parse LocalDateTime from string: ' + s);
@@ -64,6 +69,10 @@ export class LocalDateTime
             throw new Error('Cannot parse LocalDateTime from string: ' + s);
         }
 
+        return LocalDateTime.fromDate(date);
+    }
+
+    static fromDate(date: Date): LocalDateTime {
         return LocalDateTime.create()
             .setYear(date.getFullYear())
             .setMonth(date.getMonth())
@@ -72,18 +81,6 @@ export class LocalDateTime
             .setMinutes(date.getMinutes())
             .setSeconds(date.getSeconds())
             .setFractions(date.getMilliseconds())
-            .build();
-    }
-
-    static fromDate(s: Date): LocalDateTime {
-        return LocalDateTime.create()
-            .setYear(s.getFullYear())
-            .setMonth(s.getMonth())
-            .setDay(s.getDate())
-            .setHours(s.getHours())
-            .setMinutes(s.getMinutes())
-            .setSeconds(s.getSeconds())
-            .setFractions(s.getMilliseconds())
             .build();
     }
 

@@ -14,10 +14,10 @@ import './form/inputtype/support/NoInputTypeFoundView';
 import './form/inputtype/text/TextArea';
 import './form/inputtype/text/TextLine';
 import './form/inputtype/time/Date';
-import './form/inputtype/time/DateTime';
+import './form/inputtype/time/LocalDateTime';
 import './form/inputtype/time/DateTimeRange';
 import './form/inputtype/time/Time';
-import './form/inputtype/time/Instant';
+import './form/inputtype/time/DateTime';
 
 const hasJQuery = Store.instance().has('$');
 if (!hasJQuery) {

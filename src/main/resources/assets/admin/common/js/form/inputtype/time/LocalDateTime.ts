@@ -7,23 +7,23 @@ import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAd
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Element} from '../../../dom/Element';
 import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
+import {LocalDateTime as LocalDateTimeUtil} from '../../../util/LocalDateTime';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
-import {Instant as InstantUtil} from '../../../util/Instant';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import {RelativeTimeParser} from './RelativeTimeParser';
 
 /**
- * Uses [[ValueType]] [[ValueTypeInstant]].
+ * Uses [[ValueType]] [[ValueTypeLocalDateTime]].
  */
-export class Instant
+export class LocalDateTime
     extends BaseInputTypeNotManagingAdd {
 
-    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z$/;
+    private static readonly PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
-    private valueType: ValueType = ValueTypes.INSTANT;
+    private valueType: ValueType = ValueTypes.LOCAL_DATE_TIME;
 
     constructor(config: InputTypeViewContext) {
         super(config);
@@ -35,12 +35,12 @@ export class Instant
             return this.getValueType().newNullValue();
         }
 
-        if (Instant.PATTERN.test(rawValue)) {
+        if (LocalDateTime.PATTERN.test(rawValue)) {
             return this.getValueType().newValue(rawValue);
-        } else {
-            const value = InstantUtil.fromDate(RelativeTimeParser.parseToInstant(rawValue));
-            return new Value(value, ValueTypes.INSTANT);
         }
+
+        const value = LocalDateTimeUtil.fromDate(RelativeTimeParser.parseToLocalDateTime(rawValue));
+        return new Value(value, ValueTypes.LOCAL_DATE_TIME);
     }
 
     resolveDefaultValue(): Date {
@@ -50,7 +50,7 @@ export class Instant
             return null;
         }
 
-        return defaultValue.getInstant().toDate();
+        return defaultValue.getDateTime().toDate();
     }
 
     getValueType(): ValueType {
@@ -61,7 +61,7 @@ export class Instant
         const valueType: ValueType = this.getValueType();
 
         const dateTimeBuilder: DateTimePickerBuilder = new DateTimePickerBuilder();
-        dateTimeBuilder.setUseLocalTimezone(true);
+        dateTimeBuilder.setUseLocalTimezone(false);
 
         const defaultDate: Date = this.resolveDefaultValue();
         if (defaultDate) {
@@ -73,7 +73,8 @@ export class Instant
         }
 
         if (property.hasNonNullValue()) {
-            dateTimeBuilder.setDateTime(property.getInstant().toDate());
+            const date: LocalDateTimeUtil = property.getLocalDateTime();
+            dateTimeBuilder.setDateTime(date.toDate());
         }
 
         const dateTimePicker: DateTimePicker = dateTimeBuilder.build();
@@ -91,7 +92,7 @@ export class Instant
         if (!unchangedOnly || !dateTimePicker.isDirty()) {
 
             const date = property.hasNonNullValue()
-                         ? property.getInstant().toDate()
+                         ? property.getLocalDateTime().toDate()
                          : null;
             dateTimePicker.setDateTime(date);
         } else if (dateTimePicker.isDirty()) {
@@ -133,13 +134,8 @@ export class Instant
     }
 
     protected getValue(inputEl: Element, event: SelectedDateChangedEvent): Value {
-        const date = event.getDate();
-        if (!date) {
-            return new Value(null, this.getValueType());
-        }
-
-        return new Value(InstantUtil.fromDate(date), this.getValueType());
+        return new Value(event.getDate() != null ? LocalDateTimeUtil.fromDate(event.getDate()) : null, this.getValueType());
     }
 }
 
-InputTypeManager.register(new Class('Instant', Instant), true);
+InputTypeManager.register(new Class('LocalDateTime', LocalDateTime), true);

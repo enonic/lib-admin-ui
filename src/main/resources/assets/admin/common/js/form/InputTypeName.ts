@@ -13,13 +13,13 @@ export class InputTypeName
     private refString: string;
 
     constructor(name: string, custom: boolean) {
-        this.name = name;
+        this.name = this.resolveInputTypeName(name);
         this.custom = custom;
 
         if (this.custom) {
             this.refString = InputTypeName.CUSTOM_PREFIX + name;
         } else {
-            this.refString = name;
+            this.refString = this.name;
         }
     }
 
@@ -43,8 +43,18 @@ export class InputTypeName
         return this.refString;
     }
 
-    public toJson(): string {
+    private resolveInputTypeName(value: string): string {
+        const rawTypeInputName = value;
+        if (rawTypeInputName === 'Instant') {
+            return 'DateTime';
+        } else if (rawTypeInputName === 'DateTime') {
+            return 'LocalDateTime';
+        } else {
+            return rawTypeInputName;
+        }
+    }
 
+    public toJson(): string {
         return this.toString();
     }
 

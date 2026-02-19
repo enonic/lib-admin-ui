@@ -6,7 +6,6 @@ import {BinaryReference} from '../util/BinaryReference';
 import {Reference} from '../util/Reference';
 import {GeoPoint} from '../util/GeoPoint';
 import {LocalTime} from '../util/LocalTime';
-import {DateTime} from '../util/DateTime';
 import {LocalDateTime} from '../util/LocalDateTime';
 import {LocalDate} from '../util/LocalDate';
 import {Equitable} from '../Equitable';
@@ -16,7 +15,7 @@ import {PropertyValueChangedEvent} from './PropertyValueChangedEvent';
 import {assertNotNull} from '../util/Assert';
 import {ValueTypes} from './ValueTypes';
 import {ValueType} from './ValueType';
-import {Instant} from '../util/Instant';
+import {DateTime} from '../util/DateTime';
 
 /**
  * A Property has a [[name]] and a [[value]],
@@ -238,10 +237,6 @@ export class Property
 
     getBinaryReference(): BinaryReference {
         return this.value.getBinaryReference();
-    }
-
-    getInstant(): Instant {
-        return this.value.getInstant();
     }
 
     equals(o: Equitable): boolean {

@@ -1,8 +1,8 @@
+import {DateTime} from '../util/DateTime';
 import {ObjectHelper} from '../ObjectHelper';
 import {StringHelper} from '../util/StringHelper';
 import {ValueType} from './ValueType';
 import {Value} from './Value';
-import {DateTime} from '../util/DateTime';
 
 export class ValueTypeDateTime
     extends ValueType {
@@ -27,19 +27,15 @@ export class ValueTypeDateTime
     }
 
     newValue(value: string): Value {
-        if (!value) {
+        if (!value || !this.isConvertible(value)) {
             return this.newNullValue();
         }
-        if (!this.isConvertible(value)) {
-            return this.newNullValue();
-        }
-        let date = DateTime.fromString(value);
+        const date: DateTime = DateTime.fromString(value);
         return new Value(date, this);
     }
 
-    // 2010-01-01T10:55:00
     toJsonValue(value: Value): string {
-        return value.isNull() ? null : value.getDateTime().toString();
+        return value.isNull() ? null : this.valueToString(value);
     }
 
     valueToString(value: Value): string {

@@ -1,8 +1,8 @@
 import dayjs, {Dayjs} from 'dayjs';
-import {Instant} from '../../../util/Instant';
 import {DateTime} from '../../../util/DateTime';
 import {DateHelper} from '../../../util/DateHelper';
 import {LocalDate} from '../../../util/LocalDate';
+import {LocalDateTime} from '../../../util/LocalDateTime';
 
 export class RelativeTimeParser {
 
@@ -37,12 +37,12 @@ export class RelativeTimeParser {
         return DateHelper.isoValueToDate(result, factory, omitTimezone, mode);
     }
 
-    static parseToDateTime(expr?: string): Date {
-        return this.parseRelative(expr, DateTime.fromString, true);
+    static parseToLocalDateTime(expr?: string): Date {
+        return this.parseRelative(expr, LocalDateTime.fromString, true);
     }
 
-    static parseToInstant(expr?: string): Date {
-        return this.parseRelative(expr, Instant.fromString, false);
+    static parseToDateTime(expr?: string): Date {
+        return this.parseRelative(expr, DateTime.fromString, false);
     }
 
     static parseToDate(expr?: string): Date {
