@@ -50,6 +50,8 @@ export abstract class ModalDialog
 
     protected config: ModalDialogConfig;
 
+    private container: Element
+
     private body: DivEl;
 
     private footer: DivEl;
@@ -86,6 +88,7 @@ export abstract class ModalDialog
         super('modal-dialog', StyleHelper.COMMON_PREFIX);
         this.config = config;
 
+        this.setContainer(this.config.container || Body.get());
         this.initElements();
         this.postInitElements();
         this.initListeners();
@@ -396,8 +399,8 @@ export abstract class ModalDialog
         Body.get().reapplyFocus();
     }
 
-    private getContainer(): Element {
-        return this.config.container || Body.get();
+    setContainer(container: Element) {
+        return this.container = container;
     }
 
     hide() {
@@ -407,7 +410,7 @@ export abstract class ModalDialog
 
         this.toggleFullscreen(false);
         if (this.dialogContainer.getParentElement()) {
-            this.getContainer().removeChild(this.dialogContainer);
+            this.container.removeChild(this.dialogContainer);
         }
     }
 
@@ -541,7 +544,7 @@ export abstract class ModalDialog
         if (!this.dialogContainer.hasChild(this)) {
             this.dialogContainer.appendChild(this);
         }
-        this.getContainer().appendChild(this.dialogContainer);
+        this.container.appendChild(this.dialogContainer);
 
         super.show();
 
