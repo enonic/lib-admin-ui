@@ -1,8 +1,22 @@
-import {describe, expect, it, vi} from 'vitest';
+import {afterEach, describe, expect, it, vi} from 'vitest';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ...args: unknown[]) => `#${key}#`,
 }));
+
+vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
+    const storeMap = new Map<string, any>();
+    return {
+        Store: {
+            instance: () => ({
+                get: (key: string) => storeMap.get(key),
+                set: (key: string, value: any) => { storeMap.set(key, value); },
+                has: (key: string) => storeMap.has(key),
+                delete: (key: string) => storeMap.delete(key),
+            }),
+        },
+    };
+});
 
 import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/DescriptorRegistry';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
@@ -26,13 +40,17 @@ const EXPECTED_DESCRIPTORS = [
 
 describe('DescriptorRegistry', () => {
 
+    afterEach(() => {
+        DescriptorRegistry._reset();
+    });
+
     describe('auto-registration', () => {
         it.each(EXPECTED_DESCRIPTORS)('has %s registered', (name) => {
             expect(DescriptorRegistry.has(name)).toBe(true);
         });
 
         it('has exactly 14 built-in descriptors', () => {
-            expect(DescriptorRegistry.getAll()).toHaveLength(14);
+            expect(DescriptorRegistry.getAll().size).toBe(14);
         });
     });
 
@@ -80,16 +98,51 @@ describe('DescriptorRegistry', () => {
             expect(DescriptorRegistry.has('CustomType')).toBe(true);
             expect(DescriptorRegistry.get('customtype')).toBeDefined();
         });
+
+        it('skips duplicate and warns without force', () => {
+            const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            const original = DescriptorRegistry.get('TextLine');
+            DescriptorRegistry.register({
+                name: 'TextLine',
+                getValueType: () => ValueTypes.LONG,
+                readConfig: () => ({}),
+                createDefaultValue: () => ValueTypes.LONG.newNullValue(),
+                validate: () => [],
+                valueBreaksRequired: (v) => v.isNull(),
+            });
+            expect(DescriptorRegistry.get('TextLine')).toBe(original);
+            expect(spy).toHaveBeenCalledOnce();
+            spy.mockRestore();
+        });
+
+        it('overwrites existing descriptor with force', () => {
+            const replacement = {
+                name: 'TextLine',
+                getValueType: () => ValueTypes.LONG,
+                readConfig: () => ({}),
+                createDefaultValue: () => ValueTypes.LONG.newNullValue(),
+                validate: () => [],
+                valueBreaksRequired: (v: any) => v.isNull(),
+            };
+            DescriptorRegistry.register(replacement, true);
+            expect(DescriptorRegistry.get('TextLine')).toBe(replacement);
+        });
     });
 
     describe('getAll', () => {
         it('returns all registered descriptors', () => {
             const all = DescriptorRegistry.getAll();
-            expect(all.length).toBeGreaterThanOrEqual(14);
+            expect(all.size).toBe(14);
+        });
+
+        it('returns a copy, not the internal map', () => {
+            const all = DescriptorRegistry.getAll();
+            all.delete('textline');
+            expect(DescriptorRegistry.has('TextLine')).toBe(true);
         });
 
         it('every descriptor has a name and getValueType', () => {
-            for (const descriptor of DescriptorRegistry.getAll()) {
+            for (const [, descriptor] of DescriptorRegistry.getAll()) {
                 expect(descriptor.name).toBeTruthy();
                 expect(descriptor.getValueType()).toBeDefined();
             }

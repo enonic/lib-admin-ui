@@ -8,6 +8,20 @@ vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ...args: unknown[]) => `#${key}#`,
 }));
 
+vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
+    const storeMap = new Map<string, any>();
+    return {
+        Store: {
+            instance: () => ({
+                get: (key: string) => storeMap.get(key),
+                set: (key: string, value: any) => { storeMap.set(key, value); },
+                has: (key: string) => storeMap.has(key),
+                delete: (key: string) => storeMap.delete(key),
+            }),
+        },
+    };
+});
+
 import {ComponentRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype2/ComponentRegistry';
 import {TextLineInput} from '../../main/resources/assets/admin/common/js/form/inputtype2/TextLineInput';
 import type {InputTypeComponent} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
@@ -50,9 +64,18 @@ describe('ComponentRegistry', () => {
             expect(ComponentRegistry.get('Custom')).toBe(stub);
         });
 
-        it('overwrites existing component silently', () => {
+        it('skips duplicate and warns without force', () => {
+            const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
             const replacement: InputTypeComponent = () => null;
             ComponentRegistry.register('TextLine', replacement);
+            expect(ComponentRegistry.get('TextLine')).toBe(TextLineInput);
+            expect(spy).toHaveBeenCalledOnce();
+            spy.mockRestore();
+        });
+
+        it('overwrites existing component with force', () => {
+            const replacement: InputTypeComponent = () => null;
+            ComponentRegistry.register('TextLine', replacement, true);
             expect(ComponentRegistry.get('TextLine')).toBe(replacement);
         });
     });
