@@ -1,4 +1,4 @@
-import {describe, expect, it, vi} from 'vitest';
+import {afterEach, describe, expect, it, vi} from 'vitest';
 
 vi.mock('@enonic/ui', () => ({
     Input: () => null,
@@ -13,6 +13,10 @@ import {TextLineInput} from '../../main/resources/assets/admin/common/js/form/in
 import type {InputTypeComponent} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
 
 describe('ComponentRegistry', () => {
+
+    afterEach(() => {
+        ComponentRegistry._reset();
+    });
 
     describe('auto-registration', () => {
         it('has TextLineInput registered as TextLine', () => {
@@ -50,9 +54,6 @@ describe('ComponentRegistry', () => {
             const replacement: InputTypeComponent = () => null;
             ComponentRegistry.register('TextLine', replacement);
             expect(ComponentRegistry.get('TextLine')).toBe(replacement);
-
-            // Restore original for other tests
-            ComponentRegistry.register('TextLine', TextLineInput as InputTypeComponent);
         });
     });
 

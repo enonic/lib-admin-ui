@@ -8,6 +8,7 @@ import type {ValidationResult} from '../inputtype/descriptor/ValidationResult';
 export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig> = {
     value: Value;
     onChange: (value: Value) => void;
+    onBlur?: () => void;
     config: C;
     input: Input;
     enabled: boolean;

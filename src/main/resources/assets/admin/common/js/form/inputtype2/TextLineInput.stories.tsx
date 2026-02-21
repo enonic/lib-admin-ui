@@ -106,6 +106,33 @@ export const WithMultipleErrors: Story = {
     },
 };
 
+export const WithShowCounter: Story = {
+    name: 'Examples / With Show Counter',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue('Hello'),
+        config: makeConfig({showCounter: true}),
+    },
+};
+
+export const WithMaxLengthAndCounter: Story = {
+    name: 'Examples / Max Length + Counter',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue('Hello, world!'),
+        config: makeConfig({maxLength: 50, showCounter: true}),
+    },
+};
+
+export const WithMaxLengthCounter: Story = {
+    name: 'Examples / Max Length Counter (no showCounter)',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue('Hello, world!'),
+        config: makeConfig({maxLength: 20}),
+    },
+};
+
 export const AllStates: Story = {
     name: 'States / All States',
     render: () => (
@@ -131,14 +158,19 @@ export const AllStates: Story = {
                 />
             </div>
             <div>
-                <h3 className='mb-3 font-medium text-sm'>Multiple Errors</h3>
+                <h3 className='mb-3 font-medium text-sm'>Max Length + Counter</h3>
                 <TextLineInput
                     {...defaultArgs}
-                    value={ValueTypes.STRING.newValue('toolong-and-invalid')}
-                    errors={[
-                        {message: 'Value exceeds maximum length of 5'},
-                        {message: 'Value does not match the required pattern'},
-                    ]}
+                    value={ValueTypes.STRING.newValue('Hello, world!')}
+                    config={makeConfig({maxLength: 50, showCounter: true})}
+                />
+            </div>
+            <div>
+                <h3 className='mb-3 font-medium text-sm'>Counter Only</h3>
+                <TextLineInput
+                    {...defaultArgs}
+                    value={ValueTypes.STRING.newValue('Hello')}
+                    config={makeConfig({showCounter: true})}
                 />
             </div>
         </div>

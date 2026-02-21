@@ -22,7 +22,7 @@ export interface InputTypeDescriptor<C extends InputTypeConfig = InputTypeConfig
     readConfig(raw: Record<string, Record<string, unknown>[]>): C;
 
     /** Create a typed default Value from the raw default config value. */
-    createDefaultValue(raw: unknown, config: C): Value;
+    createDefaultValue(raw: unknown): Value;
 
     /**
      * Validate a single value.

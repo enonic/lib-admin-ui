@@ -39,7 +39,7 @@ export abstract class BaseInputType<C extends InputTypeConfig = InputTypeConfig>
     }
 
     createDefaultValue(raw: unknown): Value {
-        return this.descriptor.createDefaultValue(raw, this.typedConfig);
+        return this.descriptor.createDefaultValue(raw);
     }
 
     valueBreaksRequiredContract(value: Value): boolean {

@@ -2,11 +2,18 @@ import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {getFirstError} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
+import {getCounterDescription} from '../../main/resources/assets/admin/common/js/form/inputtype2/TextLineInput';
+import type {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/InputTypeConfig';
 import type {ValidationResult} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/ValidationResult';
 
+vi.mock('@enonic/ui', () => ({Input: () => null}));
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ...args: unknown[]) => `#${key}#`,
 }));
+
+function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {
+    return {regexp: null, maxLength: -1, showCounter: false, ...overrides};
+}
 
 describe('getFirstError', () => {
 
@@ -49,5 +56,39 @@ describe('TextLineInput value transformation', () => {
         expect(newValue).toBeInstanceOf(Value);
         expect(newValue.getString()).toBe('test input');
         expect(newValue.getType()).toBe(ValueTypes.STRING);
+    });
+});
+
+describe('getCounterDescription', () => {
+
+    it('returns undefined when no counter and no maxLength', () => {
+        expect(getCounterDescription(5, makeConfig())).toBeUndefined();
+    });
+
+    it('returns total + remaining when showCounter and maxLength', () => {
+        const result = getCounterDescription(13, makeConfig({maxLength: 50, showCounter: true}));
+        expect(result).toContain('field.value.chars.total');
+        expect(result).toContain('field.value.chars.left.short');
+    });
+
+    it('returns remaining only when maxLength without showCounter', () => {
+        const result = getCounterDescription(5, makeConfig({maxLength: 20}));
+        expect(result).toContain('field.value.chars.left.long');
+    });
+
+    it('returns total only when showCounter without maxLength', () => {
+        const result = getCounterDescription(10, makeConfig({showCounter: true}));
+        expect(result).toContain('field.value.chars.total');
+        expect(result).not.toContain('field.value.chars.left');
+    });
+
+    it('handles zero length', () => {
+        const result = getCounterDescription(0, makeConfig({maxLength: 50, showCounter: true}));
+        expect(result).toBeDefined();
+    });
+
+    it('handles length at max', () => {
+        const result = getCounterDescription(50, makeConfig({maxLength: 50}));
+        expect(result).toContain('field.value.chars.left.long');
     });
 });

@@ -75,8 +75,7 @@ describe('TextLineDescriptor', () => {
 
     describe('createDefaultValue', () => {
         it('creates STRING value from string input', () => {
-            const config = TextLineDescriptor.readConfig({});
-            const value = TextLineDescriptor.createDefaultValue('hello', config);
+            const value = TextLineDescriptor.createDefaultValue('hello');
             expect(value).toBeInstanceOf(Value);
             expect(value.isNull()).toBe(false);
             expect(value.getString()).toBe('hello');
@@ -84,21 +83,18 @@ describe('TextLineDescriptor', () => {
         });
 
         it('returns null Value for number input', () => {
-            const config = TextLineDescriptor.readConfig({});
-            const value = TextLineDescriptor.createDefaultValue(42, config);
+            const value = TextLineDescriptor.createDefaultValue(42);
             expect(value).toBeInstanceOf(Value);
             expect(value.isNull()).toBe(true);
         });
 
         it('returns null Value for null input', () => {
-            const config = TextLineDescriptor.readConfig({});
-            const value = TextLineDescriptor.createDefaultValue(null, config);
+            const value = TextLineDescriptor.createDefaultValue(null);
             expect(value.isNull()).toBe(true);
         });
 
         it('returns null Value for undefined input', () => {
-            const config = TextLineDescriptor.readConfig({});
-            const value = TextLineDescriptor.createDefaultValue(undefined, config);
+            const value = TextLineDescriptor.createDefaultValue(undefined);
             expect(value.isNull()).toBe(true);
         });
     });

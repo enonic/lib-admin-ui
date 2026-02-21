@@ -1,4 +1,4 @@
-import type {InputTypeComponent, InputTypeComponentProps} from './types';
+import type {InputTypeComponent} from './types';
 import {TextLineInput} from './TextLineInput';
 
 const components = new Map<string, InputTypeComponent>();
@@ -7,8 +7,12 @@ function register(name: string, component: InputTypeComponent): void {
     components.set(name.toLowerCase(), component);
 }
 
+function registerBuiltIn(): void {
+    register('TextLine', TextLineInput as InputTypeComponent);
+}
+
 // Register built-in components
-register('TextLine', TextLineInput as InputTypeComponent);
+registerBuiltIn();
 
 export class ComponentRegistry {
 
@@ -26,5 +30,10 @@ export class ComponentRegistry {
 
     static getAll(): Map<string, InputTypeComponent> {
         return new Map(components);
+    }
+
+    static _reset(): void {
+        components.clear();
+        registerBuiltIn();
     }
 }
