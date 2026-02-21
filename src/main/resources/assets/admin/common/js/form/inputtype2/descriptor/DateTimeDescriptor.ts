@@ -5,7 +5,7 @@ import {LocalDateTime} from '../../../util/LocalDateTime';
 import {InputTypeDescriptor} from './InputTypeDescriptor';
 import {DateTimeConfig} from './InputTypeConfig';
 import {ValidationResult} from './ValidationResult';
-import {RelativeTimeParser} from '../time/RelativeTimeParser';
+import {RelativeTimeParser} from '../../inputtype/time/RelativeTimeParser';
 
 const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 

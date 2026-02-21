@@ -105,4 +105,25 @@ describe('ComponentRegistry', () => {
             expect(ComponentRegistry.get('unknown')).toBeUndefined();
         });
     });
+
+    describe('unregister', () => {
+        it('returns true for existing component', () => {
+            expect(ComponentRegistry.has('TextLine')).toBe(true);
+            expect(ComponentRegistry.unregister('TextLine')).toBe(true);
+        });
+
+        it('returns false for non-existent component', () => {
+            expect(ComponentRegistry.unregister('NonExistent')).toBe(false);
+        });
+
+        it('is case-insensitive', () => {
+            expect(ComponentRegistry.unregister('TEXTLINE')).toBe(true);
+        });
+
+        it('after unregister: has() returns false and get() returns undefined', () => {
+            ComponentRegistry.unregister('TextLine');
+            expect(ComponentRegistry.has('TextLine')).toBe(false);
+            expect(ComponentRegistry.get('TextLine')).toBeUndefined();
+        });
+    });
 });

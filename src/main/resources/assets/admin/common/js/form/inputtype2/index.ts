@@ -10,3 +10,7 @@ export {TextLineInput} from './TextLineInput';
 export {UnsupportedInput} from './UnsupportedInput';
 export type {InputTypeComponentProps, InputTypeComponent} from './types';
 export {getFirstError} from './types';
+
+// Descriptor system
+export {DescriptorRegistry} from './descriptor/DescriptorRegistry';
+export {initBuiltInDescriptors} from './descriptor/initBuiltInDescriptors';

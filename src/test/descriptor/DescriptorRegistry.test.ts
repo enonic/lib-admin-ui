@@ -18,8 +18,8 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
     };
 });
 
-import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/DescriptorRegistry';
-import {initBuiltInDescriptors} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/initBuiltInDescriptors';
+import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DescriptorRegistry';
+import {initBuiltInDescriptors} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/initBuiltInDescriptors';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 
 const EXPECTED_DESCRIPTORS = [
@@ -153,6 +153,51 @@ describe('DescriptorRegistry', () => {
                 expect(descriptor.name).toBeTruthy();
                 expect(descriptor.getValueType()).toBeDefined();
             }
+        });
+    });
+
+    describe('unregister', () => {
+        it('returns true for existing descriptor', () => {
+            expect(DescriptorRegistry.has('TextLine')).toBe(true);
+            expect(DescriptorRegistry.unregister('TextLine')).toBe(true);
+        });
+
+        it('returns false for non-existent descriptor', () => {
+            expect(DescriptorRegistry.unregister('NonExistent')).toBe(false);
+        });
+
+        it('is case-insensitive', () => {
+            expect(DescriptorRegistry.unregister('TEXTLINE')).toBe(true);
+        });
+
+        it('after unregister: has() returns false', () => {
+            DescriptorRegistry.unregister('TextLine');
+            expect(DescriptorRegistry.has('TextLine')).toBe(false);
+        });
+
+        it('after unregister: get() returns undefined', () => {
+            DescriptorRegistry.unregister('TextLine');
+            expect(DescriptorRegistry.get('TextLine')).toBeUndefined();
+        });
+
+        it('after unregister: getAll().size decreases', () => {
+            const sizeBefore = DescriptorRegistry.getAll().size;
+            DescriptorRegistry.unregister('TextLine');
+            expect(DescriptorRegistry.getAll().size).toBe(sizeBefore - 1);
+        });
+
+        it('can re-register after unregister', () => {
+            DescriptorRegistry.unregister('TextLine');
+            expect(DescriptorRegistry.has('TextLine')).toBe(false);
+            DescriptorRegistry.register({
+                name: 'TextLine',
+                getValueType: () => ValueTypes.STRING,
+                readConfig: () => ({}),
+                createDefaultValue: () => ValueTypes.STRING.newNullValue(),
+                validate: () => [],
+                valueBreaksRequired: (v) => v.isNull(),
+            });
+            expect(DescriptorRegistry.has('TextLine')).toBe(true);
         });
     });
 

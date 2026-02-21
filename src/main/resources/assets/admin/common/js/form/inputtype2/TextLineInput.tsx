@@ -5,7 +5,7 @@ import {ValueTypes} from '../../data/ValueTypes';
 import {i18n} from '../../util/Messages';
 import {getFirstError} from './types';
 import type {InputTypeComponentProps} from './types';
-import type {TextLineConfig} from '../inputtype/descriptor/InputTypeConfig';
+import type {TextLineConfig} from './descriptor/InputTypeConfig';
 
 export function getCounterDescription(length: number, config: TextLineConfig): string | undefined {
     const hasMaxLength = config.maxLength > 0;

@@ -9,8 +9,8 @@ import {InputTypeName} from '../InputTypeName';
 import {InputTypeManager} from '../inputtype/InputTypeManager';
 import {InputTypeViewContext} from '../inputtype/InputTypeViewContext';
 import {InputValueLengthCounterEl} from '../inputtype/text/InputValueLengthCounterEl';
-import {TextLineDescriptor} from '../inputtype/descriptor/TextLineDescriptor';
-import {TextLineConfig} from '../inputtype/descriptor/InputTypeConfig';
+import {TextLineDescriptor} from './descriptor/TextLineDescriptor';
+import {TextLineConfig} from './descriptor/InputTypeConfig';
 import {Class} from '../../Class';
 import {BaseInputType} from './BaseInputType';
 

@@ -5,7 +5,7 @@ import {Instant as InstantUtil} from '../../../util/Instant';
 import {InputTypeDescriptor} from './InputTypeDescriptor';
 import {InstantConfig} from './InputTypeConfig';
 import {ValidationResult} from './ValidationResult';
-import {RelativeTimeParser} from '../time/RelativeTimeParser';
+import {RelativeTimeParser} from '../../inputtype/time/RelativeTimeParser';
 
 const INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z$/;
 

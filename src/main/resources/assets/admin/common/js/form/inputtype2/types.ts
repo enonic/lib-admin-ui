@@ -1,8 +1,8 @@
 import type {ComponentType} from 'react';
 import type {Input} from '../Input';
 import type {Value} from '../../data/Value';
-import type {InputTypeConfig} from '../inputtype/descriptor/InputTypeConfig';
-import type {ValidationResult} from '../inputtype/descriptor/ValidationResult';
+import type {InputTypeConfig} from './descriptor/InputTypeConfig';
+import type {ValidationResult} from './descriptor/ValidationResult';
 
 /** Props every React input type component receives (one per occurrence). */
 export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig> = {

@@ -22,7 +22,7 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
 });
 
 import {ComponentRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype2/ComponentRegistry';
-import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/DescriptorRegistry';
+import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DescriptorRegistry';
 import {initBuiltInTypes} from '../../main/resources/assets/admin/common/js/form/inputtype2/initBuiltInTypes';
 
 describe('Registry consistency', () => {

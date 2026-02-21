@@ -5,7 +5,7 @@ import {ValueTypes} from '../../data/ValueTypes';
 import {InputBuilder} from '../Input';
 import {InputTypeName} from '../InputTypeName';
 import {OccurrencesBuilder} from '../Occurrences';
-import type {TextLineConfig} from '../inputtype/descriptor/InputTypeConfig';
+import type {TextLineConfig} from './descriptor/InputTypeConfig';
 import type {InputTypeComponentProps} from './types';
 
 function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {

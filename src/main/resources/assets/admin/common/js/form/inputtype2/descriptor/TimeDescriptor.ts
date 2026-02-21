@@ -5,7 +5,7 @@ import {LocalTime} from '../../../util/LocalTime';
 import {InputTypeDescriptor} from './InputTypeDescriptor';
 import {TimeConfig} from './InputTypeConfig';
 import {ValidationResult} from './ValidationResult';
-import {RelativeTimeParser} from '../time/RelativeTimeParser';
+import {RelativeTimeParser} from '../../inputtype/time/RelativeTimeParser';
 
 const TIME_PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 

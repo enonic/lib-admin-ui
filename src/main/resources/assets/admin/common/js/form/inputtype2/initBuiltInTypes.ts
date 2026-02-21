@@ -1,4 +1,4 @@
-import {initBuiltInDescriptors} from '../inputtype/descriptor/initBuiltInDescriptors';
+import {initBuiltInDescriptors} from './descriptor/initBuiltInDescriptors';
 import {initBuiltInComponents} from './initBuiltInComponents';
 
 export function initBuiltInTypes(): void {

@@ -1,8 +1,8 @@
 import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
-import {TextLineDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/TextLineDescriptor';
-import {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/InputTypeConfig';
+import {TextLineDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/TextLineDescriptor';
+import {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ...args: unknown[]) => `#${key}#`,

@@ -12,8 +12,8 @@ import {AdditionalValidationRecord} from '../AdditionalValidationRecord';
 import {AiConfig} from '../inputtype/InputAiConfig';
 import {InputTypeViewContext} from '../inputtype/InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../inputtype/support/BaseInputTypeNotManagingAdd';
-import {InputTypeConfig} from '../inputtype/descriptor/InputTypeConfig';
-import {InputTypeDescriptor} from '../inputtype/descriptor/InputTypeDescriptor';
+import {InputTypeConfig} from './descriptor/InputTypeConfig';
+import {InputTypeDescriptor} from './descriptor/InputTypeDescriptor';
 
 /**
  * Abstract base for new-style input types that delegate pure logic to a descriptor.

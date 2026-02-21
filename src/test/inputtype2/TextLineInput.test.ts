@@ -3,8 +3,8 @@ import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {getFirstError} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
 import {getCounterDescription} from '../../main/resources/assets/admin/common/js/form/inputtype2/TextLineInput';
-import type {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/InputTypeConfig';
-import type {ValidationResult} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/ValidationResult';
+import type {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import type {ValidationResult} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/ValidationResult';
 
 vi.mock('@enonic/ui', () => ({Input: () => null}));
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({

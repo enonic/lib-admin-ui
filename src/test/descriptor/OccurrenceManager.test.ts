@@ -1,9 +1,11 @@
 import {describe, expect, it, vi} from 'vitest';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {Occurrences} from '../../main/resources/assets/admin/common/js/form/Occurrences';
-import {OccurrenceManager} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/OccurrenceManager';
-import {TextLineDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/TextLineDescriptor';
-import {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/InputTypeConfig';
+import {OccurrenceManager} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/OccurrenceManager';
+import {TextLineDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/TextLineDescriptor';
+import {TextLineConfig, CheckboxConfig, NumberConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import {DoubleDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DoubleDescriptor';
+import {CheckboxDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/CheckboxDescriptor';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ...args: unknown[]) => `#${key}#`,
@@ -229,6 +231,86 @@ describe('OccurrenceManager', () => {
             const state = mgr.validate();
             expect(state.occurrenceValidation[0].breaksRequired).toBe(true);
             expect(state.totalValid).toBe(0);
+        });
+    });
+
+    describe('with DoubleDescriptor', () => {
+        function createDoubleManager(opts: {min?: number; max?: number; values?: number[]} = {}) {
+            const {min = 0, max = 0, values = []} = opts;
+            const occurrences = Occurrences.minmax(min, max);
+            const config: NumberConfig = {min: null, max: null};
+            const initialValues = values.map((v) => ValueTypes.DOUBLE.fromJsonValue(v));
+            return new OccurrenceManager<NumberConfig>(occurrences, DoubleDescriptor, config, initialValues);
+        }
+
+        it('validates and counts numeric occurrences', () => {
+            const mgr = createDoubleManager({min: 1, values: [3.14, 2.71]});
+            const state = mgr.validate();
+            expect(state.totalValid).toBe(2);
+            expect(state.isMinimumBreached).toBe(false);
+        });
+
+        it('null breaks required for Double', () => {
+            const mgr = createDoubleManager({min: 1});
+            mgr.add(); // adds null double
+            const state = mgr.validate();
+            expect(state.occurrenceValidation[0].breaksRequired).toBe(true);
+            expect(state.totalValid).toBe(0);
+            expect(state.isMinimumBreached).toBe(true);
+        });
+
+        it('detects minimum breach with double values', () => {
+            const mgr = createDoubleManager({min: 3, values: [1.0]});
+            const state = mgr.validate();
+            expect(state.isMinimumBreached).toBe(true);
+            expect(state.isValid).toBe(false);
+        });
+
+        it('detects maximum breach with double values', () => {
+            const occurrences = Occurrences.minmax(0, 2);
+            const config: NumberConfig = {min: null, max: null};
+            const values = [1.0, 2.0, 3.0].map((v) => ValueTypes.DOUBLE.fromJsonValue(v));
+            const mgr = new OccurrenceManager<NumberConfig>(occurrences, DoubleDescriptor, config, values);
+            const state = mgr.validate();
+            expect(state.isMaximumBreached).toBe(true);
+        });
+    });
+
+    describe('with CheckboxDescriptor', () => {
+        function createCheckboxManager(opts: {min?: number; max?: number; values?: boolean[]} = {}) {
+            const {min = 0, max = 0, values = []} = opts;
+            const occurrences = Occurrences.minmax(min, max);
+            const config: CheckboxConfig = {alignment: 'LEFT'};
+            const initialValues = values.map((v) => ValueTypes.BOOLEAN.fromJsonValue(v));
+            return new OccurrenceManager<CheckboxConfig>(occurrences, CheckboxDescriptor, config, initialValues);
+        }
+
+        it('validate always passes (no validation rules)', () => {
+            const mgr = createCheckboxManager({values: [true, false]});
+            const state = mgr.validate();
+            expect(state.occurrenceValidation.every(ov => ov.validationResults.length === 0)).toBe(true);
+        });
+
+        it('counts valid boolean occurrences', () => {
+            const mgr = createCheckboxManager({min: 1, values: [true, false]});
+            const state = mgr.validate();
+            expect(state.totalValid).toBe(2);
+            expect(state.isMinimumBreached).toBe(false);
+        });
+
+        it('null still breaks required for Checkbox', () => {
+            const mgr = createCheckboxManager({min: 1});
+            mgr.add(); // adds null boolean
+            const state = mgr.validate();
+            expect(state.occurrenceValidation[0].breaksRequired).toBe(true);
+            expect(state.totalValid).toBe(0);
+            expect(state.isMinimumBreached).toBe(true);
+        });
+
+        it('isValid reflects combined state for checkbox', () => {
+            const mgr = createCheckboxManager({min: 1, values: [true]});
+            const state = mgr.validate();
+            expect(state.isValid).toBe(true);
         });
     });
 });
