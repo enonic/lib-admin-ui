@@ -13,6 +13,7 @@ import './form/inputtype/radiobutton/RadioButton';
 import './form/inputtype/support/NoInputTypeFoundView';
 import './form/inputtype/text/TextArea';
 import './form/inputtype2/TextLine';
+import './form/inputtype2/ComponentRegistry';
 import './form/inputtype/time/Date';
 import './form/inputtype/time/DateTime';
 import './form/inputtype/time/DateTimeRange';

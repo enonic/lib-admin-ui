@@ -39,7 +39,8 @@
     ],
     "exclude": [
         ".vscode",
-        "build/**/*"
+        "build/**/*",
+        "src/**/*.stories.tsx"
     ],
     "compileOnSave": false,
     "buildOnSave": false

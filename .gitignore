@@ -15,7 +15,6 @@ build/
 target/
 
 # Development files
-.storybook/
 storybook-static/
 docs/
 *storybook.log
