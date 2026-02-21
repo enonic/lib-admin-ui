@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, it, vi} from 'vitest';
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
 vi.mock('@enonic/ui', () => ({
     Input: () => null,
@@ -23,16 +23,23 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
 });
 
 import {ComponentRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype2/ComponentRegistry';
+import {initBuiltInComponents} from '../../main/resources/assets/admin/common/js/form/inputtype2/initBuiltInComponents';
 import {TextLineInput} from '../../main/resources/assets/admin/common/js/form/inputtype2/TextLineInput';
 import type {InputTypeComponent} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
 
 describe('ComponentRegistry', () => {
 
-    afterEach(() => {
-        ComponentRegistry._reset();
+    beforeEach(() => {
+        initBuiltInComponents();
     });
 
-    describe('auto-registration', () => {
+    afterEach(() => {
+        for (const [name] of ComponentRegistry.getAll()) {
+            ComponentRegistry.unregister(name);
+        }
+    });
+
+    describe('init registration', () => {
         it('has TextLineInput registered as TextLine', () => {
             expect(ComponentRegistry.get('TextLine')).toBe(TextLineInput);
         });

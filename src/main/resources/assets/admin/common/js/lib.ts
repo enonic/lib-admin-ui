@@ -2,6 +2,7 @@ import $ from 'jquery';
 
 import {Store} from './store/Store';
 import {StyleHelper} from './StyleHelper';
+import {initBuiltInDescriptors} from './form/inputtype/descriptor/initBuiltInDescriptors';
 
 // Legacy DivEl input types — register in InputTypeManager via side-effect imports.
 // New React input types (inputtype2/) are NOT imported here. They use Store-backed
@@ -28,4 +29,6 @@ if (!hasJQuery) {
 }
 
 StyleHelper.setCurrentPrefix(StyleHelper.ADMIN_PREFIX);
+
+initBuiltInDescriptors();
 

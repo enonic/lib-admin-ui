@@ -3,6 +3,7 @@ export {InputTypeDescriptor} from './InputTypeDescriptor';
 export {ValidationResult} from './ValidationResult';
 export {OccurrenceManager, OccurrenceManagerState, OccurrenceValidationState} from './OccurrenceManager';
 export {DescriptorRegistry} from './DescriptorRegistry';
+export {initBuiltInDescriptors} from './initBuiltInDescriptors';
 
 // Config types
 export {

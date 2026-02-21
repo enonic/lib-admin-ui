@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, it, vi} from 'vitest';
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ...args: unknown[]) => `#${key}#`,
@@ -19,6 +19,7 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
 });
 
 import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/DescriptorRegistry';
+import {initBuiltInDescriptors} from '../../main/resources/assets/admin/common/js/form/inputtype/descriptor/initBuiltInDescriptors';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 
 const EXPECTED_DESCRIPTORS = [
@@ -40,11 +41,17 @@ const EXPECTED_DESCRIPTORS = [
 
 describe('DescriptorRegistry', () => {
 
-    afterEach(() => {
-        DescriptorRegistry._reset();
+    beforeEach(() => {
+        initBuiltInDescriptors();
     });
 
-    describe('auto-registration', () => {
+    afterEach(() => {
+        for (const [name] of DescriptorRegistry.getAll()) {
+            DescriptorRegistry.unregister(name);
+        }
+    });
+
+    describe('init registration', () => {
         it.each(EXPECTED_DESCRIPTORS)('has %s registered', (name) => {
             expect(DescriptorRegistry.has(name)).toBe(true);
         });
