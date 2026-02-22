@@ -79,6 +79,8 @@ tasks.register( 'pnpmBuild', PnpmTask ) {
     description = 'Build JavaScript for .xp, and Lib script and styles'
     args = ['run', "build:${environmentShort()}"]
     inputs.dir 'src/main/resources/assets/admin/common'
+    inputs.files 'tsconfig.json', 'tsconfig.base.json', 'tsconfig.legacy.json', 'tsconfig.modern.json',
+                 'vite.config.ts', 'package.json'
     outputs.dirs layout.buildDirectory.dir('resources/main/dev/lib-admin-ui'),
                  layout.buildDirectory.dir('resources/main/assets/admin/common')
 }
