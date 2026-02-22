@@ -7,6 +7,7 @@ export {DescriptorRegistry} from './descriptor/DescriptorRegistry';
 export {initBuiltInDescriptors} from './descriptor/initBuiltInDescriptors';
 export {initBuiltInComponents} from './initBuiltInComponents';
 export {initBuiltInTypes} from './initBuiltInTypes';
+export {TextAreaInput} from './TextAreaInput';
 export {TextLineInput} from './TextLineInput';
 export type {InputTypeComponent, InputTypeComponentProps} from './types';
 export {getFirstError} from './types';

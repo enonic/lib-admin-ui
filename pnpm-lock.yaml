@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@enonic/ui':
-        specifier: ~0.26.0
-        version: 0.26.0(@radix-ui/react-slot@1.2.3(@types/react@19.2.2)(react@19.2.0))(focus-trap-react@11.0.4(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(lucide-react@0.540.0(react@19.2.0))(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ~0.41.1
+        version: 0.41.1(@radix-ui/react-slot@1.2.3(@types/react@19.2.2)(react@19.2.0))(focus-trap-react@11.0.4(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(lucide-react@0.540.0(react@19.2.0))(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@radix-ui/react-slot':
         specifier: ^1.2.0
         version: 1.2.3(@types/react@19.2.2)(react@19.2.0)
@@ -206,9 +206,9 @@ packages:
   '@csstools/normalize.css@12.1.1':
     resolution: {integrity: sha512-YAYeJ+Xqh7fUou1d1j9XHl44BmsuThiTr4iNrgCQ3J27IbhXsxXDGZ1cXv8Qvs99d4rBbLiSKy3+WZiet32PcQ==}
 
-  '@enonic/ui@0.26.0':
-    resolution: {integrity: sha512-ik6UmXEi7hrDCIWbs82RCspWiZQAu1zRf6uRBBX8xgU+olpmqGdZk+ElXp9MzKfJJCLiiSZL+BBR565Qxo4tsQ==}
-    engines: {node: '>=24.11.1', npm: '>=11.6.2', pnpm: '>=10.24.0'}
+  '@enonic/ui@0.41.1':
+    resolution: {integrity: sha512-yTEvQ9C2+5AQOY14A2y1cfivlHQsrjVzrAiIdXCXOiCqOluo/0uVxl+tVFyVC6ED69poJyuU+XGsfeti+PNaUA==}
+    engines: {node: '>=24.11.1', npm: '>=11.6.2', pnpm: '>=10.28.0'}
     peerDependencies:
       '@radix-ui/react-slot': ^1.2.0
       focus-trap-react: ^11.0.0
@@ -216,12 +216,15 @@ packages:
       preact: '>=10.0.0'
       react: ^19.0.0
       react-dom: ^19.0.0
+      react-virtuoso: ^4.0.0
     peerDependenciesMeta:
       preact:
         optional: true
       react:
         optional: true
       react-dom:
+        optional: true
+      react-virtuoso:
         optional: true
 
   '@epic-web/invariant@1.0.0':
@@ -2013,7 +2016,7 @@ snapshots:
 
   '@csstools/normalize.css@12.1.1': {}
 
-  '@enonic/ui@0.26.0(@radix-ui/react-slot@1.2.3(@types/react@19.2.2)(react@19.2.0))(focus-trap-react@11.0.4(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(lucide-react@0.540.0(react@19.2.0))(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@enonic/ui@0.41.1(@radix-ui/react-slot@1.2.3(@types/react@19.2.2)(react@19.2.0))(focus-trap-react@11.0.4(@types/react-dom@19.2.1(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(lucide-react@0.540.0(react@19.2.0))(preact@10.27.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@radix-ui/react-slot': 1.2.3(@types/react@19.2.2)(react@19.2.0)
       class-variance-authority: 0.7.1

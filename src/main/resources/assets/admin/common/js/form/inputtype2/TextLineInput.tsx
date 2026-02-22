@@ -7,7 +7,10 @@ import type {TextLineConfig} from './descriptor/InputTypeConfig';
 import type {InputTypeComponentProps} from './types';
 import {getFirstError} from './types';
 
-export function getCounterDescription(length: number, config: TextLineConfig): string | undefined {
+export function getCounterDescription(
+    length: number,
+    config: {maxLength: number; showCounter: boolean},
+): string | undefined {
     const hasMaxLength = config.maxLength > 0;
 
     if (config.showCounter && hasMaxLength) {

@@ -3,7 +3,7 @@
 // integration testing in CS where lib.js (IIFE) and the Vite bundle coexist on the same page.
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
-vi.mock('@enonic/ui', () => ({Input: () => null}));
+vi.mock('@enonic/ui', () => ({Input: () => null, TextArea: () => null}));
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
