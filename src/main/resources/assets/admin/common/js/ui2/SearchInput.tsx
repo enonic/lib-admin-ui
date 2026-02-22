@@ -1,7 +1,10 @@
 import {SearchField, type SearchFieldRootProps} from '@enonic/ui';
+import type {ReactElement} from 'react';
 import {LegacyElement} from './LegacyElement';
 
-const SearchInput = (props: SearchFieldRootProps) => {
+const SEARCH_INPUT_NAME = 'SearchInput';
+
+const SearchInput = (props: SearchFieldRootProps): ReactElement => {
     return (
         <SearchField.Root {...props}>
             <SearchField.Icon />
@@ -10,6 +13,8 @@ const SearchInput = (props: SearchFieldRootProps) => {
         </SearchField.Root>
     );
 };
+
+SearchInput.displayName = SEARCH_INPUT_NAME;
 
 export class SearchInputComponent extends LegacyElement<typeof SearchInput> {
     private currentValue: string;

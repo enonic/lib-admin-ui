@@ -53,8 +53,8 @@ describe('DateTimeRangeDescriptor', () => {
             expect(config.errorEndInPast).toBe('Date to cannot be in the past');
             expect(config.errorEndBeforeStart).toBe('Date to cannot be before Date from');
             expect(config.errorStartEqualsEnd).toBe('Date from and Date to cannot be equal');
-            expect(config.defaultFromTime).toBeNull();
-            expect(config.defaultToTime).toBeNull();
+            expect(config.defaultFromTime).toBeUndefined();
+            expect(config.defaultToTime).toBeUndefined();
             expect(config.fromPlaceholder).toBe('');
             expect(config.toPlaceholder).toBe('');
             expect(config.optionalFrom).toBe(false);
@@ -109,10 +109,10 @@ describe('DateTimeRangeDescriptor', () => {
             expect(config.defaultToTime).toEqual({hours: 17, minutes: 30});
         });
 
-        it('handles missing time values as null', () => {
+        it('handles missing time values as undefined', () => {
             const config = DateTimeRangeDescriptor.readConfig({});
-            expect(config.defaultFromTime).toBeNull();
-            expect(config.defaultToTime).toBeNull();
+            expect(config.defaultFromTime).toBeUndefined();
+            expect(config.defaultToTime).toBeUndefined();
         });
 
         it('parses placeholders', () => {

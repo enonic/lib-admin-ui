@@ -2,31 +2,51 @@ import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 
-describe('TextAreaInput value transformation', () => {
-    it('null value produces empty string', () => {
-        const value = ValueTypes.STRING.newNullValue();
-        expect(value.isNull()).toBe(true);
-        const stringValue = value.isNull() ? '' : (value.getString() ?? '');
-        expect(stringValue).toBe('');
-    });
+describe('TextAreaInput', () => {
+    describe('value transformation', () => {
+        it('should produce empty string for null value', () => {
+            // Arrange
+            const value = ValueTypes.STRING.newNullValue();
 
-    it('valid string value produces string display', () => {
-        const value = ValueTypes.STRING.newValue('hello');
-        expect(value.isNull()).toBe(false);
-        const stringValue = value.isNull() ? '' : (value.getString() ?? '');
-        expect(stringValue).toBe('hello');
-    });
+            // Act
+            const stringValue = value.isNull() ? '' : (value.getString() ?? '');
 
-    it('multiline string value is preserved', () => {
-        const value = ValueTypes.STRING.newValue('line one\nline two\nline three');
-        const stringValue = value.isNull() ? '' : (value.getString() ?? '');
-        expect(stringValue).toBe('line one\nline two\nline three');
-    });
+            // Assert
+            expect(value.isNull()).toBe(true);
+            expect(stringValue).toBe('');
+        });
 
-    it('onChange produces correct Value type', () => {
-        const newValue = ValueTypes.STRING.newValue('test input');
-        expect(newValue).toBeInstanceOf(Value);
-        expect(newValue.getString()).toBe('test input');
-        expect(newValue.getType()).toBe(ValueTypes.STRING);
+        it('should produce string display for valid string value', () => {
+            // Arrange
+            const value = ValueTypes.STRING.newValue('hello');
+
+            // Act
+            const stringValue = value.isNull() ? '' : (value.getString() ?? '');
+
+            // Assert
+            expect(value.isNull()).toBe(false);
+            expect(stringValue).toBe('hello');
+        });
+
+        it('should preserve multiline string value', () => {
+            // Arrange
+            const value = ValueTypes.STRING.newValue('line one\nline two\nline three');
+
+            // Act
+            const stringValue = value.isNull() ? '' : (value.getString() ?? '');
+
+            // Assert
+            expect(stringValue).toBe('line one\nline two\nline three');
+        });
+
+        it('should produce correct Value type on onChange', () => {
+            // Arrange & Act
+            const newValue = ValueTypes.STRING.newValue('test input');
+
+            // Assert
+            expect(newValue).toBeInstanceOf(Value);
+            expect(newValue.getString()).toBe('test input');
+            expect(newValue.getType()).toBe(ValueTypes.STRING);
+        });
     });
 });

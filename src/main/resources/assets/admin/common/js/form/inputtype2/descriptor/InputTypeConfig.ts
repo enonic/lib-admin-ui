@@ -2,7 +2,7 @@ import type {PrincipalKey} from '../../../security/PrincipalKey';
 import type {PrincipalType} from '../../../security/PrincipalType';
 
 export type TextLineConfig = {
-    regexp: RegExp | null;
+    regexp: RegExp | undefined;
     maxLength: number;
     showCounter: boolean;
 };
@@ -13,8 +13,8 @@ export type TextAreaConfig = {
 };
 
 export type NumberConfig = {
-    min: number | null;
-    max: number | null;
+    min: number | undefined;
+    max: number | undefined;
 };
 
 export type CheckboxConfig = {
@@ -64,8 +64,8 @@ export type DateTimeRangeConfig = {
     errorEndInPast: string;
     errorEndBeforeStart: string;
     errorStartEqualsEnd: string;
-    defaultFromTime: {hours: number; minutes: number} | null;
-    defaultToTime: {hours: number; minutes: number} | null;
+    defaultFromTime: {hours: number; minutes: number} | undefined;
+    defaultToTime: {hours: number; minutes: number} | undefined;
     fromPlaceholder: string;
     toPlaceholder: string;
     optionalFrom: boolean;

@@ -1,5 +1,5 @@
 import {Toast, type ToastProps, type ToastTone} from '@enonic/ui';
-import type {MouseEvent as ReactMouseEvent} from 'react';
+import type {ReactElement, MouseEvent as ReactMouseEvent} from 'react';
 
 export type NotificationTone = ToastTone;
 
@@ -16,9 +16,15 @@ export type NotificationProps = ToastProps & {
 
 const NOTIFICATION_NAME = 'Notification';
 
-export const Notification = ({text, tone = 'info', actions = [], children, ...props}: NotificationProps) => {
+export const Notification = ({
+    text,
+    tone = 'info',
+    actions = [],
+    children,
+    ...props
+}: NotificationProps): ReactElement => {
     return (
-        <Toast {...props}>
+        <Toast data-component={NOTIFICATION_NAME} {...props}>
             <Toast.Icon tone={tone} />
             <Toast.Description>{text}</Toast.Description>
             {children}

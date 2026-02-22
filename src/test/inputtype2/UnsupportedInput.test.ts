@@ -9,7 +9,8 @@ vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
 
 describe('UnsupportedInput', () => {
     describe('type name extraction', () => {
-        it('extracts type name from Input descriptor', () => {
+        it('should extract type name from Input descriptor', () => {
+            // Arrange
             const input = new InputBuilder()
                 .setName('myField')
                 .setInputType(new InputTypeName('CustomWidget', false))
@@ -19,10 +20,15 @@ describe('UnsupportedInput', () => {
                 .setInputTypeConfig({})
                 .build();
 
-            expect(input.getInputType().getName()).toBe('CustomWidget');
+            // Act
+            const typeName = input.getInputType().getName();
+
+            // Assert
+            expect(typeName).toBe('CustomWidget');
         });
 
-        it('extracts custom type name', () => {
+        it('should extract custom type name', () => {
+            // Arrange
             const input = new InputBuilder()
                 .setName('myField')
                 .setInputType(new InputTypeName('MyApp:custom-input', true))
@@ -32,7 +38,11 @@ describe('UnsupportedInput', () => {
                 .setInputTypeConfig({})
                 .build();
 
-            expect(input.getInputType().getName()).toBe('MyApp:custom-input');
+            // Act
+            const typeName = input.getInputType().getName();
+
+            // Assert
+            expect(typeName).toBe('MyApp:custom-input');
         });
     });
 });

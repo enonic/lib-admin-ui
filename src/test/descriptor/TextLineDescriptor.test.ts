@@ -34,14 +34,14 @@ describe('TextLineDescriptor', () => {
 
         it('handles completely empty config', () => {
             const config = TextLineDescriptor.readConfig({});
-            expect(config.regexp).toBeNull();
+            expect(config.regexp).toBeUndefined();
             expect(config.maxLength).toBe(-1);
             expect(config.showCounter).toBe(false);
         });
 
         it('handles missing keys gracefully', () => {
             const config = TextLineDescriptor.readConfig({maxLength: [{value: 50}]});
-            expect(config.regexp).toBeNull();
+            expect(config.regexp).toBeUndefined();
             expect(config.maxLength).toBe(50);
             expect(config.showCounter).toBe(false);
         });
@@ -56,19 +56,19 @@ describe('TextLineDescriptor', () => {
             expect(config.maxLength).toBe(-1);
         });
 
-        it('returns regexp null when value is blank', () => {
+        it('returns regexp undefined when value is blank', () => {
             const config = TextLineDescriptor.readConfig({regexp: [{value: '  '}]});
-            expect(config.regexp).toBeNull();
+            expect(config.regexp).toBeUndefined();
         });
 
-        it('returns regexp null when value is empty string', () => {
+        it('returns regexp undefined when value is empty string', () => {
             const config = TextLineDescriptor.readConfig({regexp: [{value: ''}]});
-            expect(config.regexp).toBeNull();
+            expect(config.regexp).toBeUndefined();
         });
 
-        it('returns regexp null when value is missing', () => {
+        it('returns regexp undefined when value is missing', () => {
             const config = TextLineDescriptor.readConfig({regexp: [{}]});
-            expect(config.regexp).toBeNull();
+            expect(config.regexp).toBeUndefined();
         });
     });
 
@@ -100,7 +100,7 @@ describe('TextLineDescriptor', () => {
 
     describe('validate', () => {
         function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {
-            return {regexp: null, maxLength: -1, showCounter: false, ...overrides};
+            return {regexp: undefined, maxLength: -1, showCounter: false, ...overrides};
         }
 
         it('returns empty array for valid input', () => {
@@ -137,8 +137,8 @@ describe('TextLineDescriptor', () => {
             expect(TextLineDescriptor.validate(value, config)).toEqual([]);
         });
 
-        it('returns empty when regexp is null', () => {
-            const config = makeConfig({regexp: null});
+        it('returns empty when regexp is undefined', () => {
+            const config = makeConfig({regexp: undefined});
             const value = ValueTypes.STRING.newValue('anything goes');
             expect(TextLineDescriptor.validate(value, config)).toEqual([]);
         });

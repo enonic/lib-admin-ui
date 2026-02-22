@@ -24,7 +24,7 @@ export const TextLineDescriptor: InputTypeDescriptor<TextLineConfig> = {
         const regexpStr = regexpEntry.value as string;
 
         return {
-            regexp: !StringHelper.isBlank(regexpStr) ? new RegExp(regexpStr) : null,
+            regexp: !StringHelper.isBlank(regexpStr) ? new RegExp(regexpStr) : undefined,
             maxLength: maxLengthVal > 0 ? maxLengthVal : -1,
             showCounter: (showCounterEntry.value as boolean) || false,
         };

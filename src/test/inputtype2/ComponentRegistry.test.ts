@@ -9,12 +9,12 @@ vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
 }));
 
 vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
-    const storeMap = new Map<string, any>();
+    const storeMap = new Map<string, unknown>();
     return {
         Store: {
             instance: () => ({
                 get: (key: string) => storeMap.get(key),
-                set: (key: string, value: any) => {
+                set: (key: string, value: unknown) => {
                     storeMap.set(key, value);
                 },
                 has: (key: string) => storeMap.has(key),
@@ -41,88 +41,114 @@ describe('ComponentRegistry', () => {
     });
 
     describe('init registration', () => {
-        it('has TextLineInput registered as TextLine', () => {
+        it('should have TextLineInput registered as TextLine', () => {
             expect(ComponentRegistry.get('TextLine')).toBe(TextLineInput);
         });
 
-        it('is case-insensitive', () => {
+        it('should be case-insensitive', () => {
             expect(ComponentRegistry.get('textline')).toBe(TextLineInput);
             expect(ComponentRegistry.get('TEXTLINE')).toBe(TextLineInput);
         });
     });
 
     describe('has', () => {
-        it('returns true for registered component', () => {
+        it('should return true for registered component', () => {
             expect(ComponentRegistry.has('TextLine')).toBe(true);
         });
 
-        it('returns false for unregistered component', () => {
+        it('should return false for unregistered component', () => {
             expect(ComponentRegistry.has('NonExistent')).toBe(false);
         });
 
-        it('is case-insensitive', () => {
+        it('should be case-insensitive', () => {
             expect(ComponentRegistry.has('textline')).toBe(true);
         });
     });
 
     describe('register', () => {
-        it('adds a new component', () => {
+        it('should add a new component', () => {
+            // Arrange
             const stub: InputTypeComponent = () => null;
+
+            // Act
             ComponentRegistry.register('Custom', stub);
+
+            // Assert
             expect(ComponentRegistry.get('Custom')).toBe(stub);
         });
 
-        it('skips duplicate and warns without force', () => {
+        it('should skip duplicate and warn without force', () => {
+            // Arrange
             const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
             const replacement: InputTypeComponent = () => null;
+
+            // Act
             ComponentRegistry.register('TextLine', replacement);
+
+            // Assert
             expect(ComponentRegistry.get('TextLine')).toBe(TextLineInput);
             expect(spy).toHaveBeenCalledOnce();
             spy.mockRestore();
         });
 
-        it('overwrites existing component with force', () => {
+        it('should overwrite existing component with force', () => {
+            // Arrange
             const replacement: InputTypeComponent = () => null;
+
+            // Act
             ComponentRegistry.register('TextLine', replacement, true);
+
+            // Assert
             expect(ComponentRegistry.get('TextLine')).toBe(replacement);
         });
     });
 
     describe('getAll', () => {
-        it('returns a copy, not the internal map', () => {
+        it('should return a copy, not the internal map', () => {
+            // Arrange
             const all = ComponentRegistry.getAll();
+
+            // Act
             all.delete('textline');
+
+            // Assert
             expect(ComponentRegistry.has('TextLine')).toBe(true);
         });
 
-        it('contains registered components', () => {
+        it('should contain registered components', () => {
+            // Arrange
             const all = ComponentRegistry.getAll();
+
+            // Assert
             expect(all.has('textline')).toBe(true);
         });
     });
 
     describe('get', () => {
-        it('returns undefined for unknown component', () => {
+        it('should return undefined for unknown component', () => {
             expect(ComponentRegistry.get('unknown')).toBeUndefined();
         });
     });
 
     describe('unregister', () => {
-        it('returns true for existing component', () => {
+        it('should return true for existing component', () => {
             expect(ComponentRegistry.has('TextLine')).toBe(true);
             expect(ComponentRegistry.unregister('TextLine')).toBe(true);
         });
 
-        it('returns false for non-existent component', () => {
+        it('should return false for non-existent component', () => {
             expect(ComponentRegistry.unregister('NonExistent')).toBe(false);
         });
 
-        it('is case-insensitive', () => {
+        it('should be case-insensitive', () => {
             expect(ComponentRegistry.unregister('TEXTLINE')).toBe(true);
         });
 
-        it('after unregister: has() returns false and get() returns undefined', () => {
+        it('should return false for has() and undefined for get() after unregister', () => {
+            // Act
             ComponentRegistry.unregister('TextLine');
+
+            // Assert
             expect(ComponentRegistry.has('TextLine')).toBe(false);
             expect(ComponentRegistry.get('TextLine')).toBeUndefined();
         });

@@ -5,40 +5,71 @@ import type {ValidationResult} from '../../main/resources/assets/admin/common/js
 import {getFirstError} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
 
 describe('getFirstError', () => {
-    it('returns undefined for empty array', () => {
-        expect(getFirstError([])).toBeUndefined();
+    it('should return undefined for empty array', () => {
+        // Arrange & Act
+        const result = getFirstError([]);
+
+        // Assert
+        expect(result).toBeUndefined();
     });
 
-    it('returns first message for single error', () => {
+    it('should return first message for single error', () => {
+        // Arrange
         const errors: ValidationResult[] = [{message: 'Too long'}];
-        expect(getFirstError(errors)).toBe('Too long');
+
+        // Act
+        const result = getFirstError(errors);
+
+        // Assert
+        expect(result).toBe('Too long');
     });
 
-    it('returns first message for multiple errors', () => {
+    it('should return first message for multiple errors', () => {
+        // Arrange
         const errors: ValidationResult[] = [{message: 'First error'}, {message: 'Second error'}];
-        expect(getFirstError(errors)).toBe('First error');
+
+        // Act
+        const result = getFirstError(errors);
+
+        // Assert
+        expect(result).toBe('First error');
     });
 });
 
-describe('TextLineInput value transformation', () => {
-    it('null value produces empty string', () => {
-        const value = ValueTypes.STRING.newNullValue();
-        expect(value.isNull()).toBe(true);
-        const stringValue = value.isNull() ? '' : (value.getString() ?? '');
-        expect(stringValue).toBe('');
-    });
+describe('TextLineInput', () => {
+    describe('value transformation', () => {
+        it('should produce empty string for null value', () => {
+            // Arrange
+            const value = ValueTypes.STRING.newNullValue();
 
-    it('valid string value produces string display', () => {
-        const value = ValueTypes.STRING.newValue('hello');
-        expect(value.isNull()).toBe(false);
-        const stringValue = value.isNull() ? '' : (value.getString() ?? '');
-        expect(stringValue).toBe('hello');
-    });
+            // Act
+            const stringValue = value.isNull() ? '' : (value.getString() ?? '');
 
-    it('onChange produces correct Value type', () => {
-        const newValue = ValueTypes.STRING.newValue('test input');
-        expect(newValue).toBeInstanceOf(Value);
-        expect(newValue.getString()).toBe('test input');
-        expect(newValue.getType()).toBe(ValueTypes.STRING);
+            // Assert
+            expect(value.isNull()).toBe(true);
+            expect(stringValue).toBe('');
+        });
+
+        it('should produce string display for valid string value', () => {
+            // Arrange
+            const value = ValueTypes.STRING.newValue('hello');
+
+            // Act
+            const stringValue = value.isNull() ? '' : (value.getString() ?? '');
+
+            // Assert
+            expect(value.isNull()).toBe(false);
+            expect(stringValue).toBe('hello');
+        });
+
+        it('should produce correct Value type on onChange', () => {
+            // Arrange & Act
+            const newValue = ValueTypes.STRING.newValue('test input');
+
+            // Assert
+            expect(newValue).toBeInstanceOf(Value);
+            expect(newValue.getString()).toBe('test input');
+            expect(newValue.getType()).toBe(ValueTypes.STRING);
+        });
     });
 });

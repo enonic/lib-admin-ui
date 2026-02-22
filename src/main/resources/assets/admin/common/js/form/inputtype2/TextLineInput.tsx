@@ -1,5 +1,5 @@
 import {Input} from '@enonic/ui';
-import type {JSX} from 'preact';
+import type {JSX} from 'react';
 
 import {ValueTypes} from '../../data/ValueTypes';
 import {CounterDescription} from './CounterDescription';
@@ -7,14 +7,16 @@ import type {TextLineConfig} from './descriptor/InputTypeConfig';
 import type {InputTypeComponentProps} from './types';
 import {getFirstError} from './types';
 
-export function TextLineInput({
+const TEXT_LINE_INPUT_NAME = 'TextLineInput';
+
+export const TextLineInput = ({
     value,
     onChange,
     onBlur,
     config,
     enabled,
     errors,
-}: InputTypeComponentProps<TextLineConfig>) {
+}: InputTypeComponentProps<TextLineConfig>): JSX.Element => {
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
 
     const handleChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
@@ -40,4 +42,6 @@ export function TextLineInput({
             }
         />
     );
-}
+};
+
+TextLineInput.displayName = TEXT_LINE_INPUT_NAME;

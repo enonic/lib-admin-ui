@@ -43,6 +43,7 @@ const defaultArgs: InputTypeComponentProps = {
 };
 
 export const Default: Story = {
+    name: 'Examples / Default',
     args: {...defaultArgs},
 };
 

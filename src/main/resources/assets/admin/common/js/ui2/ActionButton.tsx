@@ -39,7 +39,9 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
         this.setProps(createPropsFromAction(this.actionProps));
     };
 
+    //
     // * Backward compatibility methods
+    //
 
     getAction(): T {
         return this.actionProps.action;
@@ -74,7 +76,7 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
 }
 
 //
-// Utils
+// * Utils
 //
 
 function createPropsFromAction<T extends Action>({action, className}: ActionButtonProps<T>): ActionProps {

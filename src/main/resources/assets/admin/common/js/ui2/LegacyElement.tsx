@@ -42,7 +42,9 @@ export class LegacyElement<
         );
     }
 
-    //! Overrides
+    //
+    // * Overrides
+    //
 
     override doRender(): Q.Promise<boolean> {
         this.renderJsx();

@@ -1,4 +1,4 @@
-import type {JSX} from 'preact';
+import type {ReactElement} from 'react';
 import {useI18n} from './I18nContext';
 
 type CounterDescriptionProps = {
@@ -7,7 +7,9 @@ type CounterDescriptionProps = {
     showCounter: boolean;
 };
 
-export function CounterDescription({length, maxLength, showCounter}: CounterDescriptionProps): JSX.Element | null {
+const COUNTER_DESCRIPTION_NAME = 'CounterDescription';
+
+export const CounterDescription = ({length, maxLength, showCounter}: CounterDescriptionProps): ReactElement | null => {
     const t = useI18n();
     const hasMaxLength = maxLength > 0;
     if (showCounter && hasMaxLength) {
@@ -17,4 +19,6 @@ export function CounterDescription({length, maxLength, showCounter}: CounterDesc
     if (hasMaxLength) return <>{t('field.value.chars.left.long', maxLength - length)}</>;
     if (showCounter) return <>{t('field.value.chars.total', length)}</>;
     return null;
-}
+};
+
+CounterDescription.displayName = COUNTER_DESCRIPTION_NAME;

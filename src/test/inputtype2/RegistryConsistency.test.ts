@@ -8,12 +8,12 @@ vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
     i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
-    const storeMap = new Map<string, any>();
+    const storeMap = new Map<string, unknown>();
     return {
         Store: {
             instance: () => ({
                 get: (key: string) => storeMap.get(key),
-                set: (key: string, value: any) => {
+                set: (key: string, value: unknown) => {
                     storeMap.set(key, value);
                 },
                 has: (key: string) => storeMap.has(key),
@@ -41,8 +41,11 @@ describe('Registry consistency', () => {
         }
     });
 
-    it('every ComponentRegistry entry has a matching DescriptorRegistry entry', () => {
+    it('should have a matching DescriptorRegistry entry for every ComponentRegistry entry', () => {
+        // Arrange
         const components = ComponentRegistry.getAll();
+
+        // Assert
         expect(components.size).toBeGreaterThan(0);
         for (const [name] of components) {
             expect(
@@ -52,9 +55,12 @@ describe('Registry consistency', () => {
         }
     });
 
-    it('ComponentRegistry entries are a subset of DescriptorRegistry (generic types only)', () => {
+    it('should have ComponentRegistry entries as a subset of DescriptorRegistry', () => {
+        // Arrange
         const components = ComponentRegistry.getAll();
         const descriptors = DescriptorRegistry.getAll();
+
+        // Assert
         expect(components.size).toBeGreaterThan(0);
         // Every component must have a descriptor, but not every descriptor needs a component yet
         expect(components.size).toBeLessThanOrEqual(descriptors.size);

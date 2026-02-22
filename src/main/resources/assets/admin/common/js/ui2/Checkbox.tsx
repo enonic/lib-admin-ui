@@ -27,7 +27,9 @@ export class Checkbox extends LegacyElement<typeof UI.Checkbox> {
         this.currentChecked = this.props.get().checked ?? false;
     }
 
+    //
     // * Backward compatibility methods
+    //
 
     getName(): string {
         return this.props.get().name ?? '';

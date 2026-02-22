@@ -15,8 +15,8 @@ export const DoubleDescriptor: InputTypeDescriptor<NumberConfig> = {
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): NumberConfig {
         return {
-            min: (raw.min?.[0]?.value as number) ?? null,
-            max: (raw.max?.[0]?.value as number) ?? null,
+            min: (raw.min?.[0]?.value as number) ?? undefined,
+            max: (raw.max?.[0]?.value as number) ?? undefined,
         };
     },
 

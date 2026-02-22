@@ -23,25 +23,25 @@ describe('LongDescriptor', () => {
 
         it('handles empty config', () => {
             const config = LongDescriptor.readConfig({});
-            expect(config.min).toBeNull();
-            expect(config.max).toBeNull();
+            expect(config.min).toBeUndefined();
+            expect(config.max).toBeUndefined();
         });
 
         it('handles only min set', () => {
             const config = LongDescriptor.readConfig({min: [{value: 0}]});
             expect(config.min).toBe(0);
-            expect(config.max).toBeNull();
+            expect(config.max).toBeUndefined();
         });
 
         it('handles only max set', () => {
             const config = LongDescriptor.readConfig({max: [{value: 999}]});
-            expect(config.min).toBeNull();
+            expect(config.min).toBeUndefined();
             expect(config.max).toBe(999);
         });
 
         it('handles missing value key in entry', () => {
             const config = LongDescriptor.readConfig({min: [{}]});
-            expect(config.min).toBeNull();
+            expect(config.min).toBeUndefined();
         });
     });
 
@@ -78,7 +78,7 @@ describe('LongDescriptor', () => {
 
     describe('validate', () => {
         function makeConfig(overrides: Partial<NumberConfig> = {}): NumberConfig {
-            return {min: null, max: null, ...overrides};
+            return {min: undefined, max: undefined, ...overrides};
         }
 
         it('returns empty array for valid whole number', () => {

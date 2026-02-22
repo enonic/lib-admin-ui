@@ -1,0 +1,1 @@
+../../.claude/rules/patterns.md

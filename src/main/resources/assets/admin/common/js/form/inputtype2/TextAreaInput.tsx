@@ -1,5 +1,5 @@
 import {TextArea} from '@enonic/ui';
-import type {JSX} from 'preact';
+import type {JSX} from 'react';
 
 import {ValueTypes} from '../../data/ValueTypes';
 import {CounterDescription} from './CounterDescription';
@@ -7,14 +7,16 @@ import type {TextAreaConfig} from './descriptor/InputTypeConfig';
 import type {InputTypeComponentProps} from './types';
 import {getFirstError} from './types';
 
-export function TextAreaInput({
+const TEXT_AREA_INPUT_NAME = 'TextAreaInput';
+
+export const TextAreaInput = ({
     value,
     onChange,
     onBlur,
     config,
     enabled,
     errors,
-}: InputTypeComponentProps<TextAreaConfig>) {
+}: InputTypeComponentProps<TextAreaConfig>): JSX.Element => {
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
 
     const handleChange = (e: JSX.TargetedEvent<HTMLTextAreaElement>) => {
@@ -40,4 +42,6 @@ export function TextAreaInput({
             }
         />
     );
-}
+};
+
+TextAreaInput.displayName = TEXT_AREA_INPUT_NAME;

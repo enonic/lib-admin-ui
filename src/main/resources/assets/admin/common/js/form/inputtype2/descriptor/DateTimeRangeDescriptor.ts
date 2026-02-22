@@ -19,11 +19,9 @@ export const DateTimeRangeDescriptor: InputTypeDescriptor<DateTimeRangeConfig> =
             return (raw[name]?.[0]?.value as string) ?? '';
         };
 
-        const parseTime = (name: string): {hours: number; minutes: number} | null => {
+        const parseTime = (name: string): {hours: number; minutes: number} | undefined => {
             const time = readVal(name);
-            if (!time) {
-                return null;
-            }
+            if (!time) return undefined;
             const parts = time.split(':');
             return {hours: parseInt(parts[0] || '0', 10), minutes: parseInt(parts[1] || '0', 10)};
         };
@@ -71,8 +69,8 @@ export const DateTimeRangeDescriptor: InputTypeDescriptor<DateTimeRangeConfig> =
         const fromProp = pSet.getProperty('from');
         const toProp = pSet.getProperty('to');
 
-        const fromValue = fromProp?.hasNonNullValue() ? fromProp.getLocalDateTime() : null;
-        const toValue = toProp?.hasNonNullValue() ? toProp.getLocalDateTime() : null;
+        const fromValue = fromProp?.hasNonNullValue() ? fromProp.getLocalDateTime() : undefined;
+        const toValue = toProp?.hasNonNullValue() ? toProp.getLocalDateTime() : undefined;
 
         if (toValue && !fromValue && !config.optionalFrom) {
             results.push({message: config.errorNoStart});

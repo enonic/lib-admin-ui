@@ -38,7 +38,9 @@ export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
         this.setProps(createPropsFromAction(this.actionProps));
     };
 
+    //
     // * Backward compatibility methods
+    //
 
     getAction(): Action {
         return this.actionProps.action;
@@ -73,7 +75,7 @@ export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
 }
 
 //
-// Utils
+// * Utils
 //
 
 function createPropsFromAction({action, className}: ActionIconProps): ActionProps {
