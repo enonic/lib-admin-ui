@@ -2,9 +2,11 @@
 export {BaseInputType} from './BaseInputType';
 // React input type system (for CS and future consumers)
 export {ComponentRegistry} from './ComponentRegistry';
+export {CounterDescription} from './CounterDescription';
 // Descriptor system
 export {DescriptorRegistry} from './descriptor/DescriptorRegistry';
 export {initBuiltInDescriptors} from './descriptor/initBuiltInDescriptors';
+export {I18nProvider, useI18n} from './I18nContext';
 export {initBuiltInComponents} from './initBuiltInComponents';
 export {initBuiltInTypes} from './initBuiltInTypes';
 export {TextAreaInput} from './TextAreaInput';

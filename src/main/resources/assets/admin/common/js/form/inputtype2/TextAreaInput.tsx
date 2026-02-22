@@ -2,8 +2,8 @@ import {TextArea} from '@enonic/ui';
 import type {JSX} from 'preact';
 
 import {ValueTypes} from '../../data/ValueTypes';
+import {CounterDescription} from './CounterDescription';
 import type {TextAreaConfig} from './descriptor/InputTypeConfig';
-import {getCounterDescription} from './TextLineInput';
 import type {InputTypeComponentProps} from './types';
 import {getFirstError} from './types';
 
@@ -29,7 +29,15 @@ export function TextAreaInput({
             disabled={!enabled}
             error={getFirstError(errors)}
             maxLength={config.maxLength > 0 ? config.maxLength : undefined}
-            description={getCounterDescription(stringValue.length, config)}
+            description={
+                config.maxLength > 0 || config.showCounter ? (
+                    <CounterDescription
+                        length={stringValue.length}
+                        maxLength={config.maxLength}
+                        showCounter={config.showCounter}
+                    />
+                ) : undefined
+            }
         />
     );
 }

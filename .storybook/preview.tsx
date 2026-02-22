@@ -2,6 +2,8 @@ import {withThemeByClassName} from '@storybook/addon-themes';
 import type {Preview} from '@storybook/preact-vite';
 import {themes} from 'storybook/theming';
 
+import {I18nProvider} from '../src/main/resources/assets/admin/common/js/form/inputtype2/I18nContext';
+import {messages} from './i18n';
 import './storybook.css';
 
 const isDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches;
@@ -13,6 +15,11 @@ const preview: Preview = {
         docs: {theme: isDark ? themes.dark : themes.light},
     },
     decorators: [
+        Story => (
+            <I18nProvider messages={messages}>
+                <Story />
+            </I18nProvider>
+        ),
         withThemeByClassName({
             themes: {
                 light: 'light',

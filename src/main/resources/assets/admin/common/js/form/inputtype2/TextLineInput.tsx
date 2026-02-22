@@ -2,32 +2,10 @@ import {Input} from '@enonic/ui';
 import type {JSX} from 'preact';
 
 import {ValueTypes} from '../../data/ValueTypes';
-import {i18n} from '../../util/Messages';
+import {CounterDescription} from './CounterDescription';
 import type {TextLineConfig} from './descriptor/InputTypeConfig';
 import type {InputTypeComponentProps} from './types';
 import {getFirstError} from './types';
-
-export function getCounterDescription(
-    length: number,
-    config: {maxLength: number; showCounter: boolean},
-): string | undefined {
-    const hasMaxLength = config.maxLength > 0;
-
-    if (config.showCounter && hasMaxLength) {
-        const remaining = config.maxLength - length;
-        return `${i18n('field.value.chars.total', length)} / ${i18n('field.value.chars.left.short', remaining)}`;
-    }
-
-    if (hasMaxLength) {
-        return i18n('field.value.chars.left.long', config.maxLength - length);
-    }
-
-    if (config.showCounter) {
-        return i18n('field.value.chars.total', length);
-    }
-
-    return undefined;
-}
 
 export function TextLineInput({
     value,
@@ -51,7 +29,15 @@ export function TextLineInput({
             disabled={!enabled}
             error={getFirstError(errors)}
             maxLength={config.maxLength > 0 ? config.maxLength : undefined}
-            description={getCounterDescription(stringValue.length, config)}
+            description={
+                config.maxLength > 0 || config.showCounter ? (
+                    <CounterDescription
+                        length={stringValue.length}
+                        maxLength={config.maxLength}
+                        showCounter={config.showCounter}
+                    />
+                ) : undefined
+            }
         />
     );
 }
