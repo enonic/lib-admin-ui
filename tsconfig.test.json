@@ -1,11 +1,12 @@
 {
-    "extends": "./tsconfig.json",
-    "include": [
-        "src/main/resources/assets/admin/common/js/**/*.ts",
-        "src/main/resources/assets/admin/common/js/**/*.tsx",
-        "src/test/**/*.ts"
-    ],
+    "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "noEmit": true,
+        "incremental": true,
+        "tsBuildInfoFile": "build/tsconfig.test.tsbuildinfo",
+        "allowSyntheticDefaultImports": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
         "types": [
             "dompurify",
             "jquery",
@@ -14,5 +15,12 @@
             "q",
             "vitest/globals"
         ]
-    }
+    },
+    "include": [
+        "src/test/**/*.ts"
+    ],
+    "references": [
+        { "path": "./tsconfig.legacy.json" },
+        { "path": "./tsconfig.modern.json" }
+    ]
 }

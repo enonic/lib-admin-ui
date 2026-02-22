@@ -1,23 +1,29 @@
 import type {MouseEvent as ReactMouseEvent} from 'react';
-import {SpanEl} from '../dom/SpanEl';
+import type {SpanEl} from '../dom/SpanEl';
 import {LegacyElement} from '../ui2/LegacyElement';
-import {Notification, NotificationAction, NotificationProps, NotificationTone} from '../ui2/Notification';
-import {Message, MessageAction, MessageType} from './Message';
+import {
+    Notification,
+    type NotificationAction,
+    type NotificationProps,
+    type NotificationTone,
+} from '../ui2/Notification';
+import {type Message, type MessageAction, MessageType} from './Message';
 
-export class NotificationMessage
-    extends LegacyElement<typeof Notification, NotificationProps> {
-
+export class NotificationMessage extends LegacyElement<typeof Notification, NotificationProps> {
     private readonly message: Message;
 
     constructor(message: Message, onOpenChange?: (open: boolean) => void) {
-        super({
-            tone: getToastTone(message.getType()),
-            text: message.getText(),
-            open: true,
-            withClose: true,
-            onOpenChange,
-            actions: message.getActions().map(buildToastAction),
-        }, Notification);
+        super(
+            {
+                tone: getToastTone(message.getType()),
+                text: message.getText(),
+                open: true,
+                withClose: true,
+                onOpenChange,
+                actions: message.getActions().map(buildToastAction),
+            },
+            Notification,
+        );
 
         this.message = message;
     }
@@ -47,23 +53,22 @@ export class NotificationMessage
         this.props.setKey('actions', [...actions, buildToastAction(action)]);
     }
 
-    getRemoveEl(): SpanEl {
+    getRemoveEl(): SpanEl | null {
         return null;
     }
 }
 
 function getToastTone(type: MessageType): NotificationTone {
     switch (type) {
-    case MessageType.SUCCESS:
-    case MessageType.ACTION:
-        return 'success';
-    case MessageType.ERROR:
-        return 'error';
-    case MessageType.WARNING:
-        return 'warning';
-    case MessageType.INFO:
-    default:
-        return 'info';
+        case MessageType.SUCCESS:
+        case MessageType.ACTION:
+            return 'success';
+        case MessageType.ERROR:
+            return 'error';
+        case MessageType.WARNING:
+            return 'warning';
+        default:
+            return 'info';
     }
 }
 

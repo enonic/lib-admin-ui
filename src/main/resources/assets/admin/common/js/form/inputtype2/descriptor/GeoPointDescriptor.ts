@@ -1,12 +1,11 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {GeoPointConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {GeoPointConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const GeoPointDescriptor: InputTypeDescriptor<GeoPointConfig> = {
-
     name: 'GeoPoint',
 
     getValueType(): ValueType {

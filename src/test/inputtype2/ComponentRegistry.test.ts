@@ -5,7 +5,7 @@ vi.mock('@enonic/ui', () => ({
 }));
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
-    i18n: (key: string, ...args: unknown[]) => `#${key}#`,
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 
 vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
@@ -14,7 +14,9 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
         Store: {
             instance: () => ({
                 get: (key: string) => storeMap.get(key),
-                set: (key: string, value: any) => { storeMap.set(key, value); },
+                set: (key: string, value: any) => {
+                    storeMap.set(key, value);
+                },
                 has: (key: string) => storeMap.has(key),
                 delete: (key: string) => storeMap.delete(key),
             }),
@@ -28,7 +30,6 @@ import {TextLineInput} from '../../main/resources/assets/admin/common/js/form/in
 import type {InputTypeComponent} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
 
 describe('ComponentRegistry', () => {
-
     beforeEach(() => {
         initBuiltInComponents();
     });

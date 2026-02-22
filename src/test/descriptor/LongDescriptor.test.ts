@@ -1,11 +1,10 @@
 import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
+import type {NumberConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {LongDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/LongDescriptor';
-import {NumberConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('LongDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns LONG', () => {
             expect(LongDescriptor.getValueType()).toBe(ValueTypes.LONG);
@@ -15,8 +14,8 @@ describe('LongDescriptor', () => {
     describe('readConfig', () => {
         it('parses min and max from config', () => {
             const config = LongDescriptor.readConfig({
-                'min': [{'value': -100}],
-                'max': [{'value': 100}],
+                min: [{value: -100}],
+                max: [{value: 100}],
             });
             expect(config.min).toBe(-100);
             expect(config.max).toBe(100);
@@ -29,19 +28,19 @@ describe('LongDescriptor', () => {
         });
 
         it('handles only min set', () => {
-            const config = LongDescriptor.readConfig({'min': [{'value': 0}]});
+            const config = LongDescriptor.readConfig({min: [{value: 0}]});
             expect(config.min).toBe(0);
             expect(config.max).toBeNull();
         });
 
         it('handles only max set', () => {
-            const config = LongDescriptor.readConfig({'max': [{'value': 999}]});
+            const config = LongDescriptor.readConfig({max: [{value: 999}]});
             expect(config.min).toBeNull();
             expect(config.max).toBe(999);
         });
 
         it('handles missing value key in entry', () => {
-            const config = LongDescriptor.readConfig({'min': [{}]});
+            const config = LongDescriptor.readConfig({min: [{}]});
             expect(config.min).toBeNull();
         });
     });
@@ -173,14 +172,14 @@ describe('LongDescriptor', () => {
 
     describe('readConfig → validate integration', () => {
         it('rejects value below min parsed from config', () => {
-            const config = LongDescriptor.readConfig({'min': [{'value': 10}]});
+            const config = LongDescriptor.readConfig({min: [{value: 10}]});
             const results = LongDescriptor.validate(ValueTypes.LONG.fromJsonValue(5), config);
             expect(results).toHaveLength(1);
             expect(results[0].message).toContain('at least');
         });
 
         it('rejects value above max parsed from config', () => {
-            const config = LongDescriptor.readConfig({'max': [{'value': 100}]});
+            const config = LongDescriptor.readConfig({max: [{value: 100}]});
             const results = LongDescriptor.validate(ValueTypes.LONG.fromJsonValue(200), config);
             expect(results).toHaveLength(1);
             expect(results[0].message).toContain('at most');

@@ -1,18 +1,18 @@
-import {DescriptorRegistry} from './DescriptorRegistry';
-import {TextLineDescriptor} from './TextLineDescriptor';
-import {TextAreaDescriptor} from './TextAreaDescriptor';
-import {DoubleDescriptor} from './DoubleDescriptor';
-import {LongDescriptor} from './LongDescriptor';
 import {CheckboxDescriptor} from './CheckboxDescriptor';
 import {ComboBoxDescriptor} from './ComboBoxDescriptor';
-import {RadioButtonDescriptor} from './RadioButtonDescriptor';
-import {PrincipalSelectorDescriptor} from './PrincipalSelectorDescriptor';
-import {GeoPointDescriptor} from './GeoPointDescriptor';
 import {DateDescriptor} from './DateDescriptor';
 import {DateTimeDescriptor} from './DateTimeDescriptor';
-import {TimeDescriptor} from './TimeDescriptor';
-import {InstantDescriptor} from './InstantDescriptor';
 import {DateTimeRangeDescriptor} from './DateTimeRangeDescriptor';
+import {DescriptorRegistry} from './DescriptorRegistry';
+import {DoubleDescriptor} from './DoubleDescriptor';
+import {GeoPointDescriptor} from './GeoPointDescriptor';
+import {InstantDescriptor} from './InstantDescriptor';
+import {LongDescriptor} from './LongDescriptor';
+import {PrincipalSelectorDescriptor} from './PrincipalSelectorDescriptor';
+import {RadioButtonDescriptor} from './RadioButtonDescriptor';
+import {TextAreaDescriptor} from './TextAreaDescriptor';
+import {TextLineDescriptor} from './TextLineDescriptor';
+import {TimeDescriptor} from './TimeDescriptor';
 
 export function initBuiltInDescriptors(): void {
     DescriptorRegistry.register(TextLineDescriptor, true);

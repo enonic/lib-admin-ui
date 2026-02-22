@@ -1,47 +1,7 @@
 {
-    "compilerOptions": {
-        "module": "ES2022",
-        "target": "ES2023",
-        "lib": [
-            "ES2023",
-            "DOM"
-        ],
-        "jsx": "react-jsx",
-        "jsxImportSource": "preact",
-        "outDir": "build/resources/main/dev/lib-admin-ui/",
-        "moduleResolution": "bundler",
-        "baseUrl": ".",
-        "declaration": true,
-        "declarationDir": "build/resources/main/dev/lib-admin-ui/",
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "allowJs": false,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "skipLibCheck": true,
-        "removeComments": true,
-        "useDefineForClassFields": false,
-        "types": [
-            "dompurify",
-            "jquery",
-            "jqueryui",
-            "mousetrap",
-            "q"
-        ],
-        "paths": {
-            "react": ["node_modules/preact/compat"],
-            "react-dom": ["node_modules/preact/compat"]
-        }
-    },
-    "include": [
-        "src/main/resources/assets/admin/common/js/**/*.ts",
-        "src/main/resources/assets/admin/common/js/**/*.tsx"
-    ],
-    "exclude": [
-        ".vscode",
-        "build/**/*",
-        "src/**/*.stories.tsx"
-    ],
-    "compileOnSave": false,
-    "buildOnSave": false
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.legacy.json" },
+        { "path": "./tsconfig.modern.json" }
+    ]
 }

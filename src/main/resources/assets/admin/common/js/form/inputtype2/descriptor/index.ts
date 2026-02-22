@@ -1,42 +1,41 @@
 // Core types
-export {InputTypeDescriptor} from './InputTypeDescriptor';
-export {ValidationResult} from './ValidationResult';
-export {OccurrenceManager, OccurrenceManagerState, OccurrenceValidationState} from './OccurrenceManager';
-export {DescriptorRegistry} from './DescriptorRegistry';
-export {initBuiltInDescriptors} from './initBuiltInDescriptors';
 
+export {CheckboxDescriptor} from './CheckboxDescriptor';
+export {ComboBoxDescriptor} from './ComboBoxDescriptor';
+export {DateDescriptor} from './DateDescriptor';
+export {DateTimeDescriptor} from './DateTimeDescriptor';
+export {DateTimeRangeDescriptor} from './DateTimeRangeDescriptor';
+export {DescriptorRegistry} from './DescriptorRegistry';
+export {DoubleDescriptor} from './DoubleDescriptor';
+export {GeoPointDescriptor} from './GeoPointDescriptor';
 // Config types
-export {
-    InputTypeConfig,
-    TextLineConfig,
-    TextAreaConfig,
-    NumberConfig,
+export type {
     CheckboxConfig,
     ComboBoxConfig,
     ComboBoxOptionConfig,
-    RadioButtonConfig,
-    RadioButtonOptionConfig,
-    PrincipalSelectorConfig,
-    GeoPointConfig,
     DateConfig,
     DateTimeConfig,
-    TimeConfig,
-    InstantConfig,
     DateTimeRangeConfig,
+    GeoPointConfig,
+    InputTypeConfig,
+    InstantConfig,
+    NumberConfig,
+    PrincipalSelectorConfig,
+    RadioButtonConfig,
+    RadioButtonOptionConfig,
+    TextAreaConfig,
+    TextLineConfig,
+    TimeConfig,
 } from './InputTypeConfig';
-
+export type {InputTypeDescriptor} from './InputTypeDescriptor';
+export {InstantDescriptor} from './InstantDescriptor';
+export {initBuiltInDescriptors} from './initBuiltInDescriptors';
+export {LongDescriptor} from './LongDescriptor';
+export {OccurrenceManager, type OccurrenceManagerState, type OccurrenceValidationState} from './OccurrenceManager';
+export {PrincipalSelectorDescriptor} from './PrincipalSelectorDescriptor';
+export {RadioButtonDescriptor} from './RadioButtonDescriptor';
+export {TextAreaDescriptor} from './TextAreaDescriptor';
 // Descriptors
 export {TextLineDescriptor} from './TextLineDescriptor';
-export {TextAreaDescriptor} from './TextAreaDescriptor';
-export {DoubleDescriptor} from './DoubleDescriptor';
-export {LongDescriptor} from './LongDescriptor';
-export {CheckboxDescriptor} from './CheckboxDescriptor';
-export {ComboBoxDescriptor} from './ComboBoxDescriptor';
-export {RadioButtonDescriptor} from './RadioButtonDescriptor';
-export {PrincipalSelectorDescriptor} from './PrincipalSelectorDescriptor';
-export {GeoPointDescriptor} from './GeoPointDescriptor';
-export {DateDescriptor} from './DateDescriptor';
-export {DateTimeDescriptor} from './DateTimeDescriptor';
 export {TimeDescriptor} from './TimeDescriptor';
-export {InstantDescriptor} from './InstantDescriptor';
-export {DateTimeRangeDescriptor} from './DateTimeRangeDescriptor';
+export type {ValidationResult} from './ValidationResult';

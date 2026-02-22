@@ -1,12 +1,11 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {CheckboxConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {CheckboxConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const CheckboxDescriptor: InputTypeDescriptor<CheckboxConfig> = {
-
     name: 'Checkbox',
 
     getValueType(): ValueType {
@@ -14,9 +13,9 @@ export const CheckboxDescriptor: InputTypeDescriptor<CheckboxConfig> = {
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): CheckboxConfig {
-        const alignmentEntry = raw['alignment']?.[0];
+        const alignmentEntry = raw.alignment?.[0];
         return {
-            alignment: alignmentEntry ? (alignmentEntry['value'] as string) || 'LEFT' : 'LEFT',
+            alignment: alignmentEntry ? (alignmentEntry.value as string) || 'LEFT' : 'LEFT',
         };
     },
 

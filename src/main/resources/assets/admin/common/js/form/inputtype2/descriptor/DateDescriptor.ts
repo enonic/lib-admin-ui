@@ -1,16 +1,15 @@
 import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {LocalDate} from '../../../util/LocalDate';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {DateConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
 import {RelativeTimeParser} from '../../inputtype/time/RelativeTimeParser';
+import type {DateConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export const DateDescriptor: InputTypeDescriptor<DateConfig> = {
-
     name: 'Date',
 
     getValueType(): ValueType {

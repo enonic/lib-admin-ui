@@ -1,12 +1,14 @@
 import {IdProvider} from '@enonic/ui';
 import {nanoid} from 'nanoid';
-import {map, type MapStore} from 'nanostores';
+import {type MapStore, map} from 'nanostores';
 import type {ComponentProps, ComponentType} from 'react';
 import {render} from 'react-dom';
 import {Element as BaseElement, NewElementBuilder} from '../dom/Element';
 
-export class LegacyElement<C extends ComponentType<any>, P extends ComponentProps<C> = ComponentProps<C>> extends BaseElement {
-
+export class LegacyElement<
+    C extends ComponentType<any>,
+    P extends ComponentProps<C> = ComponentProps<C>,
+> extends BaseElement {
     protected readonly props: MapStore<P>;
 
     protected readonly component: C;
@@ -36,7 +38,7 @@ export class LegacyElement<C extends ComponentType<any>, P extends ComponentProp
             <IdProvider prefix={this.getPrefix()}>
                 <Component {...this.props.get()} />
             </IdProvider>,
-            this.getHTMLElement()
+            this.getHTMLElement(),
         );
     }
 
@@ -58,7 +60,8 @@ export class LegacyElement<C extends ComponentType<any>, P extends ComponentProp
 
     override addClass(className: string): this {
         if (hasClassName(this.props)) {
-            this.props.setKey('className', `${this.props.value.className} ${className}`);
+            const current = this.props.get().className;
+            this.props.setKey('className', `${current} ${className}`);
         } else {
             console.warn(`[${this.component.name}]: className is not allowed as a property`);
         }
@@ -67,7 +70,11 @@ export class LegacyElement<C extends ComponentType<any>, P extends ComponentProp
 
     override removeClass(className: string): this {
         if (hasClassName(this.props)) {
-            const newClassName = this.props.value.className.split(' ').filter(c => c !== className).join(' ');
+            const newClassName = this.props
+                .get()
+                .className.split(' ')
+                .filter((c: string) => c !== className)
+                .join(' ');
             this.props.setKey('className', newClassName);
         } else {
             console.warn(`[${this.component.name}]: className is not allowed as a property`);

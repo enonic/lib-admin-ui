@@ -1,11 +1,10 @@
 import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
+import type {TextAreaConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {TextAreaDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/TextAreaDescriptor';
-import {TextAreaConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('TextAreaDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns STRING', () => {
             expect(TextAreaDescriptor.getValueType()).toBe(ValueTypes.STRING);
@@ -14,12 +13,12 @@ describe('TextAreaDescriptor', () => {
 
     describe('readConfig', () => {
         it('parses maxLength from config', () => {
-            const config = TextAreaDescriptor.readConfig({'maxLength': [{'value': 200}]});
+            const config = TextAreaDescriptor.readConfig({maxLength: [{value: 200}]});
             expect(config.maxLength).toBe(200);
         });
 
         it('parses showCounter boolean', () => {
-            const config = TextAreaDescriptor.readConfig({'showCounter': [{'value': true}]});
+            const config = TextAreaDescriptor.readConfig({showCounter: [{value: true}]});
             expect(config.showCounter).toBe(true);
         });
 
@@ -30,18 +29,18 @@ describe('TextAreaDescriptor', () => {
         });
 
         it('handles missing keys gracefully', () => {
-            const config = TextAreaDescriptor.readConfig({'maxLength': [{'value': 50}]});
+            const config = TextAreaDescriptor.readConfig({maxLength: [{value: 50}]});
             expect(config.maxLength).toBe(50);
             expect(config.showCounter).toBe(false);
         });
 
         it('returns maxLength -1 when value is 0', () => {
-            const config = TextAreaDescriptor.readConfig({'maxLength': [{'value': 0}]});
+            const config = TextAreaDescriptor.readConfig({maxLength: [{value: 0}]});
             expect(config.maxLength).toBe(-1);
         });
 
         it('returns maxLength -1 when value is negative', () => {
-            const config = TextAreaDescriptor.readConfig({'maxLength': [{'value': -10}]});
+            const config = TextAreaDescriptor.readConfig({maxLength: [{value: -10}]});
             expect(config.maxLength).toBe(-1);
         });
     });
@@ -152,7 +151,7 @@ describe('TextAreaDescriptor', () => {
 
     describe('readConfig → validate integration', () => {
         it('rejects value exceeding maxLength parsed from config', () => {
-            const config = TextAreaDescriptor.readConfig({'maxLength': [{'value': 5}]});
+            const config = TextAreaDescriptor.readConfig({maxLength: [{value: 5}]});
             const results = TextAreaDescriptor.validate(ValueTypes.STRING.newValue('toolong'), config);
             expect(results).toHaveLength(1);
             expect(results[0].message).toBe('Value exceeds maximum length of 5');
@@ -165,7 +164,7 @@ describe('TextAreaDescriptor', () => {
         });
 
         it('treats maxLength 0 as unlimited (sentinel -1)', () => {
-            const config = TextAreaDescriptor.readConfig({'maxLength': [{'value': 0}]});
+            const config = TextAreaDescriptor.readConfig({maxLength: [{value: 0}]});
             const results = TextAreaDescriptor.validate(ValueTypes.STRING.newValue('a'.repeat(1000)), config);
             expect(results).toEqual([]);
         });

@@ -1,12 +1,11 @@
 import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
+import type {PrincipalSelectorConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {PrincipalSelectorDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/PrincipalSelectorDescriptor';
-import {PrincipalSelectorConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {PrincipalType} from '../../main/resources/assets/admin/common/js/security/PrincipalType';
 
 describe('PrincipalSelectorDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns REFERENCE', () => {
             expect(PrincipalSelectorDescriptor.getValueType()).toBe(ValueTypes.REFERENCE);
@@ -16,10 +15,7 @@ describe('PrincipalSelectorDescriptor', () => {
     describe('readConfig', () => {
         it('parses principal types from config', () => {
             const config = PrincipalSelectorDescriptor.readConfig({
-                'principalType': [
-                    {'value': 'USER'},
-                    {'value': 'GROUP'},
-                ],
+                principalType: [{value: 'USER'}, {value: 'GROUP'}],
             });
             expect(config.principalTypes).toHaveLength(2);
             expect(config.principalTypes).toContain(PrincipalType.USER);
@@ -28,9 +24,7 @@ describe('PrincipalSelectorDescriptor', () => {
 
         it('parses skip principals from config', () => {
             const config = PrincipalSelectorDescriptor.readConfig({
-                'skipPrincipals': [
-                    {'value': 'role:system.admin'},
-                ],
+                skipPrincipals: [{value: 'role:system.admin'}],
             });
             expect(config.skipPrincipals).toHaveLength(1);
             expect(config.skipPrincipals[0].toString()).toBe('role:system.admin');
@@ -44,10 +38,7 @@ describe('PrincipalSelectorDescriptor', () => {
 
         it('filters out invalid principal type values', () => {
             const config = PrincipalSelectorDescriptor.readConfig({
-                'principalType': [
-                    {'value': 'USER'},
-                    {'value': 'INVALID'},
-                ],
+                principalType: [{value: 'USER'}, {value: 'INVALID'}],
             });
             expect(config.principalTypes).toHaveLength(1);
             expect(config.principalTypes[0]).toBe(PrincipalType.USER);
@@ -55,14 +46,14 @@ describe('PrincipalSelectorDescriptor', () => {
 
         it('parses ROLE type', () => {
             const config = PrincipalSelectorDescriptor.readConfig({
-                'principalType': [{'value': 'ROLE'}],
+                principalType: [{value: 'ROLE'}],
             });
             expect(config.principalTypes).toContain(PrincipalType.ROLE);
         });
 
         it('handles empty value entries', () => {
             const config = PrincipalSelectorDescriptor.readConfig({
-                'principalType': [{'value': ''}],
+                principalType: [{value: ''}],
             });
             expect(config.principalTypes).toEqual([]);
         });
@@ -123,7 +114,7 @@ describe('PrincipalSelectorDescriptor', () => {
     describe('readConfig → validate integration', () => {
         it('validates always passes regardless of config', () => {
             const config = PrincipalSelectorDescriptor.readConfig({
-                'principalType': [{'value': 'USER'}],
+                principalType: [{value: 'USER'}],
             });
             const value = ValueTypes.REFERENCE.newValue('some-ref');
             expect(PrincipalSelectorDescriptor.validate(value, config)).toEqual([]);

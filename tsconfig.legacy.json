@@ -1,0 +1,28 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "declarationDir": "build/resources/main/dev/lib-admin-ui",
+        "outDir": "build/resources/main/dev/lib-admin-ui",
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "allowSyntheticDefaultImports": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "types": [
+            "dompurify",
+            "jquery",
+            "jqueryui",
+            "mousetrap",
+            "q"
+        ]
+    },
+    "include": [
+        "src/main/resources/assets/admin/common/js/**/*.ts",
+        "src/main/resources/assets/admin/common/js/**/*.tsx"
+    ],
+    "exclude": [
+        "src/**/*.stories.tsx"
+    ]
+}

@@ -1,12 +1,12 @@
-import {Toast, ToastProps, ToastTone} from '@enonic/ui';
+import {Toast, type ToastProps, type ToastTone} from '@enonic/ui';
 import type {MouseEvent as ReactMouseEvent} from 'react';
 
 export type NotificationTone = ToastTone;
 
-export interface NotificationAction {
+export type NotificationAction = {
     label: string;
     onClick: (event: ReactMouseEvent<HTMLButtonElement>) => void;
-}
+};
 
 export type NotificationProps = ToastProps & {
     text: string;
@@ -16,16 +16,10 @@ export type NotificationProps = ToastProps & {
 
 const NOTIFICATION_NAME = 'Notification';
 
-export const Notification = ({
-    text,
-    tone = 'info',
-    actions = [],
-    children,
-    ...props
-}: NotificationProps) => {
+export const Notification = ({text, tone = 'info', actions = [], children, ...props}: NotificationProps) => {
     return (
         <Toast {...props}>
-            <Toast.Icon tone={tone}/>
+            <Toast.Icon tone={tone} />
             <Toast.Description>{text}</Toast.Description>
             {children}
             {actions.map(({label, onClick}) => (

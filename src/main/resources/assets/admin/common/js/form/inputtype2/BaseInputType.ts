@@ -1,19 +1,17 @@
-import Q from 'q';
-import {Property} from '../../data/Property';
-import {Value} from '../../data/Value';
-import {ValueType} from '../../data/ValueType';
+import type {Property} from '../../data/Property';
+import type {Value} from '../../data/Value';
+import type {ValueType} from '../../data/ValueType';
 import {ValueTypeConverter} from '../../data/ValueTypeConverter';
-import {Element, LangDirection} from '../../dom/Element';
-import {FormInputEl} from '../../dom/FormInputEl';
+import {type Element, LangDirection} from '../../dom/Element';
+import type {FormInputEl} from '../../dom/FormInputEl';
 import {Locale} from '../../locale/Locale';
 import {StringHelper} from '../../util/StringHelper';
-import {ValueChangedEvent} from '../../ValueChangedEvent';
 import {AdditionalValidationRecord} from '../AdditionalValidationRecord';
-import {AiConfig} from '../inputtype/InputAiConfig';
-import {InputTypeViewContext} from '../inputtype/InputTypeViewContext';
+import type {AiConfig} from '../inputtype/InputAiConfig';
+import type {InputTypeViewContext} from '../inputtype/InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../inputtype/support/BaseInputTypeNotManagingAdd';
-import {InputTypeConfig} from './descriptor/InputTypeConfig';
-import {InputTypeDescriptor} from './descriptor/InputTypeDescriptor';
+import type {InputTypeConfig} from './descriptor/InputTypeConfig';
+import type {InputTypeDescriptor} from './descriptor/InputTypeDescriptor';
 
 /**
  * Abstract base for new-style input types that delegate pure logic to a descriptor.
@@ -22,9 +20,7 @@ import {InputTypeDescriptor} from './descriptor/InputTypeDescriptor';
  * The descriptor handles: value type, config parsing, default values, validation.
  * This class handles: DOM lifecycle, occurrence listeners, InputView integration.
  */
-export abstract class BaseInputType<C extends InputTypeConfig = InputTypeConfig>
-    extends BaseInputTypeNotManagingAdd {
-
+export abstract class BaseInputType<C extends InputTypeConfig = InputTypeConfig> extends BaseInputTypeNotManagingAdd {
     protected readonly descriptor: InputTypeDescriptor<C>;
     protected typedConfig: C;
 
@@ -109,10 +105,12 @@ export abstract class BaseInputType<C extends InputTypeConfig = InputTypeConfig>
     getAiConfig(): AiConfig {
         const formContext = this.getContext().formContext;
 
-        return formContext ? {
-            group: formContext.getName(),
-            aiTools: formContext.getAiTools(),
-        } : super.getAiConfig();
+        return formContext
+            ? {
+                  group: formContext.getName(),
+                  aiTools: formContext.getAiTools(),
+              }
+            : super.getAiConfig();
     }
 
     private hasDefaultValue(occurrence: FormInputEl): boolean {

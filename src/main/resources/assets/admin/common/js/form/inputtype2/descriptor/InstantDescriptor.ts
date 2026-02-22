@@ -1,16 +1,15 @@
 import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {Instant as InstantUtil} from '../../../util/Instant';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {InstantConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
 import {RelativeTimeParser} from '../../inputtype/time/RelativeTimeParser';
+import type {InstantConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 const INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z$/;
 
 export const InstantDescriptor: InputTypeDescriptor<InstantConfig> = {
-
     name: 'Instant',
 
     getValueType(): ValueType {

@@ -1,12 +1,11 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {RadioButtonConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {RadioButtonConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const RadioButtonDescriptor: InputTypeDescriptor<RadioButtonConfig> = {
-
     name: 'RadioButton',
 
     getValueType(): ValueType {
@@ -14,11 +13,11 @@ export const RadioButtonDescriptor: InputTypeDescriptor<RadioButtonConfig> = {
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): RadioButtonConfig {
-        const optionValues = raw['options'] || [];
+        const optionValues = raw.options || [];
 
         return {
-            options: optionValues.map((entry) => ({
-                label: entry['value'] as string,
+            options: optionValues.map(entry => ({
+                label: entry.value as string,
                 value: entry['@value'] as string,
             })),
         };

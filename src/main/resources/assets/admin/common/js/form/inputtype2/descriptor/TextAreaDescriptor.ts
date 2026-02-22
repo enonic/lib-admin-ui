@@ -1,13 +1,12 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {StringHelper} from '../../../util/StringHelper';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {TextAreaConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {TextAreaConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const TextAreaDescriptor: InputTypeDescriptor<TextAreaConfig> = {
-
     name: 'TextArea',
 
     getValueType(): ValueType {
@@ -15,14 +14,14 @@ export const TextAreaDescriptor: InputTypeDescriptor<TextAreaConfig> = {
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): TextAreaConfig {
-        const maxLengthEntry = raw['maxLength']?.[0] ?? {};
-        const maxLengthVal = maxLengthEntry['value'] as number;
+        const maxLengthEntry = raw.maxLength?.[0] ?? {};
+        const maxLengthVal = maxLengthEntry.value as number;
 
-        const showCounterEntry = raw['showCounter']?.[0] ?? {};
+        const showCounterEntry = raw.showCounter?.[0] ?? {};
 
         return {
             maxLength: maxLengthVal > 0 ? maxLengthVal : -1,
-            showCounter: (showCounterEntry['value'] as boolean) || false,
+            showCounter: (showCounterEntry.value as boolean) || false,
         };
     },
 

@@ -1,7 +1,7 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {InputTypeConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
+import type {InputTypeConfig} from './InputTypeConfig';
+import type {ValidationResult} from './ValidationResult';
 
 /**
  * Pure-logic descriptor for an input type.
@@ -11,7 +11,7 @@ import {ValidationResult} from './ValidationResult';
  *
  * One descriptor per input type name (e.g. 'TextLine', 'ComboBox').
  */
-export interface InputTypeDescriptor<C extends InputTypeConfig = InputTypeConfig> {
+export type InputTypeDescriptor<C extends InputTypeConfig = InputTypeConfig> = {
     /** Registration name, e.g. 'TextLine'. */
     readonly name: string;
 
@@ -36,4 +36,4 @@ export interface InputTypeDescriptor<C extends InputTypeConfig = InputTypeConfig
      * count how many valid occurrences exist.
      */
     valueBreaksRequired(value: Value): boolean;
-}
+};

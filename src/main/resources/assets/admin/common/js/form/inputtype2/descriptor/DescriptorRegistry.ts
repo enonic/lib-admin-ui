@@ -1,6 +1,6 @@
 import {Store} from '../../../store/Store';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {InputTypeConfig} from './InputTypeConfig';
+import type {InputTypeConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
 
 const STORE_KEY = 'descriptorRegistry';
 
@@ -13,8 +13,8 @@ function getDescriptors(): Map<string, InputTypeDescriptor> {
     return map;
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: Registry pattern — class provides namespace for Store-backed operations
 export class DescriptorRegistry {
-
     static get<C extends InputTypeConfig = InputTypeConfig>(name: string): InputTypeDescriptor<C> | undefined {
         return getDescriptors().get(name.toLowerCase()) as InputTypeDescriptor<C> | undefined;
     }

@@ -1,11 +1,10 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
+import type {InstantConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {InstantDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InstantDescriptor';
-import {InstantConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('InstantDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns INSTANT', () => {
             expect(InstantDescriptor.getValueType()).toBe(ValueTypes.INSTANT);
@@ -19,7 +18,7 @@ describe('InstantDescriptor', () => {
         });
 
         it('ignores unknown config keys', () => {
-            const config = InstantDescriptor.readConfig({'unknown': [{'value': 'test'}]});
+            const config = InstantDescriptor.readConfig({unknown: [{value: 'test'}]});
             expect(config).toEqual({});
         });
     });

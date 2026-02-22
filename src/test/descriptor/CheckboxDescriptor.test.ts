@@ -2,10 +2,9 @@ import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {CheckboxDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/CheckboxDescriptor';
-import {CheckboxConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import type {CheckboxConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('CheckboxDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns BOOLEAN', () => {
             expect(CheckboxDescriptor.getValueType()).toBe(ValueTypes.BOOLEAN);
@@ -14,7 +13,7 @@ describe('CheckboxDescriptor', () => {
 
     describe('readConfig', () => {
         it('parses alignment from config', () => {
-            const config = CheckboxDescriptor.readConfig({'alignment': [{'value': 'RIGHT'}]});
+            const config = CheckboxDescriptor.readConfig({alignment: [{value: 'RIGHT'}]});
             expect(config.alignment).toBe('RIGHT');
         });
 
@@ -24,12 +23,12 @@ describe('CheckboxDescriptor', () => {
         });
 
         it('defaults alignment to LEFT when value is empty string', () => {
-            const config = CheckboxDescriptor.readConfig({'alignment': [{'value': ''}]});
+            const config = CheckboxDescriptor.readConfig({alignment: [{value: ''}]});
             expect(config.alignment).toBe('LEFT');
         });
 
         it('defaults alignment to LEFT when entry has no value key', () => {
-            const config = CheckboxDescriptor.readConfig({'alignment': [{}]});
+            const config = CheckboxDescriptor.readConfig({alignment: [{}]});
             expect(config.alignment).toBe('LEFT');
         });
     });

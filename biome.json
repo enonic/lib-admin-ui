@@ -1,0 +1,227 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.3.15/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "files": {
+        "includes": [
+            "src/main/resources/assets/admin/common/js/**/*.ts",
+            "src/main/resources/assets/admin/common/js/**/*.tsx",
+            "src/test/**/*.ts",
+            "src/test/**/*.tsx",
+            ".storybook/**/*.ts",
+            ".storybook/**/*.tsx",
+            ".storybook/**/*.css",
+            "*.config.ts",
+            "*.config.*.ts",
+            "!src/main/resources/assets/admin/common/js/typings"
+        ]
+    },
+    "formatter": {
+        "enabled": false,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 120
+    },
+    "javascript": {
+        "formatter": {
+            "semicolons": "always",
+            "trailingCommas": "all",
+            "quoteStyle": "single",
+            "arrowParentheses": "asNeeded",
+            "bracketSpacing": false,
+            "jsxQuoteStyle": "single"
+        }
+    },
+    "json": {
+        "formatter": {
+            "trailingCommas": "none"
+        }
+    },
+    "css": {
+        "parser": {
+            "cssModules": false,
+            "tailwindDirectives": true
+        },
+        "formatter": {
+            "quoteStyle": "single"
+        }
+    },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "off"
+            }
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedVariables": "off",
+                "noUnusedImports": "off",
+                "noUnusedPrivateClassMembers": "off",
+                "noUnusedFunctionParameters": "off",
+                "noVoidTypeReturn": "off",
+                "useParseIntRadix": "off",
+                "useExhaustiveDependencies": "warn",
+                "useHookAtTopLevel": "error"
+            },
+            "style": {
+                "useConst": "off",
+                "useExportType": "off",
+                "useImportType": "off",
+                "useTemplate": "off",
+                "useExponentiationOperator": "off"
+            },
+            "complexity": {
+                "useLiteralKeys": "off",
+                "noStaticOnlyClass": "off",
+                "noThisInStatic": "off",
+                "noExtraBooleanCast": "off",
+                "noUselessEscapeInRegex": "off",
+                "noUselessConstructor": "off",
+                "useOptionalChain": "off",
+                "useArrowFunction": "off",
+                "useDateNow": "off",
+                "noUselessSwitchCase": "off",
+                "noUselessStringRaw": "off",
+                "noArguments": "off"
+            },
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noEmptyInterface": "off",
+                "noPrototypeBuiltins": "off",
+                "useIterableCallbackReturn": "off",
+                "noImplicitAnyLet": "off",
+                "noGlobalIsNan": "off",
+                "noShadowRestrictedNames": "off",
+                "noAssignInExpressions": "off",
+                "noTsIgnore": "off",
+                "noConfusingVoidType": "off",
+                "noUselessEscapeInString": "off",
+                "noDoubleEquals": "off",
+                "useAdjacentOverloadSignatures": "off",
+                "noSelfCompare": "off",
+                "noGlobalIsFinite": "off",
+                "noDocumentCookie": "off",
+                "noControlCharactersInRegex": "off"
+            },
+            "a11y": {
+                "recommended": false
+            }
+        }
+    },
+    "overrides": [
+        {
+            "includes": [
+                "src/main/resources/assets/admin/common/js/**/*.tsx",
+                "src/main/resources/assets/admin/common/js/form/inputtype2/**/*.ts",
+                "src/main/resources/assets/admin/common/js/ui2/**/*.ts",
+                "src/test/**/*.ts",
+                "src/test/**/*.tsx",
+                ".storybook/**/*.ts",
+                ".storybook/**/*.tsx",
+                ".storybook/**/*.css",
+                "*.config.ts",
+                "*.config.*.ts"
+            ],
+            "formatter": {
+                "enabled": true
+            },
+            "assist": {
+                "actions": {
+                    "source": {
+                        "organizeImports": "on"
+                    }
+                }
+            },
+            "linter": {
+                "rules": {
+                    "correctness": {
+                        "noUnusedVariables": { "level": "error", "fix": "safe" },
+                        "noUnusedImports": { "level": "error", "fix": "safe" },
+                        "noUnusedPrivateClassMembers": "error",
+                        "noUnusedFunctionParameters": { "level": "error", "fix": "safe" },
+                        "noVoidTypeReturn": "error",
+                        "useParseIntRadix": "error"
+                    },
+                    "style": {
+                        "useConst": "error",
+                        "useExportType": { "level": "error", "fix": "safe" },
+                        "useImportType": { "level": "error", "fix": "safe" },
+                        "useTemplate": "error",
+                        "useExponentiationOperator": "error",
+                        "useConsistentTypeDefinitions": {
+                            "level": "error",
+                            "fix": "safe",
+                            "options": { "style": "type" }
+                        }
+                    },
+                    "complexity": {
+                        "useLiteralKeys": "error",
+                        "noStaticOnlyClass": "error",
+                        "noExtraBooleanCast": "error",
+                        "noUselessEscapeInRegex": "error",
+                        "noUselessConstructor": "error",
+                        "useOptionalChain": { "level": "error", "fix": "safe" },
+                        "useArrowFunction": "error",
+                        "useDateNow": "error",
+                        "noUselessSwitchCase": "error",
+                        "noArguments": "error"
+                    },
+                    "suspicious": {
+                        "noExplicitAny": "error",
+                        "noArrayIndexKey": "warn",
+                        "noVar": "error",
+                        "useIterableCallbackReturn": "warn",
+                        "noEmptyBlockStatements": "error",
+                        "noImplicitAnyLet": "error",
+                        "noGlobalIsNan": { "level": "error", "fix": "safe" },
+                        "noShadowRestrictedNames": "error",
+                        "noAssignInExpressions": "error",
+                        "noConfusingVoidType": "error",
+                        "noDoubleEquals": { "level": "error", "fix": "safe" },
+                        "noGlobalIsFinite": { "level": "error", "fix": "safe" }
+                    },
+                    "nursery": {
+                        "useSortedClasses": {
+                            "level": "warn",
+                            "fix": "safe",
+                            "options": {
+                                "functions": ["clsx", "cva", "cn", "twMerge", "twJoin"]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "includes": [
+                "src/main/resources/assets/admin/common/js/ui2/**/*.ts",
+                "src/main/resources/assets/admin/common/js/ui2/**/*.tsx"
+            ],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noExplicitAny": "off"
+                    }
+                }
+            }
+        },
+        {
+            "includes": ["src/test/**/*.ts", "src/test/**/*.tsx"],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noExplicitAny": "off",
+                        "noEmptyBlockStatements": "off"
+                    }
+                }
+            }
+        }
+    ]
+}

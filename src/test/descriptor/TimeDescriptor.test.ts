@@ -1,11 +1,10 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
+import type {TimeConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {TimeDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/TimeDescriptor';
-import {TimeConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('TimeDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns LOCAL_TIME', () => {
             expect(TimeDescriptor.getValueType()).toBe(ValueTypes.LOCAL_TIME);
@@ -19,7 +18,7 @@ describe('TimeDescriptor', () => {
         });
 
         it('ignores unknown config keys', () => {
-            const config = TimeDescriptor.readConfig({'unknown': [{'value': 'test'}]});
+            const config = TimeDescriptor.readConfig({unknown: [{value: 'test'}]});
             expect(config).toEqual({});
         });
     });

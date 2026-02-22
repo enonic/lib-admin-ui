@@ -2,10 +2,9 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {DateDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DateDescriptor';
-import {DateConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import type {DateConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('DateDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns LOCAL_DATE', () => {
             expect(DateDescriptor.getValueType()).toBe(ValueTypes.LOCAL_DATE);
@@ -19,7 +18,7 @@ describe('DateDescriptor', () => {
         });
 
         it('ignores unknown config keys', () => {
-            const config = DateDescriptor.readConfig({'unknown': [{'value': 'test'}]});
+            const config = DateDescriptor.readConfig({unknown: [{value: 'test'}]});
             expect(config).toEqual({});
         });
     });

@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "@enonic/ui/preset.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@enonic/ui/preset.css';
 
-@source "../node_modules/@enonic/ui/";
-@source "../src/main/resources/assets/admin/common/js/form/inputtype2/";
+@source '../node_modules/@enonic/ui/';
+@source '../src/main/resources/assets/admin/common/js/form/inputtype2/';
 
 @layer base {
-  body,
-  .docs-story {
-    background-color: var(--color-surface-neutral);
-    color: var(--color-main);
-    font-family: 'Open Sans', sans-serif;
-  }
+    body,
+    .docs-story {
+        background-color: var(--color-surface-neutral);
+        color: var(--color-main);
+        font-family: 'Open Sans', sans-serif;
+    }
 }

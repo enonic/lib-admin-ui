@@ -1,14 +1,13 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {PropertySet} from '../../../data/PropertySet';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {PropertySet} from '../../../data/PropertySet';
 import {LocalDateTime} from '../../../util/LocalDateTime';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {DateTimeRangeConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {DateTimeRangeConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const DateTimeRangeDescriptor: InputTypeDescriptor<DateTimeRangeConfig> = {
-
     name: 'DateTimeRange',
 
     getValueType(): ValueType {
@@ -17,10 +16,10 @@ export const DateTimeRangeDescriptor: InputTypeDescriptor<DateTimeRangeConfig> =
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): DateTimeRangeConfig {
         const readVal = (name: string): string => {
-            return raw[name]?.[0]?.value as string ?? '';
+            return (raw[name]?.[0]?.value as string) ?? '';
         };
 
-        const parseTime = (name: string): { hours: number; minutes: number } | null => {
+        const parseTime = (name: string): {hours: number; minutes: number} | null => {
             const time = readVal(name);
             if (!time) {
                 return null;

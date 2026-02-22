@@ -2,10 +2,9 @@ import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {ComboBoxDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/ComboBoxDescriptor';
-import {ComboBoxConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import type {ComboBoxConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('ComboBoxDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns STRING', () => {
             expect(ComboBoxDescriptor.getValueType()).toBe(ValueTypes.STRING);
@@ -15,9 +14,9 @@ describe('ComboBoxDescriptor', () => {
     describe('readConfig', () => {
         it('parses options with label and value', () => {
             const config = ComboBoxDescriptor.readConfig({
-                'options': [
-                    {'value': 'Option A', '@value': 'a'},
-                    {'value': 'Option B', '@value': 'b'},
+                options: [
+                    {value: 'Option A', '@value': 'a'},
+                    {value: 'Option B', '@value': 'b'},
                 ],
             });
             expect(config.options).toHaveLength(2);
@@ -26,7 +25,7 @@ describe('ComboBoxDescriptor', () => {
         });
 
         it('handles empty options array', () => {
-            const config = ComboBoxDescriptor.readConfig({'options': []});
+            const config = ComboBoxDescriptor.readConfig({options: []});
             expect(config.options).toEqual([]);
         });
 
@@ -37,7 +36,7 @@ describe('ComboBoxDescriptor', () => {
 
         it('parses single option', () => {
             const config = ComboBoxDescriptor.readConfig({
-                'options': [{'value': 'Only', '@value': 'only'}],
+                options: [{value: 'Only', '@value': 'only'}],
             });
             expect(config.options).toHaveLength(1);
             expect(config.options[0].value).toBe('only');
@@ -135,7 +134,7 @@ describe('ComboBoxDescriptor', () => {
     describe('readConfig → validate integration', () => {
         it('accepts value matching parsed @value', () => {
             const config = ComboBoxDescriptor.readConfig({
-                'options': [{'value': 'Label', '@value': 'key1'}],
+                options: [{value: 'Label', '@value': 'key1'}],
             });
             const results = ComboBoxDescriptor.validate(ValueTypes.STRING.newValue('key1'), config);
             expect(results).toEqual([]);
@@ -143,7 +142,7 @@ describe('ComboBoxDescriptor', () => {
 
         it('rejects value not in parsed options', () => {
             const config = ComboBoxDescriptor.readConfig({
-                'options': [{'value': 'Label', '@value': 'key1'}],
+                options: [{value: 'Label', '@value': 'key1'}],
             });
             const results = ComboBoxDescriptor.validate(ValueTypes.STRING.newValue('key2'), config);
             expect(results).toHaveLength(1);

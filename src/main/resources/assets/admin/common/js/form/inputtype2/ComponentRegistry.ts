@@ -12,8 +12,8 @@ function getComponents(): Map<string, InputTypeComponent> {
     return map;
 }
 
+// biome-ignore lint/complexity/noStaticOnlyClass: Registry pattern — class provides namespace for Store-backed operations
 export class ComponentRegistry {
-
     static get(name: string): InputTypeComponent | undefined {
         return getComponents().get(name.toLowerCase());
     }

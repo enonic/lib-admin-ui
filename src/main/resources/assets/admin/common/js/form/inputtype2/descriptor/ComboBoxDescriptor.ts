@@ -1,12 +1,11 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {ComboBoxConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {ComboBoxConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const ComboBoxDescriptor: InputTypeDescriptor<ComboBoxConfig> = {
-
     name: 'ComboBox',
 
     getValueType(): ValueType {
@@ -14,11 +13,11 @@ export const ComboBoxDescriptor: InputTypeDescriptor<ComboBoxConfig> = {
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): ComboBoxConfig {
-        const optionValues = raw['options'] || [];
+        const optionValues = raw.options || [];
 
         return {
-            options: optionValues.map((entry) => ({
-                label: entry['value'] as string,
+            options: optionValues.map(entry => ({
+                label: entry.value as string,
                 value: entry['@value'] as string,
             })),
         };

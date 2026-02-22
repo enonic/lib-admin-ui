@@ -1,14 +1,14 @@
 import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
-import {getFirstError} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
-import {getCounterDescription} from '../../main/resources/assets/admin/common/js/form/inputtype2/TextLineInput';
 import type {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import type {ValidationResult} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/ValidationResult';
+import {getCounterDescription} from '../../main/resources/assets/admin/common/js/form/inputtype2/TextLineInput';
+import {getFirstError} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
 
 vi.mock('@enonic/ui', () => ({Input: () => null}));
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
-    i18n: (key: string, ...args: unknown[]) => `#${key}#`,
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 
 function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {
@@ -16,7 +16,6 @@ function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {
 }
 
 describe('getFirstError', () => {
-
     it('returns undefined for empty array', () => {
         expect(getFirstError([])).toBeUndefined();
     });
@@ -27,16 +26,12 @@ describe('getFirstError', () => {
     });
 
     it('returns first message for multiple errors', () => {
-        const errors: ValidationResult[] = [
-            {message: 'First error'},
-            {message: 'Second error'},
-        ];
+        const errors: ValidationResult[] = [{message: 'First error'}, {message: 'Second error'}];
         expect(getFirstError(errors)).toBe('First error');
     });
 });
 
 describe('TextLineInput value transformation', () => {
-
     it('null value produces empty string', () => {
         const value = ValueTypes.STRING.newNullValue();
         expect(value.isNull()).toBe(true);
@@ -60,7 +55,6 @@ describe('TextLineInput value transformation', () => {
 });
 
 describe('getCounterDescription', () => {
-
     it('returns undefined when no counter and no maxLength', () => {
         expect(getCounterDescription(5, makeConfig())).toBeUndefined();
     });

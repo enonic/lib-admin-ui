@@ -1,11 +1,10 @@
 import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
+import type {RadioButtonConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {RadioButtonDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/RadioButtonDescriptor';
-import {RadioButtonConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('RadioButtonDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns STRING', () => {
             expect(RadioButtonDescriptor.getValueType()).toBe(ValueTypes.STRING);
@@ -15,9 +14,9 @@ describe('RadioButtonDescriptor', () => {
     describe('readConfig', () => {
         it('parses options with label and value', () => {
             const config = RadioButtonDescriptor.readConfig({
-                'options': [
-                    {'value': 'Yes', '@value': 'yes'},
-                    {'value': 'No', '@value': 'no'},
+                options: [
+                    {value: 'Yes', '@value': 'yes'},
+                    {value: 'No', '@value': 'no'},
                 ],
             });
             expect(config.options).toHaveLength(2);
@@ -26,7 +25,7 @@ describe('RadioButtonDescriptor', () => {
         });
 
         it('handles empty options array', () => {
-            const config = RadioButtonDescriptor.readConfig({'options': []});
+            const config = RadioButtonDescriptor.readConfig({options: []});
             expect(config.options).toEqual([]);
         });
 
@@ -37,7 +36,7 @@ describe('RadioButtonDescriptor', () => {
 
         it('parses single option', () => {
             const config = RadioButtonDescriptor.readConfig({
-                'options': [{'value': 'Only', '@value': 'only'}],
+                options: [{value: 'Only', '@value': 'only'}],
             });
             expect(config.options).toHaveLength(1);
             expect(config.options[0].value).toBe('only');
@@ -128,7 +127,7 @@ describe('RadioButtonDescriptor', () => {
     describe('readConfig → validate integration', () => {
         it('accepts value matching parsed @value', () => {
             const config = RadioButtonDescriptor.readConfig({
-                'options': [{'value': 'Label', '@value': 'key1'}],
+                options: [{value: 'Label', '@value': 'key1'}],
             });
             const results = RadioButtonDescriptor.validate(ValueTypes.STRING.newValue('key1'), config);
             expect(results).toEqual([]);
@@ -136,7 +135,7 @@ describe('RadioButtonDescriptor', () => {
 
         it('rejects value not in parsed options', () => {
             const config = RadioButtonDescriptor.readConfig({
-                'options': [{'value': 'Label', '@value': 'key1'}],
+                options: [{value: 'Label', '@value': 'key1'}],
             });
             const results = RadioButtonDescriptor.validate(ValueTypes.STRING.newValue('key2'), config);
             expect(results).toHaveLength(1);

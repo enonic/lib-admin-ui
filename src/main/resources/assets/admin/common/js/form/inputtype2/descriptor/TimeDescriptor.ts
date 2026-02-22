@@ -1,16 +1,15 @@
 import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {LocalTime} from '../../../util/LocalTime';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {TimeConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
 import {RelativeTimeParser} from '../../inputtype/time/RelativeTimeParser';
+import type {TimeConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 const TIME_PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
 export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
-
     name: 'Time',
 
     getValueType(): ValueType {

@@ -4,11 +4,10 @@ import {InputTypeName} from '../../main/resources/assets/admin/common/js/form/In
 import {OccurrencesBuilder} from '../../main/resources/assets/admin/common/js/form/Occurrences';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
-    i18n: (key: string, ...args: unknown[]) => `#${key}#`,
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 
 describe('UnsupportedInput', () => {
-
     describe('type name extraction', () => {
         it('extracts type name from Input descriptor', () => {
             const input = new InputBuilder()

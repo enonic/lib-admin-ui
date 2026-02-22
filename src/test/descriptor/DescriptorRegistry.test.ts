@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
-    i18n: (key: string, ...args: unknown[]) => `#${key}#`,
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 
 vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
@@ -10,7 +10,9 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
         Store: {
             instance: () => ({
                 get: (key: string) => storeMap.get(key),
-                set: (key: string, value: any) => { storeMap.set(key, value); },
+                set: (key: string, value: any) => {
+                    storeMap.set(key, value);
+                },
                 has: (key: string) => storeMap.has(key),
                 delete: (key: string) => storeMap.delete(key),
             }),
@@ -18,9 +20,9 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
     };
 });
 
+import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DescriptorRegistry';
 import {initBuiltInDescriptors} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/initBuiltInDescriptors';
-import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 
 const EXPECTED_DESCRIPTORS = [
     'TextLine',
@@ -40,7 +42,6 @@ const EXPECTED_DESCRIPTORS = [
 ];
 
 describe('DescriptorRegistry', () => {
-
     beforeEach(() => {
         initBuiltInDescriptors();
     });
@@ -52,7 +53,7 @@ describe('DescriptorRegistry', () => {
     });
 
     describe('init registration', () => {
-        it.each(EXPECTED_DESCRIPTORS)('has %s registered', (name) => {
+        it.each(EXPECTED_DESCRIPTORS)('has %s registered', name => {
             expect(DescriptorRegistry.has(name)).toBe(true);
         });
 
@@ -65,7 +66,7 @@ describe('DescriptorRegistry', () => {
         it('returns descriptor by name', () => {
             const descriptor = DescriptorRegistry.get('TextLine');
             expect(descriptor).toBeDefined();
-            expect(descriptor!.name).toBe('TextLine');
+            expect(descriptor?.name).toBe('TextLine');
         });
 
         it('is case-insensitive', () => {
@@ -100,7 +101,7 @@ describe('DescriptorRegistry', () => {
                 readConfig: () => ({}),
                 createDefaultValue: () => ValueTypes.STRING.newNullValue(),
                 validate: () => [],
-                valueBreaksRequired: (v) => v.isNull(),
+                valueBreaksRequired: v => v.isNull(),
             });
             expect(DescriptorRegistry.has('CustomType')).toBe(true);
             expect(DescriptorRegistry.get('customtype')).toBeDefined();
@@ -115,7 +116,7 @@ describe('DescriptorRegistry', () => {
                 readConfig: () => ({}),
                 createDefaultValue: () => ValueTypes.LONG.newNullValue(),
                 validate: () => [],
-                valueBreaksRequired: (v) => v.isNull(),
+                valueBreaksRequired: v => v.isNull(),
             });
             expect(DescriptorRegistry.get('TextLine')).toBe(original);
             expect(spy).toHaveBeenCalledOnce();
@@ -195,7 +196,7 @@ describe('DescriptorRegistry', () => {
                 readConfig: () => ({}),
                 createDefaultValue: () => ValueTypes.STRING.newNullValue(),
                 validate: () => [],
-                valueBreaksRequired: (v) => v.isNull(),
+                valueBreaksRequired: v => v.isNull(),
             });
             expect(DescriptorRegistry.has('TextLine')).toBe(true);
         });
@@ -203,26 +204,26 @@ describe('DescriptorRegistry', () => {
 
     describe('descriptor value types', () => {
         const expectedValueTypes: Record<string, string> = {
-            'TextLine': 'String',
-            'TextArea': 'String',
-            'Double': 'Double',
-            'Long': 'Long',
-            'Checkbox': 'Boolean',
-            'ComboBox': 'String',
-            'RadioButton': 'String',
-            'PrincipalSelector': 'Reference',
-            'GeoPoint': 'GeoPoint',
-            'Date': 'LocalDate',
-            'DateTime': 'LocalDateTime',
-            'Time': 'LocalTime',
-            'Instant': 'Instant',
-            'DateTimeRange': 'PropertySet',
+            TextLine: 'String',
+            TextArea: 'String',
+            Double: 'Double',
+            Long: 'Long',
+            Checkbox: 'Boolean',
+            ComboBox: 'String',
+            RadioButton: 'String',
+            PrincipalSelector: 'Reference',
+            GeoPoint: 'GeoPoint',
+            Date: 'LocalDate',
+            DateTime: 'LocalDateTime',
+            Time: 'LocalTime',
+            Instant: 'Instant',
+            DateTimeRange: 'PropertySet',
         };
 
         it.each(Object.entries(expectedValueTypes))('%s returns ValueType %s', (name, typeName) => {
             const descriptor = DescriptorRegistry.get(name);
             expect(descriptor).toBeDefined();
-            expect(descriptor!.getValueType().toString()).toBe(typeName);
+            expect(descriptor?.getValueType().toString()).toBe(typeName);
         });
     });
 });

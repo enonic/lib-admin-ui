@@ -1,12 +1,10 @@
 import * as UI from '@enonic/ui';
 import {LegacyElement} from './LegacyElement';
 
-export type CheckboxControllerProps = Pick<UI.CheckboxProps, 'checked' | 'label' | 'align'>
-    & Partial<Pick<UI.CheckboxProps, 'onCheckedChange' | 'name'>>;
+export type CheckboxControllerProps = Pick<UI.CheckboxProps, 'checked' | 'label' | 'align'> &
+    Partial<Pick<UI.CheckboxProps, 'onCheckedChange' | 'name'>>;
 
-export class Checkbox
-    extends LegacyElement<typeof UI.Checkbox> {
-
+export class Checkbox extends LegacyElement<typeof UI.Checkbox> {
     private currentChecked: UI.CheckboxChecked;
     private suppressEvent = false;
 
@@ -14,7 +12,7 @@ export class Checkbox
         const {checked = false, onCheckedChange, ...rest} = props;
         super(
             {
-                onCheckedChange: (newValue) => {
+                onCheckedChange: newValue => {
                     this.currentChecked = newValue;
                     this.setProps({checked: newValue});
                     if (!this.suppressEvent) {
@@ -22,7 +20,6 @@ export class Checkbox
                     }
                 },
                 ...rest,
-
             },
             UI.Checkbox,
         );
@@ -46,7 +43,7 @@ export class Checkbox
     }
 
     setLabel(label: string): this {
-        this.props.setKey('label', label)
+        this.props.setKey('label', label);
         return this;
     }
 

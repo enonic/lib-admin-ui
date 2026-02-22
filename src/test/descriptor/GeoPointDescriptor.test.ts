@@ -2,10 +2,9 @@ import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {GeoPointDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/GeoPointDescriptor';
-import {GeoPointConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import type {GeoPointConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('GeoPointDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns GEO_POINT', () => {
             expect(GeoPointDescriptor.getValueType()).toBe(ValueTypes.GEO_POINT);
@@ -19,7 +18,7 @@ describe('GeoPointDescriptor', () => {
         });
 
         it('ignores unknown config keys', () => {
-            const config = GeoPointDescriptor.readConfig({'unknown': [{'value': 'test'}]});
+            const config = GeoPointDescriptor.readConfig({unknown: [{value: 'test'}]});
             expect(config).toEqual({});
         });
     });

@@ -1,62 +1,62 @@
-import {PrincipalKey} from '../../../security/PrincipalKey';
-import {PrincipalType} from '../../../security/PrincipalType';
+import type {PrincipalKey} from '../../../security/PrincipalKey';
+import type {PrincipalType} from '../../../security/PrincipalType';
 
-export interface TextLineConfig {
+export type TextLineConfig = {
     regexp: RegExp | null;
     maxLength: number;
     showCounter: boolean;
-}
+};
 
-export interface TextAreaConfig {
+export type TextAreaConfig = {
     maxLength: number;
     showCounter: boolean;
-}
+};
 
-export interface NumberConfig {
+export type NumberConfig = {
     min: number | null;
     max: number | null;
-}
+};
 
-export interface CheckboxConfig {
+export type CheckboxConfig = {
     alignment: string;
-}
+};
 
-export interface ComboBoxOptionConfig {
+export type ComboBoxOptionConfig = {
     label: string;
     value: string;
-}
+};
 
-export interface ComboBoxConfig {
+export type ComboBoxConfig = {
     options: ComboBoxOptionConfig[];
-}
+};
 
-export interface RadioButtonOptionConfig {
+export type RadioButtonOptionConfig = {
     label: string;
     value: string;
-}
+};
 
-export interface RadioButtonConfig {
+export type RadioButtonConfig = {
     options: RadioButtonOptionConfig[];
-}
+};
 
-export interface PrincipalSelectorConfig {
+export type PrincipalSelectorConfig = {
     principalTypes: PrincipalType[];
     skipPrincipals: PrincipalKey[];
-}
+};
 
 export type GeoPointConfig = Record<string, never>;
 
 export type DateConfig = Record<string, never>;
 
-export interface DateTimeConfig {
+export type DateTimeConfig = {
     useTimezone: boolean;
-}
+};
 
 export type TimeConfig = Record<string, never>;
 
 export type InstantConfig = Record<string, never>;
 
-export interface DateTimeRangeConfig {
+export type DateTimeRangeConfig = {
     useTimezone: boolean;
     fromLabel: string;
     toLabel: string;
@@ -64,12 +64,12 @@ export interface DateTimeRangeConfig {
     errorEndInPast: string;
     errorEndBeforeStart: string;
     errorStartEqualsEnd: string;
-    defaultFromTime: { hours: number; minutes: number } | null;
-    defaultToTime: { hours: number; minutes: number } | null;
+    defaultFromTime: {hours: number; minutes: number} | null;
+    defaultToTime: {hours: number; minutes: number} | null;
     fromPlaceholder: string;
     toPlaceholder: string;
     optionalFrom: boolean;
-}
+};
 
 export type InputTypeConfig =
     | TextLineConfig

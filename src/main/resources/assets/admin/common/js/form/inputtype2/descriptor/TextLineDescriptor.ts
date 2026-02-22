@@ -1,14 +1,13 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {i18n} from '../../../util/Messages';
 import {StringHelper} from '../../../util/StringHelper';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {TextLineConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {TextLineConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const TextLineDescriptor: InputTypeDescriptor<TextLineConfig> = {
-
     name: 'TextLine',
 
     getValueType(): ValueType {
@@ -16,18 +15,18 @@ export const TextLineDescriptor: InputTypeDescriptor<TextLineConfig> = {
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): TextLineConfig {
-        const maxLengthEntry = raw['maxLength']?.[0] ?? {};
-        const maxLengthVal = maxLengthEntry['value'] as number;
+        const maxLengthEntry = raw.maxLength?.[0] ?? {};
+        const maxLengthVal = maxLengthEntry.value as number;
 
-        const showCounterEntry = raw['showCounter']?.[0] ?? {};
+        const showCounterEntry = raw.showCounter?.[0] ?? {};
 
-        const regexpEntry = raw['regexp']?.[0] ?? {};
-        const regexpStr = regexpEntry['value'] as string;
+        const regexpEntry = raw.regexp?.[0] ?? {};
+        const regexpStr = regexpEntry.value as string;
 
         return {
             regexp: !StringHelper.isBlank(regexpStr) ? new RegExp(regexpStr) : null,
             maxLength: maxLengthVal > 0 ? maxLengthVal : -1,
-            showCounter: (showCounterEntry['value'] as boolean) || false,
+            showCounter: (showCounterEntry.value as boolean) || false,
         };
     },
 

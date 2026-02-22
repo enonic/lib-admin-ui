@@ -5,7 +5,7 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
 vi.mock('@enonic/ui', () => ({Input: () => null}));
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
-    i18n: (key: string, ...args: unknown[]) => `#${key}#`,
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
     const storeMap = new Map<string, any>();
@@ -13,7 +13,9 @@ vi.mock('../../main/resources/assets/admin/common/js/store/Store', () => {
         Store: {
             instance: () => ({
                 get: (key: string) => storeMap.get(key),
-                set: (key: string, value: any) => { storeMap.set(key, value); },
+                set: (key: string, value: any) => {
+                    storeMap.set(key, value);
+                },
                 has: (key: string) => storeMap.has(key),
                 delete: (key: string) => storeMap.delete(key),
             }),
@@ -26,7 +28,6 @@ import {DescriptorRegistry} from '../../main/resources/assets/admin/common/js/fo
 import {initBuiltInTypes} from '../../main/resources/assets/admin/common/js/form/inputtype2/initBuiltInTypes';
 
 describe('Registry consistency', () => {
-
     beforeEach(() => {
         initBuiltInTypes();
     });
@@ -44,7 +45,10 @@ describe('Registry consistency', () => {
         const components = ComponentRegistry.getAll();
         expect(components.size).toBeGreaterThan(0);
         for (const [name] of components) {
-            expect(DescriptorRegistry.has(name), `ComponentRegistry has "${name}" but DescriptorRegistry does not`).toBe(true);
+            expect(
+                DescriptorRegistry.has(name),
+                `ComponentRegistry has "${name}" but DescriptorRegistry does not`,
+            ).toBe(true);
         }
     });
 

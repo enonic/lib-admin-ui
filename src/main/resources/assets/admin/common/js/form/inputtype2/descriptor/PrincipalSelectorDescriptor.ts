@@ -1,14 +1,13 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {PrincipalKey} from '../../../security/PrincipalKey';
 import {PrincipalType} from '../../../security/PrincipalType';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {PrincipalSelectorConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {PrincipalSelectorConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const PrincipalSelectorDescriptor: InputTypeDescriptor<PrincipalSelectorConfig> = {
-
     name: 'PrincipalSelector',
 
     getValueType(): ValueType {
@@ -16,19 +15,19 @@ export const PrincipalSelectorDescriptor: InputTypeDescriptor<PrincipalSelectorC
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): PrincipalSelectorConfig {
-        const principalTypeEntries = raw['principalType'] || [];
-        const skipPrincipalsEntries = raw['skipPrincipals'] || [];
+        const principalTypeEntries = raw.principalType || [];
+        const skipPrincipalsEntries = raw.skipPrincipals || [];
 
         const principalTypes: PrincipalType[] = principalTypeEntries
-            .map((cfg) => {
-                const val = typeof cfg === 'object' ? cfg['value'] as string : String(cfg);
+            .map(cfg => {
+                const val = typeof cfg === 'object' ? (cfg.value as string) : String(cfg);
                 return val ? PrincipalType[val as keyof typeof PrincipalType] : null;
             })
             .filter((val): val is PrincipalType => val != null);
 
         const skipPrincipals: PrincipalKey[] = skipPrincipalsEntries
-            .map((cfg) => {
-                const val = typeof cfg === 'object' ? cfg['value'] as string : String(cfg);
+            .map(cfg => {
+                const val = typeof cfg === 'object' ? (cfg.value as string) : String(cfg);
                 return val ? PrincipalKey.fromString(val) : null;
             })
             .filter((val): val is PrincipalKey => val != null);

@@ -2,30 +2,32 @@ import * as UI from '@enonic/ui';
 import {unwrap} from '@enonic/ui';
 import {render} from 'react-dom';
 import {BrowserHelper} from '../BrowserHelper';
-import {Action} from '../ui/Action';
+import type {Action} from '../ui/Action';
 import {LegacyElement} from './LegacyElement';
 
-export interface ActionIconProps {
+export type ActionIconProps = {
     action: Action;
     icon: UI.LucideIcon;
     className?: string;
-}
+};
 
-export type ActionProps = Pick<UI.ButtonProps, 'className' |'label' | 'title' | 'disabled' >;
+export type ActionProps = Pick<UI.ButtonProps, 'className' | 'label' | 'title' | 'disabled'>;
 
 export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
-
     private actionProps: ActionIconProps;
 
     constructor(props: ActionIconProps) {
-        super({
-            onClick: () => {
-                this.giveFocus();
-                this.actionProps.action.execute();
+        super(
+            {
+                onClick: () => {
+                    this.giveFocus();
+                    this.actionProps.action.execute();
+                },
+                icon: props.icon,
+                ...createPropsFromAction(props),
             },
-            icon: props.icon,
-            ...createPropsFromAction(props),
-        }, UI.IconButton);
+            UI.IconButton,
+        );
 
         this.actionProps = props;
 
@@ -34,7 +36,7 @@ export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
 
     private updateProps = () => {
         this.setProps(createPropsFromAction(this.actionProps));
-    }
+    };
 
     // * Backward compatibility methods
 
@@ -65,7 +67,7 @@ export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
                     <ActionIconComponent {...props} />
                 </UI.Tooltip>
             </UI.IdProvider>,
-            this.getHTMLElement()
+            this.getHTMLElement(),
         );
     }
 }

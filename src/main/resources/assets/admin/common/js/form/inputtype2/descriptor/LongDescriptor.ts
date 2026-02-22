@@ -1,13 +1,12 @@
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import type {Value} from '../../../data/Value';
+import type {ValueType} from '../../../data/ValueType';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {NumberHelper} from '../../../util/NumberHelper';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {NumberConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {NumberConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
 export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
-
     name: 'Long',
 
     getValueType(): ValueType {
@@ -16,8 +15,8 @@ export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): NumberConfig {
         return {
-            min: (raw['min']?.[0]?.value as number) ?? null,
-            max: (raw['max']?.[0]?.value as number) ?? null,
+            min: (raw.min?.[0]?.value as number) ?? null,
+            max: (raw.max?.[0]?.value as number) ?? null,
         };
     },
 
@@ -46,9 +45,9 @@ export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
             return results;
         }
 
-        if (NumberHelper.isNumber(config.min) && num < config.min) {
+        if (config.min != null && NumberHelper.isNumber(config.min) && num < config.min) {
             results.push({message: `Value must be at least ${config.min}`});
-        } else if (NumberHelper.isNumber(config.max) && num > config.max) {
+        } else if (config.max != null && NumberHelper.isNumber(config.max) && num > config.max) {
             results.push({message: `Value must be at most ${config.max}`});
         }
 

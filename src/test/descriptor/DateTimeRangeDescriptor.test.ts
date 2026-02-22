@@ -1,10 +1,10 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+import {PropertyTree} from '../../main/resources/assets/admin/common/js/data/PropertyTree';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
-import {PropertyTree} from '../../main/resources/assets/admin/common/js/data/PropertyTree';
-import {LocalDateTime} from '../../main/resources/assets/admin/common/js/util/LocalDateTime';
 import {DateTimeRangeDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DateTimeRangeDescriptor';
-import {DateTimeRangeConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import type {DateTimeRangeConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import {LocalDateTime} from '../../main/resources/assets/admin/common/js/util/LocalDateTime';
 
 function makeRangeValue(from?: string | null, to?: string | null): Value {
     const tree = new PropertyTree();
@@ -37,7 +37,6 @@ function makeDefaultConfig(overrides: Partial<DateTimeRangeConfig> = {}): DateTi
 }
 
 describe('DateTimeRangeDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns DATA', () => {
             expect(DateTimeRangeDescriptor.getValueType()).toBe(ValueTypes.DATA);
@@ -63,15 +62,15 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('parses timezone', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'timezone': [{'value': 'true'}],
+                timezone: [{value: 'true'}],
             });
             expect(config.useTimezone).toBe(true);
         });
 
         it('parses custom labels', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'fromLabel': [{'value': 'Start'}],
-                'toLabel': [{'value': 'End'}],
+                fromLabel: [{value: 'Start'}],
+                toLabel: [{value: 'End'}],
             });
             expect(config.fromLabel).toBe('Start');
             expect(config.toLabel).toBe('End');
@@ -79,8 +78,8 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('builds error messages from custom labels', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'fromLabel': [{'value': 'Start'}],
-                'toLabel': [{'value': 'End'}],
+                fromLabel: [{value: 'Start'}],
+                toLabel: [{value: 'End'}],
             });
             expect(config.errorNoStart).toBe('Start is required when End is set');
             expect(config.errorEndBeforeStart).toBe('End cannot be before Start');
@@ -89,8 +88,8 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('parses custom error messages (override auto-generated)', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'errorNoStart': [{'value': 'Custom no start'}],
-                'errorEndInPast': [{'value': 'Custom end past'}],
+                errorNoStart: [{value: 'Custom no start'}],
+                errorEndInPast: [{value: 'Custom end past'}],
             });
             expect(config.errorNoStart).toBe('Custom no start');
             expect(config.errorEndInPast).toBe('Custom end past');
@@ -98,14 +97,14 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('parses defaultFromTime', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'defaultFromTime': [{'value': '09:00'}],
+                defaultFromTime: [{value: '09:00'}],
             });
             expect(config.defaultFromTime).toEqual({hours: 9, minutes: 0});
         });
 
         it('parses defaultToTime', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'defaultToTime': [{'value': '17:30'}],
+                defaultToTime: [{value: '17:30'}],
             });
             expect(config.defaultToTime).toEqual({hours: 17, minutes: 30});
         });
@@ -118,8 +117,8 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('parses placeholders', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'fromPlaceholder': [{'value': 'Enter start'}],
-                'toPlaceholder': [{'value': 'Enter end'}],
+                fromPlaceholder: [{value: 'Enter start'}],
+                toPlaceholder: [{value: 'Enter end'}],
             });
             expect(config.fromPlaceholder).toBe('Enter start');
             expect(config.toPlaceholder).toBe('Enter end');
@@ -127,14 +126,14 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('parses optionalFrom as boolean', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'optionalFrom': [{'value': 'true'}],
+                optionalFrom: [{value: 'true'}],
             });
             expect(config.optionalFrom).toBe(true);
         });
 
         it('optionalFrom is false for empty string', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'optionalFrom': [{'value': ''}],
+                optionalFrom: [{value: ''}],
             });
             expect(config.optionalFrom).toBe(false);
         });
@@ -312,7 +311,7 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('uses custom error messages from config', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'errorNoStart': [{'value': 'Need a start date!'}],
+                errorNoStart: [{value: 'Need a start date!'}],
             });
             const value = makeRangeValue(null, '2025-07-01T18:00');
             const results = DateTimeRangeDescriptor.validate(value, config);
@@ -322,7 +321,7 @@ describe('DateTimeRangeDescriptor', () => {
 
         it('respects optionalFrom from config', () => {
             const config = DateTimeRangeDescriptor.readConfig({
-                'optionalFrom': [{'value': 'true'}],
+                optionalFrom: [{value: 'true'}],
             });
             const value = makeRangeValue(null, '2025-07-01T18:00');
             const results = DateTimeRangeDescriptor.validate(value, config);

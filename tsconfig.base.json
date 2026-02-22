@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "module": "ES2022",
+        "target": "ES2023",
+        "lib": [
+            "ES2023",
+            "DOM"
+        ],
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact",
+        "moduleResolution": "bundler",
+        "moduleDetection": "force",
+        "baseUrl": ".",
+        "allowJs": false,
+        "skipLibCheck": true,
+        "removeComments": true,
+        "useDefineForClassFields": false,
+        "forceConsistentCasingInFileNames": true,
+        "paths": {
+            "react": ["node_modules/preact/compat"],
+            "react-dom": ["node_modules/preact/compat"]
+        }
+    }
+}

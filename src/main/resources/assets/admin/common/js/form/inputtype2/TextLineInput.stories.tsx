@@ -1,11 +1,10 @@
-import type {StoryObj, Meta} from '@storybook/preact-vite';
-
-import {TextLineInput} from './TextLineInput';
+import type {Meta, StoryObj} from '@storybook/preact-vite';
 import {ValueTypes} from '../../data/ValueTypes';
 import {InputBuilder} from '../Input';
 import {InputTypeName} from '../InputTypeName';
 import {OccurrencesBuilder} from '../Occurrences';
 import type {TextLineConfig} from './descriptor/InputTypeConfig';
+import {TextLineInput} from './TextLineInput';
 import type {InputTypeComponentProps} from './types';
 
 function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {
@@ -47,7 +46,7 @@ type Story = StoryObj<InputTypeComponentProps<TextLineConfig>>;
 
 const defaultArgs: InputTypeComponentProps<TextLineConfig> = {
     value: ValueTypes.STRING.newNullValue(),
-    onChange: (v) => console.log('onChange', v.getString()),
+    onChange: v => console.log('onChange', v.getString()),
     config: makeConfig(),
     input: makeInput(),
     enabled: true,

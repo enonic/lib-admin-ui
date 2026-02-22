@@ -3,9 +3,9 @@ import type {JSX} from 'preact';
 
 import {ValueTypes} from '../../data/ValueTypes';
 import {i18n} from '../../util/Messages';
-import {getFirstError} from './types';
-import type {InputTypeComponentProps} from './types';
 import type {TextLineConfig} from './descriptor/InputTypeConfig';
+import type {InputTypeComponentProps} from './types';
+import {getFirstError} from './types';
 
 export function getCounterDescription(length: number, config: TextLineConfig): string | undefined {
     const hasMaxLength = config.maxLength > 0;
@@ -27,7 +27,12 @@ export function getCounterDescription(length: number, config: TextLineConfig): s
 }
 
 export function TextLineInput({
-    value, onChange, onBlur, config, enabled, errors,
+    value,
+    onChange,
+    onBlur,
+    config,
+    enabled,
+    errors,
 }: InputTypeComponentProps<TextLineConfig>) {
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
 

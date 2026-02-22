@@ -1,6 +1,6 @@
 import type {ComponentType} from 'react';
-import type {Input} from '../Input';
 import type {Value} from '../../data/Value';
+import type {Input} from '../Input';
 import type {InputTypeConfig} from './descriptor/InputTypeConfig';
 import type {ValidationResult} from './descriptor/ValidationResult';
 

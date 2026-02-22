@@ -1,7 +1,7 @@
-import path from 'path';
-import {fileURLToPath} from 'url';
-import tailwindcss from '@tailwindcss/vite';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import type {StorybookConfig} from '@storybook/preact-vite';
+import tailwindcss from '@tailwindcss/vite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const preactPath = path.resolve(__dirname, '../node_modules/preact');
@@ -13,8 +13,8 @@ const config: StorybookConfig = {
     viteFinal(config) {
         config.resolve ??= {};
         config.resolve.alias = {
-            ...config.resolve.alias as Record<string, string>,
-            'react': path.join(preactPath, 'compat'),
+            ...(config.resolve.alias as Record<string, string>),
+            react: path.join(preactPath, 'compat'),
             'react-dom': path.join(preactPath, 'compat'),
             'react/jsx-runtime': path.join(preactPath, 'jsx-runtime'),
             'react/jsx-dev-runtime': path.join(preactPath, 'jsx-dev-runtime'),

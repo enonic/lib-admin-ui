@@ -1,15 +1,14 @@
 import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
+import type {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {TextLineDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/TextLineDescriptor';
-import {TextLineConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
-    i18n: (key: string, ...args: unknown[]) => `#${key}#`,
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 
 describe('TextLineDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns STRING', () => {
             expect(TextLineDescriptor.getValueType()).toBe(ValueTypes.STRING);
@@ -18,18 +17,18 @@ describe('TextLineDescriptor', () => {
 
     describe('readConfig', () => {
         it('parses regexp from config', () => {
-            const config = TextLineDescriptor.readConfig({'regexp': [{'value': '^[A-Z]+$'}]});
+            const config = TextLineDescriptor.readConfig({regexp: [{value: '^[A-Z]+$'}]});
             expect(config.regexp).toBeInstanceOf(RegExp);
-            expect(config.regexp!.source).toBe('^[A-Z]+$');
+            expect(config.regexp?.source).toBe('^[A-Z]+$');
         });
 
         it('parses maxLength from config', () => {
-            const config = TextLineDescriptor.readConfig({'maxLength': [{'value': 100}]});
+            const config = TextLineDescriptor.readConfig({maxLength: [{value: 100}]});
             expect(config.maxLength).toBe(100);
         });
 
         it('parses showCounter boolean', () => {
-            const config = TextLineDescriptor.readConfig({'showCounter': [{'value': true}]});
+            const config = TextLineDescriptor.readConfig({showCounter: [{value: true}]});
             expect(config.showCounter).toBe(true);
         });
 
@@ -41,34 +40,34 @@ describe('TextLineDescriptor', () => {
         });
 
         it('handles missing keys gracefully', () => {
-            const config = TextLineDescriptor.readConfig({'maxLength': [{'value': 50}]});
+            const config = TextLineDescriptor.readConfig({maxLength: [{value: 50}]});
             expect(config.regexp).toBeNull();
             expect(config.maxLength).toBe(50);
             expect(config.showCounter).toBe(false);
         });
 
         it('returns maxLength -1 when value is 0', () => {
-            const config = TextLineDescriptor.readConfig({'maxLength': [{'value': 0}]});
+            const config = TextLineDescriptor.readConfig({maxLength: [{value: 0}]});
             expect(config.maxLength).toBe(-1);
         });
 
         it('returns maxLength -1 when value is negative', () => {
-            const config = TextLineDescriptor.readConfig({'maxLength': [{'value': -5}]});
+            const config = TextLineDescriptor.readConfig({maxLength: [{value: -5}]});
             expect(config.maxLength).toBe(-1);
         });
 
         it('returns regexp null when value is blank', () => {
-            const config = TextLineDescriptor.readConfig({'regexp': [{'value': '  '}]});
+            const config = TextLineDescriptor.readConfig({regexp: [{value: '  '}]});
             expect(config.regexp).toBeNull();
         });
 
         it('returns regexp null when value is empty string', () => {
-            const config = TextLineDescriptor.readConfig({'regexp': [{'value': ''}]});
+            const config = TextLineDescriptor.readConfig({regexp: [{value: ''}]});
             expect(config.regexp).toBeNull();
         });
 
         it('returns regexp null when value is missing', () => {
-            const config = TextLineDescriptor.readConfig({'regexp': [{}]});
+            const config = TextLineDescriptor.readConfig({regexp: [{}]});
             expect(config.regexp).toBeNull();
         });
     });
@@ -154,14 +153,14 @@ describe('TextLineDescriptor', () => {
 
     describe('readConfig → validate integration', () => {
         it('rejects value exceeding maxLength parsed from config', () => {
-            const config = TextLineDescriptor.readConfig({'maxLength': [{'value': 5}]});
+            const config = TextLineDescriptor.readConfig({maxLength: [{value: 5}]});
             const results = TextLineDescriptor.validate(ValueTypes.STRING.newValue('toolong'), config);
             expect(results).toHaveLength(1);
             expect(results[0].message).toContain('field.value.breaks.maxlength');
         });
 
         it('rejects value not matching regexp parsed from config', () => {
-            const config = TextLineDescriptor.readConfig({'regexp': [{'value': '^[A-Z]+$'}]});
+            const config = TextLineDescriptor.readConfig({regexp: [{value: '^[A-Z]+$'}]});
             const results = TextLineDescriptor.validate(ValueTypes.STRING.newValue('lower'), config);
             expect(results).toHaveLength(1);
             expect(results[0].message).toContain('field.value.invalid');
@@ -174,7 +173,7 @@ describe('TextLineDescriptor', () => {
         });
 
         it('treats maxLength 0 as unlimited (sentinel -1)', () => {
-            const config = TextLineDescriptor.readConfig({'maxLength': [{'value': 0}]});
+            const config = TextLineDescriptor.readConfig({maxLength: [{value: 0}]});
             const results = TextLineDescriptor.validate(ValueTypes.STRING.newValue('a'.repeat(1000)), config);
             expect(results).toEqual([]);
         });
@@ -183,7 +182,7 @@ describe('TextLineDescriptor', () => {
     describe('readConfig edge cases', () => {
         it('throws on invalid regexp pattern', () => {
             expect(() => {
-                TextLineDescriptor.readConfig({'regexp': [{'value': '(unclosed'}]});
+                TextLineDescriptor.readConfig({regexp: [{value: '(unclosed'}]});
             }).toThrow();
         });
     });

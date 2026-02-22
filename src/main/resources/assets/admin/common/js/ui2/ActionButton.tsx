@@ -1,7 +1,7 @@
 import * as UI from '@enonic/ui';
 import {render} from 'react-dom';
 import {BrowserHelper} from '../BrowserHelper';
-import {Action} from '../ui/Action';
+import type {Action} from '../ui/Action';
 import {LegacyElement} from './LegacyElement';
 
 export type ActionButtonProps<T extends Action> = {
@@ -11,22 +11,24 @@ export type ActionButtonProps<T extends Action> = {
     endIcon?: UI.LucideIcon;
 } & Omit<UI.ButtonProps, 'label' | 'title' | 'disabled'>;
 
-export type ActionProps = Pick<UI.ButtonProps, 'className' |'label' | 'title' | 'disabled' >;
+export type ActionProps = Pick<UI.ButtonProps, 'className' | 'label' | 'title' | 'disabled'>;
 
 export class ActionButton<T extends Action = Action> extends LegacyElement<typeof UI.Button> {
-
     private actionProps: ActionButtonProps<T>;
 
     constructor(props: ActionButtonProps<T>) {
         const {className, action, ...rest} = props;
-        super({
-            onClick: () => {
-                this.giveFocus();
-                this.actionProps.action.execute();
+        super(
+            {
+                onClick: () => {
+                    this.giveFocus();
+                    this.actionProps.action.execute();
+                },
+                ...rest,
+                ...createPropsFromAction(props),
             },
-            ...rest,
-            ...createPropsFromAction(props),
-        }, UI.Button);
+            UI.Button,
+        );
 
         this.actionProps = props;
 
@@ -35,7 +37,7 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
 
     private updateProps = () => {
         this.setProps(createPropsFromAction(this.actionProps));
-    }
+    };
 
     // * Backward compatibility methods
 
@@ -63,10 +65,10 @@ export class ActionButton<T extends Action = Action> extends LegacyElement<typeo
         render(
             <UI.IdProvider prefix={this.getPrefix()}>
                 {/* <UI.Tooltip value={unwrap(props.title)}> */}
-                    <ActionButtonComponent {...props} />
+                <ActionButtonComponent {...props} />
                 {/* </UI.Tooltip> */}
             </UI.IdProvider>,
-            this.getHTMLElement()
+            this.getHTMLElement(),
         );
     }
 }

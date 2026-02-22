@@ -2,10 +2,9 @@ import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import {DoubleDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DoubleDescriptor';
-import {NumberConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
+import type {NumberConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 
 describe('DoubleDescriptor', () => {
-
     describe('getValueType', () => {
         it('returns DOUBLE', () => {
             expect(DoubleDescriptor.getValueType()).toBe(ValueTypes.DOUBLE);
@@ -15,8 +14,8 @@ describe('DoubleDescriptor', () => {
     describe('readConfig', () => {
         it('parses min and max from config', () => {
             const config = DoubleDescriptor.readConfig({
-                'min': [{'value': -10.5}],
-                'max': [{'value': 100.5}],
+                min: [{value: -10.5}],
+                max: [{value: 100.5}],
             });
             expect(config.min).toBe(-10.5);
             expect(config.max).toBe(100.5);
@@ -29,19 +28,19 @@ describe('DoubleDescriptor', () => {
         });
 
         it('handles only min set', () => {
-            const config = DoubleDescriptor.readConfig({'min': [{'value': 0}]});
+            const config = DoubleDescriptor.readConfig({min: [{value: 0}]});
             expect(config.min).toBe(0);
             expect(config.max).toBeNull();
         });
 
         it('handles only max set', () => {
-            const config = DoubleDescriptor.readConfig({'max': [{'value': 99.9}]});
+            const config = DoubleDescriptor.readConfig({max: [{value: 99.9}]});
             expect(config.min).toBeNull();
             expect(config.max).toBe(99.9);
         });
 
         it('handles missing value key in entry', () => {
-            const config = DoubleDescriptor.readConfig({'min': [{}]});
+            const config = DoubleDescriptor.readConfig({min: [{}]});
             expect(config.min).toBeNull();
         });
     });
@@ -173,14 +172,14 @@ describe('DoubleDescriptor', () => {
 
     describe('readConfig → validate integration', () => {
         it('rejects value below min parsed from config', () => {
-            const config = DoubleDescriptor.readConfig({'min': [{'value': 10}]});
+            const config = DoubleDescriptor.readConfig({min: [{value: 10}]});
             const results = DoubleDescriptor.validate(ValueTypes.DOUBLE.fromJsonValue(5), config);
             expect(results).toHaveLength(1);
             expect(results[0].message).toContain('at least');
         });
 
         it('rejects value above max parsed from config', () => {
-            const config = DoubleDescriptor.readConfig({'max': [{'value': 100}]});
+            const config = DoubleDescriptor.readConfig({max: [{value: 100}]});
             const results = DoubleDescriptor.validate(ValueTypes.DOUBLE.fromJsonValue(200), config);
             expect(results).toHaveLength(1);
             expect(results[0].message).toContain('at most');

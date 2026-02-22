@@ -1,26 +1,29 @@
 import {describe, expect, it, vi} from 'vitest';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
-import {Occurrences} from '../../main/resources/assets/admin/common/js/form/Occurrences';
+import {CheckboxDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/CheckboxDescriptor';
+import {DoubleDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DoubleDescriptor';
+import type {
+    CheckboxConfig,
+    NumberConfig,
+    TextLineConfig,
+} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
 import {OccurrenceManager} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/OccurrenceManager';
 import {TextLineDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/TextLineDescriptor';
-import {TextLineConfig, CheckboxConfig, NumberConfig} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/InputTypeConfig';
-import {DoubleDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/DoubleDescriptor';
-import {CheckboxDescriptor} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/CheckboxDescriptor';
+import {Occurrences} from '../../main/resources/assets/admin/common/js/form/Occurrences';
 
 vi.mock('../../main/resources/assets/admin/common/js/util/Messages', () => ({
-    i18n: (key: string, ...args: unknown[]) => `#${key}#`,
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
 }));
 
 function createManager(opts: {min?: number; max?: number; values?: string[]} = {}) {
     const {min = 0, max = 0, values = []} = opts;
     const occurrences = Occurrences.minmax(min, max);
     const config = TextLineDescriptor.readConfig({});
-    const initialValues = values.map((v) => ValueTypes.STRING.newValue(v));
+    const initialValues = values.map(v => ValueTypes.STRING.newValue(v));
     return new OccurrenceManager<TextLineConfig>(occurrences, TextLineDescriptor, config, initialValues);
 }
 
 describe('OccurrenceManager', () => {
-
     describe('constructor', () => {
         it('initializes with given values', () => {
             const mgr = createManager({values: ['a', 'b']});
@@ -98,25 +101,25 @@ describe('OccurrenceManager', () => {
         it('reorders values forward', () => {
             const mgr = createManager({values: ['a', 'b', 'c']});
             mgr.move(0, 2);
-            expect(mgr.getValues().map((v) => v.getString())).toEqual(['b', 'c', 'a']);
+            expect(mgr.getValues().map(v => v.getString())).toEqual(['b', 'c', 'a']);
         });
 
         it('reorders values backward', () => {
             const mgr = createManager({values: ['a', 'b', 'c']});
             mgr.move(2, 0);
-            expect(mgr.getValues().map((v) => v.getString())).toEqual(['c', 'a', 'b']);
+            expect(mgr.getValues().map(v => v.getString())).toEqual(['c', 'a', 'b']);
         });
 
         it('does nothing for same index', () => {
             const mgr = createManager({values: ['a', 'b']});
             mgr.move(0, 0);
-            expect(mgr.getValues().map((v) => v.getString())).toEqual(['a', 'b']);
+            expect(mgr.getValues().map(v => v.getString())).toEqual(['a', 'b']);
         });
 
         it('does nothing for out-of-bounds', () => {
             const mgr = createManager({values: ['a', 'b']});
             mgr.move(0, 5);
-            expect(mgr.getValues().map((v) => v.getString())).toEqual(['a', 'b']);
+            expect(mgr.getValues().map(v => v.getString())).toEqual(['a', 'b']);
         });
     });
 
@@ -184,7 +187,7 @@ describe('OccurrenceManager', () => {
             // Manually set more values than max allows for validation purposes
             const occurrences = Occurrences.minmax(0, 2);
             const config = TextLineDescriptor.readConfig({});
-            const values = ['a', 'b', 'c'].map((v) => ValueTypes.STRING.newValue(v));
+            const values = ['a', 'b', 'c'].map(v => ValueTypes.STRING.newValue(v));
             const mgr = new OccurrenceManager<TextLineConfig>(occurrences, TextLineDescriptor, config, values);
             const state = mgr.validate();
             expect(state.isMaximumBreached).toBe(true);
@@ -193,10 +196,7 @@ describe('OccurrenceManager', () => {
         it('per-occurrence validation results from descriptor', () => {
             const occurrences = Occurrences.minmax(0, 0);
             const config: TextLineConfig = {regexp: /^[0-9]+$/, maxLength: -1, showCounter: false};
-            const values = [
-                ValueTypes.STRING.newValue('123'),
-                ValueTypes.STRING.newValue('abc'),
-            ];
+            const values = [ValueTypes.STRING.newValue('123'), ValueTypes.STRING.newValue('abc')];
             const mgr = new OccurrenceManager<TextLineConfig>(occurrences, TextLineDescriptor, config, values);
             const state = mgr.validate();
 
@@ -239,7 +239,7 @@ describe('OccurrenceManager', () => {
             const {min = 0, max = 0, values = []} = opts;
             const occurrences = Occurrences.minmax(min, max);
             const config: NumberConfig = {min: null, max: null};
-            const initialValues = values.map((v) => ValueTypes.DOUBLE.fromJsonValue(v));
+            const initialValues = values.map(v => ValueTypes.DOUBLE.fromJsonValue(v));
             return new OccurrenceManager<NumberConfig>(occurrences, DoubleDescriptor, config, initialValues);
         }
 
@@ -269,7 +269,7 @@ describe('OccurrenceManager', () => {
         it('detects maximum breach with double values', () => {
             const occurrences = Occurrences.minmax(0, 2);
             const config: NumberConfig = {min: null, max: null};
-            const values = [1.0, 2.0, 3.0].map((v) => ValueTypes.DOUBLE.fromJsonValue(v));
+            const values = [1.0, 2.0, 3.0].map(v => ValueTypes.DOUBLE.fromJsonValue(v));
             const mgr = new OccurrenceManager<NumberConfig>(occurrences, DoubleDescriptor, config, values);
             const state = mgr.validate();
             expect(state.isMaximumBreached).toBe(true);
@@ -281,7 +281,7 @@ describe('OccurrenceManager', () => {
             const {min = 0, max = 0, values = []} = opts;
             const occurrences = Occurrences.minmax(min, max);
             const config: CheckboxConfig = {alignment: 'LEFT'};
-            const initialValues = values.map((v) => ValueTypes.BOOLEAN.fromJsonValue(v));
+            const initialValues = values.map(v => ValueTypes.BOOLEAN.fromJsonValue(v));
             return new OccurrenceManager<CheckboxConfig>(occurrences, CheckboxDescriptor, config, initialValues);
         }
 

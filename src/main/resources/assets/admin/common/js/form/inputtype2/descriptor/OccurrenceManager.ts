@@ -1,16 +1,16 @@
-import {Value} from '../../../data/Value';
-import {Occurrences} from '../../Occurrences';
-import {InputTypeDescriptor} from './InputTypeDescriptor';
-import {InputTypeConfig} from './InputTypeConfig';
-import {ValidationResult} from './ValidationResult';
+import type {Value} from '../../../data/Value';
+import type {Occurrences} from '../../Occurrences';
+import type {InputTypeConfig} from './InputTypeConfig';
+import type {InputTypeDescriptor} from './InputTypeDescriptor';
+import type {ValidationResult} from './ValidationResult';
 
-export interface OccurrenceValidationState {
+export type OccurrenceValidationState = {
     readonly index: number;
     readonly breaksRequired: boolean;
     readonly validationResults: ValidationResult[];
-}
+};
 
-export interface OccurrenceManagerState {
+export type OccurrenceManagerState = {
     readonly values: Value[];
     readonly occurrenceValidation: OccurrenceValidationState[];
     readonly totalValid: number;
@@ -19,7 +19,7 @@ export interface OccurrenceManagerState {
     readonly isValid: boolean;
     readonly canAdd: boolean;
     readonly canRemove: boolean;
-}
+};
 
 /**
  * Pure state manager for input occurrences.
@@ -28,7 +28,6 @@ export interface OccurrenceManagerState {
  * No DOM dependency — can be consumed by React hooks or legacy code.
  */
 export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
-
     private readonly occurrences: Occurrences;
     private readonly descriptor: InputTypeDescriptor<C>;
     private readonly config: C;
@@ -74,9 +73,13 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
     }
 
     move(fromIndex: number, toIndex: number): void {
-        if (fromIndex < 0 || fromIndex >= this.values.length ||
-            toIndex < 0 || toIndex >= this.values.length ||
-            fromIndex === toIndex) {
+        if (
+            fromIndex < 0 ||
+            fromIndex >= this.values.length ||
+            toIndex < 0 ||
+            toIndex >= this.values.length ||
+            fromIndex === toIndex
+        ) {
             return;
         }
 
@@ -116,7 +119,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         });
 
         const totalValid = occurrenceValidation.filter(
-            (ov) => !ov.breaksRequired && ov.validationResults.length === 0,
+            ov => !ov.breaksRequired && ov.validationResults.length === 0,
         ).length;
 
         const isMinimumBreached = this.occurrences.minimumBreached(totalValid);
@@ -128,8 +131,10 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
             totalValid,
             isMinimumBreached,
             isMaximumBreached,
-            isValid: !isMinimumBreached && !isMaximumBreached &&
-                     occurrenceValidation.every((ov) => ov.validationResults.length === 0),
+            isValid:
+                !isMinimumBreached &&
+                !isMaximumBreached &&
+                occurrenceValidation.every(ov => ov.validationResults.length === 0),
             canAdd: this.canAdd(),
             canRemove: this.canRemove(),
         };
