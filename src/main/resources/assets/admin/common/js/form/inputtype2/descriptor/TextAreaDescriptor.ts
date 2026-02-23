@@ -14,14 +14,12 @@ export const TextAreaDescriptor: InputTypeDescriptor<TextAreaConfig> = {
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): TextAreaConfig {
-        const maxLengthEntry = raw.maxLength?.[0] ?? {};
-        const maxLengthVal = maxLengthEntry.value as number;
-
-        const showCounterEntry = raw.showCounter?.[0] ?? {};
+        const maxLengthVal = Number(raw.maxLength?.[0]?.value);
+        const showCounter = (raw.showCounter?.[0]?.value as boolean) || false;
 
         return {
             maxLength: maxLengthVal > 0 ? maxLengthVal : -1,
-            showCounter: (showCounterEntry.value as boolean) || false,
+            showCounter,
         };
     },
 

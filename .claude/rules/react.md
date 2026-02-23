@@ -206,6 +206,67 @@ const withAuth = <P,>(Component: React.ComponentType<P>) => {
 - For foundational/composable components, expose `'data-component'?: string` in props so callers can override it
 - `data-component` should be placed before spread props (`{...props}`) so it is not accidentally overridden unless explicitly intended
 
+## Composable Components
+
+Use the `Object.assign` pattern to create composable components with dot-notation API (e.g., `OccurrenceList.Item`). This follows the same conventions as `@enonic/ui` (Dialog, TreeList, Menu, etc.).
+
+### Naming Conventions
+
+| Entity | Pattern | Example |
+|--------|---------|---------|
+| Root component | `{Name}Root` | `ListRoot` |
+| Subcomponents | `{Name}{Sub}` | `ListItem` |
+| Composed export | `{Name}` | `List` |
+| Root props type | `{Name}RootProps` | `ListRootProps` |
+| Subcomponent props type | `{Name}{Sub}Props` | `ListItemProps` |
+
+### Display Names
+
+Use dot notation for `displayName` values:
+
+```typescript
+const LIST_ROOT_NAME = 'List.Root';
+const LIST_ITEM_NAME = 'List.Item';
+
+ListRoot.displayName = LIST_ROOT_NAME;
+ListItem.displayName = LIST_ITEM_NAME;
+```
+
+### `data-component`
+
+Use the base name (no `.Root` suffix) on the root element:
+
+```typescript
+const LIST_NAME = 'List';
+
+// Inside ListRoot:
+<div data-component={LIST_NAME}>...</div>
+```
+
+### Composition with Object.assign
+
+Attach subcomponents and re-export root as `.Root`:
+
+```typescript
+// Root also available as .Root for explicit usage
+export const List = Object.assign(ListRoot, {
+    Root: ListRoot,
+    Item: ListItem,
+});
+```
+
+### Exports
+
+Export composed component and all public prop types from `index.ts`:
+
+```typescript
+export {List, type ListItemProps, type ListRootProps} from './List';
+```
+
+### Internal Subcomponents
+
+Subcomponents that are not attached to the composed export (e.g., `ListSortableItem`) are internal-only and get no `displayName`.
+
 ## useEffect Best Practices
 
 ```typescript

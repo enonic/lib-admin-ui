@@ -2,19 +2,20 @@ import {closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, 
 import {SortableContext, useSortable, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {Button, cn, IconButton} from '@enonic/ui';
 import {GripVertical, Plus, X} from 'lucide-react';
-import type {ReactElement} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 
 import type {Value} from '../../data/Value';
 import type {Input} from '../Input';
 import type {InputTypeConfig} from './descriptor/InputTypeConfig';
 import type {OccurrenceManagerState} from './descriptor/OccurrenceManager';
+import {useI18n} from './I18nContext';
 import type {InputTypeComponent} from './types';
 
 //
 // * Types
 //
 
-export type OccurrenceListProps<C extends InputTypeConfig = InputTypeConfig> = {
+export type OccurrenceListRootProps<C extends InputTypeConfig = InputTypeConfig> = {
     Component: InputTypeComponent<C>;
     state: OccurrenceManagerState;
     onAdd: () => void;
@@ -27,50 +28,95 @@ export type OccurrenceListProps<C extends InputTypeConfig = InputTypeConfig> = {
     enabled: boolean;
 };
 
-//
-// * Helpers
-//
-
-function toTransformCSS(transform: {x: number; y: number; scaleX: number; scaleY: number} | null): string | undefined {
-    if (transform == null) return undefined;
-    return `translate3d(${Math.round(transform.x)}px, ${Math.round(transform.y)}px, 0)`;
-}
-
-//
-// * SortableItem
-//
-
-type ItemRowProps<C extends InputTypeConfig = InputTypeConfig> = {
+type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig> = {
     Component: InputTypeComponent<C>;
-    id: string;
     value: Value;
     index: number;
     config: C;
     input: Input;
     enabled: boolean;
     errors: OccurrenceManagerState['occurrenceValidation'][number];
-    showDrag: boolean;
     showRemove: boolean;
     onChange: (index: number, value: Value) => void;
     onBlur?: (index: number) => void;
     onRemove: (index: number) => void;
 };
 
-const SortableItem = <C extends InputTypeConfig = InputTypeConfig>({
+type OccurrenceListItemProps<C extends InputTypeConfig = InputTypeConfig> = OccurrenceListItemContentProps<C> & {
+    id: string;
+    showDrag: boolean;
+};
+
+//
+// * Helpers
+//
+
+// ? Scale is intentionally omitted — @dnd-kit/utilities CSS.Transform is not a direct dependency
+function toTransformCSS(transform: {x: number; y: number; scaleX: number; scaleY: number} | null): string | undefined {
+    if (transform == null) return undefined;
+    return `translate3d(${Math.round(transform.x)}px, ${Math.round(transform.y)}px, 0)`;
+}
+
+//
+// * OccurrenceListItemContent
+//
+
+const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>({
     Component,
-    id,
     value,
     index,
     config,
     input,
     enabled,
     errors,
-    showDrag,
     showRemove,
     onChange,
     onBlur,
     onRemove,
-}: ItemRowProps<C>): ReactElement => {
+}: OccurrenceListItemContentProps<C>): ReactNode => {
+    const t = useI18n();
+
+    return (
+        <>
+            <div className='min-w-0 flex-1'>
+                <Component
+                    value={value}
+                    onChange={(v: Value) => onChange(index, v)}
+                    onBlur={onBlur ? () => onBlur(index) : undefined}
+                    config={config}
+                    input={input}
+                    enabled={enabled}
+                    index={index}
+                    errors={errors.validationResults}
+                />
+            </div>
+            {showRemove && (
+                <IconButton
+                    icon={X}
+                    iconSize='lg'
+                    variant='text'
+                    className='size-8'
+                    disabled={!enabled}
+                    aria-label={t('field.occurrence.action.remove')}
+                    onClick={() => onRemove(index)}
+                />
+            )}
+        </>
+    );
+};
+
+//
+// * OccurrenceListSortableItem
+//
+
+const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>({
+    id,
+    enabled,
+    showDrag,
+    showRemove,
+    ...contentProps
+}: OccurrenceListItemProps<C>): ReactElement => {
+    const t = useI18n();
     const {attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging} = useSortable({
         id,
     });
@@ -113,93 +159,37 @@ const SortableItem = <C extends InputTypeConfig = InputTypeConfig>({
                     )}
                     tabIndex={-1}
                     disabled={!enabled}
-                    aria-label='Drag to reorder'
+                    aria-label={t('field.occurrence.action.reorder')}
                     {...listeners}
                 >
                     <GripVertical className='size-5' />
                 </button>
             )}
-            <div className='min-w-0 flex-1'>
-                <Component
-                    value={value}
-                    onChange={(v: Value) => onChange(index, v)}
-                    onBlur={onBlur ? () => onBlur(index) : undefined}
-                    config={config}
-                    input={input}
-                    enabled={enabled}
-                    index={index}
-                    errors={errors.validationResults}
-                />
-            </div>
-            {showRemove && (
-                <IconButton
-                    icon={X}
-                    iconSize='lg'
-                    variant='text'
-                    className='size-8'
-                    disabled={!enabled}
-                    aria-label='Remove occurrence'
-                    onClick={() => onRemove(index)}
-                />
-            )}
+            <OccurrenceListItemContent enabled={enabled} showRemove={showRemove} {...contentProps} />
         </div>
     );
 };
 
 //
-// * StaticItem
+// * OccurrenceListItem
 //
 
-const StaticItem = <C extends InputTypeConfig = InputTypeConfig>({
-    Component,
-    value,
-    index,
-    config,
-    input,
-    enabled,
-    errors,
-    showDrag: _showDrag,
-    showRemove,
-    onChange,
-    onBlur,
-    onRemove,
-}: ItemRowProps<C>): ReactElement => {
-    return (
-        <div className={cn('flex items-center gap-2', showRemove && 'pr-2')}>
-            <div className='min-w-0 flex-1'>
-                <Component
-                    value={value}
-                    onChange={(v: Value) => onChange(index, v)}
-                    onBlur={onBlur ? () => onBlur(index) : undefined}
-                    config={config}
-                    input={input}
-                    enabled={enabled}
-                    index={index}
-                    errors={errors.validationResults}
-                />
-            </div>
-            {showRemove && (
-                <IconButton
-                    icon={X}
-                    iconSize='lg'
-                    variant='text'
-                    className='size-8'
-                    disabled={!enabled}
-                    aria-label='Remove occurrence'
-                    onClick={() => onRemove(index)}
-                />
-            )}
-        </div>
-    );
-};
+const OccurrenceListItem = <C extends InputTypeConfig = InputTypeConfig>(
+    props: OccurrenceListItemContentProps<C>,
+): ReactElement => (
+    <div className={cn('flex items-center gap-2', props.showRemove && 'pr-2')}>
+        <OccurrenceListItemContent {...props} />
+    </div>
+);
 
 //
-// * OccurrenceList
+// * OccurrenceListRoot
 //
 
 const OCCURRENCE_LIST_NAME = 'OccurrenceList';
+const OCCURRENCE_LIST_ROOT_NAME = 'OccurrenceList.Root';
 
-export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
+const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     Component,
     state,
     onAdd,
@@ -210,7 +200,8 @@ export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
     config,
     input,
     enabled,
-}: OccurrenceListProps<C>): ReactElement => {
+}: OccurrenceListRootProps<C>): ReactElement => {
+    const t = useI18n();
     const occurrences = input.getOccurrences();
     const min = occurrences.getMinimum();
     const max = occurrences.getMaximum();
@@ -222,6 +213,7 @@ export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
     const sensors = useSensors(useSensor(PointerSensor, {activationConstraint: {distance: 5}}));
 
     // Single mode: render component bare
+    // ? Minimum occurrences are eagerly populated in useOccurrenceManager, so values[0] is always present
     if (isSingle) {
         const value = state.values[0];
         const errors = state.occurrenceValidation[0];
@@ -253,16 +245,14 @@ export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
         onMove(oldIndex, newIndex);
     };
 
-    const itemProps = (index: number): ItemRowProps<C> => ({
+    const contentProps = (index: number): OccurrenceListItemContentProps<C> => ({
         Component,
-        id: state.ids[index],
         value: state.values[index],
         index,
         config,
         input,
         enabled,
         errors: state.occurrenceValidation[index],
-        showDrag,
         showRemove: state.canRemove && !isFixed,
         onChange,
         onBlur,
@@ -276,7 +266,7 @@ export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
             iconSize={16}
             iconStrokeWidth={1.75}
             endIcon={Plus}
-            label='Add'
+            label={t('action.add')}
             className='w-fit self-end'
             onClick={onAdd}
             disabled={!enabled}
@@ -290,7 +280,12 @@ export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
                     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={state.ids} strategy={verticalListSortingStrategy}>
                             {state.values.map((_, i) => (
-                                <SortableItem key={state.ids[i]} {...itemProps(i)} />
+                                <OccurrenceListSortableItem
+                                    key={state.ids[i]}
+                                    id={state.ids[i]}
+                                    showDrag={showDrag}
+                                    {...contentProps(i)}
+                                />
                             ))}
                         </SortableContext>
                     </DndContext>
@@ -304,7 +299,7 @@ export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
         <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
             <div className='flex flex-col gap-y-2.5'>
                 {state.values.map((_, i) => (
-                    <StaticItem key={state.ids[i]} {...itemProps(i)} />
+                    <OccurrenceListItem key={state.ids[i]} {...contentProps(i)} />
                 ))}
             </div>
             {addButton}
@@ -312,5 +307,8 @@ export const OccurrenceList = <C extends InputTypeConfig = InputTypeConfig>({
     );
 };
 
-OccurrenceList.displayName = OCCURRENCE_LIST_NAME;
-OccurrenceList.Item = StaticItem;
+OccurrenceListRoot.displayName = OCCURRENCE_LIST_ROOT_NAME;
+
+export const OccurrenceList = Object.assign(OccurrenceListRoot, {
+    Root: OccurrenceListRoot,
+});

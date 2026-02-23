@@ -18,8 +18,3 @@ export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig>
 
 /** The shape stored in ComponentRegistry: a Preact functional or class component. */
 export type InputTypeComponent<C extends InputTypeConfig = InputTypeConfig> = ComponentType<InputTypeComponentProps<C>>;
-
-/** Extract first error message from validation results. */
-export function getFirstError(errors: ValidationResult[]): string | undefined {
-    return errors.length > 0 ? errors[0].message : undefined;
-}

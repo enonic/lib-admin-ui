@@ -5,7 +5,7 @@ import {ValueTypes} from '../../data/ValueTypes';
 import {CounterDescription} from './CounterDescription';
 import type {TextLineConfig} from './descriptor/InputTypeConfig';
 import type {InputTypeComponentProps} from './types';
-import {getFirstError} from './types';
+import {getFirstError} from './utils';
 
 const TEXT_LINE_INPUT_NAME = 'TextLineInput';
 

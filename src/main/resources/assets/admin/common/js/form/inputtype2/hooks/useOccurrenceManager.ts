@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 import type {Value} from '../../../data/Value';
 import type {Occurrences} from '../../Occurrences';
@@ -10,6 +10,7 @@ type UseOccurrenceManagerParams<C extends InputTypeConfig = InputTypeConfig> = {
     occurrences: Occurrences;
     descriptor: InputTypeDescriptor<C>;
     config: C;
+    /** One-time seed values for construction. Not reactive — use `sync()` to push updates after mount. */
     initialValues: Value[];
 };
 
@@ -19,6 +20,7 @@ type UseOccurrenceManagerResult = {
     remove: (index: number) => void;
     move: (fromIndex: number, toIndex: number) => void;
     set: (index: number, value: Value) => void;
+    sync: (values: Value[]) => void;
 };
 
 export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig>({
@@ -28,12 +30,22 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     initialValues,
 }: UseOccurrenceManagerParams<C>): UseOccurrenceManagerResult {
     // biome-ignore lint/correctness/useExhaustiveDependencies: initialValues consumed only on construction
-    const manager = useMemo(
-        () => new OccurrenceManager<C>(occurrences, descriptor, config, initialValues),
-        [occurrences, descriptor, config],
-    );
+    const manager = useMemo(() => {
+        const m = new OccurrenceManager<C>(occurrences, descriptor, config, initialValues);
+
+        // Eagerly fill to minimum so the first render already has values
+        while (m.getCount() < occurrences.getMinimum()) {
+            m.add();
+        }
+
+        return m;
+    }, [occurrences, descriptor, config]);
 
     const [state, setState] = useState<OccurrenceManagerState>(() => manager.validate());
+
+    useEffect(() => {
+        setState(manager.validate());
+    }, [manager]);
 
     const add = useCallback(() => {
         manager.add();
@@ -64,5 +76,13 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
         [manager],
     );
 
-    return {state, add, remove, move, set};
+    const sync = useCallback(
+        (values: Value[]) => {
+            manager.setValues(values);
+            setState(manager.validate());
+        },
+        [manager],
+    );
+
+    return {state, add, remove, move, set, sync};
 }

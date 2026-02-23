@@ -17,7 +17,7 @@ function createManager(opts: {min?: number; max?: number; values?: string[]} = {
     return new OccurrenceManager<TextLineConfig>(occurrences, TextLineDescriptor, config, initialValues);
 }
 
-describe('useOccurrenceManager state transitions', () => {
+describe('OccurrenceManager', () => {
     describe('add + validate', () => {
         it('should update state after adding an occurrence', () => {
             // Arrange
@@ -202,19 +202,42 @@ describe('useOccurrenceManager state transitions', () => {
             expect(after).toEqual(before);
         });
 
-        it('should regenerate all IDs on setValues', () => {
+        it('should preserve existing IDs and generate new ones for added positions on setValues', () => {
             // Arrange
             const manager = createManager({values: ['a', 'b']});
             const before = manager.validate().ids;
 
-            // Act
+            // Act — same length: IDs preserved
             manager.setValues([ValueTypes.STRING.newValue('x'), ValueTypes.STRING.newValue('y')]);
-            const after = manager.validate().ids;
+            const sameLengthIds = manager.validate().ids;
 
             // Assert
-            expect(after).toHaveLength(2);
-            expect(after[0]).not.toBe(before[0]);
-            expect(after[1]).not.toBe(before[1]);
+            expect(sameLengthIds).toHaveLength(2);
+            expect(sameLengthIds[0]).toBe(before[0]);
+            expect(sameLengthIds[1]).toBe(before[1]);
+
+            // Act — grow: existing preserved, new one generated
+            manager.setValues([
+                ValueTypes.STRING.newValue('x'),
+                ValueTypes.STRING.newValue('y'),
+                ValueTypes.STRING.newValue('z'),
+            ]);
+            const grownIds = manager.validate().ids;
+
+            // Assert
+            expect(grownIds).toHaveLength(3);
+            expect(grownIds[0]).toBe(before[0]);
+            expect(grownIds[1]).toBe(before[1]);
+            expect(grownIds[2]).not.toBe(before[0]);
+            expect(grownIds[2]).not.toBe(before[1]);
+
+            // Act — shrink: only kept positions preserved
+            manager.setValues([ValueTypes.STRING.newValue('only')]);
+            const shrunkIds = manager.validate().ids;
+
+            // Assert
+            expect(shrunkIds).toHaveLength(1);
+            expect(shrunkIds[0]).toBe(before[0]);
         });
     });
 

@@ -15,18 +15,23 @@ export const TextLineDescriptor: InputTypeDescriptor<TextLineConfig> = {
     },
 
     readConfig(raw: Record<string, Record<string, unknown>[]>): TextLineConfig {
-        const maxLengthEntry = raw.maxLength?.[0] ?? {};
-        const maxLengthVal = maxLengthEntry.value as number;
+        const maxLengthVal = Number(raw.maxLength?.[0]?.value);
+        const showCounter = (raw.showCounter?.[0]?.value as boolean) || false;
 
-        const showCounterEntry = raw.showCounter?.[0] ?? {};
-
-        const regexpEntry = raw.regexp?.[0] ?? {};
-        const regexpStr = regexpEntry.value as string;
+        const regexpStr = raw.regexp?.[0]?.value;
+        let regexp: RegExp | undefined;
+        if (typeof regexpStr === 'string' && !StringHelper.isBlank(regexpStr)) {
+            try {
+                regexp = new RegExp(regexpStr);
+            } catch {
+                console.warn(`TextLine: invalid regexp in config: "${regexpStr}"`);
+            }
+        }
 
         return {
-            regexp: !StringHelper.isBlank(regexpStr) ? new RegExp(regexpStr) : undefined,
+            regexp,
             maxLength: maxLengthVal > 0 ? maxLengthVal : -1,
-            showCounter: (showCounterEntry.value as boolean) || false,
+            showCounter,
         };
     },
 

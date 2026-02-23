@@ -1,5 +1,5 @@
 import type {ReactNode} from 'react';
-import {createContext, useContext} from 'react';
+import {createContext, useContext, useMemo} from 'react';
 import {i18n} from '../../util/Messages';
 
 type I18nFn = (key: string, ...args: unknown[]) => string;
@@ -14,11 +14,15 @@ type I18nProviderProps = {
 const I18N_PROVIDER_NAME = 'I18nProvider';
 
 export const I18nProvider = ({messages, children}: I18nProviderProps): ReactNode => {
-    const translate: I18nFn = (key, ...args) => {
-        const value = messages[key];
-        if (value == null) return `#${key}#`;
-        return value.replace(/{(\d+)}/g, (_, i: string) => String(args[Number(i)] ?? '')).trim();
-    };
+    const translate: I18nFn = useMemo(
+        () =>
+            (key: string, ...args: unknown[]) => {
+                const value = messages[key];
+                if (value == null) return `#${key}#`;
+                return value.replace(/{(\d+)}/g, (_, i: string) => String(args[Number(i)] ?? '')).trim();
+            },
+        [messages],
+    );
     return <I18nContext.Provider value={translate}>{children}</I18nContext.Provider>;
 };
 

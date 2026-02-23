@@ -2,7 +2,7 @@ import {describe, expect, it} from 'vitest';
 import {Value} from '../../main/resources/assets/admin/common/js/data/Value';
 import {ValueTypes} from '../../main/resources/assets/admin/common/js/data/ValueTypes';
 import type {ValidationResult} from '../../main/resources/assets/admin/common/js/form/inputtype2/descriptor/ValidationResult';
-import {getFirstError} from '../../main/resources/assets/admin/common/js/form/inputtype2/types';
+import {getFirstError} from '../../main/resources/assets/admin/common/js/form/inputtype2/utils';
 
 describe('getFirstError', () => {
     it('should return undefined for empty array', () => {

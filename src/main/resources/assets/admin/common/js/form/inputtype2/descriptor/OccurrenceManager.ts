@@ -56,9 +56,11 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         return [...this.ids];
     }
 
+    // ? No maximum enforcement — reflects external data as-is. Validation reports isMaximumBreached.
     setValues(values: Value[]): void {
+        const oldIds = this.ids;
         this.values = [...values];
-        this.ids = this.values.map(() => this.generateId());
+        this.ids = this.values.map((_, i) => (i < oldIds.length ? oldIds[i] : this.generateId()));
     }
 
     getCount(): number {
@@ -113,10 +115,12 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         this.values[index] = value;
     }
 
+    // ? Uses total count (not totalValid) so UI buttons gate on all values including empty ones
     canAdd(): boolean {
         return !this.isMaximumReached();
     }
 
+    // ? Uses total count (not totalValid) so users can remove invalid/empty occurrences
     canRemove(): boolean {
         return this.values.length > this.occurrences.getMinimum();
     }
@@ -136,6 +140,8 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
             return {index, breaksRequired, validationResults};
         });
 
+        // ? totalValid counts only non-empty, error-free values for validation checks,
+        // ? while canAdd/canRemove use values.length (total) to gate UI buttons
         const totalValid = occurrenceValidation.filter(
             ov => !ov.breaksRequired && ov.validationResults.length === 0,
         ).length;

@@ -180,10 +180,12 @@ describe('TextLineDescriptor', () => {
     });
 
     describe('readConfig edge cases', () => {
-        it('throws on invalid regexp pattern', () => {
-            expect(() => {
-                TextLineDescriptor.readConfig({regexp: [{value: '(unclosed'}]});
-            }).toThrow();
+        it('should return undefined regexp for invalid pattern', () => {
+            // Arrange & Act
+            const config = TextLineDescriptor.readConfig({regexp: [{value: '(unclosed'}]});
+
+            // Assert
+            expect(config.regexp).toBeUndefined();
         });
     });
 

@@ -5,7 +5,7 @@ import {ValueTypes} from '../../data/ValueTypes';
 import {CounterDescription} from './CounterDescription';
 import type {TextAreaConfig} from './descriptor/InputTypeConfig';
 import type {InputTypeComponentProps} from './types';
-import {getFirstError} from './types';
+import {getFirstError} from './utils';
 
 const TEXT_AREA_INPUT_NAME = 'TextAreaInput';
 
