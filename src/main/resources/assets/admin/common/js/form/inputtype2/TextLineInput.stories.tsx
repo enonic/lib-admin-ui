@@ -8,7 +8,7 @@ import {TextLineInput} from './TextLineInput';
 import type {InputTypeComponentProps} from './types';
 
 function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {
-    return {regexp: null, maxLength: -1, showCounter: false, ...overrides};
+    return {regexp: undefined, maxLength: -1, showCounter: false, ...overrides};
 }
 
 function makeInput(): InstanceType<typeof InputBuilder>['build'] extends () => infer R ? R : never {

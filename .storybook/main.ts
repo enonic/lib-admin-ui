@@ -40,6 +40,8 @@ const config: StorybookConfig = {
             'preact/hooks',
             'preact/compat',
             '@enonic/ui',
+            '@dnd-kit/core',
+            '@dnd-kit/sortable',
         ];
 
         config.plugins ??= [];

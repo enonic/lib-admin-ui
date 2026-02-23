@@ -49,3 +49,4 @@ pnpm-debug.log*
 .tmp/
 generated-java/
 .tsbuildinfo
+*.tsbuildinfo
