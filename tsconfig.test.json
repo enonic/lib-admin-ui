@@ -17,7 +17,7 @@
         ]
     },
     "include": [
-        "src/test/**/*.ts"
+        "src/main/resources/assets/admin/common/js/form2/**/*.test.ts"
     ],
     "references": [
         { "path": "./tsconfig.legacy.json" },

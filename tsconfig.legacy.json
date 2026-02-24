@@ -23,6 +23,7 @@
         "src/main/resources/assets/admin/common/js/**/*.tsx"
     ],
     "exclude": [
-        "src/**/*.stories.tsx"
+        "src/**/*.stories.tsx",
+        "src/**/*.test.ts"
     ]
 }

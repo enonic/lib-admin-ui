@@ -4,7 +4,7 @@ import {Store} from './store/Store';
 import {StyleHelper} from './StyleHelper';
 
 // Legacy DivEl input types — register in InputTypeManager via side-effect imports.
-// New React input types (inputtype2/) are NOT imported here. They use Store-backed
+// New React input types (form2/) are NOT imported here. They use Store-backed
 // registries (ComponentRegistry, DescriptorRegistry) and are consumed via the dev JAR.
 import './form/inputtype/checkbox/Checkbox';
 import './form/inputtype/combobox/ComboBox';

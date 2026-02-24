@@ -9,8 +9,6 @@
         "includes": [
             "src/main/resources/assets/admin/common/js/**/*.ts",
             "src/main/resources/assets/admin/common/js/**/*.tsx",
-            "src/test/**/*.ts",
-            "src/test/**/*.tsx",
             ".storybook/**/*.ts",
             ".storybook/**/*.tsx",
             ".storybook/**/*.css",
@@ -119,10 +117,8 @@
         {
             "includes": [
                 "src/main/resources/assets/admin/common/js/**/*.tsx",
-                "src/main/resources/assets/admin/common/js/form/inputtype2/**/*.ts",
+                "src/main/resources/assets/admin/common/js/form2/**/*.ts",
                 "src/main/resources/assets/admin/common/js/ui2/**/*.ts",
-                "src/test/**/*.ts",
-                "src/test/**/*.tsx",
                 ".storybook/**/*.ts",
                 ".storybook/**/*.tsx",
                 ".storybook/**/*.css",
@@ -213,7 +209,7 @@
             }
         },
         {
-            "includes": ["src/test/**/*.ts", "src/test/**/*.tsx"],
+            "includes": ["src/main/resources/assets/admin/common/js/form2/**/*.test.ts"],
             "linter": {
                 "rules": {
                     "suspicious": {

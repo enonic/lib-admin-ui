@@ -2,7 +2,7 @@ import {withThemeByClassName} from '@storybook/addon-themes';
 import type {Preview} from '@storybook/preact-vite';
 import {themes} from 'storybook/theming';
 
-import {I18nProvider} from '../src/main/resources/assets/admin/common/js/form/inputtype2/I18nContext';
+import {I18nProvider} from '../src/main/resources/assets/admin/common/js/form2/I18nContext';
 import {Messages} from '../src/main/resources/assets/admin/common/js/util/Messages';
 import {messages} from './i18n';
 import './storybook.css';

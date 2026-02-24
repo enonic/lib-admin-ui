@@ -20,11 +20,12 @@
     },
     "include": [
         "src/main/resources/assets/admin/common/js/**/*.tsx",
-        "src/main/resources/assets/admin/common/js/form/inputtype2/**/*.ts",
+        "src/main/resources/assets/admin/common/js/form2/**/*.ts",
         "src/main/resources/assets/admin/common/js/ui2/**/*.ts"
     ],
     "exclude": [
-        "src/**/*.stories.tsx"
+        "src/**/*.stories.tsx",
+        "src/**/*.test.ts"
     ],
     "references": [
         { "path": "./tsconfig.legacy.json" }
