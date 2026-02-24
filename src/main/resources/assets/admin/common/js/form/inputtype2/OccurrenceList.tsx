@@ -43,9 +43,15 @@ type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig>
 };
 
 type OccurrenceListItemProps<C extends InputTypeConfig = InputTypeConfig> = OccurrenceListItemContentProps<C> & {
-    id: string;
-    showDrag: boolean;
+    className?: string;
 };
+
+type OccurrenceListSortableItemProps<C extends InputTypeConfig = InputTypeConfig> =
+    OccurrenceListItemContentProps<C> & {
+        id: string;
+        showDrag: boolean;
+        className?: string;
+    };
 
 //
 // * Helpers
@@ -55,6 +61,15 @@ type OccurrenceListItemProps<C extends InputTypeConfig = InputTypeConfig> = Occu
 function toTransformCSS(transform: {x: number; y: number; scaleX: number; scaleY: number} | null): string | undefined {
     if (transform == null) return undefined;
     return `translate3d(${Math.round(transform.x)}px, ${Math.round(transform.y)}px, 0)`;
+}
+
+function restrictToVerticalAxis({transform}: {transform: {x: number; y: number; scaleX: number; scaleY: number}}): {
+    x: number;
+    y: number;
+    scaleX: number;
+    scaleY: number;
+} {
+    return {...transform, x: 0};
 }
 
 //
@@ -114,8 +129,9 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
     enabled,
     showDrag,
     showRemove,
+    className,
     ...contentProps
-}: OccurrenceListItemProps<C>): ReactElement => {
+}: OccurrenceListSortableItemProps<C>): ReactElement => {
     const t = useI18n();
     const {attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging} = useSortable({
         id,
@@ -144,7 +160,8 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
                 '-my-1 py-1',
                 showDrag && 'pl-2',
                 showRemove && 'pr-2',
-                isDragging && 'opacity-50',
+                isDragging && 'bg-surface-neutral shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5',
+                className,
             )}
         >
             {showDrag && (
@@ -174,10 +191,11 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
 // * OccurrenceListItem
 //
 
-const OccurrenceListItem = <C extends InputTypeConfig = InputTypeConfig>(
-    props: OccurrenceListItemContentProps<C>,
-): ReactElement => (
-    <div className={cn('flex items-center gap-2', props.showRemove && 'pr-2')}>
+const OccurrenceListItem = <C extends InputTypeConfig = InputTypeConfig>({
+    className,
+    ...props
+}: OccurrenceListItemProps<C>): ReactElement => (
+    <div className={cn('flex items-center gap-2', props.showRemove && 'pr-2', className)}>
         <OccurrenceListItemContent {...props} />
     </div>
 );
@@ -277,7 +295,12 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         return (
             <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
                 <div className='flex flex-col gap-y-2.5'>
-                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        modifiers={[restrictToVerticalAxis]}
+                        onDragEnd={handleDragEnd}
+                    >
                         <SortableContext items={state.ids} strategy={verticalListSortingStrategy}>
                             {state.values.map((_, i) => (
                                 <OccurrenceListSortableItem
