@@ -8,7 +8,9 @@ export {UnsupportedInput} from './components/unsupported-input';
 // Descriptor system
 export {DescriptorRegistry} from './descriptor/DescriptorRegistry';
 export {initBuiltInDescriptors} from './descriptor/initBuiltInDescriptors';
+export {type UseInputTypeDescriptorResult, useInputTypeDescriptor} from './hooks/useInputTypeDescriptor';
 export {useOccurrenceManager} from './hooks/useOccurrenceManager';
+export {type UsePropertyArrayResult, usePropertyArray} from './hooks/usePropertyArray';
 export {I18nProvider, useI18n} from './I18nContext';
 export {initBuiltInComponents} from './initBuiltInComponents';
 export {initBuiltInTypes} from './initBuiltInTypes';
