@@ -1,3 +1,9 @@
+---
+paths:
+  - "**/*.tsx"
+  - ".storybook/**/*.{ts,tsx}"
+---
+
 # Tailwind CSS & Styling Standards
 
 ## Class Name Utilities
@@ -17,9 +23,6 @@ const buttonClasses = cn(
   className,
 );
 
-// ✅ Use cn for simple conditional classes
-<div className={cn('flex gap-2', isVertical && 'flex-col')} />
-
 // ✅ When using `className` prop, pass it as the last argument in cn()
 // This allows parent components to override styles
 const classes = cn(
@@ -29,9 +32,8 @@ const classes = cn(
 );
 
 // ❌ Don't place className before other classes - overrides won't work
-const badClasses = cn(className, 'base-styles'); // Wrong order - parent styles get overwritten
+const badClasses = cn(className, 'base-styles');
 
-// ❌ Don't use cva for single conditions
 // ❌ Don't use template literals for Tailwind classes
 ```
 
@@ -44,36 +46,19 @@ const buttonVariants = cva('px-4 py-2 rounded font-medium transition-colors', {
     variant: {
       primary: 'bg-blue-500 text-white hover:bg-blue-600',
       secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-      ghost: 'bg-transparent hover:bg-gray-100',
-      danger: 'bg-red-500 text-white hover:bg-red-600',
     },
     size: {
       sm: 'text-sm px-3 py-1',
       md: 'text-base px-4 py-2',
-      lg: 'text-lg px-6 py-3',
     },
-    // ✅ Compound variants for specific combinations
-    compoundVariants: [
-      {
-        variant: 'ghost',
-        size: 'sm',
-        class: 'hover:bg-gray-50',
-      },
-    ],
   },
-  defaultVariants: {
-    variant: 'primary',
-    size: 'md',
-  },
+  defaultVariants: { variant: 'primary', size: 'md' },
 });
 
 // ❌ DON'T use cva for simple true/false states
 const badVariants = cva('base', {
   variants: {
-    disabled: {
-      true: 'opacity-50',
-      false: '',
-    },
+    disabled: { true: 'opacity-50', false: '' },
   },
 });
 ```
@@ -92,9 +77,6 @@ const badVariants = cva('base', {
 // ❌ Avoid arbitrary CSS variable syntax
 <div className="bg-[var(--color-overlay)]" /> // Use bg-overlay instead
 
-// ✅ Use color-* syntax for dynamic colors in v4
-<div className="bg-color-blue-500/90" />
-
 // ❌ Avoid arbitrary values when design tokens exist
 <div className="bg-[#3B82F6]" /> // Use bg-blue-500 instead
 ```
@@ -104,10 +86,6 @@ const badVariants = cva('base', {
 ```typescript
 // ✅ Use size-* for equal width and height
 <Icon className="size-4" /> // Not h-4 w-4
-<Avatar className="size-10" /> // Not h-10 w-10
-
-// ❌ Don't use separate h-* w-* when values are equal
-<Icon className="h-4 w-4" /> // Use size-4 instead
 
 // ✅ Use logical properties
 <div className="ps-4 me-2" /> // padding-start, margin-end
@@ -121,75 +99,15 @@ const badVariants = cva('base', {
 </div>
 ```
 
-### Responsive Design
-
-```typescript
-// ✅ Mobile-first approach
-<div className="text-sm md:text-base lg:text-lg" />
-
-// ✅ Use Tailwind 4's new responsive syntax when stable
-<div className="text-sm text-base@md text-lg@lg" />
-
-// ❌ Don't mix breakpoint orders
-<div className="lg:text-lg text-sm md:text-base" /> // Confusing order
-```
-
-### Performance Patterns
-
-```typescript
-// ✅ Group related utilities
-<div className="border border-gray-200 rounded-lg shadow-sm" />
-
-// ✅ Extract repeated class combinations into cn() calls
-const cardBase = 'rounded-lg border bg-card p-6 shadow-sm';
-
-// ❌ Don't use @apply in component files - use cn() or cva()
-// @apply should only be in CSS files for base styles
-```
-
-### Animation & Transitions
-
-```typescript
-// ✅ Use Tailwind's built-in animations
-<div className="animate-pulse" />
-
-// ✅ Combine with transition utilities
-<button className="transition-colors duration-200 hover:bg-blue-600" />
-
-// ✅ Use animation-* utilities from v4
-<div className="animation-slide-in animation-duration-300" />
-```
-
 ## Class Name Management
 
 ### When to Extract Classes to Variables
 
 **Extract to variables when:**
 
-```typescript
-// ✅ Complex conditional logic
-const buttonClasses = cn(
-  'px-4 py-2 rounded font-medium transition-colors',
-  variant === 'primary' && 'bg-blue-500 text-white hover:bg-blue-600',
-  variant === 'secondary' && 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-  size === 'sm' && 'text-sm px-3 py-1',
-  disabled && 'opacity-50 cursor-not-allowed pointer-events-none',
-  className,
-);
-
-// ✅ More than 6 classes on a single line, 4+ lines, or 80+ characters
-const containerClasses = cn(
-  'relative flex items-center justify-between', // Line 1
-  'gap-4 rounded-lg border border-gray-200', // Line 2
-  'bg-white p-6 shadow-sm', // Line 3
-  'hover:shadow-md transition-shadow', // Line 4
-  isActive && 'ring-2 ring-blue-500', // Line 5 - Extract!
-);
-
-// ✅ Reused in multiple places (2+ uses) in the same file
-const cardStyles = 'rounded-lg border bg-card p-6 shadow-sm';
-// Used in multiple elements within the component
-```
+- Complex conditional logic (multiple variants, multiple conditions)
+- More than 6 classes on a single line, 4+ lines, or 80+ characters
+- Reused in 2+ places in the same file
 
 **Keep inline when:**
 
@@ -199,31 +117,9 @@ const cardStyles = 'rounded-lg border bg-card p-6 shadow-sm';
 
 // ✅ Single simple condition
 <button className={cn('px-4 py-2', disabled && 'opacity-50')} />
-
-// ✅ Obvious connection between classes and element
-<h1 className="text-2xl font-bold">Title</h1>
 ```
 
-### Organization Patterns
-
-**Group related styles:**
-
-```typescript
-// ✅ Logically related styles grouped together
-const classNames = cn(
-  'relative min-h-screen bg-background',
-  'mx-auto max-w-7xl px-4 py-8',
-  'grid gap-6 md:grid-cols-2 lg:grid-cols-3',
-);
-
-return (
-  <div className={classNames}>
-    {/* ... */}
-  </div>
-);
-```
-
-**Compose base styles:**
+### Compose Base Styles
 
 ```typescript
 // ✅ Base styles + modifications
@@ -240,29 +136,6 @@ const secondaryButton = cn(baseButton, 'bg-gray-200 hover:bg-gray-300');
 - Follow the flow: hooks → logic → styles → render
 
 ## Component Styling Patterns
-
-### Base Component Structure
-
-```typescript
-import { cn } from '@enonic/ui';
-
-export function Component({ className, ...props }: ComponentProps) {
-  // ✅ Always allow className override as last argument
-  return (
-    <div
-      className={cn(
-        // Base styles first
-        'relative flex items-center gap-2',
-        // Conditional styles
-        props.disabled && 'pointer-events-none select-none opacity-30',
-        // User overrides last
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-```
 
 ### State Management with Data Attributes
 
@@ -284,16 +157,8 @@ export function Component({ className, ...props }: ComponentProps) {
     isSelected && 'option-selected'
   )}
 >
-  {/* Then using: 'focus-within:[&>li.option-active:not(.option-selected)]:bg-surface-neutral-hover' */}
   Option
 </li>
-
-// Why data-* attributes are better:
-// - More declarative and readable
-// - Better separation of state and styling
-// - Easier to debug in DevTools
-// - Less specificity issues
-// - Simpler selector syntax
 ```
 
 ### Dark Mode
@@ -316,8 +181,8 @@ export function Component({ className, ...props }: ComponentProps) {
 // ❌ Mixing Tailwind with inline styles
 <div className="p-4" style={{ margin: '10px' }} />
 
-// ❌ Over-nesting conditional classes
-active && disabled && hover && 'some-class' // Hard to read
+// ❌ Using @apply in component files
+// @apply should only be in CSS files for base styles; use cn() or cva() in components
 
 // ❌ Using important modifier everywhere
 <div className="!p-4 !m-2 !text-center" /> // Fix specificity properly

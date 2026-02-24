@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.{ts,tsx}"
+---
+
 # Preact Compatibility Notes
 
 This project uses Preact in compatibility mode — `react` imports are aliased to `preact/compat` in the build config. Follow all standards from `react.md`; the notes below cover Preact-specific deviations only.

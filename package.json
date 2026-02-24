@@ -19,7 +19,7 @@
     "build:dev:js": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "pnpm check:lint && pnpm check:types && pnpm test",
+    "check": "pnpm fix && pnpm check:types && pnpm test",
     "check:lint": "biome check .",
     "check:types": "tsc -b && tsc -p tsconfig.test.json",
     "fix": "biome check . --fix",

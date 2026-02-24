@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.tsx"
+---
+
 # React Component Standards
 
 ## Component Structure
@@ -5,22 +10,14 @@
 Prefer arrow functions over function declarations for components. Arrow functions require an explicit `displayName`.
 
 ```typescript
-// ✅ Prefer arrow functions with explicit return type
-// ✅ Define and export Props from the same component's file
-// ✅ Always add component name before Props, e.g. `ButtonProps` for `Button` component
-// ❌ Avoid using default export in component file
-
 export type MyComponentProps = {
   title: string;
-  // ✅ Drop prefixes for boolean flags
-  active?: boolean;
-  // ✅ Put `className?` and `children?` last in the Props definition
-  className?: string;
+  active?: boolean;     // ✅ Drop is/has prefix for boolean props
+  className?: string;   // ✅ className and children go last
   children?: ReactNode;
 };
 
-// ✅ Define name as a const — used for displayName and data-component
-const MY_COMPONENT_NAME = 'MyComponent';
+const MY_COMPONENT_NAME = 'MyComponent'; // used for displayName and data-component
 
 export const MyComponent = ({
   title,
@@ -28,36 +25,26 @@ export const MyComponent = ({
   className,
   children,
 }: MyComponentProps): ReactElement => {
-  // ✅ Hoist store/ref hooks at the very top
+  // 1. Store/ref hooks first
   const data = useStore(myStore);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Other hooks next: state, memo, effects, etc.
+  // 2. State, memo, other hooks
   const [count, setCount] = useState(0);
-  const expensive = useMemo(() => heavyCalc(data), [data]);
 
-  // ✅ Effects are last hooks, if possible
+  // 3. Effects last among hooks
   useEffect(() => { /* side-effect */ }, [data]);
 
-  // ✅ If className list grows long, factor into `classNames` before return
-  const classNames = cn(
-    'p-4 rounded shadow',
-    active && 'bg-blue-500',
-    className,
-  );
+  // 4. Derived state / business logic
+  const isActive = data?.status === 'active';
 
-  // ✅ Early return for loading / error / guard clauses
+  // 5. Class variables right before return
+  const classNames = cn('p-4 rounded shadow', active && 'bg-blue-500', className);
+
+  // 6. Early return (after class preparation)
   if (!data) return <LoadingIndicator />;
 
-  // ✅ Set data-component on root element; set ARIA attributes where appropriate
   return (
-    <div
-      data-component={MY_COMPONENT_NAME}
-      ref={containerRef}
-      className={classNames}
-      aria-pressed={active}
-      role='button'
-    >
+    <div data-component={MY_COMPONENT_NAME} className={classNames}>
       <h1>{title}</h1>
       {children}
     </div>
@@ -67,56 +54,24 @@ export const MyComponent = ({
 MyComponent.displayName = MY_COMPONENT_NAME;
 ```
 
+Rules:
+- No default exports
+- Always define and export Props from the same file, named `{ComponentName}Props`
+- Put `className?` and `children?` last in Props definitions
+
 ## Early Return Best Practices
 
 ```typescript
-    const MyContent = ({ isReady }: Props) => {
-    // ✅ Prefer early return over conditional fragments
-    // ❌ DON'T: Wrap conditional content in fragments
-    return <>{isReady && <div>Content</div>}</>;
-
-    // ✅ DO: Return early with null/undefined
-    if (!isReady) return null;
-    return <div>Content</div>;
+// ❌ DON'T: Wrap conditional content in fragments
+const MyContent = ({ isReady }: Props) => {
+  return <>{isReady && <div>Content</div>}</>;
 };
-```
 
-## Variable Placement in Components
-
-```typescript
-export function MyComponent({ variant, disabled, className }: Props) {
-  // 1️⃣ Hooks always first
-  const [isOpen, setIsOpen] = useState(false);
-  const data = useQuery();
-
-  // 2️⃣ Derived state and business logic
-  const isActive = data?.status === 'active';
-  const showWarning = isActive && !disabled;
-
-  // 3️⃣ Class variables - right before return/early returns
-  const containerClasses = cn(
-    'relative p-6 rounded-lg',
-    isActive && 'ring-2 ring-blue-500',
-    className,
-  );
-
-  const buttonClasses = cn(
-    'px-4 py-2 font-medium',
-    variant === 'primary' ? 'bg-blue-500 text-white' : 'bg-gray-200',
-  );
-
-  // 4️⃣ Early returns after class preparation
-  if (!data) return <Loading />;
-
-  // 5️⃣ JSX with prepared variables
-  return (
-    <div className={containerClasses}>
-      <button className={buttonClasses}>
-        Click me
-      </button>
-    </div>
-  );
-}
+// ✅ DO: Return early with null/undefined
+const MyContent = ({ isReady }: Props) => {
+  if (!isReady) return null;
+  return <div>Content</div>;
+};
 ```
 
 ## Component Display Names & `data-component`
@@ -126,10 +81,8 @@ All exported components must have `displayName` set and `data-component` on the 
 ### Standard pattern
 
 ```typescript
-// ✅ Define name const at module top
 const BUTTON_NAME = 'Button';
 
-// ✅ Arrow function with explicit return type
 export const Button = ({ children, className }: ButtonProps): ReactElement => {
   return (
     <button data-component={BUTTON_NAME} className={className}>
@@ -138,7 +91,6 @@ export const Button = ({ children, className }: ButtonProps): ReactElement => {
   );
 };
 
-// ✅ Set displayName using the same const
 Button.displayName = BUTTON_NAME;
 ```
 
@@ -158,11 +110,11 @@ export type ContentLabelProps = {
 export const ContentLabel = ({
   content,
   className,
-  'data-component': dataComponent = CONTENT_LABEL_NAME, // ✅ Default to own name
+  'data-component': dataComponent = CONTENT_LABEL_NAME,
 }: ContentLabelProps): ReactElement => {
   return (
     <ItemLabel
-      data-component={dataComponent} // ✅ Passed through, can be overridden by caller
+      data-component={dataComponent}
       primary={content.getDisplayName()}
       className={className}
     />
@@ -191,7 +143,6 @@ Input.displayName = INPUT_NAME;
 ### HOCs
 
 ```typescript
-// ✅ HOCs: set displayName with wrapper info
 const withAuth = <P,>(Component: React.ComponentType<P>) => {
   const Wrapped = (props: P) => { /* ... */ };
   Wrapped.displayName = `withAuth(${Component.displayName || Component.name})`;
@@ -248,7 +199,6 @@ const LIST_NAME = 'List';
 Attach subcomponents and re-export root as `.Root`:
 
 ```typescript
-// Root also available as .Root for explicit usage
 export const List = Object.assign(ListRoot, {
     Root: ListRoot,
     Item: ListItem,
@@ -267,69 +217,9 @@ export {List, type ListItemProps, type ListRootProps} from './List';
 
 Subcomponents that are not attached to the composed export (e.g., `ListSortableItem`) are internal-only and get no `displayName`.
 
-## useEffect Best Practices
+## useEffect: Initialization vs Update Gotcha
 
 ```typescript
-// ❌ DON'T: Transform data for rendering
-function TodoList({ todos, filter }) {
-  const [visibleTodos, setVisibleTodos] = useState([]);
-  useEffect(() => {
-    setVisibleTodos(todos.filter(todo => todo.status === filter));
-  }, [todos, filter]); // Unnecessary effect!
-}
-
-// ✅ DO: Calculate during render
-function TodoList({ todos, filter }) {
-  const visibleTodos = todos.filter(todo => todo.status === filter);
-  // Or useMemo if expensive: useMemo(() => todos.filter(...), [todos, filter])
-}
-
-// ❌ DON'T: Handle user events
-function Form() {
-  const [submitted, setSubmitted] = useState(false);
-  useEffect(() => {
-    if (submitted) {
-      sendAnalytics('form_submit');
-      // ... more submission logic
-    }
-  }, [submitted]); // Wrong pattern!
-}
-
-// ✅ DO: Use event handlers directly
-function Form() {
-  const handleSubmit = () => {
-    sendAnalytics('form_submit');
-    // ... submission logic
-  };
-}
-
-// ❌ DON'T: Reset state when prop changes
-function ProfilePage({ userId }) {
-  const [comment, setComment] = useState('');
-  useEffect(() => {
-    setComment(''); // Reset comment when user changes
-  }, [userId]); // Can be better!
-}
-
-// ✅ DO: Use key prop to reset component state
-function ProfilePage({ userId }) {
-  return <Profile key={userId} userId={userId} />;
-  // Component remounts, state resets automatically
-}
-
-// ❌ DON'T: Update state based on props/state changes
-function UserCard({ firstName, lastName }) {
-  const [fullName, setFullName] = useState('');
-  useEffect(() => {
-    setFullName(`${firstName} ${lastName}`);
-  }, [firstName, lastName]); // Redundant state sync!
-}
-
-// ✅ DO: Calculate during render
-function UserCard({ firstName, lastName }) {
-  const fullName = `${firstName} ${lastName}`; // Just derive it
-}
-
 // ❌ DON'T: Early return that blocks re-execution
 function ComboBox({ items }) {
   const instanceRef = useRef(null);
@@ -350,63 +240,6 @@ function ComboBox({ items }) {
     instanceRef.current.setItems(items); // Always runs when items changes
   }, [items]);
 }
-
-// ✅ CORRECT uses of useEffect:
-// External system sync
-useEffect(() => {
-  const ws = new WebSocket(url);
-  ws.connect();
-  return () => ws.disconnect();
-}, [url]);
-
-// Data fetching (though prefer React Query/SWR)
-useEffect(() => {
-  fetch(`/api/user/${userId}`)
-    .then(res => res.json())
-    .then(setUser);
-}, [userId]);
-
-// Analytics/logging after render
-useEffect(() => {
-  logPageView(pathname);
-}, [pathname]);
-```
-
-## useCallback Best Practices
-
-```typescript
-// ❌ DON'T use useCallback when:
-// - Not passed to memo() components
-// - Not used as dependency in hooks
-// - Function doesn't capture scope values
-const handleClick = useCallback(() => console.log('click'), []); // Unnecessary!
-
-// ✅ DO use useCallback when:
-// - Passing to memo() components
-const handleClick = useCallback(() => setCount(c => c + 1), []);
-return <MemoizedButton onClick={handleClick} />;
-
-// - Function is dependency of other hooks
-const fetchData = useCallback(() => fetch(url), [url]);
-useEffect(() => { fetchData() }, [fetchData]);
-```
-
-## useMemo Best Practices
-
-```typescript
-// ❌ DON'T use useMemo for:
-// - Simple calculations
-const sum = useMemo(() => a + b, [a, b]); // Overkill!
-// - Primitives that aren't dependencies
-const name = useMemo(() => user.name, [user.name]); // Unnecessary!
-
-// ✅ DO use useMemo for:
-// - Expensive calculations (filtering/sorting large arrays)
-const filtered = useMemo(() => bigArray.filter(...).sort(...), [bigArray]);
-
-// - Objects/arrays passed to memo() children or used as dependencies
-const options = useMemo(() => ({ sort: true, filter }), [filter]);
-return <MemoizedList options={options} />;
 ```
 
 ## Refs in Dependency Arrays
@@ -418,10 +251,10 @@ useEffect(() => {
   contentRef.current?.focus();
 }, [contentRef.current]); // Wrong! .current changes don't trigger re-render
 
-// ✅ DO: Use ref object (stable) or omit from deps, check .current inside
+// ✅ DO: Omit from deps, check .current inside
 useEffect(() => {
   contentRef.current?.focus();
-}, []); // Or [contentRef] if you need the ref object itself
+}, []);
 
 // ❌ DON'T: Wrap arrays in another array
 // Creates new array reference every render, defeating memoization
@@ -436,95 +269,30 @@ function useComposedRefs<T>(...refs: Ref<T>[]) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: refs spread as deps
   return useCallback((node: T) => {
     refs.forEach(ref => setRef(ref, node));
-  }, refs); // Correct - array used directly
+  }, refs);
 }
-
-// ✅ Ref objects from useRef() are stable - safe to include
-const containerRef = useRef<HTMLDivElement>(null);
-useEffect(() => {
-  // containerRef is stable, containerRef.current may change
-  containerRef.current?.focus();
-}, [containerRef]); // OK but usually unnecessary since ref is stable
 ```
-
-**Rules:**
-
-1. **Never `ref.current`** - Refs are mutable, changes don't trigger re-renders
-2. **Never `[array]`** - Wrapping an array creates a new reference each render
-3. **Ref objects are stable** - `const ref = useRef()` creates a stable reference
-4. **Rest parameters** - Use the array directly with lint suppression if needed
 
 ## Extending Component Props
 
 ```typescript
 // ✅ DO: Use ComponentPropsWithoutRef for standard components
-import { ComponentPropsWithoutRef } from 'react';
-
 type ButtonProps = {
   variant?: 'primary' | 'secondary';
-  loading?: boolean;
 } & ComponentPropsWithoutRef<'button'>;
 
-export function Button({ variant = 'primary', loading, ...props }: ButtonProps) {
-  return <button {...props} />;
-}
-
 // ✅ DO: Use ComponentPropsWithRef when forwarding refs
-import { ComponentPropsWithRef, forwardRef } from 'react';
-
 type InputProps = {
   label?: string;
-  error?: string;
 } & ComponentPropsWithRef<'input'>;
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, ...props }, ref) => {
-    return <input ref={ref} {...props} />;
-  }
-);
-
 // ❌ DON'T: Use ComponentProps (doesn't distinguish ref handling)
-type BadProps = { value: string } & ComponentProps<'input'>; // Avoid
-
-// ❌ DON'T: Use specific HTML attribute types
-type BadButtonProps = { variant: string } & ButtonHTMLAttributes<HTMLButtonElement>; // Verbose
-type BadDivProps = { layout: string } & HTMLAttributes<HTMLDivElement>; // Unnecessary
+type BadProps = { value: string } & ComponentProps<'input'>;
 ```
 
 ## Performance Patterns
 
 ```typescript
-// 1️⃣ Keep renders cheap & predictable
-// ✅ Split UI into small, pure components; wrap heavy ones in React.memo
-const ImageGrid = React.memo(function ImageGrid({ images }: { images: Image[] }) {
-  return images.map(img => <img key={img.id} src={img.src} />);
-});
-
-// 2️⃣ `useMemo` only for **expensive** calculations or reference-equality
-// ✅ Heavy work
-const sorted = useMemo(() => heavySort(list), [list]);  // good
-// ❌ Cheap math doesn't need it
-const sum = a + b;                                      // simpler + faster
-
-// 3️⃣ `useCallback` only when a child​/​hook depends on function identity
-// ✅ Stable handler passed to memoized child
-const handleSave = useCallback((u: User) => onSave(u), [onSave]);
-<SaveButton onClick={handleSave} />;
-
-// ❌ Redundant inside same component scope
-<button onClick={() => onSave(user)}>Save</button>      // fine—re-creation is cheap
-
-// 4️⃣ Prefer `useEffect`; reserve `useLayoutEffect` for sync DOM reads/writes
-// ✅ Measure before paint, then mutate quickly
-useLayoutEffect(() => {
-  const rect = ref.current!.getBoundingClientRect();
-  setPos(rect.top);
-}, []); // keep work minimal & cleanup promptly
-
-// 5️⃣ Throttle / debounce high-frequency events (scroll, resize)
-// ✅ Check and apply to cases, where no fast/instant feedback is needed
-const throttledScroll = useCallback(throttle(handleScroll, 100), [handleScroll]);
-
-// 6️⃣ If store is a map, listen for the used keys only
+// If store value is a map/object, subscribe to specific keys only
 const { account } = useStore($application, {keys: ['account']});
 ```

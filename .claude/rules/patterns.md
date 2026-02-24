@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.tsx"
+---
+
 # UI Patterns
 
 ## Click Target Expansion via Pseudo-Element
@@ -79,9 +84,7 @@ Use `usePortalFocusContainer` hook — a registration system where portaled comp
 
 When adding new components that use portals inside dialogs:
 
-1. **Import the hook** from its location in the codebase
-
-2. **Detect portal mode and register:**
+1. **Detect portal mode and register:**
    ```tsx
    const contentRef = useRef<HTMLDivElement>(null);
    const [isPortalMode, setIsPortalMode] = useState(false);
@@ -94,7 +97,7 @@ When adding new components that use portals inside dialogs:
    usePortalFocusContainer(contentRef, isPortalMode);
    ```
 
-### Current Usage (reference from @enonic/ui)
+### Current Usage in `@enonic/ui`
 
 | Component | Content Element | Registers With Focus Trap |
 |-----------|-----------------|---------------------------|

@@ -1,31 +1,13 @@
+---
+paths:
+  - "**/*.{ts,tsx}"
+---
+
 # TypeScript Coding Standards
 
 ## Code Style
 
 ```typescript
-// ✅ Spaces inside `{}` in types, objects, and destructuring
-// ✅ Imports: no spaces required — `import {Foo}` is fine (Biome handles formatting)
-import {Data} from './components/Button'; // ✅ fine
-import { Data } from './components/Button'; // ✅ also fine
-type IdBad = { id: string };
-const bar = { foo: 1; };
-function getIdBad({ id }: IdBad): string {
-  const { foo } = bar;
-  return id;
-}
-
-// ❌ Avoid absence of spaces inside `{}` in types, objects, and destructuring
-type Id = {id: string};
-const bar = {foo: 1;};
-function getId({id}: Id): string {
-  const {foo} = bar;
-  return id;
-}
-
-// ✅ Prefer single quotes over double quotes
-import { atom } from 'nanostores';
-const $note = atom(`Time: ${Date.now()}`);
-
 // ✅ Check for both null and undefined with `!= null`
 if (response != null) {
   // safe to use response
@@ -35,8 +17,7 @@ if (response != null) {
 const status = isLoading ? 'loading' : isError ? 'error' : 'idle'; // Bad
 
 // ✅ Good alternatives
-const status = getStatus(); // Extract to function with if/else, switch/case or object lookup
-const statusMap = { loading: isLoading, error: isError };
+const status = getStatus(); // Extract to function with if/else or switch/case
 
 // ✅ Leverage modern TypeScript syntax
 const len = items?.length ?? 0;
@@ -44,10 +25,7 @@ settings.debug ||= false;
 cache?.clear();
 const size = 1_000;
 
-// ✅ Prefer `const` over `let` if variable won't change
-const max = 100;
-
-// ✅ Prefer destructing assignment
+// ✅ Prefer destructuring assignment
 const [body, headers = {}] = request;
 const { signal } = new AbortController();
 
@@ -59,16 +37,11 @@ if (!isSupported) return false;
 if (data == null) {
   return;
 }
-if (!isEnabled) {
-  return children;
-}
 
 // ✅ Insert exactly one blank line between logically distinct operations
 const result = doSomething();
 
 updateAnotherThing();
-
-// ✅ End every source file with a single trailing newline
 
 ```
 
@@ -82,61 +55,37 @@ export const $counter = atom(0);
 const isEnabled = true;
 const hasFocus = false;
 const canEdit = permissions.includes('edit');
-const shouldUpdate = version < latest;
-const willUnmount = false;
 
 // ✅ Object props: drop prefixes for boolean props
-const enabled = true;
-const state = { enabled };
+const state = { enabled: true };
 
 // ✅ React props: drop prefixes for boolean props
 interface ButtonProps {
   disabled?: boolean; // Not 'isDisabled'
-  loading?: boolean; // Not 'isLoading'
-  active?: boolean; // Not 'isActive'
-  onClick?: () => void; // Event handlers use 'on' prefix
+  loading?: boolean;  // Not 'isLoading'
+  active?: boolean;   // Not 'isActive'
+  onClick?: () => void;
   onChange?: (value: string) => void;
 }
 
 // ✅ Internal handlers use 'handle' prefix
-const handleClick = () => {
-  onClick?.();
-};
-const handleSubmit = (e: FormEvent) => {
-  e.preventDefault();
-};
+const handleClick = () => { onClick?.(); };
 
 // ✅ Use standard prop names
 interface InputProps {
-  value?: string; // Not 'text' or 'content'
-  defaultValue?: string; // Not 'initialText'
+  value?: string;         // Not 'text' or 'content'
+  defaultValue?: string;  // Not 'initialText'
   onChange?: (value: string) => void; // Not 'onUpdate'
 }
 
 // ✅ Arrays use plural forms
 const users: User[] = [];
-const selectedIds: string[] = [];
 
 // ✅ Functions use verb prefixes
 function getUserById(id: string) {} // get/fetch/load/parse
-function setUserName(name: string) {} // set/update/save/calc/compute
 function isValidEmail(email: string) {} // is/has for boolean returns
 
-// ❌ Avoid unprefixed standalone flags or prefixed props
-const enabledFlag = true; // Bad for standalone
-const config = { isEnabled }; // Bad for object prop
-
-// ✅ Add comma after the last element in multi-line function arguments, arrays, objects
-function add(
-  firstNumericValue: number,
-  secondNumericValue: number,
-  thirdNumericValue: number,
-  fourthNumericValue: number,
-): number {
-  // ...
-}
-
-// ✅ Name constants using UPPERCASE and underscrore
+// ✅ Name constants using UPPERCASE and underscore
 const TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 3;
 ```
@@ -152,7 +101,6 @@ type User = {
 
 // ✅ Use type aliases for unions/primitives
 type UserStatus = 'active' | 'inactive' | 'pending';
-type UserId = string;
 
 // ✅ Use T[] syntax for arrays
 type Users = User[];
@@ -160,20 +108,13 @@ const items: string[] = [];
 
 // ❌ Avoid Array<T> generic syntax
 type Users = Array<User>; // Bad
-const items: Array<string> = []; // Bad
 
-// ❌ Avoid any type
-const data: any = fetchData(); // Bad
-
-// ✅ Use unknown and type guards
+// ❌ Avoid any type - use unknown and type guards
 const data: unknown = fetchData();
-if (isUser(data)) {
-  // TypeScript knows data is User here
-}
+if (isUser(data)) { /* TypeScript knows data is User here */ }
 
 // ❌ Avoid type assertions with 'as' - use type guards or proper typing
 const user = {} as User; // Bad
-const element = event.target as HTMLInputElement; // Bad
 // ✅ Good alternatives
 const user: Partial<User> = {};
 if (event.target instanceof HTMLInputElement) { /* use target */ }
@@ -182,16 +123,6 @@ if (event.target instanceof HTMLInputElement) { /* use target */ }
 const value = getUserInput()!; // Bad
 // ✅ Good alternatives
 const value = getUserInput() ?? defaultValue;
-if (!input) return; // Guard clause
-
-// ✅ Prefer defining type separatelly instead of setting it's shape in generics
-type Identifiable = { id: string; }
-function getById<T extends Identifiable>(items: T[], id: string): T {
-  return items.find(item => item.id === id);
-}
-
-// ✅ Explicit type annotation when assigning objects
-const user: User = { id, name };
 
 // ✅ Use `satisfies` for precise literal types without widening
 const options = {
@@ -201,9 +132,7 @@ const options = {
 
 // ✅ Define and use `Maybe<T>` for nullish values
 type Maybe<T> = T | null | undefined;
-function findUser(id: string): Maybe<User> {
-  // ...
-}
+function findUser(id: string): Maybe<User> { /* ... */ }
 
 // ✅ Prefer `undefined` over `null` for unset values
 const [activeId, setActiveId] = useState<string | undefined>(undefined);
@@ -211,7 +140,6 @@ const context = createContext<MenuContextValue | undefined>(undefined);
 
 // ❌ Avoid `null` for optional/unset values
 const [activeId, setActiveId] = useState<string | null>(null); // Bad
-const context = createContext<MenuContextValue | null>(null); // Bad
 
 // ✅ Exception: refs use `null` (React convention)
 const ref = useRef<HTMLDivElement | null>(null);
@@ -219,13 +147,7 @@ const ref = useRef<HTMLDivElement | null>(null);
 
 **Rationale for `undefined` over `null`:**
 - `undefined` is JavaScript's default for uninitialized values
-- More semantically correct for "not set" vs "intentionally empty"
 - Consistent with TypeScript optional properties (`prop?: string`)
-- Exception: React refs use `null` by convention
-
-- Do not place types in the same file with the store definition, except the store type
-- Prefer one file per type
-- Define types in the same file, if one of the type is used inside the other one
 
 ## Type Composition
 
@@ -271,11 +193,9 @@ export type RadioItemProps = RadioItemOwnProps; // Clean
 ```
 
 **Rationale:**
-- Inline type imports (`import('...').Type`) are harder to read, refactor, and don't show up in "Find References"
-- Composition (`Base & Extensions`) is clearer than subtraction (`Full - Removed`)
 - IDE hover shows actual properties instead of computed `Omit<...>` types
 - TypeScript errors reference real property names, not derived types
-- Nested `Omit<X, keyof Omit<Y, 'z'>>` is a code smell - restructure the types
+- Nested `Omit<X, keyof Omit<Y, 'z'>>` is a code smell — restructure the types
 
 ## Function Signatures
 
@@ -283,19 +203,6 @@ export type RadioItemProps = RadioItemOwnProps; // Clean
 // ✅ Explicit return types for public functions
 export function calculateTotal(items: OrderItem[]): number {
   return items.reduce((sum, item) => sum + item.price, 0);
-}
-
-// ✅ Prefer arrow functions without explicit return type in handlers
-export function add2(values: number[]): number[] {
-  return values.map(v => v + 2);
-}
-
-// ✅ Prefer arrow functions with return type is one line helpers
-const isEven = (value: number): boolean => value % 2 === 0;
-
-// ✅ Use generic constraints
-function updateEntity<T extends { id: string }>(entity: T, updates: Partial<T>): T {
-  return { ...entity, ...updates };
 }
 ```
 
@@ -312,20 +219,4 @@ async function parse(data: string): <Result<User>> {
 
 ## Import/Export Standards
 
-```typescript
-// ✅ Named exports preferred
-export { UserService, ProductService };
-
-// ✅ Group imports by source
-import React, { useState, useEffect } from 'react';
-import { Router } from 'express';
-
-import { UserService } from '../services/UserService';
-import { validateEmail } from '../utils/validation';
-
-import type { User, CreateUserInput } from '../types';
-
-// ✅ Use relative paths for all imports within the project
-import { MyComponent } from './MyComponent';
-import { SiblingUtil } from '../utils/sibling';
-```
+- Named exports preferred; avoid default exports in component files.

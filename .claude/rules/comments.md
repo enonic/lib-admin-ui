@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.{ts,tsx}"
+---
+
 # Commenting Rules
 
 _Read and apply these guidelines when adding comments to source files._
@@ -36,31 +41,15 @@ _Read and apply these guidelines when adding comments to source files._
   // * MenuRoot
   //
 
-  export type MenuRootProps = {
-    /* ... */
-  };
-  const MenuRoot = (
-    {
-      /* ... */
-    },
-  ) => {
-    /* ... */
-  };
+  export type MenuRootProps = { /* ... */ };
+  const MenuRoot = ({ /* ... */ }) => { /* ... */ };
 
   //
   // * MenuTrigger
   //
 
-  export type MenuTriggerProps = {
-    /* ... */
-  };
-  const MenuTrigger = (
-    {
-      /* ... */
-    },
-  ) => {
-    /* ... */
-  };
+  export type MenuTriggerProps = { /* ... */ };
+  const MenuTrigger = ({ /* ... */ }) => { /* ... */ };
   ```
 
 - `// TODO: ` (orange)
@@ -79,6 +68,7 @@ _Read and apply these guidelines when adding comments to source files._
 - Avoid commenting trivial code (simple getters/setters, obvious mappings).
 - Prefer function-level JSDoc/TSDoc for public APIs instead of inline prose.
 - Keep comments inside function bodies to a minimum; most context belongs in tests or docs.
+- Keep comment lines <= 80 characters.
 
 ```ts
 function binarySearch(haystack: number[], needle: number): number {
@@ -87,7 +77,6 @@ function binarySearch(haystack: number[], needle: number): number {
     // ! Sorting here would hide the caller's bug
     throw new Error('Input must be pre-sorted');
   }
-
   // Standard binary-search implementation…
 }
 
@@ -96,14 +85,7 @@ function toBeImplemented(): void {
 }
 ```
 
-## 3. Style & Tone
-
-- Write complete sentences, start with a capital letter.
-- Be concise: aim for <= 80 characters per line.
-- No emojis or casual slang.
-- Use present tense for facts ("Returns cached value").
-
-## 4. Extensive Explanatory Blocks
+## 3. Extensive Explanatory Blocks
 
 _When asked to "explain in detail" or produce teaching code:_
 
@@ -112,35 +94,8 @@ _When asked to "explain in detail" or produce teaching code:_
 3. End with a summary of side-effects or complexity, if helpful.
 4. Do not duplicate obvious code; focus on **why**, not **what**.
 
-```ts
-/**
- * Top-down merge sort for immutable arrays.
- * Time: O(n log n), Space: O(n)
- */
-export function mergeSort<T>(arr: readonly T[]): T[] {
-  // Base case: arrays of length ≤ 1 are already sorted
-  if (arr.length <= 1) return [...arr];
-
-  const mid = Math.floor(arr.length / 2);
-
-  // Recursively split the array; depth ~ log₂(n)
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
-
-  // Merge sorted halves
-  return merge(left, right);
-}
-```
-
-## 5. Maintenance Etiquette
+## 4. Maintenance Etiquette
 
 - Update or delete comments when code changes; stale comments are worse than none.
 - Promote resolved `// TODO:` items to commits and remove the tag.
 - Convert answered `// ?` questions into documentation or ADRs once clarified.
-
-## ✅ Pre-Commit Checklist
-
-1. Did you avoid over-commenting obvious code?
-2. Does each prefix match the intended severity?
-3. Are large files organized with `// *` section headers?
-4. Are lines <= 80 characters and free of emojis?
