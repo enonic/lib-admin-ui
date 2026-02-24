@@ -3,8 +3,10 @@
     "compilerOptions": {
         "composite": true,
         "declaration": true,
+        "rootDir": "src/main/resources/assets/admin/common/js",
         "declarationDir": "build/resources/main/dev/lib-admin-ui",
         "outDir": "build/resources/main/dev/lib-admin-ui",
+        "tsBuildInfoFile": "build/resources/main/dev/lib-admin-ui/tsconfig.modern.tsbuildinfo",
         "inlineSourceMap": true,
         "inlineSources": true,
         "isolatedModules": true,

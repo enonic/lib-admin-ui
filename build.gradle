@@ -114,7 +114,7 @@ tasks.register( 'devJar', Jar ) {
     archiveClassifier = 'dev-resources'
     from sourceSets.main.output
     include 'dev/**'
-    exclude 'dev/lib-admin-ui/lib.js', 'dev/lib-admin-ui/lib.d.ts'
+    exclude 'dev/lib-admin-ui/lib.js', 'dev/lib-admin-ui/lib.d.ts', 'dev/lib-admin-ui/*.tsbuildinfo'
 
     into( "dev/${base.archivesName.get()}/fonts" ) {
         from layout.buildDirectory.dir( 'resources/main/assets/admin/common/fonts' )
