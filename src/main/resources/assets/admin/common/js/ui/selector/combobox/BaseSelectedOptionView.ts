@@ -118,7 +118,6 @@ export class BaseSelectedOptionView<T>
     }
 
     protected onEditButtonClicked(e: MouseEvent): boolean {
-        e.stopPropagation();
         e.preventDefault();
 
         return false;
@@ -127,7 +126,6 @@ export class BaseSelectedOptionView<T>
     protected onRemoveButtonClicked(e: MouseEvent): boolean {
         this.notifyRemoveClicked();
 
-        e.stopPropagation();
         e.preventDefault();
         return false;
     }
