@@ -38,6 +38,8 @@ export class NamePrettyfier {
             prettifiedPathName = this.transcribe(prettifiedPathName);
         }
 
+        prettifiedPathName = this.replaceTrailingHyphens(prettifiedPathName);
+
         if (StringHelper.isBlank(prettifiedPathName)) {
             return '';
         }
