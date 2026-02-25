@@ -1,6 +1,7 @@
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import type {GeoPointConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
@@ -12,7 +13,7 @@ export const GeoPointDescriptor: InputTypeDescriptor<GeoPointConfig> = {
         return ValueTypes.GEO_POINT;
     },
 
-    readConfig(_raw: Record<string, Record<string, unknown>[]>): GeoPointConfig {
+    readConfig(_raw: RawInputConfig): GeoPointConfig {
         return {};
     },
 

@@ -1,6 +1,7 @@
 import {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import {RelativeTimeParser} from '../../form/inputtype/time/RelativeTimeParser';
 import {LocalDateTime} from '../../util/LocalDateTime';
 import type {DateTimeConfig} from './InputTypeConfig';
@@ -16,7 +17,7 @@ export const DateTimeDescriptor: InputTypeDescriptor<DateTimeConfig> = {
         return ValueTypes.LOCAL_DATE_TIME;
     },
 
-    readConfig(_raw: Record<string, Record<string, unknown>[]>): DateTimeConfig {
+    readConfig(_raw: RawInputConfig): DateTimeConfig {
         return {
             useTimezone: false,
         };
