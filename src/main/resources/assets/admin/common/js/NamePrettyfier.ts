@@ -38,8 +38,6 @@ export class NamePrettyfier {
             prettifiedPathName = this.transcribe(prettifiedPathName);
         }
 
-        prettifiedPathName = this.replaceTrailingHyphens(prettifiedPathName);
-
         if (StringHelper.isBlank(prettifiedPathName)) {
             return '';
         }
@@ -339,7 +337,9 @@ export class NamePrettyfier {
             '^': '-',
             _: '-',
             '\'': '-',
-            '?': '-'
+            '?': '-',
+            '\u2013': '-',  // en dash
+            '\u2014': '-'   // em dash
         };
 
         return replaceWithHyphenObject;
