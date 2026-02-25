@@ -26,3 +26,44 @@ Only run `./gradlew build -Penv=dev` when the task specifically requires testing
 - **Modern** (new code goes here): `js/ui2/`, `js/form/inputtype2/` — Preact/TSX, strict TypeScript, Tailwind
 - **Legacy** (do not add to): `js/ui/`, `js/form/inputtype/` — class-based, jQuery, loose TypeScript
 
+## Git & GitHub
+
+No conventional commit prefixes. Plain descriptive language throughout.
+
+### Issues
+
+Unless asked for specific format by the user, use the default one:
+
+- **Title**: plain descriptive text — e.g. `Add MyComponent to browse view`, `PublishDialog: add schedule button`
+- **Body**: concisely explain what and why, skip trivial details
+  ```
+  <4–8 sentence description: what, what's affected, how to reproduce, impact>
+
+  #### Rationale
+  <why this needs to be fixed or implemented>
+
+  #### References        ← optional
+  #### Implementation Notes  ← optional
+
+  <sub>*Drafted with AI assistance*</sub>
+  ```
+
+### Commits
+
+- **With issue**: `<Issue Title> #<number>` — e.g. `Add MyComponent to browse view #12`
+- **Without issue**: capitalized plain-English description — e.g. `Add local Git worktrees ignore`, `Fix build`
+- **Body** (optional): past tense, one line per change, 2–6 lines, backticks for code refs
+
+### Pull Requests
+
+- **Title**: `<Issue Title> #<number>` — matches the commit title
+- **Body**: concisely explain what and why, skip trivial details. No emojis. Separate all sections with one blank line.
+  ```
+  <summary of changes>
+
+  Closes #<number>
+
+  [Claude Code session](<link>)  ← optional
+
+  <sub>*Drafted with AI assistance*</sub>
+  ```
