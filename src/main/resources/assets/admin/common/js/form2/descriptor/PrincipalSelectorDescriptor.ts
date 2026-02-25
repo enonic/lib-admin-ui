@@ -1,6 +1,7 @@
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import {PrincipalKey} from '../../security/PrincipalKey';
 import {PrincipalType} from '../../security/PrincipalType';
 import type {PrincipalSelectorConfig} from './InputTypeConfig';
@@ -14,7 +15,7 @@ export const PrincipalSelectorDescriptor: InputTypeDescriptor<PrincipalSelectorC
         return ValueTypes.REFERENCE;
     },
 
-    readConfig(raw: Record<string, Record<string, unknown>[]>): PrincipalSelectorConfig {
+    readConfig(raw: RawInputConfig): PrincipalSelectorConfig {
         const principalTypeEntries = raw.principalType || [];
         const skipPrincipalsEntries = raw.skipPrincipals || [];
 

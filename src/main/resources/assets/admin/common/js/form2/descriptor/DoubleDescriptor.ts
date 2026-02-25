@@ -1,6 +1,7 @@
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import {NumberHelper} from '../../util/NumberHelper';
 import type {NumberConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
@@ -13,7 +14,7 @@ export const DoubleDescriptor: InputTypeDescriptor<NumberConfig> = {
         return ValueTypes.DOUBLE;
     },
 
-    readConfig(raw: Record<string, Record<string, unknown>[]>): NumberConfig {
+    readConfig(raw: RawInputConfig): NumberConfig {
         return {
             min: (raw.min?.[0]?.value as number) ?? undefined,
             max: (raw.max?.[0]?.value as number) ?? undefined,

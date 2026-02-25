@@ -1,6 +1,7 @@
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import type {RadioButtonConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
@@ -12,7 +13,7 @@ export const RadioButtonDescriptor: InputTypeDescriptor<RadioButtonConfig> = {
         return ValueTypes.STRING;
     },
 
-    readConfig(raw: Record<string, Record<string, unknown>[]>): RadioButtonConfig {
+    readConfig(raw: RawInputConfig): RadioButtonConfig {
         const optionValues = raw.options || [];
 
         return {

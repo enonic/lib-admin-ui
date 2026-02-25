@@ -1,6 +1,7 @@
 import {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import {RelativeTimeParser} from '../../form/inputtype/time/RelativeTimeParser';
 import {LocalTime} from '../../util/LocalTime';
 import type {TimeConfig} from './InputTypeConfig';
@@ -16,7 +17,7 @@ export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
         return ValueTypes.LOCAL_TIME;
     },
 
-    readConfig(_raw: Record<string, Record<string, unknown>[]>): TimeConfig {
+    readConfig(_raw: RawInputConfig): TimeConfig {
         return {};
     },
 

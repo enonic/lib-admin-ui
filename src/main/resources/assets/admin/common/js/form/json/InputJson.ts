@@ -12,5 +12,5 @@ export interface InputJson
 
     inputType: string;
 
-    config?: any;
+    config?: Record<string, Record<string, unknown>[]>;
 }
