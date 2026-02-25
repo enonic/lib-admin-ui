@@ -6,6 +6,8 @@ import {InputTypeName} from './InputTypeName';
 import {Occurrences} from './Occurrences';
 import {FormItem} from './FormItem';
 
+export type RawInputConfig = Record<string, Record<string, unknown>[]>;
+
 export class InputBuilder {
 
     name: string;
@@ -18,7 +20,7 @@ export class InputBuilder {
 
     helpText: string;
 
-    inputTypeConfig: object;
+    inputTypeConfig: RawInputConfig | undefined;
 
     setName(value: string): InputBuilder {
         this.name = value;
@@ -45,7 +47,7 @@ export class InputBuilder {
         return this;
     }
 
-    setInputTypeConfig(value: object): InputBuilder {
+    setInputTypeConfig(value: RawInputConfig | undefined): InputBuilder {
         this.inputTypeConfig = value;
         return this;
     }
@@ -85,7 +87,7 @@ export class Input
 
     private helpText: string;
 
-    private inputTypeConfig: object;
+    private inputTypeConfig: RawInputConfig | undefined;
 
     constructor(builder: InputBuilder) {
         super(builder.name);
@@ -118,7 +120,7 @@ export class Input
         return this.helpText;
     }
 
-    getInputTypeConfig(): object {
+    getInputTypeConfig(): RawInputConfig | undefined {
         return this.inputTypeConfig;
     }
 

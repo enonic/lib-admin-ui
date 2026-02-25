@@ -17,7 +17,7 @@ export function useInputTypeDescriptor<C extends InputTypeConfig = InputTypeConf
         const descriptor = DescriptorRegistry.get<C>(input.getInputType().getName());
         if (descriptor == null) return undefined;
 
-        const config = descriptor.readConfig(input.getInputTypeConfig() as Record<string, Record<string, unknown>[]>);
+        const config = descriptor.readConfig(input.getInputTypeConfig() ?? {});
 
         return {descriptor, config};
     }, [input]);

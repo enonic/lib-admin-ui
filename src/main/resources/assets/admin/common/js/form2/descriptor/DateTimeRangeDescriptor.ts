@@ -2,6 +2,7 @@ import type {PropertySet} from '../../data/PropertySet';
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import {LocalDateTime} from '../../util/LocalDateTime';
 import type {DateTimeRangeConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
@@ -14,7 +15,7 @@ export const DateTimeRangeDescriptor: InputTypeDescriptor<DateTimeRangeConfig> =
         return ValueTypes.DATA;
     },
 
-    readConfig(raw: Record<string, Record<string, unknown>[]>): DateTimeRangeConfig {
+    readConfig(raw: RawInputConfig): DateTimeRangeConfig {
         const readVal = (name: string): string => {
             return (raw[name]?.[0]?.value as string) ?? '';
         };

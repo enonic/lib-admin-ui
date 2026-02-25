@@ -1,6 +1,7 @@
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import {StringHelper} from '../../util/StringHelper';
 import type {TextAreaConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
@@ -13,7 +14,7 @@ export const TextAreaDescriptor: InputTypeDescriptor<TextAreaConfig> = {
         return ValueTypes.STRING;
     },
 
-    readConfig(raw: Record<string, Record<string, unknown>[]>): TextAreaConfig {
+    readConfig(raw: RawInputConfig): TextAreaConfig {
         const maxLengthVal = Number(raw.maxLength?.[0]?.value);
         const showCounter = (raw.showCounter?.[0]?.value as boolean) || false;
 

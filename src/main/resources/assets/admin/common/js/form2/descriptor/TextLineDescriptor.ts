@@ -1,6 +1,7 @@
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
+import type {RawInputConfig} from '../../form/Input';
 import {i18n} from '../../util/Messages';
 import {StringHelper} from '../../util/StringHelper';
 import type {TextLineConfig} from './InputTypeConfig';
@@ -14,7 +15,7 @@ export const TextLineDescriptor: InputTypeDescriptor<TextLineConfig> = {
         return ValueTypes.STRING;
     },
 
-    readConfig(raw: Record<string, Record<string, unknown>[]>): TextLineConfig {
+    readConfig(raw: RawInputConfig): TextLineConfig {
         const maxLengthVal = Number(raw.maxLength?.[0]?.value);
         const showCounter = (raw.showCounter?.[0]?.value as boolean) || false;
 

@@ -1,5 +1,6 @@
 import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
+import type {RawInputConfig} from '../../form/Input';
 import type {InputTypeConfig} from './InputTypeConfig';
 import type {ValidationResult} from './ValidationResult';
 
@@ -19,7 +20,7 @@ export type InputTypeDescriptor<C extends InputTypeConfig = InputTypeConfig> = {
     getValueType(): ValueType;
 
     /** Parse raw inputConfig into a typed config object. */
-    readConfig(raw: Record<string, Record<string, unknown>[]>): C;
+    readConfig(raw: RawInputConfig): C;
 
     /** Create a typed default Value from the raw default config value. */
     createDefaultValue(raw: unknown): Value;

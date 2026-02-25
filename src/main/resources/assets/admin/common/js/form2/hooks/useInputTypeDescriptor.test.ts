@@ -21,14 +21,14 @@ vi.mock('../../store/Store', () => {
 });
 
 import {ValueTypes} from '../../data/ValueTypes';
-import {type Input, InputBuilder} from '../../form/Input';
+import {type Input, InputBuilder, type RawInputConfig} from '../../form/Input';
 import {InputTypeName} from '../../form/InputTypeName';
 import {Occurrences} from '../../form/Occurrences';
 import {DescriptorRegistry} from '../descriptor/DescriptorRegistry';
 import type {TextLineConfig} from '../descriptor/InputTypeConfig';
 import {initBuiltInDescriptors} from '../descriptor/initBuiltInDescriptors';
 
-function makeInput(typeName: string, config: object = {}): Input {
+function makeInput(typeName: string, config: RawInputConfig | undefined = {}): Input {
     return new InputBuilder()
         .setName('testField')
         .setInputType(new InputTypeName(typeName, false))
@@ -58,9 +58,7 @@ describe('useInputTypeDescriptor — logic', () => {
             expect(descriptor?.name).toBe('TextLine');
             expect(descriptor?.getValueType()).toBe(ValueTypes.STRING);
 
-            const config = descriptor?.readConfig(
-                input.getInputTypeConfig() as Record<string, Record<string, unknown>[]>,
-            );
+            const config = descriptor?.readConfig(input.getInputTypeConfig() ?? {});
             expect(config?.maxLength).toBe(100);
         });
 
@@ -68,9 +66,7 @@ describe('useInputTypeDescriptor — logic', () => {
             const input = makeInput('TextLine', {regexp: [{value: '^[A-Z]+$'}]});
             const descriptor = DescriptorRegistry.get<TextLineConfig>(input.getInputType().getName());
 
-            const config = descriptor?.readConfig(
-                input.getInputTypeConfig() as Record<string, Record<string, unknown>[]>,
-            );
+            const config = descriptor?.readConfig(input.getInputTypeConfig() ?? {});
             expect(config?.regexp).toBeInstanceOf(RegExp);
             expect(config?.regexp?.source).toBe('^[A-Z]+$');
         });
@@ -105,9 +101,17 @@ describe('useInputTypeDescriptor — logic', () => {
             const input = makeInput('TextLine', {});
             const descriptor = DescriptorRegistry.get<TextLineConfig>(input.getInputType().getName());
 
-            const config = descriptor?.readConfig(
-                input.getInputTypeConfig() as Record<string, Record<string, unknown>[]>,
-            );
+            const config = descriptor?.readConfig(input.getInputTypeConfig() ?? {});
+            expect(config?.regexp).toBeUndefined();
+            expect(config?.maxLength).toBe(-1);
+            expect(config?.showCounter).toBe(false);
+        });
+
+        it('handles undefined config gracefully', () => {
+            const input = makeInput('TextLine', undefined);
+            const descriptor = DescriptorRegistry.get<TextLineConfig>(input.getInputType().getName());
+
+            const config = descriptor?.readConfig(input.getInputTypeConfig() ?? {});
             expect(config?.regexp).toBeUndefined();
             expect(config?.maxLength).toBe(-1);
             expect(config?.showCounter).toBe(false);
