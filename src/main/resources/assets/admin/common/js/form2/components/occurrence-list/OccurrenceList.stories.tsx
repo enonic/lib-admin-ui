@@ -107,10 +107,10 @@ export const OptionalEmpty: Story = {
     name: 'Examples / Optional Empty',
     render: () => (
         <div className='flex flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>Optional Empty (0:1)</h3>
+            <h3 className='mb-0 font-medium text-sm'>Optional Empty (0:1) — renders bare input with null value</h3>
             <OccurrenceList
                 Component={TextLineInput}
-                state={makeState([], 0, 1)}
+                state={makeState([''], 0, 1)}
                 onAdd={noop}
                 onRemove={noop}
                 onMove={noop}

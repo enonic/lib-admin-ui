@@ -29,17 +29,27 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     config,
     initialValues,
 }: UseOccurrenceManagerParams<C>): UseOccurrenceManagerResult {
+    // Minimum fill target: for non-multiple inputs (max=1), always at least 1 so the bare input
+    // renders immediately — matching legacy behavior where single-optional fields show one input.
+    const minFill = useMemo(
+        () => (occurrences.multiple() ? occurrences.getMinimum() : Math.max(occurrences.getMinimum(), 1)),
+        [occurrences],
+    );
+
     // biome-ignore lint/correctness/useExhaustiveDependencies: initialValues consumed only on construction
     const manager = useMemo(() => {
         const m = new OccurrenceManager<C>(occurrences, descriptor, config, initialValues);
 
-        // Eagerly fill to minimum so the first render already has values
-        while (m.getCount() < occurrences.getMinimum()) {
+        // Eagerly fill to minFill so the first render already has values.
+        // Break if add() is a no-op (max reached) to prevent infinite loop on malformed schemas.
+        while (m.getCount() < minFill) {
+            const before = m.getCount();
             m.add();
+            if (m.getCount() === before) break;
         }
 
         return m;
-    }, [occurrences, descriptor, config]);
+    }, [occurrences, descriptor, config, minFill]);
 
     const [state, setState] = useState<OccurrenceManagerState>(() => manager.validate());
 
@@ -79,9 +89,16 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     const sync = useCallback(
         (values: Value[]) => {
             manager.setValues(values);
+            // Re-enforce minFill after external value replacement (e.g., PropertyArray cleared).
+            // Break if add() is a no-op (max reached) to prevent infinite loop on malformed schemas.
+            while (manager.getCount() < minFill) {
+                const before = manager.getCount();
+                manager.add();
+                if (manager.getCount() === before) break;
+            }
             setState(manager.validate());
         },
-        [manager],
+        [manager, minFill],
     );
 
     return {state, add, remove, move, set, sync};
