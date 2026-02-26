@@ -2,10 +2,10 @@ import {Body} from '../../dom/Body';
 import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';
 import {ObjectHelper} from '../../ObjectHelper';
+import {ActionButton} from '../../ui2/ActionButton';
 import {i18n} from '../../util/Messages';
 import {Action} from '../Action';
 import {ActionContainer} from '../ActionContainer';
-import {ActionButton} from '../button/ActionButton';
 import {KeyHelper} from '../KeyHelper';
 import {ResponsiveManager} from '../responsive/ResponsiveManager';
 import {AriaRole, WCAG} from '../WCAG';
@@ -168,7 +168,7 @@ export class Toolbar<C extends ToolbarConfig>
         if (action.isFoldable()) {
             action.onPropertyChanged(() => this.foldOrExpand());
         }
-        return new ActionButton(action);
+        return new ActionButton({action});
     }
 
     private initElementListeners(element: Element) {

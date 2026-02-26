@@ -316,7 +316,7 @@ export class InputView
     protected createInputTypeView(): InputTypeView {
         let inputType: InputTypeName = this.input.getInputType();
         let inputTypeViewContext = this.getContext().createInputTypeViewContext(
-            this.input.getInputTypeConfig() || {},
+            this.input.getInputTypeConfig() ?? {},
             this.parentPropertySet.getPropertyPath(),
             this.input
         );

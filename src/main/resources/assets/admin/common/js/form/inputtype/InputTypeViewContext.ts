@@ -1,5 +1,5 @@
 import {FormContext} from '../FormContext';
-import {Input} from '../Input';
+import {Input, type RawInputConfig} from '../Input';
 import {PropertyPath} from '../../data/PropertyPath';
 
 export interface InputTypeViewContext {
@@ -8,7 +8,7 @@ export interface InputTypeViewContext {
 
     input: Input;
 
-    inputConfig: Record<string, Record<string, unknown>[]>;
+    inputConfig: RawInputConfig;
 
     parentDataPath: PropertyPath;
 }

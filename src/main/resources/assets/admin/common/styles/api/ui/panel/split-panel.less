@@ -1,6 +1,5 @@
 .split-panel {
   width: 100%;
-  right: 0;
 
   &.horizontal > .panel {
     position: relative;
@@ -11,9 +10,12 @@
   }
 
   > .splitter {
-    background-color: @admin-bg-light-gray;
     cursor: ns-resize;
     .notSelectable();
+
+    &.splitter-bg-standard {
+      background-color: @admin-bg-light-gray;
+    }
   }
 
   > .ghost-dragger {

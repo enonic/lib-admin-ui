@@ -1,13 +1,13 @@
-import {SpanEl} from '../../dom/SpanEl';
-import {LiEl} from '../../dom/LiEl';
-import {NavigationItem} from '../NavigationItem';
+import {XIcon} from 'lucide-react';
 import {AEl} from '../../dom/AEl';
-import {Action} from '../Action';
-import {ActionButton} from '../button/ActionButton';
+import {LiEl} from '../../dom/LiEl';
+import {SpanEl} from '../../dom/SpanEl';
+import {ActionIcon} from '../../ui2/ActionIcon';
 import {StringHelper} from '../../util/StringHelper';
-import {Tooltip} from '../Tooltip';
-import {TabItemLabelChangedEvent} from './TabItemLabelChangedEvent';
+import {Action} from '../Action';
+import {NavigationItem} from '../NavigationItem';
 import {TabItemClosedEvent} from './TabItemClosedEvent';
+import {TabItemLabelChangedEvent} from './TabItemLabelChangedEvent';
 import {TabItemSelectedEvent} from './TabItemSelectedEvent';
 
 export class TabItem
@@ -20,7 +20,7 @@ export class TabItem
     private labelEl: AEl;
     private active: boolean = false;
     private closeAction: Action;
-    private removeButton: ActionButton;
+    private removeButton: ActionIcon;
     private labelChangedListeners: ((event: TabItemLabelChangedEvent) => void)[] = [];
     private closedListeners: ((event: TabItemClosedEvent) => void)[] = [];
     private selectedListeners: ((event: TabItemSelectedEvent) => void)[] = [];
@@ -173,13 +173,7 @@ export class TabItem
 
     private createRemoveButton() {
         if (this.closeAction && !this.removeButton) {
-
-            this.removeButton = new ActionButton(this.closeAction);
-            this.removeButton.getTooltip().setSide(Tooltip.SIDE_LEFT);
-            this.removeButton.onClicked((event: MouseEvent) => {
-                event.stopPropagation();
-                event.preventDefault();
-            });
+            this.removeButton = new ActionIcon({action: this.closeAction, icon: XIcon});
             this.prependChild(this.removeButton);
         }
     }

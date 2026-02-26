@@ -1,6 +1,6 @@
 import {PropertyPath} from '../data/PropertyPath';
 import {InputTypeViewContext} from './inputtype/InputTypeViewContext';
-import {Input} from './Input';
+import {Input, type RawInputConfig} from './Input';
 import {FormState} from '../app/wizard/WizardPanel';
 import {ValidationError} from '../ValidationError';
 import {AiToolType} from '../ai/tool/AiToolType';
@@ -40,7 +40,7 @@ export class FormContext {
         this.showEmptyFormItemSetOccurrences = value;
     }
 
-    createInputTypeViewContext(inputTypeConfig: any, parentPropertyPath: PropertyPath,
+    createInputTypeViewContext(inputTypeConfig: RawInputConfig, parentPropertyPath: PropertyPath,
                                input: Input): InputTypeViewContext {
 
         return {

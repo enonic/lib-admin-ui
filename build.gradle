@@ -79,6 +79,8 @@ tasks.register( 'pnpmBuild', PnpmTask ) {
     description = 'Build JavaScript for .xp, and Lib script and styles'
     args = ['run', "build:${environmentShort()}"]
     inputs.dir 'src/main/resources/assets/admin/common'
+    inputs.files 'tsconfig.json', 'tsconfig.base.json', 'tsconfig.legacy.json', 'tsconfig.modern.json',
+                 'vite.config.ts', 'package.json'
     outputs.dirs layout.buildDirectory.dir('resources/main/dev/lib-admin-ui'),
                  layout.buildDirectory.dir('resources/main/assets/admin/common')
 }
@@ -101,7 +103,7 @@ tasks.named( 'processResources' ).configure {
 tasks.named( 'jar' ).configure {
     exclude 'dev/**'
     exclude 'assets/spec/**'
-    exclude 'assets/**/*.ts'
+    exclude 'assets/**/*.ts', 'assets/**/*.tsx'
 
     includeEmptyDirs = false
 
@@ -112,7 +114,7 @@ tasks.register( 'devJar', Jar ) {
     archiveClassifier = 'dev-resources'
     from sourceSets.main.output
     include 'dev/**'
-    exclude 'dev/lib-admin-ui/lib.js', 'dev/lib-admin-ui/lib.d.ts'
+    exclude 'dev/lib-admin-ui/lib.js', 'dev/lib-admin-ui/lib.d.ts', 'dev/lib-admin-ui/*.tsbuildinfo'
 
     into( "dev/${base.archivesName.get()}/fonts" ) {
         from layout.buildDirectory.dir( 'resources/main/assets/admin/common/fonts' )
