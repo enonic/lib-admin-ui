@@ -223,7 +223,10 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     const occurrences = input.getOccurrences();
     const min = occurrences.getMinimum();
     const max = occurrences.getMaximum();
-    const isSingle = min === 1 && max === 1;
+    // Non-multiple: max=1, regardless of min. Both min=1,max=1 (required) and min=0,max=1 (optional)
+    // render a single bare input with no add/remove buttons — matching legacy InputView behavior.
+    const isSingle = !occurrences.multiple();
+    // Fixed: exact count like 3:3 — no add/remove, no drag. Excludes single (1:1) which early-returns.
     const isFixed = min > 0 && min === max && !isSingle;
     const isDraggable = occurrences.multiple() && !isFixed;
     const showDrag = isDraggable && state.values.length >= 2;
