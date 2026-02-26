@@ -29,12 +29,9 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     config,
     initialValues,
 }: UseOccurrenceManagerParams<C>): UseOccurrenceManagerResult {
-    // Minimum fill target: for non-multiple inputs (max=1), always at least 1 so the bare input
-    // renders immediately — matching legacy behavior where single-optional fields show one input.
-    const minFill = useMemo(
-        () => (occurrences.multiple() ? occurrences.getMinimum() : Math.max(occurrences.getMinimum(), 1)),
-        [occurrences],
-    );
+    // Always show at least 1 input — matches legacy showEmptyFormItemOccurrences() which is
+    // unconditionally true for all Inputs regardless of the occurrence config.
+    const minFill = useMemo(() => Math.max(occurrences.getMinimum(), 1), [occurrences]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: initialValues consumed only on construction
     const manager = useMemo(() => {

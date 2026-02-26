@@ -30,7 +30,7 @@ function createManager(opts: {min?: number; max?: number; values?: string[]} = {
 
 /** Mirrors the minFill computation from useOccurrenceManager. */
 function computeMinFill(occurrences: Occurrences): number {
-    return occurrences.multiple() ? occurrences.getMinimum() : Math.max(occurrences.getMinimum(), 1);
+    return Math.max(occurrences.getMinimum(), 1);
 }
 
 /** Mirrors the guarded fill loop from useOccurrenceManager. */
@@ -62,8 +62,8 @@ describe('useOccurrenceManager — logic', () => {
             expect(computeMinFill(Occurrences.minmax(3, 0))).toBe(3);
         });
 
-        it('returns 0 for unlimited with no minimum', () => {
-            expect(computeMinFill(Occurrences.minmax(0, 0))).toBe(0);
+        it('returns 1 for unlimited with no minimum', () => {
+            expect(computeMinFill(Occurrences.minmax(0, 0))).toBe(1);
         });
 
         it('returns 1 for single required (1:1)', () => {
@@ -95,10 +95,11 @@ describe('useOccurrenceManager — logic', () => {
             expect(manager.getCount()).toBe(2);
         });
 
-        it('does not fill 0:0 (unlimited optional)', () => {
+        it('fills 0:0 (unlimited optional) to 1 null value', () => {
             const {manager, occurrences} = createManager({min: 0, max: 0});
             fillTo(manager, computeMinFill(occurrences));
-            expect(manager.getCount()).toBe(0);
+            expect(manager.getCount()).toBe(1);
+            expect(manager.getValues()[0].isNull()).toBe(true);
         });
 
         it('does not overfill when initial values already meet minimum', () => {
@@ -145,12 +146,13 @@ describe('useOccurrenceManager — logic', () => {
             expect(manager.getCount()).toBe(2);
         });
 
-        it('does not re-fill 0:0 after sync([])', () => {
+        it('re-fills to 1 after sync([]) on a 0:0 field', () => {
             const {manager, occurrences} = createManager({min: 0, max: 0, values: ['a']});
             const minFill = computeMinFill(occurrences);
 
             syncAndFill(manager, [], minFill);
-            expect(manager.getCount()).toBe(0);
+            expect(manager.getCount()).toBe(1);
+            expect(manager.getValues()[0].isNull()).toBe(true);
         });
 
         it('preserves values when sync provides enough', () => {

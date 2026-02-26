@@ -274,7 +274,9 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         input,
         enabled,
         errors: state.occurrenceValidation[index],
-        showRemove: state.canRemove && !isFixed,
+        // canRemove reflects the schema minimum; the count > 1 guard is a UX policy
+        // matching legacy isRemoveButtonRequiredStrict() — never remove the last visible input.
+        showRemove: state.canRemove && state.values.length > 1 && !isFixed,
         onChange,
         onBlur,
         onRemove,
