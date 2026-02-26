@@ -123,6 +123,28 @@ export const OptionalEmpty: Story = {
     ),
 };
 
+export const OptionalMultipleEmpty: Story = {
+    name: 'Examples / Optional Multiple Empty',
+    render: () => (
+        <div className='flex flex-col gap-y-4 p-4'>
+            <h3 className='mb-0 font-medium text-sm'>
+                Optional Multiple Empty (0:3) — 1 auto-filled null, no remove button
+            </h3>
+            <OccurrenceList
+                Component={TextLineInput}
+                state={makeState([''], 0, 3)}
+                onAdd={noop}
+                onRemove={noop}
+                onMove={noop}
+                onChange={noop}
+                config={makeConfig()}
+                input={makeInput(0, 3)}
+                enabled={true}
+            />
+        </div>
+    ),
+};
+
 export const RequiredMultiple: Story = {
     name: 'Examples / Required Multiple',
     render: () => (
