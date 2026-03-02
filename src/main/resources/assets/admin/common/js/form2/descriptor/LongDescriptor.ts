@@ -2,6 +2,7 @@ import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
 import type {RawInputConfig} from '../../form/Input';
+import {i18n} from '../../util/Messages';
 import {NumberHelper} from '../../util/NumberHelper';
 import type {NumberConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
@@ -28,28 +29,27 @@ export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
         return ValueTypes.LONG.fromJsonValue(raw);
     },
 
-    validate(value: Value, config: NumberConfig): ValidationResult[] {
+    validate(value: Value, config: NumberConfig, rawValue?: string): ValidationResult[] {
         const results: ValidationResult[] = [];
         if (value.isNull()) {
+            // Distinguish "no input" from "rejected input" (e.g. "1.5" for a Long field)
+            if (rawValue != null && rawValue !== '') {
+                results.push({message: i18n('field.value.invalid')});
+            }
             return results;
         }
 
         const num = value.getLong();
 
         if (!NumberHelper.isWholeNumber(num)) {
-            results.push({message: 'Value is not a valid whole number'});
-            return results;
-        }
-
-        if (!NumberHelper.isNumber(num)) {
-            results.push({message: 'Value is not a valid number'});
+            results.push({message: i18n('field.value.invalid')});
             return results;
         }
 
         if (config.min != null && NumberHelper.isNumber(config.min) && num < config.min) {
-            results.push({message: `Value must be at least ${config.min}`});
+            results.push({message: i18n('field.value.breaks.min', config.min)});
         } else if (config.max != null && NumberHelper.isNumber(config.max) && num > config.max) {
-            results.push({message: `Value must be at most ${config.max}`});
+            results.push({message: i18n('field.value.breaks.max', config.max)});
         }
 
         return results;

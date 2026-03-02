@@ -1,3 +1,4 @@
+import {LongInput} from './components/long-input';
 import {TextAreaInput} from './components/text-area-input';
 import {TextLineInput} from './components/text-line-input';
 import {ComponentRegistry} from './registry/ComponentRegistry';
@@ -8,4 +9,5 @@ export function initBuiltInComponents(): void {
     // but the registry stores the generic InputTypeComponent. Props contract is tested separately.
     ComponentRegistry.register('TextLine', TextLineInput as InputTypeComponent, true);
     ComponentRegistry.register('TextArea', TextAreaInput as InputTypeComponent, true);
+    ComponentRegistry.register('Long', LongInput as InputTypeComponent, true);
 }

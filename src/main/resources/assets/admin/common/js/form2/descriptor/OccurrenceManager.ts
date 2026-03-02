@@ -33,6 +33,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
     private readonly descriptor: InputTypeDescriptor<C>;
     private readonly config: C;
     private values: Value[];
+    private rawValues: (string | undefined)[];
     private ids: string[];
     private nextId = 0;
 
@@ -41,6 +42,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         this.descriptor = descriptor;
         this.config = config;
         this.values = [...initialValues];
+        this.rawValues = initialValues.map(() => undefined);
         this.ids = this.values.map(() => this.generateId());
     }
 
@@ -60,6 +62,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
     setValues(values: Value[]): void {
         const oldIds = this.ids;
         this.values = [...values];
+        this.rawValues = values.map(() => undefined);
         this.ids = this.values.map((_, i) => (i < oldIds.length ? oldIds[i] : this.generateId()));
     }
 
@@ -77,6 +80,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         }
 
         this.values.push(value ?? this.descriptor.getValueType().newNullValue());
+        this.rawValues.push(undefined);
         this.ids.push(this.generateId());
     }
 
@@ -86,6 +90,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         }
 
         this.values.splice(index, 1);
+        this.rawValues.splice(index, 1);
         this.ids.splice(index, 1);
     }
 
@@ -103,16 +108,20 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         const [movedValue] = this.values.splice(fromIndex, 1);
         this.values.splice(toIndex, 0, movedValue);
 
+        const [movedRaw] = this.rawValues.splice(fromIndex, 1);
+        this.rawValues.splice(toIndex, 0, movedRaw);
+
         const [movedId] = this.ids.splice(fromIndex, 1);
         this.ids.splice(toIndex, 0, movedId);
     }
 
-    set(index: number, value: Value): void {
+    set(index: number, value: Value, rawValue?: string): void {
         if (index < 0 || index >= this.values.length) {
             return;
         }
 
         this.values[index] = value;
+        this.rawValues[index] = rawValue;
     }
 
     // ? Uses total count (not totalValid) so UI buttons gate on all values including empty ones
@@ -134,7 +143,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
      */
     validate(): OccurrenceManagerState {
         const occurrenceValidation: OccurrenceValidationState[] = this.values.map((value, index) => {
-            const validationResults = this.descriptor.validate(value, this.config);
+            const validationResults = this.descriptor.validate(value, this.config, this.rawValues[index]);
             const breaksRequired = this.descriptor.valueBreaksRequired(value);
 
             return {index, breaksRequired, validationResults};

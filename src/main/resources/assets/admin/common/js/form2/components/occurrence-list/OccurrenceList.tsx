@@ -21,7 +21,7 @@ export type OccurrenceListRootProps<C extends InputTypeConfig = InputTypeConfig>
     onAdd: () => void;
     onRemove: (index: number) => void;
     onMove: (fromIndex: number, toIndex: number) => void;
-    onChange: (index: number, value: Value) => void;
+    onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
     config: C;
     input: Input;
@@ -37,7 +37,7 @@ type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig>
     enabled: boolean;
     errors: OccurrenceManagerState['occurrenceValidation'][number];
     showRemove: boolean;
-    onChange: (index: number, value: Value) => void;
+    onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
     onRemove: (index: number) => void;
 };
@@ -96,7 +96,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
             <div className='min-w-0 flex-1'>
                 <Component
                     value={value}
-                    onChange={(v: Value) => onChange(index, v)}
+                    onChange={(v: Value, raw?: string) => onChange(index, v, raw)}
                     onBlur={onBlur ? () => onBlur(index) : undefined}
                     config={config}
                     input={input}
@@ -244,7 +244,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
             <div data-component={OCCURRENCE_LIST_NAME}>
                 <Component
                     value={value}
-                    onChange={(v: Value) => onChange(0, v)}
+                    onChange={(v: Value, raw?: string) => onChange(0, v, raw)}
                     onBlur={onBlur ? () => onBlur(0) : undefined}
                     config={config}
                     input={input}
