@@ -100,7 +100,6 @@ tasks.named( 'processResources' ).configure {
 
 tasks.named( 'jar' ).configure {
     exclude 'dev/**'
-    exclude 'assets/spec/**'
     exclude 'assets/**/*.ts'
 
     includeEmptyDirs = false

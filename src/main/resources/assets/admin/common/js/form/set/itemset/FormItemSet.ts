@@ -20,11 +20,8 @@ export class FormItemSet
 
     private formItemByName: Record<string, FormItem> = {};
 
-    private readonly immutable: boolean;
-
     constructor(formItemSetJson: FormItemSetJson, factory: FormItemFactory, applicationKey?: ApplicationKey) {
         super(formItemSetJson);
-        this.immutable = formItemSetJson.immutable;
 
         if (formItemSetJson.items != null) {
             formItemSetJson.items.forEach((formItemJson) => {
@@ -54,17 +51,12 @@ export class FormItemSet
         return this.formItemByName[name] as Input;
     }
 
-    isImmutable(): boolean {
-        return this.immutable;
-    }
-
     public toJson(): FormItemTypeWrapperJson {
 
         return {
             FormItemSet: {
                 name: this.getName(),
                 helpText: this.getHelpText(),
-                immutable: this.isImmutable(),
                 items: this.getFormItems().map(formItem => formItem.toJson()),
                 label: this.getLabel(),
                 occurrences: this.getOccurrences().toJson()
@@ -84,15 +76,7 @@ export class FormItemSet
 
         let other: FormItemSet = o as FormItemSet;
 
-        if (!ObjectHelper.booleanEquals(this.immutable, other.immutable)) {
-            return false;
-        }
-
-        if (!ObjectHelper.arrayEquals(this.formItems, other.formItems)) {
-            return false;
-        }
-
-        return true;
+        return ObjectHelper.arrayEquals(this.formItems, other.formItems);
     }
 
 }

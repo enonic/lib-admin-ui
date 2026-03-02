@@ -21,9 +21,6 @@ docs/
 *storybook.log
 *.local
 
-# Coverage
-**/spec/coverage
-
 # Build tools
 node_modules/
 .pnpm-store/
