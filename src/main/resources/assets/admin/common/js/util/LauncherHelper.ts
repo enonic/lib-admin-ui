@@ -12,7 +12,7 @@ export class LauncherHelper {
             .then(response => response.text())
             .then((html: string) => WidgetHelper.createFromHtmlAndAppend(html, container))
             .catch((e: Error) => {
-                throw new Error(`Failed to fetch the Launcher widget at ${url}: ${e.toString()}`);
+                throw new Error(`Failed to fetch the Launcher extension panel at ${url}: ${e.toString()}`);
             });
     }
 }
