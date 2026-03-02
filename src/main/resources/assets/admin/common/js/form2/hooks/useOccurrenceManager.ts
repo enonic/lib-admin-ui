@@ -19,7 +19,7 @@ type UseOccurrenceManagerResult = {
     add: () => void;
     remove: (index: number) => void;
     move: (fromIndex: number, toIndex: number) => void;
-    set: (index: number, value: Value) => void;
+    set: (index: number, value: Value, rawValue?: string) => void;
     sync: (values: Value[]) => void;
 };
 
@@ -76,8 +76,8 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     );
 
     const set = useCallback(
-        (index: number, value: Value) => {
-            manager.set(index, value);
+        (index: number, value: Value, rawValue?: string) => {
+            manager.set(index, value, rawValue);
             setState(manager.validate());
         },
         [manager],

@@ -29,7 +29,7 @@ export type InputTypeDescriptor<C extends InputTypeConfig = InputTypeConfig> = {
      * Validate a single value.
      * Returns an empty array when valid.
      */
-    validate(value: Value, config: C): ValidationResult[];
+    validate(value: Value, config: C, rawValue?: string): ValidationResult[];
 
     /**
      * Whether the given value should be considered "missing" for

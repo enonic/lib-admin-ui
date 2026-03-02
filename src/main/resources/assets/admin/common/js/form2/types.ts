@@ -7,7 +7,7 @@ import type {ValidationResult} from './descriptor/ValidationResult';
 /** Props every React input type component receives (one per occurrence). */
 export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig> = {
     value: Value;
-    onChange: (value: Value) => void;
+    onChange: (value: Value, rawValue?: string) => void;
     onBlur?: () => void;
     config: C;
     input: Input;

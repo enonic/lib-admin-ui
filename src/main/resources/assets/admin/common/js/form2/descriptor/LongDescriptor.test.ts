@@ -1,8 +1,15 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../data/Value';
 import {ValueTypes} from '../../data/ValueTypes';
 import type {NumberConfig} from './InputTypeConfig';
 import {LongDescriptor} from './LongDescriptor';
+
+vi.mock('../../util/Messages', () => ({
+    i18n: (key: string, ...args: unknown[]) => {
+        if (args.length > 0) return `#${key}#[${args.join(',')}]`;
+        return `#${key}#`;
+    },
+}));
 
 describe('LongDescriptor', () => {
     describe('getValueType', () => {
@@ -98,7 +105,7 @@ describe('LongDescriptor', () => {
             const value = ValueTypes.LONG.fromJsonValue(5);
             const results = LongDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toBe('Value must be at least 10');
+            expect(results[0].message).toBe('#field.value.breaks.min#[10]');
         });
 
         it('detects value above max', () => {
@@ -106,7 +113,7 @@ describe('LongDescriptor', () => {
             const value = ValueTypes.LONG.fromJsonValue(150);
             const results = LongDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toBe('Value must be at most 100');
+            expect(results[0].message).toBe('#field.value.breaks.max#[100]');
         });
 
         it('reports only one violation (else-if): min takes precedence', () => {
@@ -114,7 +121,7 @@ describe('LongDescriptor', () => {
             const value = ValueTypes.LONG.fromJsonValue(5);
             const results = LongDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toContain('at least');
+            expect(results[0].message).toContain('breaks.min');
         });
 
         it('allows value exactly at min boundary', () => {
@@ -146,6 +153,22 @@ describe('LongDescriptor', () => {
             const value = ValueTypes.LONG.fromJsonValue(0);
             expect(LongDescriptor.validate(value, config)).toEqual([]);
         });
+
+        it('returns error when null value has non-empty rawValue (rejected input)', () => {
+            const config = makeConfig();
+            const value = ValueTypes.LONG.newNullValue();
+            const results = LongDescriptor.validate(value, config, '1.5');
+            expect(results).toHaveLength(1);
+            expect(results[0].message).toBe('#field.value.invalid#');
+        });
+
+        it('returns empty for null value without rawValue (empty field)', () => {
+            const config = makeConfig();
+            const value = ValueTypes.LONG.newNullValue();
+            expect(LongDescriptor.validate(value, config)).toEqual([]);
+            expect(LongDescriptor.validate(value, config, undefined)).toEqual([]);
+            expect(LongDescriptor.validate(value, config, '')).toEqual([]);
+        });
     });
 
     describe('valueBreaksRequired', () => {
@@ -175,14 +198,14 @@ describe('LongDescriptor', () => {
             const config = LongDescriptor.readConfig({min: [{value: 10}]});
             const results = LongDescriptor.validate(ValueTypes.LONG.fromJsonValue(5), config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toContain('at least');
+            expect(results[0].message).toContain('breaks.min');
         });
 
         it('rejects value above max parsed from config', () => {
             const config = LongDescriptor.readConfig({max: [{value: 100}]});
             const results = LongDescriptor.validate(ValueTypes.LONG.fromJsonValue(200), config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toContain('at most');
+            expect(results[0].message).toContain('breaks.max');
         });
 
         it('accepts any value with empty config', () => {

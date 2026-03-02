@@ -1,6 +1,7 @@
 // Legacy bridge (for IIFE / InputTypeManager system)
 export {BaseInputType} from './BaseInputType';
 export {CounterDescription} from './components/counter-description';
+export {LongInput, type LongInputProps} from './components/long-input';
 export {OccurrenceList, type OccurrenceListRootProps} from './components/occurrence-list';
 export {TextAreaInput} from './components/text-area-input';
 export {TextLineInput} from './components/text-line-input';
