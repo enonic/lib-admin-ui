@@ -64,70 +64,64 @@ const defaultArgs: InputTypeComponentProps<RadioButtonConfig> = {
     errors: [],
 };
 
-export const Default: Story = {
-    name: 'Examples / Default',
-    args: {...defaultArgs},
-};
-
-export const WithValue: Story = {
-    name: 'Examples / With Value',
-    args: {
-        ...defaultArgs,
-        value: ValueTypes.STRING.newValue('b'),
-    },
-};
-
-export const TwoOptions: Story = {
-    name: 'Examples / Two Options',
-    args: {
-        ...defaultArgs,
-        config: makeConfig({
-            options: [
-                {label: 'Yes', value: 'yes'},
-                {label: 'No', value: 'no'},
-            ],
-        }),
-    },
-};
-
-export const ManyOptions: Story = {
-    name: 'Examples / Many Options',
-    args: {
-        ...defaultArgs,
-        config: makeConfig({
-            options: [
-                {label: 'Red', value: 'red'},
-                {label: 'Orange', value: 'orange'},
-                {label: 'Yellow', value: 'yellow'},
-                {label: 'Green', value: 'green'},
-                {label: 'Blue', value: 'blue'},
-                {label: 'Purple', value: 'purple'},
-            ],
-        }),
-    },
-};
-
-export const Disabled: Story = {
-    name: 'States / Disabled',
-    args: {
-        ...defaultArgs,
-        value: ValueTypes.STRING.newValue('a'),
-        enabled: false,
-    },
-};
-
-export const WithError: Story = {
-    name: 'States / With Error',
-    args: {
-        ...defaultArgs,
-        errors: [{message: 'This field is required'}],
-    },
-};
-
 function StatefulRadio(props: Omit<InputTypeComponentProps<RadioButtonConfig>, 'onChange'> & {initialValue?: Value}) {
     const [value, setValue] = useState(props.initialValue ?? props.value);
     return <RadioButtonInput {...props} value={value} onChange={setValue} />;
 }
+
+export const Default: Story = {
+    name: 'Examples / Default',
+    render: () => <StatefulRadio {...defaultArgs} />,
+};
+
+export const WithValue: Story = {
+    name: 'Examples / With Value',
+    render: () => <StatefulRadio {...defaultArgs} initialValue={ValueTypes.STRING.newValue('b')} />,
+};
+
+export const TwoOptions: Story = {
+    name: 'Examples / Two Options',
+    render: () => (
+        <StatefulRadio
+            {...defaultArgs}
+            config={makeConfig({
+                options: [
+                    {label: 'Yes', value: 'yes'},
+                    {label: 'No', value: 'no'},
+                ],
+            })}
+        />
+    ),
+};
+
+export const ManyOptions: Story = {
+    name: 'Examples / Many Options',
+    render: () => (
+        <StatefulRadio
+            {...defaultArgs}
+            config={makeConfig({
+                options: [
+                    {label: 'Red', value: 'red'},
+                    {label: 'Orange', value: 'orange'},
+                    {label: 'Yellow', value: 'yellow'},
+                    {label: 'Green', value: 'green'},
+                    {label: 'Blue', value: 'blue'},
+                    {label: 'Purple', value: 'purple'},
+                ],
+            })}
+        />
+    ),
+};
+
+export const Disabled: Story = {
+    name: 'States / Disabled',
+    render: () => <StatefulRadio {...defaultArgs} initialValue={ValueTypes.STRING.newValue('a')} enabled={false} />,
+};
+
+export const WithError: Story = {
+    name: 'States / With Error',
+    render: () => <StatefulRadio {...defaultArgs} errors={[{message: 'This field is required'}]} />,
+};
 
 export const AllStates: Story = {
     name: 'States / All States',
