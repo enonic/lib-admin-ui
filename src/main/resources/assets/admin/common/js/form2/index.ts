@@ -3,6 +3,7 @@ export {BaseInputType} from './BaseInputType';
 export {CounterDescription} from './components/counter-description';
 export {LongInput, type LongInputProps} from './components/long-input';
 export {OccurrenceList, type OccurrenceListRootProps} from './components/occurrence-list';
+export {RadioButtonInput} from './components/radio-button-input';
 export {TextAreaInput} from './components/text-area-input';
 export {TextLineInput} from './components/text-line-input';
 export {UnsupportedInput} from './components/unsupported-input';
