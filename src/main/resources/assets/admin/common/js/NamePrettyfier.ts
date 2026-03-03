@@ -29,7 +29,6 @@ export class NamePrettyfier {
         prettifiedPathName = this.makeLowerCase(prettifiedPathName);
         prettifiedPathName = this.replaceWithHyphens(prettifiedPathName);
         prettifiedPathName = this.replaceBlankSpaces(prettifiedPathName);
-        prettifiedPathName = this.replaceTrailingHyphens(prettifiedPathName);
         prettifiedPathName = this.replaceHyphensAroundDot(prettifiedPathName);
         prettifiedPathName = this.ensureNiceBeginningAndEnding(prettifiedPathName);
 
@@ -37,6 +36,8 @@ export class NamePrettyfier {
         if (!BrowserHelper.isIE()) {
             prettifiedPathName = this.transcribe(prettifiedPathName);
         }
+
+        prettifiedPathName = this.replaceTrailingHyphens(prettifiedPathName);
 
         if (StringHelper.isBlank(prettifiedPathName)) {
             return '';
