@@ -1,5 +1,18 @@
-import {closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors} from '@dnd-kit/core';
-import {SortableContext, useSortable, verticalListSortingStrategy} from '@dnd-kit/sortable';
+import {
+    closestCenter,
+    DndContext,
+    type DragEndEvent,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import {
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import {Button, cn, IconButton} from '@enonic/ui';
 import {GripVertical, Plus, X} from 'lucide-react';
 import type {ReactElement, ReactNode} from 'react';
@@ -133,8 +146,9 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
     ...contentProps
 }: OccurrenceListSortableItemProps<C>): ReactElement => {
     const t = useI18n();
-    const {attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging} = useSortable({
+    const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id,
+        disabled: !showDrag,
     });
 
     const style = {
@@ -147,8 +161,9 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
     return (
         <div
             ref={setNodeRef}
+            onKeyDown={listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLDivElement>}
             role={attributes.role as preact.JSX.AriaRole}
-            tabIndex={attributes.tabIndex}
+            tabIndex={showDrag ? attributes.tabIndex : undefined}
             aria-disabled={attributes['aria-disabled']}
             aria-pressed={attributes['aria-pressed']}
             aria-roledescription={attributes['aria-roledescription']}
@@ -166,7 +181,6 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
         >
             {showDrag && (
                 <button
-                    ref={setActivatorNodeRef}
                     type='button'
                     className={cn(
                         'flex shrink-0 cursor-grab items-center text-subtle',
@@ -231,7 +245,10 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     const isDraggable = occurrences.multiple() && !isFixed;
     const showDrag = isDraggable && state.values.length >= 2;
 
-    const sensors = useSensors(useSensor(PointerSensor, {activationConstraint: {distance: 5}}));
+    const sensors = useSensors(
+        useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
+        useSensor(KeyboardSensor, {coordinateGetter: sortableKeyboardCoordinates}),
+    );
 
     // Single mode: render component bare
     // ? Minimum occurrences are eagerly populated in useOccurrenceManager, so values[0] is always present
