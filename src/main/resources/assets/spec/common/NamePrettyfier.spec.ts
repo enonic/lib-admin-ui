@@ -11,6 +11,9 @@ describe('api.NamePrettyfier', () => {
             expect(NamePrettyfier.prettify('t@e&st^-$cha$r@s $1 ')).toBe('t-e-st-cha-r-s-1');
             expect(NamePrettyfier.prettify('Test\u0081Stuff\u0082Here\u0083')).toBe('teststuffhere');
             expect(NamePrettyfier.prettify("еvidem.ment_']]")).toBe('evidem.ment'); // е - \u0415
+            expect(NamePrettyfier.prettify('test *) test')).toBe('test-test');
+            expect(NamePrettyfier.prettify('test () test')).toBe('test-test');
+            expect(NamePrettyfier.prettify('test -) test')).toBe('test-test');
         });
 
     });
