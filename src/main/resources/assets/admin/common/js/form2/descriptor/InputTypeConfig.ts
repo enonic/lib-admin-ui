@@ -17,8 +17,10 @@ export type NumberConfig = {
     max: number | undefined;
 };
 
+export type Alignment = 'LEFT' | 'RIGHT' | 'TOP' | 'BOTTOM';
+
 export type CheckboxConfig = {
-    alignment: string;
+    alignment: Alignment;
 };
 
 export type ComboBoxOptionConfig = {

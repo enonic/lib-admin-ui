@@ -108,9 +108,9 @@ describe('CheckboxDescriptor', () => {
             expect(CheckboxDescriptor.valueBreaksRequired(value)).toBe(false);
         });
 
-        it('returns false for boolean false', () => {
+        it('returns true for boolean false (unchecked does not satisfy required)', () => {
             const value = ValueTypes.BOOLEAN.fromJsonValue(false);
-            expect(CheckboxDescriptor.valueBreaksRequired(value)).toBe(false);
+            expect(CheckboxDescriptor.valueBreaksRequired(value)).toBe(true);
         });
     });
 });

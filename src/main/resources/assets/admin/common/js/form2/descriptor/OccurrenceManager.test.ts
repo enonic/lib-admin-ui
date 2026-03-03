@@ -287,10 +287,10 @@ describe('OccurrenceManager', () => {
             expect(state.occurrenceValidation.every(ov => ov.validationResults.length === 0)).toBe(true);
         });
 
-        it('counts valid boolean occurrences', () => {
+        it('counts valid boolean occurrences (only true satisfies required)', () => {
             const mgr = createCheckboxManager({min: 1, values: [true, false]});
             const state = mgr.validate();
-            expect(state.totalValid).toBe(2);
+            expect(state.totalValid).toBe(1);
             expect(state.isMinimumBreached).toBe(false);
         });
 
