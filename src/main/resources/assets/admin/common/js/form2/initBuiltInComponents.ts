@@ -1,4 +1,5 @@
 import {CheckboxInput} from './components/checkbox-input';
+import {DoubleInput} from './components/double-input';
 import {LongInput} from './components/long-input';
 import {RadioButtonInput} from './components/radio-button-input';
 import {TextAreaInput} from './components/text-area-input';
@@ -14,4 +15,5 @@ export function initBuiltInComponents(): void {
     ComponentRegistry.register('TextArea', TextAreaInput as InputTypeComponent, true);
     ComponentRegistry.register('Long', LongInput as InputTypeComponent, true);
     ComponentRegistry.register('RadioButton', RadioButtonInput as InputTypeComponent, true);
+    ComponentRegistry.register('Double', DoubleInput as InputTypeComponent, true);
 }
