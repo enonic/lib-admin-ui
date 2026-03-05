@@ -1,4 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/preact-vite';
+import {useState} from 'react';
+import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
@@ -53,6 +55,18 @@ const defaultArgs: InputTypeComponentProps<TextAreaConfig> = {
     index: 0,
     errors: [],
 };
+
+function StatefulTextArea(props: InputTypeComponentProps<TextAreaConfig> & {initialValue?: Value}) {
+    const {initialValue, onChange, ...rest} = props;
+    const [value, setValue] = useState(initialValue ?? rest.value);
+
+    const handleChange: InputTypeComponentProps<TextAreaConfig>['onChange'] = nextValue => {
+        setValue(nextValue);
+        onChange(nextValue);
+    };
+
+    return <TextAreaInput {...rest} value={value} onChange={handleChange} />;
+}
 
 export const Default: Story = {
     name: 'Examples / Default',
@@ -109,6 +123,7 @@ export const WithMaxLength: Story = {
         value: ValueTypes.STRING.newValue('20 characters max.'),
         config: makeConfig({maxLength: 20}),
     },
+    render: args => <StatefulTextArea {...args} />,
 };
 
 export const WithMaxLengthAndCounter: Story = {
@@ -118,6 +133,7 @@ export const WithMaxLengthAndCounter: Story = {
         value: ValueTypes.STRING.newValue('Hello, world!'),
         config: makeConfig({maxLength: 50, showCounter: true}),
     },
+    render: args => <StatefulTextArea {...args} />,
 };
 
 export const AllStates: Story = {
