@@ -29,6 +29,8 @@ export class ListBoxToolbar<I>
 
         this.refreshButton = new Button();
         this.refreshButton
+            .setTitle(i18n('action.refresh'))
+            .setAriaLabel(i18n('action.refresh'))
             .addClass(StyleHelper.getCommonIconCls('loop'))
             .setTitle(i18n('action.refresh'))
             .setAriaLabel(i18n('action.refresh'))
