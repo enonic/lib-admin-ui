@@ -5,7 +5,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextAreaConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils';
-import {Counter} from '../counter-description';
+import {Counter} from '../counter';
 
 const TEXT_AREA_INPUT_NAME = 'TextAreaInput';
 
@@ -20,9 +20,8 @@ export const TextAreaInput = ({
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
-    const displayCounter = hasMaxLength || config.showCounter;
 
-    const counterAddon = displayCounter ? (
+    const counterAddon = hasMaxLength ? (
         <div
             className={cn(
                 'absolute right-0 bottom-0 items-center',

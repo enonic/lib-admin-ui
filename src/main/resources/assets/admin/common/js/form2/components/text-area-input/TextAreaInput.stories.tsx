@@ -116,6 +116,16 @@ export const WithMultipleErrors: Story = {
     },
 };
 
+export const WithCounter: Story = {
+    name: 'Examples / Only Counter',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue('Text without max length.'),
+        config: makeConfig({showCounter: true}),
+    },
+    render: args => <StatefulTextArea {...args} />,
+};
+
 export const WithMaxLength: Story = {
     name: 'Examples / Max Length',
     args: {
@@ -132,6 +142,16 @@ export const WithMaxLengthAndCounter: Story = {
         ...defaultArgs,
         value: ValueTypes.STRING.newValue('Hello, world!'),
         config: makeConfig({maxLength: 50, showCounter: true}),
+    },
+    render: args => <StatefulTextArea {...args} />,
+};
+
+export const WithMaxExceeded: Story = {
+    name: 'Examples / Max Length Exceeded',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue('This sentence is more than 20 characters.'),
+        config: makeConfig({maxLength: 20, showCounter: true}),
     },
     render: args => <StatefulTextArea {...args} />,
 };

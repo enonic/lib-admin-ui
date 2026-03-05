@@ -5,7 +5,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextLineConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils';
-import {Counter} from '../counter-description';
+import {Counter} from '../counter';
 
 const TEXT_LINE_INPUT_NAME = 'TextLineInput';
 
@@ -20,11 +20,10 @@ export const TextLineInput = ({
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
-    const displayCounter = hasMaxLength || config.showCounter;
 
-    const counterAddon = displayCounter ? (
+    const counterAddon = hasMaxLength ? (
         <div className='mr-3 self-center'>
-            <Counter length={stringValue.length} maxLength={config.maxLength} showCounter={config.showCounter} />
+            <Counter length={stringValue.length} maxLength={maxLength} showCounter={config.showCounter} />
         </div>
     ) : undefined;
 

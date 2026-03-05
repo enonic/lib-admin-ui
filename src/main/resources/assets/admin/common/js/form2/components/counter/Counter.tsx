@@ -19,14 +19,17 @@ export const Counter = ({length, maxLength, showCounter, bottom}: CounterProps):
     const toolTipPosition = bottom ? 'bottom' : 'top';
 
     const tooltipValue = isOverLimit
-        ? `${length - maxLength} characters over limit ${t('field.value.chars.total', length)}`
+        ? `${t('field.value.breaks.tooLong', length - maxLength)}, ${t('field.value.chars.total', length)}`
         : `${t('field.value.chars.left.long', remaining)}`;
 
     const counterValue = showCounter ? (isOverLimit ? `${remaining}` : `${length}/${maxLength}`) : `${remaining}`;
 
     return (
         <Tooltip value={tooltipValue} side={toolTipPosition} delay={300}>
-            <span className={cn('cursor-default text-sm text-subtle', isOverLimit && 'text-error')}>
+            <span
+                data-component={COUNTER_NAME}
+                className={cn('cursor-default text-sm text-subtle', isOverLimit && 'text-error')}
+            >
                 <span className='tabular-nums'>{counterValue}</span>
             </span>
         </Tooltip>
