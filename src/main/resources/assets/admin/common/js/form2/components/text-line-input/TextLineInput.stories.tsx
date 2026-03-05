@@ -3,7 +3,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
-import type {TextLineConfig} from '../../descriptor/InputTypeConfig';
+import type {TextLineConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {TextLineInput} from './TextLineInput';
 
@@ -67,14 +67,6 @@ export const WithValue: Story = {
     },
 };
 
-export const WithMaxLength: Story = {
-    name: 'Examples / With Max Length',
-    args: {
-        ...defaultArgs,
-        config: makeConfig({maxLength: 50}),
-    },
-};
-
 export const Disabled: Story = {
     name: 'States / Disabled',
     args: {
@@ -105,12 +97,12 @@ export const WithMultipleErrors: Story = {
     },
 };
 
-export const WithShowCounter: Story = {
-    name: 'Examples / With Show Counter',
+export const WithMaxLength: Story = {
+    name: 'Examples / Max Length',
     args: {
         ...defaultArgs,
-        value: ValueTypes.STRING.newValue('Hello'),
-        config: makeConfig({showCounter: true}),
+        value: ValueTypes.STRING.newValue('20 characters max.'),
+        config: makeConfig({maxLength: 20}),
     },
 };
 
@@ -120,15 +112,6 @@ export const WithMaxLengthAndCounter: Story = {
         ...defaultArgs,
         value: ValueTypes.STRING.newValue('Hello, world!'),
         config: makeConfig({maxLength: 50, showCounter: true}),
-    },
-};
-
-export const WithMaxLengthCounter: Story = {
-    name: 'Examples / Max Length Counter (no showCounter)',
-    args: {
-        ...defaultArgs,
-        value: ValueTypes.STRING.newValue('Hello, world!'),
-        config: makeConfig({maxLength: 20}),
     },
 };
 
@@ -157,19 +140,19 @@ export const AllStates: Story = {
                 />
             </div>
             <div>
+                <h3 className='mb-3 font-medium text-sm'>Max Length</h3>
+                <TextLineInput
+                    {...defaultArgs}
+                    value={ValueTypes.STRING.newValue('Hello')}
+                    config={makeConfig({maxLength: 20})}
+                />
+            </div>
+            <div>
                 <h3 className='mb-3 font-medium text-sm'>Max Length + Counter</h3>
                 <TextLineInput
                     {...defaultArgs}
                     value={ValueTypes.STRING.newValue('Hello, world!')}
                     config={makeConfig({maxLength: 50, showCounter: true})}
-                />
-            </div>
-            <div>
-                <h3 className='mb-3 font-medium text-sm'>Counter Only</h3>
-                <TextLineInput
-                    {...defaultArgs}
-                    value={ValueTypes.STRING.newValue('Hello')}
-                    config={makeConfig({showCounter: true})}
                 />
             </div>
         </div>

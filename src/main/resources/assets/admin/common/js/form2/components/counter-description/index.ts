@@ -1,1 +1,1 @@
-export * from './CounterDescription';
+export * from './Counter';
