@@ -1,10 +1,14 @@
 import type {ReactElement} from 'react';
+import type {Input} from '../../../form/Input';
 import {useI18n} from '../../I18nContext';
-import type {InputTypeComponentProps} from '../../types';
 
 const UNSUPPORTED_INPUT_NAME = 'UnsupportedInput';
 
-export const UnsupportedInput = ({input}: InputTypeComponentProps): ReactElement => {
+export type UnsupportedInputProps = {
+    input: Input;
+};
+
+export const UnsupportedInput = ({input}: UnsupportedInputProps): ReactElement => {
     const t = useI18n();
     const typeName = input.getInputType().getName();
     return (

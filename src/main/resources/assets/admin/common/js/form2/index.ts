@@ -1,6 +1,7 @@
 // Legacy bridge (for IIFE / InputTypeManager system)
 export {BaseInputType} from './BaseInputType';
 export {Counter} from './components/counter';
+export {InputField, type InputFieldProps} from './components/input-field';
 export {LongInput, type LongInputProps} from './components/long-input';
 export {OccurrenceList, type OccurrenceListRootProps} from './components/occurrence-list';
 export {RadioButtonInput} from './components/radio-button-input';
@@ -8,15 +9,20 @@ export {TextAreaInput} from './components/text-area-input';
 export {TextLineInput} from './components/text-line-input';
 export {UnsupportedInput} from './components/unsupported-input';
 // Descriptor system
-export {DescriptorRegistry} from './descriptor/DescriptorRegistry';
-export {initBuiltInDescriptors} from './descriptor/initBuiltInDescriptors';
+export {getEffectiveOccurrences} from './descriptor/getEffectiveOccurrences';
 export {type UseInputTypeDescriptorResult, useInputTypeDescriptor} from './hooks/useInputTypeDescriptor';
 export {useOccurrenceManager} from './hooks/useOccurrenceManager';
 export {type UsePropertyArrayResult, usePropertyArray} from './hooks/usePropertyArray';
 export {I18nProvider, useI18n} from './I18nContext';
-export {initBuiltInComponents} from './initBuiltInComponents';
 export {initBuiltInTypes} from './initBuiltInTypes';
 // React input type system (for CS and future consumers)
-export {ComponentRegistry} from './registry/ComponentRegistry';
-export type {InputTypeComponent, InputTypeComponentProps} from './types';
+export {InputTypeRegistry} from './registry/InputTypeRegistry';
+export type {
+    InputTypeComponent,
+    InputTypeComponentProps,
+    InputTypeDefinition,
+    InputTypeMode,
+    SelfManagedComponentProps,
+    SelfManagedInputTypeComponent,
+} from './types';
 export {getFirstError} from './utils/validation';

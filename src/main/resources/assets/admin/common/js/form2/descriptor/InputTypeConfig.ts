@@ -79,17 +79,5 @@ export type DateTimeRangeConfig = {
     optionalFrom: boolean;
 };
 
-export type InputTypeConfig =
-    | TextLineConfig
-    | TextAreaConfig
-    | NumberConfig
-    | CheckboxConfig
-    | ComboBoxConfig
-    | RadioButtonConfig
-    | PrincipalSelectorConfig
-    | GeoPointConfig
-    | DateConfig
-    | DateTimeConfig
-    | InstantConfig
-    | TimeConfig
-    | DateTimeRangeConfig;
+/** Base constraint for all input type configs — open for external extensions. */
+export type InputTypeConfig = Record<string, unknown>;

@@ -6,10 +6,13 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
-import type {TextLineConfig} from '../../descriptor/InputTypeConfig';
+import {CheckboxDescriptor} from '../../descriptor/CheckboxDescriptor';
+import {getEffectiveOccurrences} from '../../descriptor/getEffectiveOccurrences';
+import type {CheckboxConfig, TextLineConfig} from '../../descriptor/InputTypeConfig';
 import {OccurrenceManager, type OccurrenceManagerState} from '../../descriptor/OccurrenceManager';
 import {TextLineDescriptor} from '../../descriptor/TextLineDescriptor';
 import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
+import {CheckboxInput} from '../checkbox-input/CheckboxInput';
 import {TextLineInput} from '../text-line-input/TextLineInput';
 import {OccurrenceList} from './OccurrenceList';
 
@@ -331,6 +334,72 @@ const InteractiveDemo = (): ReactElement => {
 export const Interactive: Story = {
     name: 'Features / Interactive',
     render: () => <InteractiveDemo />,
+};
+
+const SingleStrategyDemo = (): ReactElement => {
+    // ? 0:0 would normally render in multi-occurrence mode; getEffectiveOccurrences normalizes to 0:1
+    const serverOccurrences = useMemo(() => new OccurrencesBuilder().setMinimum(0).setMaximum(0).build(), []);
+    const occurrences = useMemo(() => getEffectiveOccurrences('single', serverOccurrences), [serverOccurrences]);
+    const config = useMemo((): CheckboxConfig => CheckboxDescriptor.readConfig({}), []);
+    const input = useMemo(
+        () =>
+            new InputBuilder()
+                .setName('myCheckbox')
+                .setInputType(new InputTypeName('Checkbox', false))
+                .setLabel('Accept terms')
+                .setOccurrences(occurrences)
+                .setHelpText('')
+                .setInputTypeConfig({})
+                .build(),
+        [occurrences],
+    );
+    const initialValues = useMemo(() => [ValueTypes.BOOLEAN.fromJsonValue(false)], []);
+
+    const {state, add, remove, move, set} = useOccurrenceManager({
+        occurrences,
+        descriptor: CheckboxDescriptor,
+        config,
+        initialValues,
+    });
+
+    return (
+        <div className='flex w-100 flex-col gap-y-4 p-4'>
+            <div className='w-96 rounded-sm bg-surface-primary p-3 text-sm'>
+                <p className='mb-2 font-medium'>Checkbox with 0:0 server occurrences (normalized to 0:1):</p>
+                <ul className='space-y-1 text-xs'>
+                    <li>Server sends 0:0, getEffectiveOccurrences normalizes to 0:1</li>
+                    <li>No add/remove buttons, no drag handle</li>
+                </ul>
+            </div>
+            <OccurrenceList
+                Component={CheckboxInput}
+                state={state}
+                onAdd={add}
+                onRemove={remove}
+                onMove={move}
+                onChange={set}
+                config={config}
+                input={input}
+                enabled={true}
+            />
+            <div className='rounded-sm bg-surface-primary p-3'>
+                <p className='text-sm'>
+                    <span className='font-medium'>canAdd:</span> {String(state.canAdd)}
+                </p>
+                <p className='text-sm'>
+                    <span className='font-medium'>canRemove:</span> {String(state.canRemove)}
+                </p>
+                <p className='text-sm'>
+                    <span className='font-medium'>Values:</span> {state.values.length}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+export const SingleStrategy: Story = {
+    name: 'Features / Single Strategy',
+    render: () => <SingleStrategyDemo />,
 };
 
 const InteractiveUnlimitedDemo = (): ReactElement => {

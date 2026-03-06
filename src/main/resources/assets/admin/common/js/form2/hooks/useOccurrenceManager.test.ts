@@ -1,6 +1,7 @@
 import {describe, expect, it, vi} from 'vitest';
 import {ValueTypes} from '../../data/ValueTypes';
 import {Occurrences} from '../../form/Occurrences';
+import {getEffectiveOccurrences} from '../descriptor/getEffectiveOccurrences';
 import type {TextLineConfig} from '../descriptor/InputTypeConfig';
 import {OccurrenceManager} from '../descriptor/OccurrenceManager';
 import {TextLineDescriptor} from '../descriptor/TextLineDescriptor';
@@ -29,16 +30,14 @@ function createManager(opts: {min?: number; max?: number; values?: string[]} = {
 }
 
 /** Mirrors the minFill computation from useOccurrenceManager. */
-function computeMinFill(occurrences: Occurrences): number {
-    return Math.max(occurrences.getMinimum(), 1);
+function computeMinFill(occurrences: Occurrences, autoSeed = true): number {
+    return autoSeed ? Math.max(occurrences.getMinimum(), 1) : 0;
 }
 
 /** Mirrors the guarded fill loop from useOccurrenceManager. */
 function fillTo(manager: OccurrenceManager, minFill: number): void {
     while (manager.getCount() < minFill) {
-        const before = manager.getCount();
-        manager.add();
-        if (manager.getCount() === before) break;
+        if (!manager.add()) break;
     }
 }
 
@@ -72,6 +71,10 @@ describe('useOccurrenceManager — logic', () => {
 
         it('returns 1 for single optional (0:1)', () => {
             expect(computeMinFill(Occurrences.minmax(0, 1))).toBe(1);
+        });
+
+        it('returns 0 when autoSeed is disabled', () => {
+            expect(computeMinFill(Occurrences.minmax(2, 5), false)).toBe(0);
         });
     });
 
@@ -172,6 +175,97 @@ describe('useOccurrenceManager — logic', () => {
             syncAndFill(manager, [], minFill);
             // Should fill to max=1 and stop
             expect(manager.getCount()).toBe(1);
+        });
+    });
+
+    describe('autoSeed disabled', () => {
+        it('does not create synthetic values on initial fill', () => {
+            const {manager, occurrences} = createManager({min: 2, max: 5});
+
+            fillTo(manager, computeMinFill(occurrences, false));
+
+            expect(manager.getCount()).toBe(0);
+        });
+
+        it('does not re-fill after sync([])', () => {
+            const {manager, occurrences} = createManager({min: 2, max: 5, values: ['a', 'b']});
+
+            syncAndFill(manager, [], computeMinFill(occurrences, false));
+
+            expect(manager.getCount()).toBe(0);
+        });
+    });
+
+    describe('mode-based normalization', () => {
+        function createWithNormalization(opts: {
+            mode: 'list' | 'single' | 'internal';
+            min?: number;
+            max?: number;
+            values?: string[];
+            autoSeed?: boolean;
+        }) {
+            const {mode, min = 0, max = 0, values = [], autoSeed = true} = opts;
+            const rawOccurrences = Occurrences.minmax(min, max);
+            const occurrences = getEffectiveOccurrences(mode, rawOccurrences);
+            const config = TextLineDescriptor.readConfig({});
+            const initialValues = values.map(v => ValueTypes.STRING.newValue(v));
+            const manager = new OccurrenceManager<TextLineConfig>(
+                occurrences,
+                TextLineDescriptor,
+                config,
+                initialValues,
+            );
+            const minFill = computeMinFill(occurrences, autoSeed);
+            fillTo(manager, minFill);
+            return {manager, occurrences, minFill};
+        }
+
+        it('single mode 0:0 normalizes to 0:1 — fills to 1, canAdd is false', () => {
+            const {manager} = createWithNormalization({mode: 'single', min: 0, max: 0});
+            const state = manager.validate();
+            expect(manager.getCount()).toBe(1);
+            expect(state.canAdd).toBe(false);
+        });
+
+        it('single mode 0:3 normalizes to 0:1', () => {
+            const {manager} = createWithNormalization({mode: 'single', min: 0, max: 3});
+            const state = manager.validate();
+            expect(manager.getCount()).toBe(1);
+            expect(state.canAdd).toBe(false);
+        });
+
+        it('single mode 1:1 stays as 1:1', () => {
+            const {manager} = createWithNormalization({mode: 'single', min: 1, max: 1});
+            const state = manager.validate();
+            expect(manager.getCount()).toBe(1);
+            expect(state.canAdd).toBe(false);
+        });
+
+        it('list mode 0:0 is not normalized — remains unlimited', () => {
+            const {manager} = createWithNormalization({mode: 'list', min: 0, max: 0});
+            const state = manager.validate();
+            expect(manager.getCount()).toBe(1);
+            expect(state.canAdd).toBe(true);
+        });
+
+        it('internal mode does not normalize or auto-seed', () => {
+            const {manager} = createWithNormalization({mode: 'internal', min: 2, max: 5, autoSeed: false});
+            const state = manager.validate();
+
+            expect(manager.getCount()).toBe(0);
+            expect(state.canAdd).toBe(true);
+        });
+
+        it('sync re-fills to 1 after clearing single mode 0:0', () => {
+            const {manager, minFill} = createWithNormalization({
+                mode: 'single',
+                min: 0,
+                max: 0,
+                values: ['hello'],
+            });
+            syncAndFill(manager, [], minFill);
+            expect(manager.getCount()).toBe(1);
+            expect(manager.getValues()[0].isNull()).toBe(true);
         });
     });
 });
