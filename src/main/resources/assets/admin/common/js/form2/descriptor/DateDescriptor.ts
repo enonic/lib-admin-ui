@@ -4,11 +4,13 @@ import {ValueTypes} from '../../data/ValueTypes';
 import type {RawInputConfig} from '../../form/Input';
 import {RelativeTimeParser} from '../../form/inputtype/time/RelativeTimeParser';
 import {LocalDate} from '../../util/LocalDate';
+import {i18n} from '../../util/Messages';
 import type {DateConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const RELATIVE_EXPR = /^(?:now|(?:[+-]\d+[a-zA-Z]+\s*)+)$/;
 
 export const DateDescriptor: InputTypeDescriptor<DateConfig> = {
     name: 'Date',
@@ -17,8 +19,27 @@ export const DateDescriptor: InputTypeDescriptor<DateConfig> = {
         return ValueTypes.LOCAL_DATE;
     },
 
-    readConfig(_raw: RawInputConfig): DateConfig {
-        return {};
+    readConfig(raw: RawInputConfig): DateConfig {
+        const rawDefault = raw.default?.[0]?.value;
+        let defaultDate: Date | undefined;
+        if (typeof rawDefault === 'string' && rawDefault.length > 0) {
+            if (DATE_PATTERN.test(rawDefault)) {
+                const parsed = new Date(`${rawDefault}T00:00:00`);
+                if (!Number.isNaN(parsed.getTime())) {
+                    defaultDate = parsed;
+                }
+            } else if (RELATIVE_EXPR.test(rawDefault)) {
+                try {
+                    const parsed = RelativeTimeParser.parseToDate(rawDefault);
+                    if (!Number.isNaN(parsed.getTime())) {
+                        defaultDate = parsed;
+                    }
+                } catch {
+                    defaultDate = undefined;
+                }
+            }
+        }
+        return {default: defaultDate};
     },
 
     createDefaultValue(raw: unknown): Value {
@@ -34,15 +55,19 @@ export const DateDescriptor: InputTypeDescriptor<DateConfig> = {
         return new Value(value, ValueTypes.LOCAL_DATE);
     },
 
-    validate(value: Value, _config: DateConfig): ValidationResult[] {
+    validate(value: Value, _config: DateConfig, rawValue?: string): ValidationResult[] {
         const results: ValidationResult[] = [];
+
         if (value.isNull()) {
+            if (rawValue != null && rawValue !== '') {
+                results.push({message: i18n('field.value.invalid')});
+            }
             return results;
         }
 
         const str = value.getString();
         if (str && !DATE_PATTERN.test(str)) {
-            results.push({message: 'Value is not a valid date'});
+            results.push({message: i18n('field.value.invalid')});
         }
 
         return results;

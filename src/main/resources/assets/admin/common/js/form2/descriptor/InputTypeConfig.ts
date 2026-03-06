@@ -48,7 +48,9 @@ export type PrincipalSelectorConfig = {
 
 export type GeoPointConfig = Record<string, never>;
 
-export type DateConfig = Record<string, never>;
+export type DateConfig = {
+    default: Date | undefined;
+};
 
 export type DateTimeConfig = {
     useTimezone: boolean;
