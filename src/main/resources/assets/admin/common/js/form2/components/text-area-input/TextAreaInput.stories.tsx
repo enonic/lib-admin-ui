@@ -1,9 +1,11 @@
 import type {Meta, StoryObj} from '@storybook/preact-vite';
+import {useState} from 'react';
+import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
-import type {TextAreaConfig} from '../../descriptor/InputTypeConfig';
+import type {TextAreaConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {TextAreaInput} from './TextAreaInput';
 
@@ -54,6 +56,18 @@ const defaultArgs: InputTypeComponentProps<TextAreaConfig> = {
     errors: [],
 };
 
+function StatefulTextArea(props: InputTypeComponentProps<TextAreaConfig> & {initialValue?: Value}) {
+    const {initialValue, onChange, ...rest} = props;
+    const [value, setValue] = useState(initialValue ?? rest.value);
+
+    const handleChange: InputTypeComponentProps<TextAreaConfig>['onChange'] = nextValue => {
+        setValue(nextValue);
+        onChange(nextValue);
+    };
+
+    return <TextAreaInput {...rest} value={value} onChange={handleChange} />;
+}
+
 export const Default: Story = {
     name: 'Examples / Default',
     args: {...defaultArgs},
@@ -72,14 +86,6 @@ export const WithMultilineValue: Story = {
     args: {
         ...defaultArgs,
         value: ValueTypes.STRING.newValue('Line one\nLine two\nLine three'),
-    },
-};
-
-export const WithMaxLength: Story = {
-    name: 'Examples / With Max Length',
-    args: {
-        ...defaultArgs,
-        config: makeConfig({maxLength: 50}),
     },
 };
 
@@ -110,13 +116,24 @@ export const WithMultipleErrors: Story = {
     },
 };
 
-export const WithShowCounter: Story = {
-    name: 'Examples / With Show Counter',
+export const WithCounter: Story = {
+    name: 'Examples / Only Counter',
     args: {
         ...defaultArgs,
-        value: ValueTypes.STRING.newValue('Hello'),
+        value: ValueTypes.STRING.newValue('Text without max length.'),
         config: makeConfig({showCounter: true}),
     },
+    render: args => <StatefulTextArea {...args} />,
+};
+
+export const WithMaxLength: Story = {
+    name: 'Examples / Max Length',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue('20 characters max.'),
+        config: makeConfig({maxLength: 20}),
+    },
+    render: args => <StatefulTextArea {...args} />,
 };
 
 export const WithMaxLengthAndCounter: Story = {
@@ -126,15 +143,7 @@ export const WithMaxLengthAndCounter: Story = {
         value: ValueTypes.STRING.newValue('Hello, world!'),
         config: makeConfig({maxLength: 50, showCounter: true}),
     },
-};
-
-export const WithMaxLengthCounter: Story = {
-    name: 'Examples / Max Length Counter (no showCounter)',
-    args: {
-        ...defaultArgs,
-        value: ValueTypes.STRING.newValue('Hello, world!'),
-        config: makeConfig({maxLength: 20}),
-    },
+    render: args => <StatefulTextArea {...args} />,
 };
 
 export const AllStates: Story = {
@@ -166,19 +175,19 @@ export const AllStates: Story = {
                 />
             </div>
             <div>
+                <h3 className='mb-3 font-medium text-sm'>Max Length</h3>
+                <TextAreaInput
+                    {...defaultArgs}
+                    value={ValueTypes.STRING.newValue('Hello')}
+                    config={makeConfig({maxLength: 20})}
+                />
+            </div>
+            <div>
                 <h3 className='mb-3 font-medium text-sm'>Max Length + Counter</h3>
                 <TextAreaInput
                     {...defaultArgs}
                     value={ValueTypes.STRING.newValue('Hello, world!')}
                     config={makeConfig({maxLength: 50, showCounter: true})}
-                />
-            </div>
-            <div>
-                <h3 className='mb-3 font-medium text-sm'>Counter Only</h3>
-                <TextAreaInput
-                    {...defaultArgs}
-                    value={ValueTypes.STRING.newValue('Hello')}
-                    config={makeConfig({showCounter: true})}
                 />
             </div>
         </div>

@@ -2,10 +2,10 @@ import {Input} from '@enonic/ui';
 import type {JSX} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
-import type {TextLineConfig} from '../../descriptor/InputTypeConfig';
+import type {TextLineConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils';
-import {CounterDescription} from '../counter-description/CounterDescription';
+import {Counter} from '../counter';
 
 const TEXT_LINE_INPUT_NAME = 'TextLineInput';
 
@@ -18,6 +18,15 @@ export const TextLineInput = ({
     errors,
 }: InputTypeComponentProps<TextLineConfig>): JSX.Element => {
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
+    const hasMaxLength = config.maxLength > 0;
+    const maxLength = hasMaxLength ? config.maxLength : undefined;
+    const hasBoth = hasMaxLength && config.showCounter;
+
+    const counterAddon = config.showCounter ? (
+        <div className='mr-3 self-center'>
+            <Counter length={stringValue.length} maxLength={maxLength} />
+        </div>
+    ) : undefined;
 
     const handleChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         onChange(ValueTypes.STRING.newValue(e.currentTarget.value));
@@ -30,16 +39,8 @@ export const TextLineInput = ({
             onBlur={onBlur}
             disabled={!enabled}
             error={getFirstError(errors)}
-            maxLength={config.maxLength > 0 ? config.maxLength : undefined}
-            description={
-                config.maxLength > 0 || config.showCounter ? (
-                    <CounterDescription
-                        length={stringValue.length}
-                        maxLength={config.maxLength}
-                        showCounter={config.showCounter}
-                    />
-                ) : undefined
-            }
+            maxLength={hasBoth ? undefined : maxLength}
+            endAddon={counterAddon}
         />
     );
 };

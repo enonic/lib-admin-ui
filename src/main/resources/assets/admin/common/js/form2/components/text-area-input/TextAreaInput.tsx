@@ -1,11 +1,11 @@
-import {TextArea} from '@enonic/ui';
+import {cn, TextArea} from '@enonic/ui';
 import type {JSX} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
-import type {TextAreaConfig} from '../../descriptor/InputTypeConfig';
+import type {TextAreaConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils';
-import {CounterDescription} from '../counter-description/CounterDescription';
+import {Counter} from '../counter';
 
 const TEXT_AREA_INPUT_NAME = 'TextAreaInput';
 
@@ -18,6 +18,21 @@ export const TextAreaInput = ({
     errors,
 }: InputTypeComponentProps<TextAreaConfig>): JSX.Element => {
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
+    const hasMaxLength = config.maxLength > 0;
+    const maxLength = hasMaxLength ? config.maxLength : undefined;
+    const hasBoth = hasMaxLength && config.showCounter;
+
+    const counterAddon = config.showCounter ? (
+        <div
+            className={cn(
+                'absolute right-0 bottom-0 items-center',
+                'bg-surface-primary/50 text-sm tabular-nums',
+                'rounded-tl-sm rounded-br-sm px-1.5 py-0.5',
+            )}
+        >
+            <Counter length={stringValue.length} maxLength={maxLength} bottom={true} />
+        </div>
+    ) : undefined;
 
     const handleChange = (e: JSX.TargetedEvent<HTMLTextAreaElement>) => {
         onChange(ValueTypes.STRING.newValue(e.currentTarget.value));
@@ -30,16 +45,8 @@ export const TextAreaInput = ({
             onBlur={onBlur}
             disabled={!enabled}
             error={getFirstError(errors)}
-            maxLength={config.maxLength > 0 ? config.maxLength : undefined}
-            description={
-                config.maxLength > 0 || config.showCounter ? (
-                    <CounterDescription
-                        length={stringValue.length}
-                        maxLength={config.maxLength}
-                        showCounter={config.showCounter}
-                    />
-                ) : undefined
-            }
+            maxLength={hasBoth ? undefined : maxLength}
+            endAddon={counterAddon}
         />
     );
 };
