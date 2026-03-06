@@ -54,7 +54,9 @@ export type DateTimeConfig = {
     useTimezone: boolean;
 };
 
-export type TimeConfig = Record<string, never>;
+export type TimeConfig = {
+    default: Date | undefined;
+};
 
 export type DateTimeRangeConfig = {
     useTimezone: boolean;

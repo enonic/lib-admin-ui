@@ -4,6 +4,9 @@ import {ValueTypes} from '../../data/ValueTypes';
 import type {TimeConfig} from './InputTypeConfig';
 import {TimeDescriptor} from './TimeDescriptor';
 
+// i18n requires window global
+vi.stubGlobal('window', {});
+
 describe('TimeDescriptor', () => {
     describe('getValueType', () => {
         it('returns LOCAL_TIME', () => {
@@ -12,14 +15,69 @@ describe('TimeDescriptor', () => {
     });
 
     describe('readConfig', () => {
-        it('returns empty config object', () => {
+        it('returns default undefined when no default configured', () => {
             const config = TimeDescriptor.readConfig({});
-            expect(config).toEqual({});
+            expect(config).toEqual({default: undefined});
         });
 
         it('ignores unknown config keys', () => {
             const config = TimeDescriptor.readConfig({unknown: [{value: 'test'}]});
-            expect(config).toEqual({});
+            expect(config).toEqual({default: undefined});
+        });
+
+        it('parses absolute HH:MM time', () => {
+            const config = TimeDescriptor.readConfig({default: [{value: '14:30'}]});
+            expect(config.default).toBeInstanceOf(Date);
+            expect(config.default!.getHours()).toBe(14);
+            expect(config.default!.getMinutes()).toBe(30);
+        });
+
+        it('parses absolute HH:MM with leading zeros', () => {
+            const config = TimeDescriptor.readConfig({default: [{value: '09:05'}]});
+            expect(config.default).toBeInstanceOf(Date);
+            expect(config.default!.getHours()).toBe(9);
+            expect(config.default!.getMinutes()).toBe(5);
+        });
+
+        it('returns undefined for invalid time format', () => {
+            const config = TimeDescriptor.readConfig({default: [{value: 'not-a-time'}]});
+            expect(config.default).toBeUndefined();
+        });
+
+        it('returns undefined for empty string', () => {
+            const config = TimeDescriptor.readConfig({default: [{value: ''}]});
+            expect(config.default).toBeUndefined();
+        });
+
+        it('returns undefined for missing value', () => {
+            const config = TimeDescriptor.readConfig({default: [{}]});
+            expect(config.default).toBeUndefined();
+        });
+
+        describe('relative expressions', () => {
+            beforeEach(() => {
+                vi.useFakeTimers();
+                vi.setSystemTime(new Date('2025-06-15T14:30:00'));
+            });
+
+            afterEach(() => {
+                vi.useRealTimers();
+            });
+
+            it('parses "now" as current time', () => {
+                const config = TimeDescriptor.readConfig({default: [{value: 'now'}]});
+                expect(config.default).toBeInstanceOf(Date);
+            });
+
+            it('parses relative offset "+1h"', () => {
+                const config = TimeDescriptor.readConfig({default: [{value: '+1h'}]});
+                expect(config.default).toBeInstanceOf(Date);
+            });
+
+            it('returns undefined for invalid relative expression', () => {
+                const config = TimeDescriptor.readConfig({default: [{value: 'invalid-expr'}]});
+                expect(config.default).toBeUndefined();
+            });
         });
     });
 
@@ -48,8 +106,6 @@ describe('TimeDescriptor', () => {
 
         it('returns null for HH:MM:SS.mmm (LocalTime does not support fractions)', () => {
             const value = TimeDescriptor.createDefaultValue('14:30:45.123');
-            // TIME_PATTERN matches the string, but LocalTime.isValidString rejects fractions
-            // so newValue returns null
             expect(value.isNull()).toBe(true);
         });
 
@@ -76,11 +132,22 @@ describe('TimeDescriptor', () => {
     });
 
     describe('validate', () => {
-        const config: TimeConfig = {};
+        const config: TimeConfig = {default: undefined};
 
-        it('returns empty for null value', () => {
+        it('returns empty for null value with no rawValue', () => {
             const value = ValueTypes.LOCAL_TIME.newNullValue();
             expect(TimeDescriptor.validate(value, config)).toEqual([]);
+        });
+
+        it('returns error for null value with non-empty rawValue', () => {
+            const value = ValueTypes.LOCAL_TIME.newNullValue();
+            const results = TimeDescriptor.validate(value, config, '14:');
+            expect(results).toHaveLength(1);
+        });
+
+        it('returns empty for null value with empty rawValue', () => {
+            const value = ValueTypes.LOCAL_TIME.newNullValue();
+            expect(TimeDescriptor.validate(value, config, '')).toEqual([]);
         });
 
         it('returns empty for valid HH:MM time', () => {
