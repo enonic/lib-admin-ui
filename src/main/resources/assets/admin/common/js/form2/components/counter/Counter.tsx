@@ -5,32 +5,37 @@ import {useI18n} from '../../I18nContext';
 type CounterProps = {
     length: number;
     maxLength: number;
-    showCounter: boolean;
     bottom?: boolean;
 };
 
 const COUNTER_NAME = 'Counter';
 
-export const Counter = ({length, maxLength, showCounter, bottom}: CounterProps): ReactElement => {
+export const Counter = ({length, maxLength, bottom}: CounterProps): ReactElement => {
     const t = useI18n();
 
     const remaining = maxLength - length;
+    const exceeded = length - maxLength;
     const isOverLimit = remaining < 0;
     const toolTipPosition = bottom ? 'bottom' : 'top';
 
-    const tooltipValue = isOverLimit
-        ? `${t('field.value.breaks.tooLong', length - maxLength)}, ${t('field.value.chars.total', length)}`
+    const toolTipText = isOverLimit
+        ? `${t('field.value.breaks.tooLong', exceeded)}`
         : `${t('field.value.chars.left.long', remaining)}`;
 
-    const counterValue = showCounter ? (isOverLimit ? `${remaining}` : `${length}/${maxLength}`) : `${remaining}`;
+    const tooltipValue = maxLength ? toolTipText : undefined;
+
+    const counterValue = maxLength ? (
+        <span>
+            <span className={cn(isOverLimit && 'text-error')}>{length}</span>/{maxLength}
+        </span>
+    ) : (
+        <span>{length}</span>
+    );
 
     return (
         <Tooltip value={tooltipValue} side={toolTipPosition} delay={300}>
-            <span
-                data-component={COUNTER_NAME}
-                className={cn('cursor-default text-sm text-subtle', isOverLimit && 'text-error')}
-            >
-                <span className='tabular-nums'>{counterValue}</span>
+            <span data-component={COUNTER_NAME} className='cursor-default text-sm text-subtle'>
+                {counterValue}
             </span>
         </Tooltip>
     );

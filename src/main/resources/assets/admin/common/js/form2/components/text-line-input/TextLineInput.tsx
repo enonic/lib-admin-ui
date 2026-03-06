@@ -20,10 +20,11 @@ export const TextLineInput = ({
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
+    const hasBoth = hasMaxLength && config.showCounter;
 
-    const counterAddon = hasMaxLength ? (
+    const counterAddon = config.showCounter ? (
         <div className='mr-3 self-center'>
-            <Counter length={stringValue.length} maxLength={maxLength} showCounter={config.showCounter} />
+            <Counter length={stringValue.length} maxLength={maxLength} />
         </div>
     ) : undefined;
 
@@ -38,7 +39,7 @@ export const TextLineInput = ({
             onBlur={onBlur}
             disabled={!enabled}
             error={getFirstError(errors)}
-            maxLength={maxLength}
+            maxLength={hasBoth ? undefined : maxLength}
             endAddon={counterAddon}
         />
     );

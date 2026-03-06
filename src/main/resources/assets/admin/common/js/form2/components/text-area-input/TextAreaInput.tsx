@@ -20,8 +20,9 @@ export const TextAreaInput = ({
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
+    const hasBoth = hasMaxLength && config.showCounter;
 
-    const counterAddon = hasMaxLength ? (
+    const counterAddon = config.showCounter ? (
         <div
             className={cn(
                 'absolute right-0 bottom-0 items-center',
@@ -29,7 +30,7 @@ export const TextAreaInput = ({
                 'rounded-tl-sm rounded-br-sm px-1.5 py-0.5',
             )}
         >
-            <Counter length={stringValue.length} maxLength={maxLength} showCounter={config.showCounter} bottom={true} />
+            <Counter length={stringValue.length} maxLength={maxLength} bottom={true} />
         </div>
     ) : undefined;
 
@@ -44,7 +45,7 @@ export const TextAreaInput = ({
             onBlur={onBlur}
             disabled={!enabled}
             error={getFirstError(errors)}
-            maxLength={maxLength}
+            maxLength={hasBoth ? undefined : maxLength}
             endAddon={counterAddon}
         />
     );

@@ -146,16 +146,6 @@ export const WithMaxLengthAndCounter: Story = {
     render: args => <StatefulTextArea {...args} />,
 };
 
-export const WithMaxExceeded: Story = {
-    name: 'Examples / Max Length Exceeded',
-    args: {
-        ...defaultArgs,
-        value: ValueTypes.STRING.newValue('This sentence is more than 20 characters.'),
-        config: makeConfig({maxLength: 20, showCounter: true}),
-    },
-    render: args => <StatefulTextArea {...args} />,
-};
-
 export const AllStates: Story = {
     name: 'States / All States',
     render: () => (
