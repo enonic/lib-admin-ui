@@ -1,6 +1,3 @@
-// These tests verify registry API consistency (every component has a descriptor, etc.)
-// using a mocked Store. They do NOT validate cross-bundle state sharing — that requires
-// integration testing in CS where lib.js (IIFE) and the Vite bundle coexist on the same page.
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
 vi.mock('@enonic/ui', () => ({Input: () => null, TextArea: () => null}));
@@ -23,9 +20,8 @@ vi.mock('../../store/Store', () => {
     };
 });
 
-import {DescriptorRegistry} from '../descriptor/DescriptorRegistry';
 import {initBuiltInTypes} from '../initBuiltInTypes';
-import {ComponentRegistry} from './ComponentRegistry';
+import {InputTypeRegistry} from './InputTypeRegistry';
 
 describe('Registry consistency', () => {
     beforeEach(() => {
@@ -33,32 +29,46 @@ describe('Registry consistency', () => {
     });
 
     afterEach(() => {
-        for (const [name] of ComponentRegistry.getAll()) {
-            ComponentRegistry.unregister(name);
-        }
-        for (const [name] of DescriptorRegistry.getAll()) {
-            DescriptorRegistry.unregister(name);
+        for (const [name] of InputTypeRegistry.getAll()) {
+            InputTypeRegistry.unregister(name);
         }
     });
 
-    it('should have a matching DescriptorRegistry entry for every ComponentRegistry entry', () => {
-        const components = ComponentRegistry.getAll();
-
-        expect(components.size).toBeGreaterThan(0);
-        for (const [name] of components) {
-            expect(
-                DescriptorRegistry.has(name),
-                `ComponentRegistry has "${name}" but DescriptorRegistry does not`,
-            ).toBe(true);
+    it('every definition contains a descriptor', () => {
+        for (const [name, definition] of InputTypeRegistry.getAll()) {
+            expect(definition.descriptor, `Definition "${name}" has no descriptor`).toBeDefined();
         }
     });
 
-    it('should have ComponentRegistry entries as a subset of DescriptorRegistry', () => {
-        const components = ComponentRegistry.getAll();
-        const descriptors = DescriptorRegistry.getAll();
+    it('getDefinition mirrors getAll entries', () => {
+        for (const [name, definition] of InputTypeRegistry.getAll()) {
+            expect(InputTypeRegistry.getDefinition(name), `"${name}" lookup mismatch`).toEqual(definition);
+        }
+    });
 
-        expect(components.size).toBeGreaterThan(0);
-        // Every component must have a descriptor, but not every descriptor needs a component yet
-        expect(components.size).toBeLessThanOrEqual(descriptors.size);
+    it('internal descriptor-only definitions are allowed', () => {
+        for (const [, definition] of InputTypeRegistry.getAll()) {
+            if (definition.mode === 'internal' && definition.component == null) {
+                expect(definition.descriptor.name).toBeTruthy();
+            }
+        }
+    });
+
+    it('component-bearing definitions are a subset of all definitions', () => {
+        const all = InputTypeRegistry.getAll();
+        let componentCount = 0;
+
+        for (const [, definition] of all) {
+            if (definition.component) componentCount++;
+        }
+
+        expect(componentCount).toBeGreaterThan(0);
+        expect(componentCount).toBeLessThanOrEqual(all.size);
+    });
+
+    it('built-in single mode is only used for single-value input types', () => {
+        expect(InputTypeRegistry.getDefinition('Checkbox')?.mode).toBe('single');
+        expect(InputTypeRegistry.getDefinition('RadioButton')?.mode).toBe('single');
+        expect(InputTypeRegistry.getDefinition('TextLine')?.mode).toBe('list');
     });
 });

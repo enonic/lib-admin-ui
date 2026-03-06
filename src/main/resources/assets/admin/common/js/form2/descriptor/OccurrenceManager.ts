@@ -61,8 +61,14 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
     // ? No maximum enforcement — reflects external data as-is. Validation reports isMaximumBreached.
     setValues(values: Value[]): void {
         const oldIds = this.ids;
+        const oldValues = this.values;
+        const oldRawValues = this.rawValues;
         this.values = [...values];
-        this.rawValues = values.map(() => undefined);
+        // ? Preserve rawValues when the value reference at that position hasn't changed,
+        // ? so that sync cycles after direct set() calls don't wipe rawValues.
+        this.rawValues = values.map((v, i) =>
+            i < oldValues.length && oldValues[i] === v ? oldRawValues[i] : undefined,
+        );
         this.ids = this.values.map((_, i) => (i < oldIds.length ? oldIds[i] : this.generateId()));
     }
 
@@ -74,27 +80,29 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         return this.occurrences;
     }
 
-    add(value?: Value): void {
+    add(value?: Value): boolean {
         if (this.isMaximumReached()) {
-            return;
+            return false;
         }
 
         this.values.push(value ?? this.descriptor.getValueType().newNullValue());
         this.rawValues.push(undefined);
         this.ids.push(this.generateId());
+        return true;
     }
 
-    remove(index: number): void {
+    remove(index: number): boolean {
         if (index < 0 || index >= this.values.length) {
-            return;
+            return false;
         }
 
         this.values.splice(index, 1);
         this.rawValues.splice(index, 1);
         this.ids.splice(index, 1);
+        return true;
     }
 
-    move(fromIndex: number, toIndex: number): void {
+    move(fromIndex: number, toIndex: number): boolean {
         if (
             fromIndex < 0 ||
             fromIndex >= this.values.length ||
@@ -102,7 +110,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
             toIndex >= this.values.length ||
             fromIndex === toIndex
         ) {
-            return;
+            return false;
         }
 
         const [movedValue] = this.values.splice(fromIndex, 1);
@@ -113,6 +121,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
 
         const [movedId] = this.ids.splice(fromIndex, 1);
         this.ids.splice(toIndex, 0, movedId);
+        return true;
     }
 
     set(index: number, value: Value, rawValue?: string): void {

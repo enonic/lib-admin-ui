@@ -1,10 +1,8 @@
 import type {Meta, StoryObj} from '@storybook/preact-vite';
-import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
-import type {InputTypeComponentProps} from '../../types';
-import {UnsupportedInput} from './UnsupportedInput';
+import {UnsupportedInput, type UnsupportedInputProps} from './UnsupportedInput';
 
 function makeInput(
     typeName = 'FancyWidget',
@@ -19,7 +17,7 @@ function makeInput(
         .build();
 }
 
-const meta: Meta<InputTypeComponentProps> = {
+const meta: Meta<UnsupportedInputProps> = {
     title: 'InputTypes/UnsupportedInput',
     component: UnsupportedInput,
     parameters: {
@@ -30,16 +28,10 @@ const meta: Meta<InputTypeComponentProps> = {
 
 export default meta;
 
-type Story = StoryObj<InputTypeComponentProps>;
+type Story = StoryObj<UnsupportedInputProps>;
 
-const defaultArgs: InputTypeComponentProps = {
-    value: ValueTypes.STRING.newNullValue(),
-    onChange: () => undefined,
-    config: {},
+const defaultArgs: UnsupportedInputProps = {
     input: makeInput(),
-    enabled: true,
-    index: 0,
-    errors: [],
 };
 
 export const Default: Story = {

@@ -1,1 +1,1 @@
-export * from './ComponentRegistry';
+export * from './InputTypeRegistry';

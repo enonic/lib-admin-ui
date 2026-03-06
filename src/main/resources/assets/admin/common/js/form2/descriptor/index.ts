@@ -5,9 +5,9 @@ export {ComboBoxDescriptor} from './ComboBoxDescriptor';
 export {DateDescriptor} from './DateDescriptor';
 export {DateTimeDescriptor} from './DateTimeDescriptor';
 export {DateTimeRangeDescriptor} from './DateTimeRangeDescriptor';
-export {DescriptorRegistry} from './DescriptorRegistry';
 export {DoubleDescriptor} from './DoubleDescriptor';
 export {GeoPointDescriptor} from './GeoPointDescriptor';
+export {getEffectiveOccurrences} from './getEffectiveOccurrences';
 export type {
     CheckboxConfig,
     ComboBoxConfig,
@@ -27,7 +27,6 @@ export type {
 } from './InputTypeConfig';
 export type {InputTypeDescriptor} from './InputTypeDescriptor';
 // Config types
-export {initBuiltInDescriptors} from './initBuiltInDescriptors';
 export {LongDescriptor} from './LongDescriptor';
 export {OccurrenceManager, type OccurrenceManagerState, type OccurrenceValidationState} from './OccurrenceManager';
 export {PrincipalSelectorDescriptor} from './PrincipalSelectorDescriptor';
