@@ -67,16 +67,6 @@ export class UriHelper {
         return UriHelper.getAdminUri(UriHelper.joinPath('rest', UriHelper.relativePath(path)));
     }
 
-    /**
-     * Adds a prefix to a site path.
-     *
-     * @param path path to append to base site URI.
-     * @returns {string} the URI to a site path.
-     */
-    static addSitePrefix(path: string): string {
-        return UriHelper.getAdminUri(UriHelper.joinPath('site', UriHelper.relativePath(path)));
-    }
-
     static relativePath(path: string): string {
         if (StringHelper.isBlank(path)) {
             return StringHelper.EMPTY_STRING;
