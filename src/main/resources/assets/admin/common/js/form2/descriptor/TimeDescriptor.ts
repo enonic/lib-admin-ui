@@ -3,12 +3,15 @@ import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
 import type {RawInputConfig} from '../../form/Input';
 import {RelativeTimeParser} from '../../form/inputtype/time/RelativeTimeParser';
+import {DateHelper} from '../../util/DateHelper';
 import {LocalTime} from '../../util/LocalTime';
+import {i18n} from '../../util/Messages';
 import type {TimeConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
 
 const TIME_PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
+const RELATIVE_EXPR = /^(?:now|(?:[+-]\d+[a-zA-Z]+\s*)+)$/;
 
 export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
     name: 'Time',
@@ -17,8 +20,27 @@ export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
         return ValueTypes.LOCAL_TIME;
     },
 
-    readConfig(_raw: RawInputConfig): TimeConfig {
-        return {};
+    readConfig(raw: RawInputConfig): TimeConfig {
+        const rawDefault = raw.default?.[0]?.value;
+        let defaultTime: Date | undefined;
+        if (typeof rawDefault === 'string' && rawDefault.length > 0) {
+            if (TIME_PATTERN.test(rawDefault)) {
+                const parsed = DateHelper.parseTime(rawDefault);
+                if (parsed != null) {
+                    defaultTime = DateHelper.dateFromTime(parsed.hours, parsed.minutes);
+                }
+            } else if (RELATIVE_EXPR.test(rawDefault)) {
+                try {
+                    const parsed = RelativeTimeParser.parseToTime(rawDefault);
+                    if (!Number.isNaN(parsed.getTime())) {
+                        defaultTime = parsed;
+                    }
+                } catch {
+                    defaultTime = undefined;
+                }
+            }
+        }
+        return {default: defaultTime};
     },
 
     createDefaultValue(raw: unknown): Value {
@@ -34,15 +56,19 @@ export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
         return new Value(value, ValueTypes.LOCAL_TIME);
     },
 
-    validate(value: Value, _config: TimeConfig): ValidationResult[] {
+    validate(value: Value, _config: TimeConfig, rawValue?: string): ValidationResult[] {
         const results: ValidationResult[] = [];
+
         if (value.isNull()) {
+            if (rawValue != null && rawValue !== '') {
+                results.push({message: i18n('field.value.invalid')});
+            }
             return results;
         }
 
         const str = value.getString();
         if (str && !TIME_PATTERN.test(str)) {
-            results.push({message: 'Value is not a valid time'});
+            results.push({message: i18n('field.value.invalid')});
         }
 
         return results;
