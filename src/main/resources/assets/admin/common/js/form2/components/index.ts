@@ -1,5 +1,7 @@
 export * from './checkbox-input';
 export * from './counter';
+export * from './double-input';
+export * from './geo-point-input';
 export * from './long-input';
 export * from './occurrence-list';
 export * from './radio-button-input';
