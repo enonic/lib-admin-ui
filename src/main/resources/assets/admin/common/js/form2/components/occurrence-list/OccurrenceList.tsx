@@ -151,6 +151,11 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
         disabled: !showDrag,
     });
 
+    const handleKeyDown: preact.JSX.KeyboardEventHandler<HTMLDivElement> = e => {
+        if (e.target !== e.currentTarget) return;
+        (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLDivElement>)?.(e);
+    };
+
     const style = {
         transform: toTransformCSS(transform),
         transition: transition ?? undefined,
@@ -161,7 +166,7 @@ const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>
     return (
         <div
             ref={setNodeRef}
-            onKeyDown={listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLDivElement>}
+            onKeyDown={handleKeyDown}
             role={attributes.role as preact.JSX.AriaRole}
             tabIndex={showDrag ? attributes.tabIndex : undefined}
             aria-disabled={attributes['aria-disabled']}
