@@ -1,6 +1,7 @@
 export * from './checkbox-input';
 export * from './counter';
 export * from './date-input';
+export * from './date-time-input';
 export * from './double-input';
 export * from './geo-point-input';
 export * from './long-input';

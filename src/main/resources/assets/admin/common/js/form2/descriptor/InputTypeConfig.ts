@@ -53,7 +53,7 @@ export type DateConfig = {
 };
 
 export type DateTimeConfig = {
-    useTimezone: boolean;
+    default: Date | undefined;
 };
 
 export type TimeConfig = {
