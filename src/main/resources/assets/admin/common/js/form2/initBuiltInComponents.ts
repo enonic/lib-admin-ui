@@ -1,5 +1,6 @@
 import {CheckboxInput} from './components/checkbox-input';
 import {DateInput} from './components/date-input';
+import {DateTimeInput} from './components/date-time-input';
 import {DoubleInput} from './components/double-input';
 import {GeoPointInput} from './components/geo-point-input';
 import {LongInput} from './components/long-input';
@@ -14,8 +15,9 @@ export function initBuiltInComponents(): void {
     // Type assertion needed: concrete components use narrower InputTypeComponentProps<XConfig>,
     // but the registry stores the generic InputTypeComponent. Props contract is tested separately.
     ComponentRegistry.register('Checkbox', CheckboxInput as InputTypeComponent, true);
-    ComponentRegistry.register('Double', DoubleInput as InputTypeComponent, true);
     ComponentRegistry.register('Date', DateInput as InputTypeComponent, true);
+    ComponentRegistry.register('DateTime', DateTimeInput as InputTypeComponent, true);
+    ComponentRegistry.register('Double', DoubleInput as InputTypeComponent, true);
     ComponentRegistry.register('GeoPoint', GeoPointInput as InputTypeComponent, true);
     ComponentRegistry.register('Long', LongInput as InputTypeComponent, true);
     ComponentRegistry.register('RadioButton', RadioButtonInput as InputTypeComponent, true);
