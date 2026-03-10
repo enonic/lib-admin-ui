@@ -1,34 +1,54 @@
 import {Button, DatePicker, Input, TimePicker} from '@enonic/ui';
-import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useEffect, useMemo, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-import type {DateTimeConfig} from '../../descriptor/InputTypeConfig';
+import type {InstantConfig} from '../../descriptor/InputTypeConfig';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils/validation';
 
-const DATE_TIME_INPUT_NAME = 'DateTimeInput';
+const INSTANT_INPUT_NAME = 'InstantInput';
 
-// ? Display uses space separator (2025-06-15 14:30), storage uses T (2025-06-15T14:30)
+// ? Display shows local time with space separator (2025-06-15 16:30), storage is UTC with T and Z (2025-06-15T14:30:00Z)
 const DISPLAY_PATTERN = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
-export type DateTimeInputProps = InputTypeComponentProps<DateTimeConfig>;
+export type InstantInputProps = InputTypeComponentProps<InstantConfig>;
 
+// ? Parses UTC storage string, formats as local time for display
 function storageToDisplay(s: string): string {
-    return s.replace('T', ' ');
+    const date = new Date(s);
+    if (Number.isNaN(date.getTime())) return s.replace('T', ' ').replace(/Z$/, '');
+    const y = date.getFullYear();
+    const m = DateHelper.padNumber(date.getMonth() + 1);
+    const d = DateHelper.padNumber(date.getDate());
+    const h = DateHelper.padNumber(date.getHours());
+    const min = DateHelper.padNumber(date.getMinutes());
+    const sec = date.getSeconds();
+    const timePart = sec > 0 ? `${h}:${min}:${DateHelper.padNumber(sec)}` : `${h}:${min}`;
+    return `${y}-${m}-${d} ${timePart}`;
 }
 
+// ? Parses local display string, formats as UTC for storage
 function displayToStorage(s: string): string {
-    return s.replace(' ', 'T');
+    const date = new Date(s.replace(' ', 'T'));
+    if (Number.isNaN(date.getTime())) return `${s.replace(' ', 'T')}Z`;
+    const y = date.getUTCFullYear();
+    const m = DateHelper.padNumber(date.getUTCMonth() + 1);
+    const d = DateHelper.padNumber(date.getUTCDate());
+    const h = DateHelper.padNumber(date.getUTCHours());
+    const min = DateHelper.padNumber(date.getUTCMinutes());
+    const sec = DateHelper.padNumber(date.getUTCSeconds());
+    return `${y}-${m}-${d}T${h}:${min}:${sec}Z`;
 }
 
-function valueToDisplay(value: DateTimeInputProps['value']): string {
+function valueToDisplay(value: InstantInputProps['value']): string {
     if (value.isNull()) return '';
     const str = value.getString();
     return str ? storageToDisplay(str) : '';
 }
 
+// ? Combines local date and local time into display format
 function formatDisplay(date: Date, time: string | null): string {
     const datePart = DateHelper.formatDate(date);
     const timePart = time ?? `${DateHelper.padNumber(date.getHours())}:${DateHelper.padNumber(date.getMinutes())}`;
@@ -55,7 +75,22 @@ function parseTimeFromDisplay(raw: string): string | null {
     return `${DateHelper.padNumber(hour)}:${DateHelper.padNumber(minute)}`;
 }
 
-export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}: DateTimeInputProps): ReactElement => {
+// ? Offset depends on exact local date+time because DST can change mid-day (e.g. at 02:00)
+function formatTimezoneLabel(date: Date | null, time: string | null): string {
+    let ref = date ?? new Date();
+    if (date != null && time != null) {
+        const [h, m] = time.split(':').map(Number);
+        ref = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h ?? 0, m ?? 0);
+    }
+    const offset = ref.getTimezoneOffset();
+    const sign = offset <= 0 ? '+' : '-';
+    const absOffset = Math.abs(offset);
+    const hours = Math.floor(absOffset / 60);
+    const minutes = absOffset % 60;
+    return `UTC${sign}${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`;
+}
+
+export const InstantInput = ({value, onChange, onBlur, config, enabled, errors}: InstantInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToDisplay(value));
     const [open, setOpen] = useState(false);
     // ? DatePicker/TimePicker API uses null for "no selection"
@@ -65,6 +100,8 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
+
+    const timezoneLabel = useMemo(() => formatTimezoneLabel(draftDate, draftTime), [draftDate, draftTime]);
 
     useEffect(() => {
         const parentDisplay = valueToDisplay(value);
@@ -77,10 +114,10 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
         setRawInput(inputValue);
         if (inputValue === '') {
             lastEmitted.current = '';
-            onChange(ValueTypes.LOCAL_DATE_TIME.newNullValue());
+            onChange(ValueTypes.DATE_TIME.newNullValue());
         } else {
             const storageValue = displayToStorage(inputValue);
-            const newValue = ValueTypes.LOCAL_DATE_TIME.newValue(storageValue);
+            const newValue = ValueTypes.DATE_TIME.newValue(storageValue);
             lastEmitted.current = valueToDisplay(newValue);
             onChange(newValue, inputValue);
         }
@@ -98,7 +135,7 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
         if (draftDate == null) return;
         const display = formatDisplay(draftDate, draftTime);
         const storageValue = displayToStorage(display);
-        const newValue = ValueTypes.LOCAL_DATE_TIME.newValue(storageValue);
+        const newValue = ValueTypes.DATE_TIME.newValue(storageValue);
         setRawInput(display);
         lastEmitted.current = valueToDisplay(newValue);
         onChange(newValue);
@@ -119,7 +156,7 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
 
     return (
         <DatePicker.Root
-            data-component={DATE_TIME_INPUT_NAME}
+            data-component={INSTANT_INPUT_NAME}
             value={open ? draftDate : selectedDate}
             onValueChange={handleDraftDateChange}
             closeOnSelect={false}
@@ -173,6 +210,7 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
                                     <TimePicker.HourSelect className='w-20' />
                                     <span className='font-bold text-lg text-main'>:</span>
                                     <TimePicker.MinuteSelect className='w-20' />
+                                    <span className='text-sm underline'>{timezoneLabel}</span>
                                 </div>
                             </TimePicker>
                             <div className='mt-3 flex items-center gap-3'>
@@ -199,4 +237,4 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
     );
 };
 
-DateTimeInput.displayName = DATE_TIME_INPUT_NAME;
+InstantInput.displayName = INSTANT_INPUT_NAME;

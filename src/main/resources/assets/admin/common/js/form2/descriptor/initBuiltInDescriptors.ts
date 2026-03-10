@@ -6,6 +6,7 @@ import {DateTimeRangeDescriptor} from './DateTimeRangeDescriptor';
 import {DescriptorRegistry} from './DescriptorRegistry';
 import {DoubleDescriptor} from './DoubleDescriptor';
 import {GeoPointDescriptor} from './GeoPointDescriptor';
+import {InstantDescriptor} from './InstantDescriptor';
 import {LongDescriptor} from './LongDescriptor';
 import {PrincipalSelectorDescriptor} from './PrincipalSelectorDescriptor';
 import {RadioButtonDescriptor} from './RadioButtonDescriptor';
@@ -23,6 +24,7 @@ export function initBuiltInDescriptors(): void {
     DescriptorRegistry.register(RadioButtonDescriptor, true);
     DescriptorRegistry.register(PrincipalSelectorDescriptor, true);
     DescriptorRegistry.register(GeoPointDescriptor, true);
+    DescriptorRegistry.register(InstantDescriptor, true);
     DescriptorRegistry.register(DateDescriptor, true);
     DescriptorRegistry.register(DateTimeDescriptor, true);
     DescriptorRegistry.register(TimeDescriptor, true);
