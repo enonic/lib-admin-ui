@@ -1,4 +1,4 @@
-import {WidgetHelper} from '../widget/WidgetHelper';
+import {ExtensionHelper} from '../extension/ExtensionHelper';
 import {Element} from '../dom/Element';
 import {CONFIG} from './Config';
 
@@ -10,7 +10,7 @@ export class LauncherHelper {
         }
         fetch(url)
             .then(response => response.text())
-            .then((html: string) => WidgetHelper.createFromHtmlAndAppend(html, container))
+            .then((html: string) => ExtensionHelper.createFromHtmlAndAppend(html, container))
             .catch((e: Error) => {
                 throw new Error(`Failed to fetch the Launcher extension panel at ${url}: ${e.toString()}`);
             });

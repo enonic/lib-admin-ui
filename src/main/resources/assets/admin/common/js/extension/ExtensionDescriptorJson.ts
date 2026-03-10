@@ -1,4 +1,4 @@
-export interface WidgetDescriptorJson {
+export interface ExtensionDescriptorJson {
 
     displayName: string;
     description: string;
