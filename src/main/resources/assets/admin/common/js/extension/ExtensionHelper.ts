@@ -3,19 +3,19 @@ import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {Body} from '../dom/Body';
 import {Element} from '../dom/Element';
 
-export interface WidgetElement {
+export interface ExtensionElement {
     el: Element
     assets?: HTMLElement[],
 }
 
-export class WidgetHelper {
-    static createFromHtmlAndAppend(html: string, container?: Element): Q.Promise<WidgetElement> {
-        const widgetEl: Element = WidgetHelper.createFromHtml(html);
-        const deferred: Q.Deferred<WidgetElement> = Q.defer<WidgetElement>();
+export class ExtensionHelper {
+    static createFromHtmlAndAppend(html: string, container?: Element): Q.Promise<ExtensionElement> {
+        const widgetEl: Element = ExtensionHelper.createFromHtml(html);
+        const deferred: Q.Deferred<ExtensionElement> = Q.defer<ExtensionElement>();
         const parentContainer = container || Body.get();
         parentContainer.appendChild(widgetEl);
 
-        WidgetHelper.moveWidgetAssetsToDocumentHead(widgetEl)
+        ExtensionHelper.moveAssetsToDocumentHead(widgetEl)
             .then((assets: HTMLElement[]) => deferred.resolve({
                 el: widgetEl,
                 assets
@@ -36,20 +36,20 @@ export class WidgetHelper {
             widgetRegexResult[0],
             true,
             {
-                addTags: WidgetHelper.getAllowedWidgetTags(allowTags),
+                addTags: ExtensionHelper.getAllowedTags(allowTags),
                 addAttributes: ['target'],  // allow opening links in a new window
             },
         );
     }
 
-    static moveWidgetAssetsToDocumentHead(widgetEl: Element): Q.Promise<HTMLElement[]> {
+    static moveAssetsToDocumentHead(widgetEl: Element): Q.Promise<HTMLElement[]> {
         const promises: Q.Promise<HTMLElement>[] = [];
-        promises.push(...WidgetHelper.doMoveWidgetAssetsToDocumentHead(widgetEl, 'link'));
-        promises.push(...WidgetHelper.doMoveWidgetAssetsToDocumentHead(widgetEl, 'script'));
+        promises.push(...ExtensionHelper.doMoveAssetsToDocumentHead(widgetEl, 'link'));
+        promises.push(...ExtensionHelper.doMoveAssetsToDocumentHead(widgetEl, 'script'));
         return Q.all(promises);
     }
 
-    private  static doMoveWidgetAssetsToDocumentHead(widgetEl: Element, tag: string): Q.Promise<HTMLElement>[] {
+    private static doMoveAssetsToDocumentHead(widgetEl: Element, tag: string): Q.Promise<HTMLElement>[] {
         const elements = widgetEl.getHTMLElement().getElementsByTagName(tag);
         const elementsToRemove = [];
         const promises: Q.Promise<HTMLElement>[] = [];
@@ -86,7 +86,7 @@ export class WidgetHelper {
         return promises;
     }
 
-    private static getAllowedWidgetTags(allowTags?: string[]): string[] {
+    private static getAllowedTags(allowTags?: string[]): string[] {
         return [
             'widget',
             'link', // allow widget assets
