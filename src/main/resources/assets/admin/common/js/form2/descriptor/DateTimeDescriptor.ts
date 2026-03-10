@@ -57,8 +57,12 @@ export const DateTimeDescriptor: InputTypeDescriptor<DateTimeConfig> = {
             return ValueTypes.LOCAL_DATE_TIME.newNullValue();
         }
 
-        const value = LocalDateTime.fromDate(RelativeTimeParser.parseToLocalDateTime(raw));
-        return new Value(value, ValueTypes.LOCAL_DATE_TIME);
+        try {
+            const value = LocalDateTime.fromDate(RelativeTimeParser.parseToLocalDateTime(raw));
+            return new Value(value, ValueTypes.LOCAL_DATE_TIME);
+        } catch {
+            return ValueTypes.LOCAL_DATE_TIME.newNullValue();
+        }
     },
 
     validate(value: Value, _config: DateTimeConfig, rawValue?: string): ValidationResult[] {

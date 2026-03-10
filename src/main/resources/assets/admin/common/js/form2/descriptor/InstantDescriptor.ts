@@ -74,8 +74,12 @@ export const InstantDescriptor: InputTypeDescriptor<InstantConfig> = {
             return ValueTypes.DATE_TIME.newNullValue();
         }
 
-        const value = DateTime.fromDate(RelativeTimeParser.parseToDateTime(raw));
-        return new Value(value, ValueTypes.DATE_TIME);
+        try {
+            const value = DateTime.fromDate(RelativeTimeParser.parseToDateTime(raw));
+            return new Value(value, ValueTypes.DATE_TIME);
+        } catch {
+            return ValueTypes.DATE_TIME.newNullValue();
+        }
     },
 
     validate(value: Value, _config: InstantConfig, rawValue?: string): ValidationResult[] {

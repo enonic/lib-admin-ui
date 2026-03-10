@@ -3,14 +3,13 @@ import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
+import {DATE_PATTERN} from '../../descriptor/DateDescriptor';
 import type {DateConfig} from '../../descriptor/InputTypeConfig';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils/validation';
 
 const DATE_INPUT_NAME = 'DateInput';
-
-export const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export type DateInputProps = InputTypeComponentProps<DateConfig>;
 
