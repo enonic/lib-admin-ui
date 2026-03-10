@@ -37,6 +37,7 @@
     "mousetrap": "^1.6.5",
     "nanoid": "~5.1.5",
     "nanostores": "~1.0.1",
+    "preact": "^10.27.2",
     "q": "^1.5.1"
   },
   "peerDependencies": {
@@ -45,8 +46,7 @@
     "@enonic/ui": "~0.47.0",
     "@radix-ui/react-slot": "^1.2.0",
     "focus-trap-react": "^11.0.0",
-    "lucide-react": ">=0.500.0",
-    "preact": "^10.27.2"
+    "lucide-react": ">=0.500.0"
   },
   "devDependencies": {
     "@biomejs/biome": "~2.3.8",
