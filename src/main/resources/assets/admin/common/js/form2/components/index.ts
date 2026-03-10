@@ -11,4 +11,3 @@ export * from './text-area-input';
 export * from './text-line-input';
 export * from './time-input';
 export * from './unsupported-input';
-

@@ -2,8 +2,7 @@ import {describe, expect, it} from 'vitest';
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-
-const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
+import {DATETIME_PATTERN} from '../../descriptor/DateTimeDescriptor';
 
 function parseDateFromDateTime(raw: string): Date | null {
     if (!DATETIME_PATTERN.test(raw)) return null;
@@ -34,6 +33,7 @@ describe('DateTimeInput', () => {
     describe('value transformation', () => {
         it('should produce empty string for null value', () => {
             const value = ValueTypes.LOCAL_DATE_TIME.newNullValue();
+
             const str = value.isNull() ? '' : (value.getString() ?? '');
 
             expect(value.isNull()).toBe(true);
@@ -42,6 +42,7 @@ describe('DateTimeInput', () => {
 
         it('should produce datetime string for valid value', () => {
             const value = ValueTypes.LOCAL_DATE_TIME.newValue('2025-06-15T14:30');
+
             const str = value.isNull() ? '' : (value.getString() ?? '');
 
             expect(value.isNull()).toBe(false);
@@ -50,6 +51,7 @@ describe('DateTimeInput', () => {
         });
 
         it('should produce correct Value type on onChange with valid datetime', () => {
+            // Arrange & Act
             const newValue = ValueTypes.LOCAL_DATE_TIME.newValue('2025-06-15T09:15');
 
             expect(newValue).toBeInstanceOf(Value);
@@ -58,6 +60,7 @@ describe('DateTimeInput', () => {
         });
 
         it('should handle datetime with seconds', () => {
+            // Arrange & Act
             const value = ValueTypes.LOCAL_DATE_TIME.newValue('2025-06-15T14:30:45');
 
             expect(value.isNull()).toBe(false);
@@ -67,6 +70,7 @@ describe('DateTimeInput', () => {
 
     describe('handleInputChange logic', () => {
         it('should produce null value for empty input', () => {
+            // Arrange & Act
             const nullValue = ValueTypes.LOCAL_DATE_TIME.newNullValue();
 
             expect(nullValue.isNull()).toBe(true);
@@ -74,6 +78,7 @@ describe('DateTimeInput', () => {
 
         it('should produce null value for partial input', () => {
             const inputValue = '2025-06-15T';
+
             const newValue = ValueTypes.LOCAL_DATE_TIME.newValue(inputValue);
 
             expect(newValue.isNull()).toBe(true);
@@ -81,6 +86,7 @@ describe('DateTimeInput', () => {
 
         it('should produce valid value for complete datetime input', () => {
             const inputValue = '2025-06-15T14:30';
+
             const newValue = ValueTypes.LOCAL_DATE_TIME.newValue(inputValue);
 
             expect(newValue.isNull()).toBe(false);
@@ -91,55 +97,64 @@ describe('DateTimeInput', () => {
     describe('parseDateFromDateTime', () => {
         it('should extract date from valid datetime', () => {
             const date = parseDateFromDateTime('2025-06-15T14:30');
+
             expect(date).not.toBeNull();
-            expect(date!.getFullYear()).toBe(2025);
-            expect(date!.getMonth()).toBe(5);
-            expect(date!.getDate()).toBe(15);
+            expect(date?.getFullYear()).toBe(2025);
+            expect(date?.getMonth()).toBe(5);
+            expect(date?.getDate()).toBe(15);
         });
 
         it('should extract date from datetime with seconds', () => {
             const date = parseDateFromDateTime('2025-06-15T14:30:45');
+
             expect(date).not.toBeNull();
-            expect(date!.getFullYear()).toBe(2025);
+            expect(date?.getFullYear()).toBe(2025);
         });
 
         it('should return null for partial input', () => {
+            // Act & Assert
             expect(parseDateFromDateTime('2025-06-15T')).toBeNull();
         });
 
         it('should return null for date-only input', () => {
+            // Act & Assert
             expect(parseDateFromDateTime('2025-06-15')).toBeNull();
         });
 
         it('should return null for empty string', () => {
+            // Act & Assert
             expect(parseDateFromDateTime('')).toBeNull();
         });
     });
 
     describe('parseTimeFromDateTime', () => {
         it('should extract time from valid datetime', () => {
-            const time = parseTimeFromDateTime('2025-06-15T14:30');
-            expect(time).toBe('14:30');
+            // Act & Assert
+            expect(parseTimeFromDateTime('2025-06-15T14:30')).toBe('14:30');
         });
 
         it('should extract HH:MM from datetime with seconds', () => {
-            const time = parseTimeFromDateTime('2025-06-15T14:30:45');
-            expect(time).toBe('14:30');
+            // Act & Assert
+            expect(parseTimeFromDateTime('2025-06-15T14:30:45')).toBe('14:30');
         });
 
         it('should return null for partial input', () => {
+            // Act & Assert
             expect(parseTimeFromDateTime('2025-06-15T')).toBeNull();
         });
 
         it('should return null for empty string', () => {
+            // Act & Assert
             expect(parseTimeFromDateTime('')).toBeNull();
         });
 
         it('should return null for invalid hour', () => {
+            // Act & Assert
             expect(parseTimeFromDateTime('2025-06-15T25:00')).toBeNull();
         });
 
         it('should return null for invalid minute', () => {
+            // Act & Assert
             expect(parseTimeFromDateTime('2025-06-15T14:60')).toBeNull();
         });
     });
@@ -147,19 +162,25 @@ describe('DateTimeInput', () => {
     describe('formatDateTime', () => {
         it('should combine date and time', () => {
             const date = new Date(2025, 5, 15);
+
             const result = formatDateTime(date, '14:30');
+
             expect(result).toBe('2025-06-15T14:30');
         });
 
         it('should use time from date when time is null', () => {
             const date = new Date(2025, 5, 15, 9, 5);
+
             const result = formatDateTime(date, null);
+
             expect(result).toBe('2025-06-15T09:05');
         });
 
         it('should pad single-digit values', () => {
             const date = new Date(2025, 0, 1);
+
             const result = formatDateTime(date, '09:05');
+
             expect(result).toBe('2025-01-01T09:05');
         });
     });
@@ -167,21 +188,26 @@ describe('DateTimeInput', () => {
     describe('default value handling', () => {
         it('should format default date for date picker draft', () => {
             const defaultDate = new Date(2025, 5, 15, 14, 30);
+
             const formatted = DateHelper.formatDate(defaultDate);
+
             expect(formatted).toBe('2025-06-15');
         });
 
         it('should format default time for time picker draft', () => {
             const defaultDate = new Date(2025, 5, 15, 14, 30);
+
             const hours = defaultDate.getHours();
             const minutes = defaultDate.getMinutes();
             const time = `${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`;
+
             expect(time).toBe('14:30');
         });
 
         it('should produce valid value from formatted datetime', () => {
             const date = new Date(2025, 5, 15);
             const formatted = formatDateTime(date, '14:30');
+
             const newValue = ValueTypes.LOCAL_DATE_TIME.newValue(formatted);
 
             expect(newValue.isNull()).toBe(false);

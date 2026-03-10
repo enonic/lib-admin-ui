@@ -42,10 +42,8 @@ describe('Registry consistency', () => {
     });
 
     it('should have a matching DescriptorRegistry entry for every ComponentRegistry entry', () => {
-        // Arrange
         const components = ComponentRegistry.getAll();
 
-        // Assert
         expect(components.size).toBeGreaterThan(0);
         for (const [name] of components) {
             expect(
@@ -56,11 +54,9 @@ describe('Registry consistency', () => {
     });
 
     it('should have ComponentRegistry entries as a subset of DescriptorRegistry', () => {
-        // Arrange
         const components = ComponentRegistry.getAll();
         const descriptors = DescriptorRegistry.getAll();
 
-        // Assert
         expect(components.size).toBeGreaterThan(0);
         // Every component must have a descriptor, but not every descriptor needs a component yet
         expect(components.size).toBeLessThanOrEqual(descriptors.size);

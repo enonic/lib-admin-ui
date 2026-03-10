@@ -184,7 +184,6 @@ describe('TextLineDescriptor', () => {
             // Arrange & Act
             const config = TextLineDescriptor.readConfig({regexp: [{value: '(unclosed'}]});
 
-            // Assert
             expect(config.regexp).toBeUndefined();
         });
     });

@@ -4,14 +4,13 @@ import {useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-import {i18n} from '../../../util/Messages';
+import {DATETIME_PATTERN} from '../../descriptor/DateTimeDescriptor';
 import type {DateTimeConfig} from '../../descriptor/InputTypeConfig';
+import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils/validation';
 
 const DATE_TIME_INPUT_NAME = 'DateTimeInput';
-
-const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
 export type DateTimeInputProps = InputTypeComponentProps<DateTimeConfig>;
 
@@ -33,6 +32,7 @@ function parseDateFromDateTime(raw: string): Date | null {
     return parsed;
 }
 
+// ? Truncates to HH:MM — picker only supports hours and minutes
 function parseTimeFromDateTime(raw: string): string | null {
     if (!DATETIME_PATTERN.test(raw)) return null;
     const timePart = raw.slice(11);
@@ -47,13 +47,13 @@ function parseTimeFromDateTime(raw: string): string | null {
 export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}: DateTimeInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const [open, setOpen] = useState(false);
+    // ? DatePicker/TimePicker API uses null for "no selection"
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const [draftTime, setDraftTime] = useState<string | null>(null);
     const lastEmitted = useRef<string | undefined>(undefined);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
-    const setDefaultLabel = i18n('action.setDefault');
-    const okLabel = i18n('action.ok');
+    const t = useI18n();
 
     useEffect(() => {
         const parentStr = valueToString(value);
@@ -77,9 +77,10 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
     const handleConfirm = () => {
         if (draftDate == null) return;
         const formatted = formatDateTime(draftDate, draftTime);
+        const newValue = ValueTypes.LOCAL_DATE_TIME.newValue(formatted);
         setRawInput(formatted);
-        lastEmitted.current = formatted;
-        onChange(ValueTypes.LOCAL_DATE_TIME.newValue(formatted));
+        lastEmitted.current = valueToString(newValue);
+        onChange(newValue);
         setOpen(false);
         inputRef.current?.focus();
     };
@@ -148,13 +149,13 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
                                     </div>
                                 </TimePicker>
                                 <Button variant='solid' size='sm' onClick={handleConfirm} disabled={draftDate == null}>
-                                    {okLabel}
+                                    {t('action.ok')}
                                 </Button>
                             </div>
                             {config.default != null && (
                                 <div className='mt-3'>
                                     <Button variant='solid' size='sm' onClick={handleSetDefault}>
-                                        {setDefaultLabel}
+                                        {t('action.setDefault')}
                                     </Button>
                                 </div>
                             )}

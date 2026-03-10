@@ -32,38 +32,29 @@ describe('Counter', () => {
 
     describe('remaining calculation', () => {
         it('should compute positive remaining when under limit', () => {
-            // Arrange
             const maxLength = 100;
             const length = 30;
 
-            // Act
             const remaining = maxLength - length;
 
-            // Assert
             expect(remaining).toBe(70);
         });
 
         it('should compute zero remaining when at limit', () => {
-            // Arrange
             const maxLength = 50;
             const length = 50;
 
-            // Act
             const remaining = maxLength - length;
 
-            // Assert
             expect(remaining).toBe(0);
         });
 
         it('should compute negative remaining when over limit', () => {
-            // Arrange
             const maxLength = 10;
             const length = 15;
 
-            // Act
             const remaining = maxLength - length;
 
-            // Assert
             expect(remaining).toBe(-5);
         });
     });

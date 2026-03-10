@@ -44,7 +44,6 @@ export class InputTypeName
     }
 
     public toJson(): string {
-
         return this.toString();
     }
 

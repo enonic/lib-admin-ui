@@ -321,12 +321,20 @@ export class InputView
             this.input
         );
 
-        if (InputTypeManager.isRegistered(inputType.getName())) {
-            return InputTypeManager.createView(inputType.getName(), inputTypeViewContext);
+        const legacyName = InputView.resolveLegacyTypeName(inputType.getName());
+
+        if (InputTypeManager.isRegistered(legacyName)) {
+            return InputTypeManager.createView(legacyName, inputTypeViewContext);
         }
 
         console.warn('Input type [' + inputType.getName() + '] needs to be registered first.');
         return InputTypeManager.createView('NoInputTypeFound', inputTypeViewContext);
+    }
+
+    private static resolveLegacyTypeName(name: string): string {
+        if (name === 'Instant') return 'DateTime';
+        if (name === 'DateTime') return 'LocalDateTime';
+        return name;
     }
 
     private refreshButtonsState() {
