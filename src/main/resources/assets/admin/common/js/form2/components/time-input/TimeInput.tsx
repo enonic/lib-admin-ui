@@ -6,12 +6,11 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
 import {i18n} from '../../../util/Messages';
 import type {TimeConfig} from '../../descriptor/InputTypeConfig';
+import {TIME_PATTERN} from '../../descriptor/TimeDescriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils/validation';
 
 const TIME_INPUT_NAME = 'TimeInput';
-
-const TIME_PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
 export type TimeInputProps = InputTypeComponentProps<TimeConfig>;
 
@@ -23,6 +22,7 @@ function formatTimeFromDate(date: Date): string {
     return DateHelper.formatTime(date.getHours(), date.getMinutes());
 }
 
+// ? Returns `string | null` (not `undefined`) because TimePicker API uses `null` for empty value
 function parseTimeToPickerValue(raw: string): string | null {
     if (!raw) return null;
     const parts = raw.split(':');
@@ -36,6 +36,7 @@ function parseTimeToPickerValue(raw: string): string | null {
 export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: TimeInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const [open, setOpen] = useState(false);
+    // ? Uses `null` instead of `undefined` because TimePicker API uses `null` for empty value
     const [draftTime, setDraftTime] = useState<string | null>(null);
     const lastEmitted = useRef<string | undefined>(undefined);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -84,7 +85,6 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
 
     return (
         <TimePicker
-            data-component={TIME_INPUT_NAME}
             value={open ? draftTime : pickerValue}
             onValueChange={handleDraftChange}
             open={open}
@@ -95,7 +95,7 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
                 setOpen(isOpen);
             }}
         >
-            <div ref={inputWrapperRef}>
+            <div data-component={TIME_INPUT_NAME} ref={inputWrapperRef}>
                 <Input
                     ref={inputRef}
                     type='text'

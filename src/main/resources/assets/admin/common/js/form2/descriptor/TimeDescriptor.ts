@@ -10,7 +10,7 @@ import type {TimeConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
 
-const TIME_PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
+export const TIME_PATTERN = /^\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 const RELATIVE_EXPR = /^(?:now|(?:[+-]\d+[a-zA-Z]+\s*)+)$/;
 
 export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
@@ -52,8 +52,17 @@ export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
             return ValueTypes.LOCAL_TIME.newValue(raw);
         }
 
-        const value = LocalTime.fromDate(RelativeTimeParser.parseToTime(raw));
-        return new Value(value, ValueTypes.LOCAL_TIME);
+        // Return null if the value is parsable
+        if (!RELATIVE_EXPR.test(raw)) {
+            return ValueTypes.LOCAL_TIME.newNullValue();
+        }
+
+        try {
+            const value = LocalTime.fromDate(RelativeTimeParser.parseToTime(raw));
+            return new Value(value, ValueTypes.LOCAL_TIME);
+        } catch {
+            return ValueTypes.LOCAL_TIME.newNullValue();
+        }
     },
 
     validate(value: Value, _config: TimeConfig, rawValue?: string): ValidationResult[] {

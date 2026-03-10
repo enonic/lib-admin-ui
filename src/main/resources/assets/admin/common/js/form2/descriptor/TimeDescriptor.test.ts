@@ -4,8 +4,9 @@ import {ValueTypes} from '../../data/ValueTypes';
 import type {TimeConfig} from './InputTypeConfig';
 import {TimeDescriptor} from './TimeDescriptor';
 
-// i18n requires window global
-vi.stubGlobal('window', {});
+vi.mock('../../util/Messages', () => ({
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
+}));
 
 describe('TimeDescriptor', () => {
     describe('getValueType', () => {
@@ -28,15 +29,15 @@ describe('TimeDescriptor', () => {
         it('parses absolute HH:MM time', () => {
             const config = TimeDescriptor.readConfig({default: [{value: '14:30'}]});
             expect(config.default).toBeInstanceOf(Date);
-            expect(config.default!.getHours()).toBe(14);
-            expect(config.default!.getMinutes()).toBe(30);
+            expect(config.default?.getHours()).toBe(14);
+            expect(config.default?.getMinutes()).toBe(30);
         });
 
         it('parses absolute HH:MM with leading zeros', () => {
             const config = TimeDescriptor.readConfig({default: [{value: '09:05'}]});
             expect(config.default).toBeInstanceOf(Date);
-            expect(config.default!.getHours()).toBe(9);
-            expect(config.default!.getMinutes()).toBe(5);
+            expect(config.default?.getHours()).toBe(9);
+            expect(config.default?.getMinutes()).toBe(5);
         });
 
         it('returns undefined for invalid time format', () => {
@@ -127,6 +128,11 @@ describe('TimeDescriptor', () => {
 
         it('returns null Value for undefined input', () => {
             const value = TimeDescriptor.createDefaultValue(undefined);
+            expect(value.isNull()).toBe(true);
+        });
+
+        it('returns null Value for garbage string', () => {
+            const value = TimeDescriptor.createDefaultValue('garbage');
             expect(value.isNull()).toBe(true);
         });
     });
