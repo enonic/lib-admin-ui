@@ -52,7 +52,7 @@ export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
             return ValueTypes.LOCAL_TIME.newValue(raw);
         }
 
-        // Return null if the value is parsable
+        // Return null if the value is not a relative expression
         if (!RELATIVE_EXPR.test(raw)) {
             return ValueTypes.LOCAL_TIME.newNullValue();
         }

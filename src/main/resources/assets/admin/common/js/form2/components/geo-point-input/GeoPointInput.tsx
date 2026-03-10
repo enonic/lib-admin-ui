@@ -16,35 +16,34 @@ function valueToString(value: GeoPointInputProps['value']): string {
 
 export const GeoPointInput = ({value, onChange, onBlur, enabled, errors}: GeoPointInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
-    const isLocalChange = useRef(false);
+    const lastEmitted = useRef<string | undefined>(undefined);
 
     // Sync from parent only on external value changes (e.g. form reset).
-    // Skip when the change was triggered by handleChange below.
+    // Skip when the string representation matches what we last emitted.
     useEffect(() => {
-        if (isLocalChange.current) {
-            isLocalChange.current = false;
-            return;
-        }
-        const newRaw = valueToString(value);
-        setRawInput(newRaw);
+        const parentStr = valueToString(value);
+        if (lastEmitted.current === parentStr) return;
+        setRawInput(parentStr);
     }, [value]);
 
     const handleChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
-        isLocalChange.current = true;
-
         setRawInput(inputValue);
 
         if (inputValue === '') {
+            lastEmitted.current = '';
             onChange(ValueTypes.GEO_POINT.newNullValue());
             return;
         }
 
         if (GeoPoint.isValidString(inputValue)) {
-            onChange(ValueTypes.GEO_POINT.newValue(inputValue), inputValue);
+            const newValue = ValueTypes.GEO_POINT.newValue(inputValue);
+            lastEmitted.current = valueToString(newValue);
+            onChange(newValue, inputValue);
             return;
         }
 
+        lastEmitted.current = '';
         onChange(ValueTypes.GEO_POINT.newNullValue(), inputValue);
     };
 

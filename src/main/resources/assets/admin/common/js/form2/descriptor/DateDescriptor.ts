@@ -9,7 +9,7 @@ import type {DateConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
 
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+export const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const RELATIVE_EXPR = /^(?:now|(?:[+-]\d+[a-zA-Z]+\s*)+)$/;
 
 export const DateDescriptor: InputTypeDescriptor<DateConfig> = {
@@ -55,8 +55,12 @@ export const DateDescriptor: InputTypeDescriptor<DateConfig> = {
             return ValueTypes.LOCAL_DATE.newNullValue();
         }
 
-        const value = LocalDate.fromDate(RelativeTimeParser.parseToDate(raw));
-        return new Value(value, ValueTypes.LOCAL_DATE);
+        try {
+            const value = LocalDate.fromDate(RelativeTimeParser.parseToDate(raw));
+            return new Value(value, ValueTypes.LOCAL_DATE);
+        } catch {
+            return ValueTypes.LOCAL_DATE.newNullValue();
+        }
     },
 
     validate(value: Value, _config: DateConfig, rawValue?: string): ValidationResult[] {

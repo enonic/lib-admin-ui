@@ -1,12 +1,11 @@
 import {Button, Input, TimePicker} from '@enonic/ui';
-import type {ReactElement} from 'react';
-import {useEffect, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-import {i18n} from '../../../util/Messages';
 import type {TimeConfig} from '../../descriptor/InputTypeConfig';
 import {TIME_PATTERN} from '../../descriptor/TimeDescriptor';
+import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils/validation';
 
@@ -41,8 +40,7 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
     const lastEmitted = useRef<string | undefined>(undefined);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
-    const setDefaultLabel = i18n('action.setDefault');
-    const okLabel = i18n('action.ok');
+    const t = useI18n();
 
     useEffect(() => {
         const parentStr = valueToString(value);
@@ -50,8 +48,8 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
         setRawInput(parentStr);
     }, [value]);
 
-    const handleInputChange = (e: Event) => {
-        const inputValue = (e.currentTarget as HTMLInputElement).value;
+    const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
+        const inputValue = e.currentTarget.value;
         setRawInput(inputValue);
         if (inputValue === '') {
             lastEmitted.current = '';
@@ -126,7 +124,7 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
                     <div className='flex items-center gap-3'>
                         {config.default != null && (
                             <Button variant='solid' size='sm' onClick={handleSetDefault}>
-                                {setDefaultLabel}
+                                {t('action.setDefault')}
                             </Button>
                         )}
                         <Button
@@ -136,7 +134,7 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
                             onClick={handleConfirm}
                             disabled={draftTime == null}
                         >
-                            {okLabel}
+                            {t('action.ok')}
                         </Button>
                     </div>
                 </div>
