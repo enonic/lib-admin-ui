@@ -21,7 +21,7 @@ export function initBuiltInComponents(): void {
     ComponentRegistry.register('GeoPoint', GeoPointInput as InputTypeComponent, true);
     ComponentRegistry.register('Long', LongInput as InputTypeComponent, true);
     ComponentRegistry.register('RadioButton', RadioButtonInput as InputTypeComponent, true);
-    ComponentRegistry.register('TextArea', TextAreaInput as InputTypeComponent, true); // Duplicate registration?
-    ComponentRegistry.register('TextLine', TextLineInput as InputTypeComponent, true); // Duplicate registration?
+    ComponentRegistry.register('TextArea', TextAreaInput as InputTypeComponent, true);
+    ComponentRegistry.register('TextLine', TextLineInput as InputTypeComponent, true);
     ComponentRegistry.register('Time', TimeInput as InputTypeComponent, true);
 }

@@ -6,25 +6,19 @@ import {getStep} from './utils';
 describe('DoubleInput', () => {
     describe('value transformation', () => {
         it('should produce empty string for null value', () => {
-            // Arrange
             const value = ValueTypes.DOUBLE.newNullValue();
 
-            // Act
             const doubleValue = value.isNull() ? '' : String(value.getDouble() ?? '');
 
-            // Assert
             expect(value.isNull()).toBe(true);
             expect(doubleValue).toBe('');
         });
 
         it('should produce string display for valid double value', () => {
-            // Arrange
             const value = ValueTypes.DOUBLE.newValue('3.14');
 
-            // Act
             const doubleValue = value.isNull() ? '' : String(value.getDouble() ?? '');
 
-            // Assert
             expect(value.isNull()).toBe(false);
             expect(doubleValue).toBe('3.14');
         });
@@ -33,7 +27,6 @@ describe('DoubleInput', () => {
             // Arrange & Act
             const newValue = ValueTypes.DOUBLE.newValue('3.14');
 
-            // Assert
             expect(newValue).toBeInstanceOf(Value);
             expect(newValue.getDouble()).toBe(3.14);
             expect(newValue.getType()).toBe(ValueTypes.DOUBLE);
@@ -43,7 +36,6 @@ describe('DoubleInput', () => {
             // Arrange & Act
             const newValue = ValueTypes.DOUBLE.newValue('-1.5');
 
-            // Assert
             expect(newValue.getDouble()).toBe(-1.5);
             expect(newValue.getType()).toBe(ValueTypes.DOUBLE);
         });
@@ -52,7 +44,6 @@ describe('DoubleInput', () => {
             // Arrange & Act
             const newValue = ValueTypes.DOUBLE.newValue('0');
 
-            // Assert
             expect(newValue.getDouble()).toBe(0);
             expect(newValue.getType()).toBe(ValueTypes.DOUBLE);
         });
@@ -61,7 +52,6 @@ describe('DoubleInput', () => {
             // Arrange & Act
             const newValue = ValueTypes.DOUBLE.newValue('42');
 
-            // Assert
             expect(newValue.getDouble()).toBe(42);
             expect(newValue.getType()).toBe(ValueTypes.DOUBLE);
         });
