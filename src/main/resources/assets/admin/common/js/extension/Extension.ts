@@ -1,17 +1,17 @@
 import {ApplicationKey} from '../application/ApplicationKey';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
-import {WidgetDescriptorJson} from './json/WidgetDescriptorJson';
+import {ExtensionDescriptorJson} from './ExtensionDescriptorJson';
 import {CONFIG} from '../util/Config';
 
-export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetConfig = WidgetConfig> {
+export class Extension<B extends ExtensionBuilder = ExtensionBuilder, C extends ExtensionConfig = ExtensionConfig> {
 
     private readonly url: string;
     private readonly iconUrl: string;
     private readonly displayName: string;
     private readonly description: string;
     private readonly interfaces: string[];
-    private readonly widgetDescriptorKey: WidgetDescriptorKey;
+    private readonly extensionDescriptorKey: ExtensionDescriptorKey;
     private readonly config: C;
 
     constructor(builder: B) {
@@ -20,20 +20,20 @@ export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetCon
         this.displayName = builder.displayName;
         this.description = builder.description;
         this.interfaces = builder.interfaces;
-        this.widgetDescriptorKey = builder.widgetDescriptorKey;
+        this.extensionDescriptorKey = builder.extensionDescriptorKey;
         this.config = (builder.config || this.createConfig()) as C;
     }
 
     protected createConfig(): C {
-        return new WidgetConfig() as C;
+        return new ExtensionConfig() as C;
     }
 
-    static create<C extends WidgetConfig>(): WidgetBuilder<C> {
-        return new WidgetBuilder<C>();
+    static create<C extends ExtensionConfig>(): ExtensionBuilder<C> {
+        return new ExtensionBuilder<C>();
     }
 
-    static fromJson<C extends WidgetConfig>(json: WidgetDescriptorJson): Widget {
-        return new WidgetBuilder<C>().fromJson(json).build();
+    static fromJson<C extends ExtensionConfig>(json: ExtensionDescriptorJson): Extension {
+        return new ExtensionBuilder<C>().fromJson(json).build();
     }
 
     public getUrl(): string {
@@ -53,7 +53,7 @@ export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetCon
     }
 
     private getBaseUrl(): string {
-        return (CONFIG.getString('widgetApiUrl') || '').replace(/\/+$/, '');
+        return (CONFIG.getString('extensionApiUrl') || '').replace(/\/+$/, '');
     }
 
     public getDisplayName(): string {
@@ -68,8 +68,8 @@ export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetCon
         return this.interfaces;
     }
 
-    public getWidgetDescriptorKey(): WidgetDescriptorKey {
-        return this.widgetDescriptorKey;
+    public getDescriptorKey(): ExtensionDescriptorKey {
+        return this.extensionDescriptorKey;
     }
 
     public getConfig(): C {
@@ -77,7 +77,7 @@ export class Widget<B extends WidgetBuilder = WidgetBuilder, C extends WidgetCon
     }
 }
 
-export class WidgetBuilder<C extends WidgetConfig = WidgetConfig> {
+export class ExtensionBuilder<C extends ExtensionConfig = ExtensionConfig> {
 
     url: string;
 
@@ -89,79 +89,79 @@ export class WidgetBuilder<C extends WidgetConfig = WidgetConfig> {
 
     interfaces: string[];
 
-    widgetDescriptorKey: WidgetDescriptorKey;
+    extensionDescriptorKey: ExtensionDescriptorKey;
 
     config: C;
 
-    constructor(source?: Widget) {
+    constructor(source?: Extension) {
         if (source) {
             this.url = source.getUrl();
             this.iconUrl = source.getIconUrl();
             this.displayName = source.getDisplayName();
             this.description = source.getDescription();
             this.interfaces = source.getInterfaces();
-            this.widgetDescriptorKey = source.getWidgetDescriptorKey();
+            this.extensionDescriptorKey = source.getDescriptorKey();
             this.config = source.getConfig() as C;
         }
     }
 
-    private static makeWidgetDescriptorKey(key: string): WidgetDescriptorKey {
+    private static makeExtensionDescriptorKey(key: string): ExtensionDescriptorKey {
         const applicationKey = key.split(':')[0];
         const descriptorKeyName = key.split(':')[1];
-        return new WidgetDescriptorKey(ApplicationKey.fromString(applicationKey), descriptorKeyName);
+        return new ExtensionDescriptorKey(ApplicationKey.fromString(applicationKey), descriptorKeyName);
     }
 
-    fromJson(json: WidgetDescriptorJson): WidgetBuilder {
+    fromJson(json: ExtensionDescriptorJson): ExtensionBuilder {
         this.url = json.url;
         this.iconUrl = json.iconUrl;
         this.displayName = json.displayName;
         this.description = json.description;
         this.interfaces = json.interfaces;
-        this.widgetDescriptorKey = WidgetBuilder.makeWidgetDescriptorKey(json.key);
+        this.extensionDescriptorKey = ExtensionBuilder.makeExtensionDescriptorKey(json.key);
         this.config = this.createConfig(json.config);
         return this;
     }
 
     protected createConfig(json: Record<string, string>): C {
-        return new WidgetConfig().fromJson(json) as C;
+        return new ExtensionConfig().fromJson(json) as C;
     }
 
-    setUrl(url: string): WidgetBuilder {
+    setUrl(url: string): ExtensionBuilder {
         this.url = url;
         return this;
     }
 
-    setIconUrl(iconUrl: string): WidgetBuilder {
+    setIconUrl(iconUrl: string): ExtensionBuilder {
         this.iconUrl = iconUrl;
         return this;
     }
 
-    setDisplayName(displayName: string): WidgetBuilder {
+    setDisplayName(displayName: string): ExtensionBuilder {
         this.displayName = displayName;
         return this;
     }
 
-    setDescription(description: string): WidgetBuilder {
+    setDescription(description: string): ExtensionBuilder {
         this.description = description;
         return this;
     }
 
-    setWidgetDescriptorKey(keyAsString: string): WidgetBuilder {
-        this.widgetDescriptorKey = WidgetDescriptorKey.fromString(keyAsString);
+    setExtensionDescriptorKey(keyAsString: string): ExtensionBuilder {
+        this.extensionDescriptorKey = ExtensionDescriptorKey.fromString(keyAsString);
         return this;
     }
 
-    setConfig(config: C): WidgetBuilder {
+    setConfig(config: C): ExtensionBuilder {
         this.config = config;
         return this;
     }
 
-    build(): Widget {
-        return new Widget(this);
+    build(): Extension {
+        return new Extension(this);
     }
 }
 
-export class WidgetDescriptorKey
+export class ExtensionDescriptorKey
     implements Equitable {
 
     private static SEPARATOR: string = ':';
@@ -175,19 +175,19 @@ export class WidgetDescriptorKey
     constructor(applicationKey: ApplicationKey, name: string) {
         this.applicationKey = applicationKey;
         this.name = name;
-        this.refString = applicationKey.toString() + WidgetDescriptorKey.SEPARATOR + name.toString();
+        this.refString = applicationKey.toString() + ExtensionDescriptorKey.SEPARATOR + name.toString();
     }
 
-    public static fromString(str: string): WidgetDescriptorKey {
-        let sepIndex: number = str.indexOf(WidgetDescriptorKey.SEPARATOR);
+    public static fromString(str: string): ExtensionDescriptorKey {
+        let sepIndex: number = str.indexOf(ExtensionDescriptorKey.SEPARATOR);
         if (sepIndex === -1) {
-            throw new Error(`WidgetDescriptorKey must contain separator '${WidgetDescriptorKey.SEPARATOR}':${str}`);
+            throw new Error(`ExtensionDescriptorKey must contain separator '${ExtensionDescriptorKey.SEPARATOR}':${str}`);
         }
 
         let applicationKey = str.substring(0, sepIndex);
         let name = str.substring(sepIndex + 1, str.length);
 
-        return new WidgetDescriptorKey(ApplicationKey.fromString(applicationKey), name);
+        return new ExtensionDescriptorKey(ApplicationKey.fromString(applicationKey), name);
     }
 
     getApplicationKey(): ApplicationKey {
@@ -204,11 +204,11 @@ export class WidgetDescriptorKey
 
     equals(o: Equitable): boolean {
 
-        if (!ObjectHelper.iFrameSafeInstanceOf(o, WidgetDescriptorKey)) {
+        if (!ObjectHelper.iFrameSafeInstanceOf(o, ExtensionDescriptorKey)) {
             return false;
         }
 
-        let other = o as WidgetDescriptorKey;
+        let other = o as ExtensionDescriptorKey;
 
         if (!ObjectHelper.stringEquals(this.refString, other.refString)) {
             return false;
@@ -218,14 +218,14 @@ export class WidgetDescriptorKey
     }
 }
 
-export class WidgetConfig {
+export class ExtensionConfig {
     private map: Map<string, string>;
 
     constructor() {
         this.map = new Map<string, any>();
     }
 
-    fromJson(json: Record<string, string>): WidgetConfig {
+    fromJson(json: Record<string, string>): ExtensionConfig {
         Object.keys(json).forEach((key) => {
             this.setProperty(key, json[key]);
         });
@@ -233,7 +233,7 @@ export class WidgetConfig {
         return this;
     }
 
-    setProperty(name: string, value: string): WidgetConfig {
+    setProperty(name: string, value: string): ExtensionConfig {
         this.map.set(name, value);
         return this;
     }
