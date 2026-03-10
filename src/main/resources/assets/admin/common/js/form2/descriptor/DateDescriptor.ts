@@ -51,6 +51,10 @@ export const DateDescriptor: InputTypeDescriptor<DateConfig> = {
             return ValueTypes.LOCAL_DATE.newValue(raw);
         }
 
+        if (!RELATIVE_EXPR.test(raw)) {
+            return ValueTypes.LOCAL_DATE.newNullValue();
+        }
+
         const value = LocalDate.fromDate(RelativeTimeParser.parseToDate(raw));
         return new Value(value, ValueTypes.LOCAL_DATE);
     },

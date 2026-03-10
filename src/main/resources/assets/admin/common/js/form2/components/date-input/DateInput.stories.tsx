@@ -1,6 +1,4 @@
 import type {Meta, StoryObj} from '@storybook/preact-vite';
-import {useState} from 'react';
-import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
@@ -57,36 +55,42 @@ const defaultArgs: InputTypeComponentProps<DateConfig> = {
     errors: [],
 };
 
-function StatefulDate(props: Omit<InputTypeComponentProps<DateConfig>, 'onChange'> & {initialValue?: Value}) {
-    const [value, setValue] = useState(props.initialValue ?? props.value);
-    return <DateInput {...props} value={value} onChange={setValue} />;
-}
-
 export const Default: Story = {
     name: 'Examples / Default',
-    render: () => <StatefulDate {...defaultArgs} />,
+    args: {...defaultArgs},
 };
 
 export const WithValue: Story = {
     name: 'Examples / With Value',
-    render: () => <StatefulDate {...defaultArgs} initialValue={ValueTypes.LOCAL_DATE.newValue('2025-06-15')} />,
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.LOCAL_DATE.newValue('2025-06-15'),
+    },
 };
 
 export const WithDefaultButton: Story = {
     name: 'Examples / With Default Button',
-    render: () => <StatefulDate {...defaultArgs} config={makeConfig({default: new Date(2025, 0, 1)})} />,
+    args: {
+        ...defaultArgs,
+        config: makeConfig({default: new Date(2025, 0, 1)}),
+    },
 };
 
 export const Disabled: Story = {
     name: 'States / Disabled',
-    render: () => (
-        <StatefulDate {...defaultArgs} initialValue={ValueTypes.LOCAL_DATE.newValue('2025-06-15')} enabled={false} />
-    ),
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.LOCAL_DATE.newValue('2025-06-15'),
+        enabled: false,
+    },
 };
 
 export const WithError: Story = {
     name: 'States / With Error',
-    render: () => <StatefulDate {...defaultArgs} errors={[{message: 'Value is not a valid date'}]} />,
+    args: {
+        ...defaultArgs,
+        errors: [{message: 'Value is not a valid date'}],
+    },
 };
 
 export const AllStates: Story = {
@@ -95,27 +99,23 @@ export const AllStates: Story = {
         <div className='w-80 space-y-6 p-4'>
             <div>
                 <h3 className='mb-3 font-medium text-sm'>Empty</h3>
-                <StatefulDate {...defaultArgs} />
+                <DateInput {...defaultArgs} />
             </div>
             <div>
                 <h3 className='mb-3 font-medium text-sm'>With Value</h3>
-                <StatefulDate {...defaultArgs} initialValue={ValueTypes.LOCAL_DATE.newValue('2025-06-15')} />
+                <DateInput {...defaultArgs} value={ValueTypes.LOCAL_DATE.newValue('2025-06-15')} />
             </div>
             <div>
                 <h3 className='mb-3 font-medium text-sm'>Disabled</h3>
-                <StatefulDate
-                    {...defaultArgs}
-                    initialValue={ValueTypes.LOCAL_DATE.newValue('2025-06-15')}
-                    enabled={false}
-                />
+                <DateInput {...defaultArgs} value={ValueTypes.LOCAL_DATE.newValue('2025-06-15')} enabled={false} />
             </div>
             <div>
                 <h3 className='mb-3 font-medium text-sm'>With Default Button</h3>
-                <StatefulDate {...defaultArgs} config={makeConfig({default: new Date(2025, 0, 1)})} />
+                <DateInput {...defaultArgs} config={makeConfig({default: new Date(2025, 0, 1)})} />
             </div>
             <div>
                 <h3 className='mb-3 font-medium text-sm'>Error</h3>
-                <StatefulDate {...defaultArgs} errors={[{message: 'Value is not a valid date'}]} />
+                <DateInput {...defaultArgs} errors={[{message: 'Value is not a valid date'}]} />
             </div>
         </div>
     ),
