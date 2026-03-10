@@ -79,6 +79,13 @@ export const Simple: Story = {
 // ❌ DON'T: Use fixed widths that break responsive design
 ```
 
+## `args` vs `render`
+
+- **`args`** — simple stories that only override props (enables Storybook controls)
+- **`render`** — multi-component layouts, custom wrappers, stateful stories
+
+Don't use `render` when `args` suffices. Don't create stateful wrappers for simple prop-override stories.
+
 ## State Management in Stories
 
 - ✅ Use local state for interactive stories

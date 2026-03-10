@@ -4,6 +4,10 @@ import {ValueTypes} from '../../data/ValueTypes';
 import {DateDescriptor} from './DateDescriptor';
 import type {DateConfig} from './InputTypeConfig';
 
+vi.mock('../../util/Messages', () => ({
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
+}));
+
 describe('DateDescriptor', () => {
     describe('getValueType', () => {
         it('returns LOCAL_DATE', () => {
@@ -34,30 +38,30 @@ describe('DateDescriptor', () => {
         it('parses absolute date string', () => {
             const config = DateDescriptor.readConfig({default: [{value: '2020-08-09'}]});
             expect(config.default).toBeInstanceOf(Date);
-            expect(config.default!.getFullYear()).toBe(2020);
-            expect(config.default!.getMonth()).toBe(7);
-            expect(config.default!.getDate()).toBe(9);
+            expect(config.default?.getFullYear()).toBe(2020);
+            expect(config.default?.getMonth()).toBe(7);
+            expect(config.default?.getDate()).toBe(9);
         });
 
         it('parses "now" to current date', () => {
             const config = DateDescriptor.readConfig({default: [{value: 'now'}]});
             expect(config.default).toBeInstanceOf(Date);
-            expect(config.default!.getFullYear()).toBe(2025);
-            expect(config.default!.getMonth()).toBe(5);
-            expect(config.default!.getDate()).toBe(15);
+            expect(config.default?.getFullYear()).toBe(2025);
+            expect(config.default?.getMonth()).toBe(5);
+            expect(config.default?.getDate()).toBe(15);
         });
 
         it('parses relative expression "+1d"', () => {
             const config = DateDescriptor.readConfig({default: [{value: '+1d'}]});
             expect(config.default).toBeInstanceOf(Date);
-            expect(config.default!.getDate()).toBe(16);
+            expect(config.default?.getDate()).toBe(16);
         });
 
         it('parses relative expression "-2M +3d"', () => {
             const config = DateDescriptor.readConfig({default: [{value: '-2M +3d'}]});
             expect(config.default).toBeInstanceOf(Date);
-            expect(config.default!.getMonth()).toBe(3);
-            expect(config.default!.getDate()).toBe(18);
+            expect(config.default?.getMonth()).toBe(3);
+            expect(config.default?.getDate()).toBe(18);
         });
 
         it('returns undefined for invalid string', () => {
@@ -131,6 +135,11 @@ describe('DateDescriptor', () => {
             const value = DateDescriptor.createDefaultValue(undefined);
             expect(value.isNull()).toBe(true);
         });
+
+        it('returns null Value for garbage string', () => {
+            const value = DateDescriptor.createDefaultValue('hello');
+            expect(value.isNull()).toBe(true);
+        });
     });
 
     describe('validate', () => {
@@ -149,6 +158,18 @@ describe('DateDescriptor', () => {
         it('returns empty for leap day', () => {
             const value = ValueTypes.LOCAL_DATE.newValue('2024-02-29');
             expect(DateDescriptor.validate(value, config)).toEqual([]);
+        });
+
+        it('returns error for null value with non-empty rawValue', () => {
+            const value = ValueTypes.LOCAL_DATE.newNullValue();
+            const results = DateDescriptor.validate(value, config, '2024-01');
+            expect(results).toHaveLength(1);
+            expect(results[0].message).toBe('#field.value.invalid#');
+        });
+
+        it('returns empty for null value with empty rawValue', () => {
+            const value = ValueTypes.LOCAL_DATE.newNullValue();
+            expect(DateDescriptor.validate(value, config, '')).toEqual([]);
         });
     });
 

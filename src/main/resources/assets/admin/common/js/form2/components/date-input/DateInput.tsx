@@ -1,6 +1,5 @@
 import {Button, DatePicker, Input} from '@enonic/ui';
-import type {ReactElement} from 'react';
-import {useEffect, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
@@ -11,7 +10,7 @@ import {getFirstError} from '../../utils/validation';
 
 const DATE_INPUT_NAME = 'DateInput';
 
-const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+export const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 export type DateInputProps = InputTypeComponentProps<DateConfig>;
 
@@ -22,6 +21,7 @@ function valueToString(value: DateInputProps['value']): string {
 export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: DateInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const [open, setOpen] = useState(false);
+    // ? DatePicker API uses null for "no selection" — applies to draftDate, selectedDate, calendarValue
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const lastEmitted = useRef<string | undefined>(undefined);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -36,8 +36,8 @@ export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: Da
         setRawInput(parentStr);
     }, [value]);
 
-    const handleInputChange = (e: Event) => {
-        const inputValue = (e.currentTarget as HTMLInputElement).value;
+    const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
+        const inputValue = e.currentTarget.value;
         setRawInput(inputValue);
         if (inputValue === '') {
             lastEmitted.current = '';
@@ -60,7 +60,6 @@ export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: Da
         lastEmitted.current = formatted;
         onChange(ValueTypes.LOCAL_DATE.newValue(formatted));
         setOpen(false);
-        inputRef.current?.focus();
     };
 
     const handleSetDefault = () => {
@@ -73,6 +72,7 @@ export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: Da
 
     return (
         <DatePicker.Root
+            // ? @enonic/ui composables forward data attrs to the DOM root
             data-component={DATE_INPUT_NAME}
             value={calendarValue}
             onValueChange={handleDraftChange}

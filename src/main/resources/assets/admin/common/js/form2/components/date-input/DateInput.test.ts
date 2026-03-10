@@ -61,9 +61,9 @@ describe('DateInput', () => {
             const selectedDate = DATE_PATTERN.test(rawInput) ? new Date(`${rawInput}T00:00:00`) : null;
 
             expect(selectedDate).not.toBeNull();
-            expect(selectedDate!.getFullYear()).toBe(2024);
-            expect(selectedDate!.getMonth()).toBe(5); // 0-indexed
-            expect(selectedDate!.getDate()).toBe(15);
+            expect(selectedDate?.getFullYear()).toBe(2024);
+            expect(selectedDate?.getMonth()).toBe(5); // 0-indexed
+            expect(selectedDate?.getDate()).toBe(15);
         });
 
         it('should return null for partial date string', () => {
