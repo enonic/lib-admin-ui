@@ -57,37 +57,48 @@ const defaultArgs: InputTypeComponentProps<TimeConfig> = {
     errors: [],
 };
 
-function StatefulTime(props: Omit<InputTypeComponentProps<TimeConfig>, 'onChange'> & {initialValue?: Value}) {
-    const [value, setValue] = useState(props.initialValue ?? props.value);
-    return <TimeInput {...props} value={value} onChange={setValue} />;
-}
-
 export const Default: Story = {
     name: 'Examples / Default',
-    render: () => <StatefulTime {...defaultArgs} />,
+    args: {...defaultArgs},
 };
 
 export const WithValue: Story = {
     name: 'Examples / With Value',
-    render: () => <StatefulTime {...defaultArgs} initialValue={ValueTypes.LOCAL_TIME.newValue('14:30')} />,
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.LOCAL_TIME.newValue('14:30'),
+    },
 };
 
 export const WithDefaultButton: Story = {
     name: 'Examples / With Default Button',
-    render: () => <StatefulTime {...defaultArgs} config={makeConfig({default: new Date(2025, 0, 1, 9, 0)})} />,
+    args: {
+        ...defaultArgs,
+        config: makeConfig({default: new Date(2025, 0, 1, 9, 0)}),
+    },
 };
 
 export const Disabled: Story = {
     name: 'States / Disabled',
-    render: () => (
-        <StatefulTime {...defaultArgs} initialValue={ValueTypes.LOCAL_TIME.newValue('14:30')} enabled={false} />
-    ),
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.LOCAL_TIME.newValue('14:30'),
+        enabled: false,
+    },
 };
 
 export const WithError: Story = {
     name: 'States / With Error',
-    render: () => <StatefulTime {...defaultArgs} errors={[{message: 'Value is not a valid time'}]} />,
+    args: {
+        ...defaultArgs,
+        errors: [{message: 'Value is not a valid time'}],
+    },
 };
+
+function StatefulTime(props: Omit<InputTypeComponentProps<TimeConfig>, 'onChange'> & {initialValue?: Value}) {
+    const [value, setValue] = useState(props.initialValue ?? props.value);
+    return <TimeInput {...props} value={value} onChange={setValue} />;
+}
 
 export const AllStates: Story = {
     name: 'States / All States',
