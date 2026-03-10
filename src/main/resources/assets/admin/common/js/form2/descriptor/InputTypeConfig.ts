@@ -56,6 +56,10 @@ export type DateTimeConfig = {
     default: Date | undefined;
 };
 
+export type InstantConfig = {
+    default: Date | undefined;
+};
+
 export type TimeConfig = {
     default: Date | undefined;
 };
@@ -86,5 +90,6 @@ export type InputTypeConfig =
     | GeoPointConfig
     | DateConfig
     | DateTimeConfig
+    | InstantConfig
     | TimeConfig
     | DateTimeRangeConfig;

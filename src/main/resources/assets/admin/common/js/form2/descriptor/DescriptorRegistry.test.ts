@@ -34,6 +34,7 @@ const EXPECTED_DESCRIPTORS = [
     'RadioButton',
     'PrincipalSelector',
     'GeoPoint',
+    'Instant',
     'Date',
     'DateTime',
     'Time',
@@ -57,7 +58,7 @@ describe('DescriptorRegistry', () => {
         });
 
         it('has exactly 14 built-in descriptors', () => {
-            expect(DescriptorRegistry.getAll().size).toBe(13);
+            expect(DescriptorRegistry.getAll().size).toBe(14);
         });
     });
 
@@ -139,7 +140,7 @@ describe('DescriptorRegistry', () => {
     describe('getAll', () => {
         it('returns all registered descriptors', () => {
             const all = DescriptorRegistry.getAll();
-            expect(all.size).toBe(13);
+            expect(all.size).toBe(14);
         });
 
         it('returns a copy, not the internal map', () => {
@@ -212,6 +213,7 @@ describe('DescriptorRegistry', () => {
             RadioButton: 'String',
             PrincipalSelector: 'Reference',
             GeoPoint: 'GeoPoint',
+            Instant: 'DateTime',
             Date: 'LocalDate',
             DateTime: 'LocalDateTime',
             Time: 'LocalTime',
