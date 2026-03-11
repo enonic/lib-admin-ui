@@ -1,8 +1,8 @@
 import {IdProvider} from '@enonic/ui';
 import {nanoid} from 'nanoid';
 import {type MapStore, map} from 'nanostores';
-import type {ComponentProps, ComponentType} from 'react';
-import {render} from 'react-dom';
+import type {ComponentProps, ComponentType} from 'preact';
+import {render} from 'preact';
 import {Element as BaseElement, NewElementBuilder} from '../dom/Element';
 
 export class LegacyElement<
