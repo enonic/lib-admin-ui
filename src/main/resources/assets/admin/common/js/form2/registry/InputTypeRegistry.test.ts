@@ -123,8 +123,8 @@ describe('InputTypeRegistry', () => {
             expect(InputTypeRegistry.getDefinition('Tag')?.component).toBe(TagInput);
         });
 
-        it('keeps ComboBox descriptor-only until a React component is added', () => {
-            expect(InputTypeRegistry.getDefinition('ComboBox')?.component).toBeUndefined();
+        it('registers ComboBox with component', () => {
+            expect(InputTypeRegistry.getDefinition('ComboBox')?.component).toBeDefined();
         });
     });
 
