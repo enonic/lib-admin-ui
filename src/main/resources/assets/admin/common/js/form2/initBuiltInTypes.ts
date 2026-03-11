@@ -1,4 +1,5 @@
 import {CheckboxInput} from './components/checkbox-input';
+import {ComboBoxInput} from './components/combo-box-input';
 import {DateInput} from './components/date-input';
 import {DateTimeInput} from './components/date-time-input';
 import {DoubleInput} from './components/double-input';
@@ -43,7 +44,7 @@ export function initBuiltInTypes(): void {
     InputTypeRegistry.registerType({mode: 'list', descriptor: TextAreaDescriptor, component: TextAreaInput}, true);
     InputTypeRegistry.registerType({mode: 'list', descriptor: TextLineDescriptor, component: TextLineInput}, true);
     InputTypeRegistry.registerType({mode: 'internal', descriptor: TagDescriptor, component: TagInput}, true);
-    InputTypeRegistry.registerType({mode: 'internal', descriptor: ComboBoxDescriptor}, true);
+    InputTypeRegistry.registerType({mode: 'internal', descriptor: ComboBoxDescriptor, component: ComboBoxInput}, true);
     InputTypeRegistry.registerType({mode: 'internal', descriptor: PrincipalSelectorDescriptor}, true);
     InputTypeRegistry.registerType({mode: 'list', descriptor: DateTimeRangeDescriptor}, true);
 }
