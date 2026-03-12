@@ -24,13 +24,13 @@ function makeConfig(): TextLineConfig {
     return {regexp: undefined, maxLength: -1, showCounter: false};
 }
 
-function makeInput(min: number, max: number) {
+function makeInput(min: number, max: number, label = 'Text Line', helpText = '') {
     return new InputBuilder()
         .setName('myTextLine')
         .setInputType(new InputTypeName('TextLine', false))
-        .setLabel('Text Line')
+        .setLabel(label)
         .setOccurrences(new OccurrencesBuilder().setMinimum(min).setMaximum(max).build())
-        .setHelpText('')
+        .setHelpText(helpText)
         .setInputTypeConfig({})
         .build();
 }
@@ -69,82 +69,68 @@ export default {
 export const Single: Story = {
     name: 'Examples / Single',
     render: () => (
-        <div className='flex flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>Single (1:1)</h3>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={makeState(['Hello'], 1, 1)}
-                onAdd={noop}
-                onRemove={noop}
-                onMove={noop}
-                onChange={noop}
-                config={makeConfig()}
-                input={makeInput(1, 1)}
-                enabled={true}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState(['Hello'], 1, 1)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(1, 1, 'Single (1:1)')}
+            enabled={true}
+        />
     ),
 };
 
 export const Optional: Story = {
     name: 'Examples / Optional',
     render: () => (
-        <div className='flex flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>Optional (0:1)</h3>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={makeState(['Hello'], 0, 1)}
-                onAdd={noop}
-                onRemove={noop}
-                onMove={noop}
-                onChange={noop}
-                config={makeConfig()}
-                input={makeInput(0, 1)}
-                enabled={true}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState(['Hello'], 0, 1)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(0, 1, 'Optional (0:1)')}
+            enabled={true}
+        />
     ),
 };
 
 export const OptionalEmpty: Story = {
     name: 'Examples / Optional Empty',
     render: () => (
-        <div className='flex flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>Optional Empty (0:1) — renders bare input with null value</h3>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={makeState([''], 0, 1)}
-                onAdd={noop}
-                onRemove={noop}
-                onMove={noop}
-                onChange={noop}
-                config={makeConfig()}
-                input={makeInput(0, 1)}
-                enabled={true}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState([''], 0, 1)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(0, 1, 'Optional Empty (0:1)', 'Renders bare input with null value')}
+            enabled={true}
+        />
     ),
 };
 
 export const OptionalMultipleEmpty: Story = {
     name: 'Examples / Optional Multiple Empty',
     render: () => (
-        <div className='flex flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>
-                Optional Multiple Empty (0:3) — 1 auto-filled null, no remove button
-            </h3>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={makeState([''], 0, 3)}
-                onAdd={noop}
-                onRemove={noop}
-                onMove={noop}
-                onChange={noop}
-                config={makeConfig()}
-                input={makeInput(0, 3)}
-                enabled={true}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState([''], 0, 3)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(0, 3, 'Optional Multiple Empty (0:3)', '1 auto-filled null, no remove button')}
+            enabled={true}
+        />
     ),
 };
 
@@ -177,46 +163,34 @@ export const RequiredMultiple: Story = {
 export const Unlimited: Story = {
     name: 'Examples / Unlimited',
     render: () => (
-        <div className='flex flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>Unlimited (0:0) with 3 values</h3>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={makeState(['Alpha', 'Beta', 'Gamma'], 0, 0)}
-                onAdd={noop}
-                onRemove={noop}
-                onMove={noop}
-                onChange={noop}
-                config={makeConfig()}
-                input={makeInput(0, 0)}
-                enabled={true}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState(['Alpha', 'Beta', 'Gamma'], 0, 0)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(0, 0, 'Unlimited (0:0)', 'With 3 values')}
+            enabled={true}
+        />
     ),
 };
 
 export const FixedCount: Story = {
     name: 'Examples / Fixed Count',
     render: () => (
-        <div className='flex flex-col gap-y-4 p-4'>
-            <div className='w-96 rounded-sm bg-surface-primary p-3 text-sm'>
-                <p className='mb-2 font-medium'>Fixed Count (3:3):</p>
-                <ul className='space-y-1 text-xs'>
-                    <li>No add or remove buttons</li>
-                    <li>No drag handles</li>
-                </ul>
-            </div>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={makeState(['Alpha', 'Beta', 'Gamma'], 3, 3)}
-                onAdd={noop}
-                onRemove={noop}
-                onMove={noop}
-                onChange={noop}
-                config={makeConfig()}
-                input={makeInput(3, 3)}
-                enabled={true}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState(['Alpha', 'Beta', 'Gamma'], 3, 3)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(3, 3, 'Fixed Count (3:3)', 'No add or remove buttons, no drag handles')}
+            enabled={true}
+        />
     ),
 };
 
@@ -234,20 +208,17 @@ export const WithErrors: Story = {
         const state = manager.validate();
 
         return (
-            <div className='flex flex-col gap-y-4 p-4'>
-                <h3 className='mb-0 font-medium text-sm'>Second value fails regexp validation</h3>
-                <OccurrenceList
-                    Component={TextLineInput}
-                    state={state}
-                    onAdd={noop}
-                    onRemove={noop}
-                    onMove={noop}
-                    onChange={noop}
-                    config={config}
-                    input={makeInput(1, 3)}
-                    enabled={true}
-                />
-            </div>
+            <OccurrenceList
+                Component={TextLineInput}
+                state={state}
+                onAdd={noop}
+                onRemove={noop}
+                onMove={noop}
+                onChange={noop}
+                config={config}
+                input={makeInput(1, 3, 'With Errors (1:3)', 'Second value fails regexp validation')}
+                enabled={true}
+            />
         );
     },
 };
@@ -255,20 +226,17 @@ export const WithErrors: Story = {
 export const Disabled: Story = {
     name: 'States / Disabled',
     render: () => (
-        <div className='flex flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>Disabled (1:3)</h3>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={makeState(['Alpha', 'Beta'], 1, 3)}
-                onAdd={noop}
-                onRemove={noop}
-                onMove={noop}
-                onChange={noop}
-                config={makeConfig()}
-                input={makeInput(1, 3)}
-                enabled={false}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState(['Alpha', 'Beta'], 1, 3)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(1, 3, 'Disabled (1:3)')}
+            enabled={false}
+        />
     ),
 };
 
@@ -405,7 +373,7 @@ export const SingleStrategy: Story = {
 const InteractiveUnlimitedDemo = (): ReactElement => {
     const occurrences = useMemo(() => new OccurrencesBuilder().setMinimum(1).setMaximum(0).build(), []);
     const config = useMemo(() => makeConfig(), []);
-    const input = useMemo(() => makeInput(1, 0), []);
+    const input = useMemo(() => makeInput(1, 0, 'Unlimited (1:0)', 'At least one value required'), []);
     const initialValues = useMemo(() => [ValueTypes.STRING.newValue('Required field')], []);
 
     const {state, add, remove, move, set} = useOccurrenceManager({
@@ -416,20 +384,17 @@ const InteractiveUnlimitedDemo = (): ReactElement => {
     });
 
     return (
-        <div className='flex w-100 flex-col gap-y-4 p-4'>
-            <h3 className='mb-0 font-medium text-sm'>Unlimited (1:0), at least one value required</h3>
-            <OccurrenceList
-                Component={TextLineInput}
-                state={state}
-                onAdd={add}
-                onRemove={remove}
-                onMove={move}
-                onChange={set}
-                config={config}
-                input={input}
-                enabled={true}
-            />
-        </div>
+        <OccurrenceList
+            Component={TextLineInput}
+            state={state}
+            onAdd={add}
+            onRemove={remove}
+            onMove={move}
+            onChange={set}
+            config={config}
+            input={input}
+            enabled={true}
+        />
     );
 };
 

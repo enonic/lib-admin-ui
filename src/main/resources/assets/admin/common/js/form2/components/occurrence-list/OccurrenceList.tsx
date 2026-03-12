@@ -23,6 +23,7 @@ import type {InputTypeConfig} from '../../descriptor/InputTypeConfig';
 import type {OccurrenceManagerState} from '../../descriptor/OccurrenceManager';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponent} from '../../types';
+import {InputLabel} from '../input-label';
 
 //
 // * Types
@@ -224,7 +225,6 @@ const OccurrenceListItem = <C extends InputTypeConfig = InputTypeConfig>({
 //
 
 const OCCURRENCE_LIST_NAME = 'OccurrenceList';
-const OCCURRENCE_LIST_ROOT_NAME = 'OccurrenceList.Root';
 
 const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     Component,
@@ -263,7 +263,8 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         if (value == null || errors == null) return <div data-component={OCCURRENCE_LIST_NAME} />;
 
         return (
-            <div data-component={OCCURRENCE_LIST_NAME}>
+            <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
+                <InputLabel input={input} />
                 <Component
                     value={value}
                     onChange={(v: Value, raw?: string) => onChange(0, v, raw)}
@@ -321,6 +322,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     if (isDraggable) {
         return (
             <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
+                <InputLabel input={input} />
                 <div className='flex flex-col gap-y-2.5'>
                     <DndContext
                         sensors={sensors}
@@ -347,6 +349,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
 
     return (
         <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
+            <InputLabel input={input} />
             <div className='flex flex-col gap-y-2.5'>
                 {state.values.map((_, i) => (
                     <OccurrenceListItem key={state.ids[i]} {...contentProps(i)} />
@@ -357,7 +360,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     );
 };
 
-OccurrenceListRoot.displayName = OCCURRENCE_LIST_ROOT_NAME;
+OccurrenceListRoot.displayName = OCCURRENCE_LIST_NAME;
 
 export const OccurrenceList = Object.assign(OccurrenceListRoot, {
     Root: OccurrenceListRoot,
