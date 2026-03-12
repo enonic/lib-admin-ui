@@ -20,16 +20,31 @@ function makeConfig(overrides: Partial<RadioButtonConfig> = {}): RadioButtonConf
     };
 }
 
-function makeInput(): InstanceType<typeof InputBuilder>['build'] extends () => infer R ? R : never {
+function makeInput(
+    label = 'Radio Button',
+): InstanceType<typeof InputBuilder>['build'] extends () => infer R ? R : never {
     return new InputBuilder()
         .setName('myRadioButton')
         .setInputType(new InputTypeName('RadioButton', false))
-        .setLabel('Radio Button')
+        .setLabel(label)
         .setOccurrences(new OccurrencesBuilder().setMinimum(0).setMaximum(1).build())
         .setHelpText('')
         .setInputTypeConfig({})
         .build();
 }
+
+const makeDefaultArgs = (label = 'Radio Button'): InputTypeComponentProps<RadioButtonConfig> => {
+    return {
+        value: ValueTypes.STRING.newNullValue(),
+        onChange: v => console.log('onChange', v.getString()),
+        onBlur: () => console.log('onBlur'),
+        config: makeConfig(),
+        input: makeInput(label),
+        enabled: true,
+        index: 0,
+        errors: [],
+    };
+};
 
 const meta: Meta<InputTypeComponentProps<RadioButtonConfig>> = {
     title: 'InputTypes/RadioButtonInput',
@@ -53,16 +68,7 @@ export default meta;
 
 type Story = StoryObj<InputTypeComponentProps<RadioButtonConfig>>;
 
-const defaultArgs: InputTypeComponentProps<RadioButtonConfig> = {
-    value: ValueTypes.STRING.newNullValue(),
-    onChange: v => console.log('onChange', v.getString()),
-    onBlur: () => console.log('onBlur'),
-    config: makeConfig(),
-    input: makeInput(),
-    enabled: true,
-    index: 0,
-    errors: [],
-};
+const defaultArgs: InputTypeComponentProps<RadioButtonConfig> = makeDefaultArgs();
 
 function StatefulRadio(props: Omit<InputTypeComponentProps<RadioButtonConfig>, 'onChange'> & {initialValue?: Value}) {
     const [value, setValue] = useState(props.initialValue ?? props.value);
@@ -123,39 +129,30 @@ export const WithError: Story = {
     render: () => <StatefulRadio {...defaultArgs} errors={[{message: 'This field is required'}]} />,
 };
 
+const emptyArgs = makeDefaultArgs('Empty');
+const withValueArgs = makeDefaultArgs('With Value');
+const disabledArgs = makeDefaultArgs('Disabled');
+const errorArgs = makeDefaultArgs('Error');
+const twoOptionsArgs = makeDefaultArgs('Two Options');
+
 export const AllStates: Story = {
     name: 'States / All States',
     render: () => (
         <div className='w-80 space-y-6 p-4'>
-            <div>
-                <h3 className='mb-3 font-medium text-sm'>Empty</h3>
-                <StatefulRadio {...defaultArgs} />
-            </div>
-            <div>
-                <h3 className='mb-3 font-medium text-sm'>With Value</h3>
-                <StatefulRadio {...defaultArgs} initialValue={ValueTypes.STRING.newValue('b')} />
-            </div>
-            <div>
-                <h3 className='mb-3 font-medium text-sm'>Disabled</h3>
-                <StatefulRadio {...defaultArgs} initialValue={ValueTypes.STRING.newValue('a')} enabled={false} />
-            </div>
-            <div>
-                <h3 className='mb-3 font-medium text-sm'>Error</h3>
-                <StatefulRadio {...defaultArgs} errors={[{message: 'This field is required'}]} />
-            </div>
-            <div>
-                <h3 className='mb-3 font-medium text-sm'>Two Options</h3>
-                <StatefulRadio
-                    {...defaultArgs}
-                    initialValue={ValueTypes.STRING.newValue('yes')}
-                    config={makeConfig({
-                        options: [
-                            {label: 'Yes', value: 'yes'},
-                            {label: 'No', value: 'no'},
-                        ],
-                    })}
-                />
-            </div>
+            <StatefulRadio {...emptyArgs} />
+            <StatefulRadio {...withValueArgs} initialValue={ValueTypes.STRING.newValue('b')} />
+            <StatefulRadio {...disabledArgs} initialValue={ValueTypes.STRING.newValue('a')} enabled={false} />
+            <StatefulRadio {...errorArgs} errors={[{message: 'This field is required'}]} />
+            <StatefulRadio
+                {...twoOptionsArgs}
+                initialValue={ValueTypes.STRING.newValue('yes')}
+                config={makeConfig({
+                    options: [
+                        {label: 'Yes', value: 'yes'},
+                        {label: 'No', value: 'no'},
+                    ],
+                })}
+            />
         </div>
     ),
 };

@@ -4,6 +4,7 @@ export * from './date-input';
 export * from './date-time-input';
 export * from './double-input';
 export * from './geo-point-input';
+export * from './input-label';
 export * from './instant-input';
 export * from './long-input';
 export * from './occurrence-list';
