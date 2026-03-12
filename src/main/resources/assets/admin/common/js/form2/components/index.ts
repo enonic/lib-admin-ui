@@ -1,4 +1,5 @@
 export * from './checkbox-input';
+export * from './combo-box-input';
 export * from './counter';
 export * from './date-input';
 export * from './date-time-input';
