@@ -546,7 +546,7 @@ export abstract class FormSetOccurrenceView
     }
 
     private getRadioButtonTextByValue(radioGroup: Input, selectedValue: string): string {
-        const radioButtons: object[] = radioGroup.getInputTypeConfig()['option'];
+        const radioButtons: object[] | undefined = radioGroup.getInputTypeConfig()?.['option'];
         if (!radioButtons) {
             return '';
         }
