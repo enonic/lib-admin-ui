@@ -1,4 +1,12 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest';
+import {PropertyTree} from '../../../data/PropertyTree';
+import type {Value} from '../../../data/Value';
+import {ValueTypes} from '../../../data/ValueTypes';
+import {InputBuilder} from '../../../form/Input';
+import {InputTypeName} from '../../../form/InputTypeName';
+import {Occurrences} from '../../../form/Occurrences';
+import type {InputTypeComponent, SelfManagedInputTypeComponent} from '../../types';
+import {InputField, InputFieldResolved} from './InputField';
 
 const mocks = vi.hoisted(() => ({
     getDefinition: vi.fn(),
@@ -40,15 +48,6 @@ vi.mock('../occurrence-list', () => ({
 vi.mock('../unsupported-input', () => ({
     UnsupportedInput: mocks.unsupportedInput,
 }));
-
-import {PropertyTree} from '../../../data/PropertyTree';
-import type {Value} from '../../../data/Value';
-import {ValueTypes} from '../../../data/ValueTypes';
-import {InputBuilder} from '../../../form/Input';
-import {InputTypeName} from '../../../form/InputTypeName';
-import {Occurrences} from '../../../form/Occurrences';
-import type {InputTypeComponent, SelfManagedInputTypeComponent} from '../../types';
-import {InputField, InputFieldResolved} from './InputField';
 
 function makeInput(typeName: string) {
     return new InputBuilder()
@@ -174,6 +173,7 @@ describe('InputField', () => {
         const child = getOnlyChild(element);
 
         expect(child.type).toBe(component);
+        expect(mocks.occurrenceListRoot).not.toHaveBeenCalled();
         expect(mocks.useOccurrenceManager).toHaveBeenCalledWith(
             expect.objectContaining({
                 autoSeed: false,
