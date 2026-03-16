@@ -258,6 +258,21 @@ describe('TagInput', () => {
         expect(mocks.button).not.toHaveBeenCalled();
     });
 
+    it('keeps tag removal available when the current count matches the minimum occurrences', () => {
+        const onRemove = vi.fn();
+
+        renderTagInput({
+            onRemove,
+            values: [ValueTypes.STRING.newValue('alpha')],
+            occurrences: Occurrences.minmax(1, 3),
+            errors: [makeOccurrenceValidation(0)],
+        });
+
+        getFirstIconButtonProps().onClick();
+
+        expect(onRemove).toHaveBeenCalledWith(0);
+    });
+
     it('disables sortable behavior when the field is disabled', () => {
         renderTagInput({
             enabled: false,

@@ -139,7 +139,7 @@ function toTransformCSS(transform: SortableTransform | null): string | undefined
 function getTagViewState(occurrences: Occurrences, enabled: boolean, valueCount: number): TagViewState {
     const isFixed = occurrences.getMinimum() > 0 && occurrences.getMinimum() === occurrences.getMaximum();
     const canAdd = enabled && !occurrences.maximumReached(valueCount);
-    const canRemove = enabled && valueCount > occurrences.getMinimum();
+    const canRemove = enabled && valueCount > 0;
 
     return {
         canAdd,
