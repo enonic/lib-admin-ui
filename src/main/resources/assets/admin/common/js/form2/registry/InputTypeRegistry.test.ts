@@ -1,4 +1,12 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+import {ValueTypes} from '../../data/ValueTypes';
+import {GeoPointInput} from '../components/geo-point-input';
+import {TagInput} from '../components/tag-input';
+import {TextLineInput} from '../components/text-line-input';
+import type {InputTypeDescriptor} from '../descriptor/InputTypeDescriptor';
+import {initBuiltInTypes} from '../initBuiltInTypes';
+import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../types';
+import {InputTypeRegistry} from './InputTypeRegistry';
 
 vi.mock('@enonic/ui', () => ({
     Input: () => null,
@@ -23,14 +31,6 @@ vi.mock('../../store/Store', () => {
         },
     };
 });
-
-import {ValueTypes} from '../../data/ValueTypes';
-import {GeoPointInput} from '../components/geo-point-input';
-import {TextLineInput} from '../components/text-line-input';
-import type {InputTypeDescriptor} from '../descriptor/InputTypeDescriptor';
-import {initBuiltInTypes} from '../initBuiltInTypes';
-import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../types';
-import {InputTypeRegistry} from './InputTypeRegistry';
 
 function stubDescriptor(name: string): InputTypeDescriptor {
     return {
@@ -112,13 +112,15 @@ describe('InputTypeRegistry', () => {
         it('registers expected built-in modes', () => {
             expect(InputTypeRegistry.getDefinition('TextLine')?.mode).toBe('list');
             expect(InputTypeRegistry.getDefinition('Checkbox')?.mode).toBe('single');
+            expect(InputTypeRegistry.getDefinition('Tag')?.mode).toBe('internal');
             expect(InputTypeRegistry.getDefinition('ComboBox')?.mode).toBe('internal');
             expect(InputTypeRegistry.getDefinition('PrincipalSelector')?.mode).toBe('internal');
         });
 
-        it('registers TextLine and GeoPoint with components', () => {
+        it('registers TextLine, GeoPoint, and Tag with components', () => {
             expect(InputTypeRegistry.getDefinition('TextLine')?.component).toBe(TextLineInput);
             expect(InputTypeRegistry.getDefinition('GeoPoint')?.component).toBe(GeoPointInput);
+            expect(InputTypeRegistry.getDefinition('Tag')?.component).toBe(TagInput);
         });
 
         it('keeps ComboBox descriptor-only until a React component is added', () => {

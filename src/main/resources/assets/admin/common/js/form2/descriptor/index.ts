@@ -31,6 +31,7 @@ export {LongDescriptor} from './LongDescriptor';
 export {OccurrenceManager, type OccurrenceManagerState, type OccurrenceValidationState} from './OccurrenceManager';
 export {PrincipalSelectorDescriptor} from './PrincipalSelectorDescriptor';
 export {RadioButtonDescriptor} from './RadioButtonDescriptor';
+export {TagDescriptor} from './TagDescriptor';
 export {TextAreaDescriptor} from './TextAreaDescriptor';
 // Descriptors
 export {TextLineDescriptor} from './TextLineDescriptor';
