@@ -263,8 +263,8 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         if (value == null || errors == null) return <div data-component={OCCURRENCE_LIST_NAME} />;
 
         return (
-            <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
-                <InputLabel input={input} />
+            <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col'>
+                <InputLabel className='mb-2' input={input} />
                 <Component
                     value={value}
                     onChange={(v: Value, raw?: string) => onChange(0, v, raw)}
@@ -313,7 +313,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
             iconStrokeWidth={1.75}
             endIcon={Plus}
             label={t('action.add')}
-            className='w-fit self-end'
+            className='mt-5 w-fit self-end'
             onClick={onAdd}
             disabled={!enabled}
         />
@@ -321,8 +321,8 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
 
     if (isDraggable) {
         return (
-            <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
-                <InputLabel input={input} />
+            <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col'>
+                <InputLabel className='mb-2' input={input} />
                 <div className='flex flex-col gap-y-2.5'>
                     <DndContext
                         sensors={sensors}
@@ -348,8 +348,8 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     }
 
     return (
-        <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col gap-y-5'>
-            <InputLabel input={input} />
+        <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col'>
+            <InputLabel className='mb-2' input={input} />
             <div className='flex flex-col gap-y-2.5'>
                 {state.values.map((_, i) => (
                     <OccurrenceListItem key={state.ids[i]} {...contentProps(i)} />
