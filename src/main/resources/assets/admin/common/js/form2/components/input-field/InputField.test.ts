@@ -25,6 +25,10 @@ vi.mock('react', () => ({
     useCallback: mocks.useCallback,
 }));
 
+vi.mock('../input-label', () => ({
+    InputLabel: () => null,
+}));
+
 vi.mock('../../registry/InputTypeRegistry', () => ({
     InputTypeRegistry: {
         getDefinition: mocks.getDefinition,
@@ -85,8 +89,14 @@ function makeManagerState(value = ValueTypes.STRING.newValue('hello')) {
     };
 }
 
-function getOnlyChild(element: {props: {children: unknown}}): {type: unknown; props: Record<string, any>} {
-    return element.props.children as {type: unknown; props: Record<string, any>};
+type VNode = {type: unknown; props: Record<string, any>};
+
+function getOnlyChild(element: {props: {children: unknown}}): VNode {
+    return element.props.children as VNode;
+}
+
+function getChildAt(element: {props: {children: unknown}}, index: number): VNode {
+    return (element.props.children as VNode[])[index];
 }
 
 describe('InputField', () => {
@@ -170,7 +180,7 @@ describe('InputField', () => {
         });
 
         const element = InputFieldResolved({input, propertySet, enabled: true, definition});
-        const child = getOnlyChild(element);
+        const child = getChildAt(element, 1);
 
         expect(child.type).toBe(component);
         expect(mocks.occurrenceListRoot).not.toHaveBeenCalled();

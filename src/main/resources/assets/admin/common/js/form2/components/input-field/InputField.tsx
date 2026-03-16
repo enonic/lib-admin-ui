@@ -9,6 +9,7 @@ import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
 import {usePropertyArray} from '../../hooks/usePropertyArray';
 import {InputTypeRegistry} from '../../registry/InputTypeRegistry';
 import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../../types';
+import {InputLabel} from '../input-label';
 import {OccurrenceList} from '../occurrence-list';
 import {UnsupportedInput} from '../unsupported-input';
 
@@ -140,7 +141,8 @@ export const InputFieldResolved = ({
             const Component = definition.component;
             // TODO: [#4328] Clamp oversupplied initial values for internal mode to legacy max behavior.
             return (
-                <div data-component={INPUT_FIELD_NAME}>
+                <div data-component={INPUT_FIELD_NAME} className='flex flex-col'>
+                    <InputLabel className='mb-2' input={input} />
                     <Component
                         values={state.values}
                         onChange={handleChange}
