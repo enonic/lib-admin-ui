@@ -1,22 +1,6 @@
-import {
-    closestCenter,
-    DndContext,
-    type DragEndEvent,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
-} from '@dnd-kit/core';
-import {
-    SortableContext,
-    sortableKeyboardCoordinates,
-    useSortable,
-    verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
 import {Button, cn, IconButton} from '@enonic/ui';
-import {GripVertical, Plus, X} from 'lucide-react';
-import type {ReactElement, ReactNode} from 'react';
-
+import {Plus, X} from 'lucide-react';
+import {type ReactElement, type ReactNode, useCallback} from 'react';
 import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
 import type {InputTypeConfig} from '../../descriptor/InputTypeConfig';
@@ -24,6 +8,7 @@ import type {OccurrenceManagerState} from '../../descriptor/OccurrenceManager';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponent} from '../../types';
 import {InputLabel} from '../input-label';
+import {SortableList} from '../sortable-list';
 
 //
 // * Types
@@ -59,32 +44,6 @@ type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig>
 type OccurrenceListItemProps<C extends InputTypeConfig = InputTypeConfig> = OccurrenceListItemContentProps<C> & {
     className?: string;
 };
-
-type OccurrenceListSortableItemProps<C extends InputTypeConfig = InputTypeConfig> =
-    OccurrenceListItemContentProps<C> & {
-        id: string;
-        showDrag: boolean;
-        className?: string;
-    };
-
-//
-// * Helpers
-//
-
-// ? Scale is intentionally omitted — @dnd-kit/utilities CSS.Transform is not a direct dependency
-function toTransformCSS(transform: {x: number; y: number; scaleX: number; scaleY: number} | null): string | undefined {
-    if (transform == null) return undefined;
-    return `translate3d(${Math.round(transform.x)}px, ${Math.round(transform.y)}px, 0)`;
-}
-
-function restrictToVerticalAxis({transform}: {transform: {x: number; y: number; scaleX: number; scaleY: number}}): {
-    x: number;
-    y: number;
-    scaleX: number;
-    scaleY: number;
-} {
-    return {...transform, x: 0};
-}
 
 //
 // * OccurrenceListItemContent
@@ -135,79 +94,6 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
 };
 
 //
-// * OccurrenceListSortableItem
-//
-
-const OccurrenceListSortableItem = <C extends InputTypeConfig = InputTypeConfig>({
-    id,
-    enabled,
-    showDrag,
-    showRemove,
-    className,
-    ...contentProps
-}: OccurrenceListSortableItemProps<C>): ReactElement => {
-    const t = useI18n();
-    const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
-        id,
-        disabled: !showDrag,
-    });
-
-    const handleKeyDown: preact.JSX.KeyboardEventHandler<HTMLDivElement> = e => {
-        if (e.target !== e.currentTarget) return;
-        (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLDivElement>)?.(e);
-    };
-
-    const style = {
-        transform: toTransformCSS(transform),
-        transition: transition ?? undefined,
-        zIndex: isDragging ? 1 : undefined,
-    };
-
-    // ? Spread dnd-kit attributes individually to fix Preact type mismatch (string vs AriaRole)
-    return (
-        <div
-            ref={setNodeRef}
-            onKeyDown={handleKeyDown}
-            role={attributes.role as preact.JSX.AriaRole}
-            tabIndex={showDrag ? attributes.tabIndex : undefined}
-            aria-disabled={attributes['aria-disabled']}
-            aria-pressed={attributes['aria-pressed']}
-            aria-roledescription={attributes['aria-roledescription']}
-            aria-describedby={attributes['aria-describedby']}
-            style={style}
-            className={cn(
-                'flex items-center gap-2 rounded outline-none',
-                'focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-inset',
-                '-my-1 py-1',
-                showDrag && 'pl-2',
-                showRemove && 'pr-2',
-                isDragging && 'bg-surface-neutral shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5',
-                className,
-            )}
-        >
-            {showDrag && (
-                <button
-                    type='button'
-                    className={cn(
-                        'flex shrink-0 cursor-grab items-center text-subtle',
-                        'hover:text-foreground focus-visible:outline-none',
-                        isDragging && 'cursor-grabbing',
-                        !enabled && 'pointer-events-none opacity-30',
-                    )}
-                    tabIndex={-1}
-                    disabled={!enabled}
-                    aria-label={t('field.occurrence.action.reorder')}
-                    {...listeners}
-                >
-                    <GripVertical className='size-5' />
-                </button>
-            )}
-            <OccurrenceListItemContent enabled={enabled} showRemove={showRemove} {...contentProps} />
-        </div>
-    );
-};
-
-//
 // * OccurrenceListItem
 //
 
@@ -248,12 +134,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     // Fixed: exact count like 3:3 — no add/remove, no drag. Excludes single (1:1) which early-returns.
     const isFixed = min > 0 && min === max && !isSingle;
     const isDraggable = occurrences.multiple() && !isFixed;
-    const showDrag = isDraggable && state.values.length >= 2;
-
-    const sensors = useSensors(
-        useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
-        useSensor(KeyboardSensor, {coordinateGetter: sortableKeyboardCoordinates}),
-    );
+    const keyExtractor = useCallback((_: Value, i: number) => state.ids[i], [state.ids]);
 
     // Single mode: render component bare
     // ? Minimum occurrences are eagerly populated in useOccurrenceManager, so values[0] is always present
@@ -278,16 +159,6 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
             </div>
         );
     }
-
-    const handleDragEnd = (event: DragEndEvent) => {
-        const {active, over} = event;
-        if (over == null || active.id === over.id) return;
-
-        const oldIndex = state.ids.indexOf(String(active.id));
-        const newIndex = state.ids.indexOf(String(over.id));
-        if (oldIndex === -1 || newIndex === -1) return;
-        onMove(oldIndex, newIndex);
-    };
 
     const contentProps = (index: number): OccurrenceListItemContentProps<C> => ({
         Component,
@@ -320,28 +191,20 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     );
 
     if (isDraggable) {
+        const showRemove = state.canRemove && state.values.length > 1;
+
         return (
             <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col'>
                 <InputLabel className='mb-2' input={input} />
-                <div className='flex flex-col gap-y-2.5'>
-                    <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        modifiers={[restrictToVerticalAxis]}
-                        onDragEnd={handleDragEnd}
-                    >
-                        <SortableContext items={state.ids} strategy={verticalListSortingStrategy}>
-                            {state.values.map((_, i) => (
-                                <OccurrenceListSortableItem
-                                    key={state.ids[i]}
-                                    id={state.ids[i]}
-                                    showDrag={showDrag}
-                                    {...contentProps(i)}
-                                />
-                            ))}
-                        </SortableContext>
-                    </DndContext>
-                </div>
+                <SortableList
+                    items={state.values}
+                    keyExtractor={keyExtractor}
+                    onMove={onMove}
+                    enabled={enabled}
+                    className='flex flex-col gap-y-2.5'
+                    itemClassName={({isMovable}) => cn('-my-1 gap-2 py-1', isMovable && 'pl-2', showRemove && 'pr-2')}
+                    renderItem={({index}) => <OccurrenceListItemContent {...contentProps(index)} />}
+                />
                 {addButton}
             </div>
         );
