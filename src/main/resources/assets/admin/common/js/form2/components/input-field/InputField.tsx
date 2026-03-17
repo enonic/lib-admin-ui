@@ -70,6 +70,86 @@ function filterErrors(
     });
 }
 
+function moveIndex(index: number, fromIndex: number, toIndex: number): number {
+    if (index === fromIndex) {
+        return toIndex;
+    }
+
+    if (fromIndex < toIndex && index > fromIndex && index <= toIndex) {
+        return index - 1;
+    }
+
+    if (fromIndex > toIndex && index >= toIndex && index < fromIndex) {
+        return index + 1;
+    }
+
+    return index;
+}
+
+function moveTouchedIndexes(touched: Set<number>, fromIndex: number, toIndex: number): Set<number> {
+    if (touched.size === 0 || fromIndex === toIndex) {
+        return touched;
+    }
+
+    let changed = false;
+    const next = new Set<number>();
+
+    touched.forEach(index => {
+        const movedIndex = moveIndex(index, fromIndex, toIndex);
+        if (movedIndex !== index) {
+            changed = true;
+        }
+        next.add(movedIndex);
+    });
+
+    return changed ? next : touched;
+}
+
+function removeTouchedIndex(touched: Set<number>, removedIndex: number): Set<number> {
+    if (touched.size === 0) {
+        return touched;
+    }
+
+    let changed = false;
+    const next = new Set<number>();
+
+    touched.forEach(index => {
+        if (index === removedIndex) {
+            changed = true;
+            return;
+        }
+
+        const shiftedIndex = index > removedIndex ? index - 1 : index;
+        if (shiftedIndex !== index) {
+            changed = true;
+        }
+        next.add(shiftedIndex);
+    });
+
+    return changed ? next : touched;
+}
+
+function moveIndexedArrayItem<T>(items: T[], fromIndex: number, toIndex: number): T[] {
+    if (fromIndex < 0 || fromIndex >= items.length || toIndex < 0 || toIndex >= items.length || fromIndex === toIndex) {
+        return items;
+    }
+
+    const next = [...items];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    return next;
+}
+
+function removeIndexedArrayItem<T>(items: T[], index: number): T[] {
+    if (index < 0 || index >= items.length) {
+        return items;
+    }
+
+    const next = items.slice();
+    next.splice(index, 1);
+    return next;
+}
+
 export const InputFieldResolved = ({
     input,
     propertySet,
@@ -168,17 +248,31 @@ export const InputFieldResolved = ({
     const handleRemove = useCallback(
         (index: number) => {
             if (!remove(index)) return;
+            setTouched(prev => removeTouchedIndex(prev, index));
+            if (rawValueMap != null) {
+                const rawValues = rawValueMap.get(inputName);
+                if (rawValues != null) {
+                    rawValueMap.set(inputName, removeIndexedArrayItem(rawValues, index));
+                }
+            }
             propertyArray.remove(index);
         },
-        [remove, propertyArray],
+        [remove, rawValueMap, inputName, propertyArray],
     );
 
     const handleMove = useCallback(
         (fromIndex: number, toIndex: number) => {
             if (!move(fromIndex, toIndex)) return;
+            setTouched(prev => moveTouchedIndexes(prev, fromIndex, toIndex));
+            if (rawValueMap != null) {
+                const rawValues = rawValueMap.get(inputName);
+                if (rawValues != null) {
+                    rawValueMap.set(inputName, moveIndexedArrayItem(rawValues, fromIndex, toIndex));
+                }
+            }
             propertyArray.move(fromIndex, toIndex);
         },
-        [move, propertyArray],
+        [move, rawValueMap, inputName, propertyArray],
     );
 
     const filteredValidation = filterErrors(state.occurrenceValidation, visibility, touched);
