@@ -7,8 +7,7 @@ import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
 import type {TextLineConfig} from '../../descriptor';
-import {TagDescriptor} from '../../descriptor';
-import {OccurrenceManager} from '../../descriptor/OccurrenceManager';
+import {OccurrenceManager, TagDescriptor} from '../../descriptor';
 import {TagInput} from './TagInput';
 
 type DemoTagInputProps = {
@@ -73,16 +72,12 @@ function DemoTagInput({min, max, initialTags = [], enabled = true, config = make
                     setValues(prev => prev.map((current, currentIndex) => (currentIndex === index ? value : current)))
                 }
                 onAdd={value => {
-                    if (value == null) return;
+                    if (value == null) {
+                        return;
+                    }
                     setValues(prev => (occurrences.maximumReached(prev.length) ? prev : [...prev, value]));
                 }}
-                onRemove={index =>
-                    setValues(prev =>
-                        prev.length <= occurrences.getMinimum()
-                            ? prev
-                            : prev.filter((_, currentIndex) => currentIndex !== index),
-                    )
-                }
+                onRemove={index => setValues(prev => prev.filter((_, currentIndex) => currentIndex !== index))}
                 onMove={(fromIndex, toIndex) => setValues(prev => moveValue(prev, fromIndex, toIndex))}
                 occurrences={occurrences}
                 config={config}

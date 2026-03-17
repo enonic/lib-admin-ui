@@ -2,6 +2,8 @@ import {
     closestCenter,
     DndContext,
     type DragEndEvent,
+    type DragStartEvent,
+    type KeyboardCoordinateGetter,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -9,8 +11,8 @@ import {
 } from '@dnd-kit/core';
 import {rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable} from '@dnd-kit/sortable';
 import {cn, IconButton, Input, Tooltip} from '@enonic/ui';
-import {X} from 'lucide-react';
-import {type JSX, type ReactElement, type RefObject, useRef, useState} from 'react';
+import {GripVertical, X} from 'lucide-react';
+import {type JSX, type ReactElement, type RefObject, useEffect, useRef, useState} from 'react';
 
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
@@ -19,10 +21,18 @@ import {useI18n} from '../../I18nContext';
 import type {SelfManagedComponentProps} from '../../types';
 import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
+import {
+    getTagLabel,
+    getVisibleTagLabel,
+    hasTagLabel,
+    isRenderableTagValue,
+    isTagLabelCropped,
+    normalizeTagDraft,
+} from './tagInputUtils';
+
+export {getTagLabel, getVisibleTagLabel, hasTagLabel, isTagLabelCropped, normalizeTagDraft} from './tagInputUtils';
 
 const TAG_INPUT_NAME = 'TagInput';
-const TAG_LABEL_MAX_LENGTH = 20;
-const TAG_DRAG_ACTIVATION_DISTANCE = 5;
 
 //
 // * Types
@@ -35,12 +45,15 @@ type TagItemProps = {
     label: string;
     error?: string;
     enabled: boolean;
+    isTabStop: boolean;
     showDrag: boolean;
     showRemove: boolean;
-    registerItemRef: (node: HTMLLIElement | null) => void;
+    registerFocusableRef: (node: HTMLButtonElement | null) => void;
     onNavigate: (direction: -1 | 1) => void;
+    onDragMove: (direction: -1 | 1) => void;
     onDeleteKey: () => void;
     onRemovePointerDown: () => void;
+    onRemoveKey: () => void;
     onRemove: () => void;
 };
 
@@ -55,10 +68,13 @@ type TagViewState = {
 type TagDraftInputProps = {
     draft: string;
     enabled: boolean;
+    invalid: boolean;
+    visible: boolean;
     inputRef: RefObject<HTMLInputElement | null>;
     onChange: (value: string) => void;
+    onFocus: () => void;
     onKeyDown: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
-    onBlur: () => void;
+    onBlur: (event: JSX.TargetedFocusEvent<HTMLInputElement>) => void;
 };
 
 type RemoveTagOptions = {
@@ -66,36 +82,130 @@ type RemoveTagOptions = {
     commitCurrentDraft?: boolean;
 };
 
+type CommitDraftResult = {
+    committed: boolean;
+    usedHiddenSlot: boolean;
+};
+
+type SortableDataEntry = {
+    id: string | number;
+    disabled?: boolean;
+    node?: {current: HTMLElement | null};
+    data?: {
+        current?: {
+            sortable?: {
+                containerId: string;
+                items: Array<string | number>;
+                index: number;
+            };
+        };
+    };
+};
+
+type TagEntry = {
+    value: Value;
+    originalIndex: number;
+    id: string;
+};
+
 //
 // * Helpers
 //
-
-export function normalizeTagDraft(raw: string): string {
-    return raw.trim().replace(/,+$/, '').trim();
-}
 
 export function shouldRemoveLatestTag(key: string, draft: string, canRemove: boolean, hasModifier = false): boolean {
     return !hasModifier && canRemove && draft.length === 0 && (key === 'Backspace' || key === 'Delete');
 }
 
-export function getTagLabel(value: Value): string {
-    return value.isNull() ? '' : (value.getString() ?? '');
+function isRemoveButtonKey(key: string): boolean {
+    return key === 'Enter' || key === ' ' || key === 'Backspace' || key === 'Delete';
 }
 
-export function hasTagLabel(values: Value[], label: string, excludedIndex?: number): boolean {
-    return values.some((value, index) => index !== excludedIndex && normalizeTagDraft(getTagLabel(value)) === label);
+function isArrowKey(key: string): boolean {
+    return key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowUp' || key === 'ArrowDown';
 }
 
-export function isTagLabelCropped(label: string): boolean {
-    return label.length > TAG_LABEL_MAX_LENGTH;
+function isKeyboardDragPressed(value: unknown): boolean {
+    return value === true || value === 'true';
 }
 
-export function getVisibleTagLabel(label: string): string {
-    return isTagLabelCropped(label) ? `${label.slice(0, TAG_LABEL_MAX_LENGTH)}...` : label;
+function hasSortableData(entry: SortableDataEntry | null | undefined): entry is SortableDataEntry & {
+    data: {current: {sortable: {containerId: string; items: Array<string | number>; index: number}}};
+} {
+    return entry?.data?.current?.sortable != null;
 }
+
+function getSortableEntries(
+    currentEntry: SortableDataEntry & {
+        data: {current: {sortable: {containerId: string; items: Array<string | number>; index: number}}};
+    },
+    droppableContainers: {getEnabled: () => Array<SortableDataEntry | undefined>},
+): Array<
+    SortableDataEntry & {
+        data: {current: {sortable: {containerId: string; items: Array<string | number>; index: number}}};
+    }
+> {
+    return droppableContainers
+        .getEnabled()
+        .filter(
+            (
+                entry,
+            ): entry is SortableDataEntry & {
+                data: {current: {sortable: {containerId: string; items: Array<string | number>; index: number}}};
+            } =>
+                Boolean(
+                    entry &&
+                        !entry.disabled &&
+                        hasSortableData(entry) &&
+                        entry.data.current.sortable.containerId === currentEntry.data.current.sortable.containerId,
+                ),
+        )
+        .sort((first, second) => first.data.current.sortable.index - second.data.current.sortable.index);
+}
+
+const tagKeyboardCoordinates: KeyboardCoordinateGetter = (event, args) => {
+    const {context} = args;
+
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.code)) {
+        return sortableKeyboardCoordinates(event, args);
+    }
+
+    event.preventDefault();
+
+    if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+        return undefined;
+    }
+
+    const {active, droppableRects, droppableContainers, over} = context;
+    const currentEntry = (over != null ? droppableContainers.get(over.id) : droppableContainers.get(active?.id)) as
+        | SortableDataEntry
+        | undefined;
+
+    if (!active || !currentEntry || !hasSortableData(currentEntry)) {
+        return undefined;
+    }
+
+    const entries = getSortableEntries(currentEntry, droppableContainers);
+    const currentIndex = entries.findIndex(entry => entry.id === currentEntry.id);
+    if (currentIndex === -1) {
+        return undefined;
+    }
+
+    const target = entries[currentIndex + (event.code === 'ArrowLeft' ? -1 : 1)];
+    const targetRect = target ? droppableRects.get(target.id) : undefined;
+    if (targetRect == null) {
+        return undefined;
+    }
+
+    return {
+        x: targetRect.left,
+        y: targetRect.top,
+    };
+};
 
 function toTransformCSS(transform: SortableTransform | null): string | undefined {
-    if (transform == null) return undefined;
+    if (transform == null) {
+        return undefined;
+    }
     return `translate3d(${Math.round(transform.x)}px, ${Math.round(transform.y)}px, 0)`;
 }
 
@@ -125,6 +235,34 @@ function focusElementNextFrame(element: HTMLElement | null | undefined): void {
     requestAnimationFrame(() => element?.focus());
 }
 
+function compactHiddenTagSlots(values: Value[], onMove: (fromIndex: number, toIndex: number) => void): void {
+    let targetIndex = 0;
+
+    values.forEach((value, index) => {
+        if (!isRenderableTagValue(value)) {
+            return;
+        }
+
+        if (index !== targetIndex) {
+            onMove(index, targetIndex);
+        }
+
+        targetIndex += 1;
+    });
+}
+
+function getCompactedTagIndex(values: Value[], index: number): number {
+    let compactedIndex = 0;
+
+    for (let currentIndex = 0; currentIndex < index; currentIndex += 1) {
+        if (isRenderableTagValue(values[currentIndex])) {
+            compactedIndex += 1;
+        }
+    }
+
+    return compactedIndex;
+}
+
 //
 // * TagDraftInput
 //
@@ -132,13 +270,23 @@ function focusElementNextFrame(element: HTMLElement | null | undefined): void {
 function renderTagDraftInput({
     draft,
     enabled,
+    invalid,
+    visible,
     inputRef,
     onChange,
+    onFocus,
     onKeyDown,
     onBlur,
 }: TagDraftInputProps): ReactElement {
     return (
-        <li className='w-36'>
+        <li
+            className={cn(
+                'shrink-0 overflow-hidden',
+                visible
+                    ? 'w-36 opacity-100'
+                    : 'pointer-events-none w-0 opacity-0 focus-within:pointer-events-auto focus-within:w-36 focus-within:opacity-100',
+            )}
+        >
             <Input
                 ref={inputRef}
                 className={cn(
@@ -146,12 +294,15 @@ function renderTagDraftInput({
                     '[&>div[data-state]]:h-7 [&>div[data-state]]:border-transparent! [&>div[data-state]]::text-sm',
                     '[&>div[data-state]:focus-within]:border-bdr-subtle! [&>div[data-state]]:hover:outline-none!',
                     '[&>div[data-state]:focus-within]:ring-0! [&>div[data-state]:focus-within]:ring-offset-0!',
+                    invalid && '[&>div[data-state]:focus-within]:border-error! [&>div[data-state]]:border-error!',
                 )}
                 value={draft}
                 onChange={(event: JSX.TargetedEvent<HTMLInputElement>) => onChange(event.currentTarget.value)}
+                onFocus={onFocus}
                 onKeyDown={onKeyDown}
                 onBlur={onBlur}
                 disabled={!enabled}
+                aria-invalid={invalid || undefined}
             />
         </li>
     );
@@ -166,58 +317,108 @@ const TagItem = ({
     label,
     error,
     enabled,
+    isTabStop,
     showDrag,
     showRemove,
-    registerItemRef,
+    registerFocusableRef,
     onNavigate,
+    onDragMove,
     onDeleteKey,
     onRemovePointerDown,
+    onRemoveKey,
     onRemove,
 }: TagItemProps): ReactElement => {
     const t = useI18n();
     const visibleLabel = getVisibleTagLabel(label);
     const tooltipValue = isTagLabelCropped(label) ? label : undefined;
+    const dragButtonRef = useRef<HTMLButtonElement | null>(null);
+    const removeButtonRef = useRef<HTMLButtonElement | null>(null);
     const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id,
         disabled: !showDrag,
     });
-    const isKeyboardDragging = Boolean(attributes['aria-pressed']);
-    const setRefs = (node: HTMLLIElement | null) => {
-        setNodeRef(node);
-        registerItemRef(node);
+    const isKeyboardDragging = isKeyboardDragPressed(attributes['aria-pressed']);
+    const setRefs = (node: HTMLLIElement | null) => setNodeRef(node);
+    const setDragButtonRef = (node: HTMLButtonElement | null) => {
+        dragButtonRef.current = node;
+        registerFocusableRef(node);
+    };
+    const setRemoveButtonRef = (node: HTMLButtonElement | null) => {
+        removeButtonRef.current = node;
+        if (!showDrag) {
+            registerFocusableRef(node);
+        }
     };
 
     const dragInteractionProps = {
-        onPointerDown: listeners?.onPointerDown as preact.JSX.PointerEventHandler<HTMLLIElement> | undefined,
-        onPointerUp: listeners?.onPointerUp as preact.JSX.PointerEventHandler<HTMLLIElement> | undefined,
-        onPointerCancel: listeners?.onPointerCancel as preact.JSX.PointerEventHandler<HTMLLIElement> | undefined,
-        onPointerMove: listeners?.onPointerMove as preact.JSX.PointerEventHandler<HTMLLIElement> | undefined,
-        onPointerLeave: listeners?.onPointerLeave as preact.JSX.PointerEventHandler<HTMLLIElement> | undefined,
-        onTouchStart: listeners?.onTouchStart as preact.JSX.TouchEventHandler<HTMLLIElement> | undefined,
-        onTouchEnd: listeners?.onTouchEnd as preact.JSX.TouchEventHandler<HTMLLIElement> | undefined,
-        onTouchMove: listeners?.onTouchMove as preact.JSX.TouchEventHandler<HTMLLIElement> | undefined,
-        onTouchCancel: listeners?.onTouchCancel as preact.JSX.TouchEventHandler<HTMLLIElement> | undefined,
-        onMouseDown: listeners?.onMouseDown as preact.JSX.MouseEventHandler<HTMLLIElement> | undefined,
+        onPointerDown: listeners?.onPointerDown as preact.JSX.PointerEventHandler<HTMLButtonElement> | undefined,
+        onPointerUp: listeners?.onPointerUp as preact.JSX.PointerEventHandler<HTMLButtonElement> | undefined,
+        onPointerCancel: listeners?.onPointerCancel as preact.JSX.PointerEventHandler<HTMLButtonElement> | undefined,
+        onPointerMove: listeners?.onPointerMove as preact.JSX.PointerEventHandler<HTMLButtonElement> | undefined,
+        onPointerLeave: listeners?.onPointerLeave as preact.JSX.PointerEventHandler<HTMLButtonElement> | undefined,
+        onTouchStart: listeners?.onTouchStart as preact.JSX.TouchEventHandler<HTMLButtonElement> | undefined,
+        onTouchEnd: listeners?.onTouchEnd as preact.JSX.TouchEventHandler<HTMLButtonElement> | undefined,
+        onTouchMove: listeners?.onTouchMove as preact.JSX.TouchEventHandler<HTMLButtonElement> | undefined,
+        onTouchCancel: listeners?.onTouchCancel as preact.JSX.TouchEventHandler<HTMLButtonElement> | undefined,
+        onMouseDown: listeners?.onMouseDown as preact.JSX.MouseEventHandler<HTMLButtonElement> | undefined,
     };
 
     const dragAccessibilityProps = showDrag
         ? {
               role: attributes.role as preact.JSX.AriaRole,
-              tabIndex: enabled ? (attributes.tabIndex ?? 0) : -1,
+              tabIndex: enabled && isTabStop ? (attributes.tabIndex ?? 0) : -1,
               'aria-disabled': attributes['aria-disabled'],
               'aria-pressed': attributes['aria-pressed'],
               'aria-roledescription': attributes['aria-roledescription'],
               'aria-describedby': attributes['aria-describedby'],
           }
-        : {
-              tabIndex: enabled ? 0 : -1,
-          };
+        : undefined;
 
-    const handleItemKeyDown: preact.JSX.KeyboardEventHandler<HTMLLIElement> = event => {
-        if (event.altKey || event.ctrlKey || event.metaKey) return;
+    const handleDragButtonKeyDownCapture: preact.JSX.KeyboardEventHandler<HTMLButtonElement> = event => {
+        if (!event.altKey && !event.ctrlKey && !event.metaKey && isArrowKey(event.key)) {
+            event.preventDefault();
+        }
+    };
+
+    const handleDragButtonKeyDown: preact.JSX.KeyboardEventHandler<HTMLButtonElement> = event => {
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+            return;
+        }
 
         if (isKeyboardDragging) {
-            (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLLIElement>)?.(event);
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                onDragMove(-1);
+                return;
+            }
+
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                onDragMove(1);
+                return;
+            }
+
+            if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                return;
+            }
+
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                event.preventDefault();
+            }
+            (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLButtonElement>)?.(event);
+            return;
+        }
+
+        if (event.key === 'Tab' && !event.shiftKey && showRemove && removeButtonRef.current != null) {
+            event.preventDefault();
+            removeButtonRef.current.focus();
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.currentTarget.blur();
             return;
         }
 
@@ -240,15 +441,33 @@ const TagItem = ({
         }
 
         if (event.key === ' ' || event.key === 'Enter') {
-            (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLLIElement>)?.(event);
+            (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLButtonElement>)?.(event);
         }
     };
+
+    const handleRemoveButtonKeyDown: preact.JSX.KeyboardEventHandler<HTMLButtonElement> = event => {
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.currentTarget.blur();
+            return;
+        }
+
+        if (!isRemoveButtonKey(event.key)) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        onRemoveKey();
+    };
+
     return (
         <li
             ref={setRefs}
-            onKeyDown={handleItemKeyDown}
-            {...dragInteractionProps}
-            {...dragAccessibilityProps}
             style={{
                 transform: toTransformCSS(transform),
                 transition: transition ?? undefined,
@@ -258,21 +477,41 @@ const TagItem = ({
             className={cn(
                 'inline-flex max-w-full items-center gap-2 rounded-sm border px-2.5 py-0.75',
                 'bg-surface-neutral text-sm',
-                enabled && showDrag && 'cursor-grab outline-none focus-visible:ring-1 focus-visible:ring-ring',
-                error ? 'border-current text-error' : 'border-bdr-strong text-foreground',
-                isDragging && 'cursor-grabbing shadow-main/70 shadow-md',
+                'outline-none',
+                error ? 'border-current text-error ring-error' : 'border-bdr-strong text-foreground ring-ring',
+                isDragging && 'cursor-grabbing ring-1',
+                !enabled && 'cursor-default border-bdr-subtle',
             )}
         >
+            {showDrag && (
+                <IconButton
+                    ref={setDragButtonRef}
+                    icon={GripVertical}
+                    iconSize='sm'
+                    variant='text'
+                    className={cn(
+                        'size-5 focus-visible:ring-2 focus-visible:ring-offset-2',
+                        enabled && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
+                    )}
+                    disabled={!enabled}
+                    aria-label={t('field.occurrence.action.reorder')}
+                    onKeyDownCapture={handleDragButtonKeyDownCapture}
+                    onKeyDown={handleDragButtonKeyDown}
+                    {...dragInteractionProps}
+                    {...dragAccessibilityProps}
+                />
+            )}
             <Tooltip value={tooltipValue} side='top' className='max-w-64 whitespace-normal break-words'>
-                <span className={cn('font-semibold', !showDrag && 'cursor-default')}>{visibleLabel}</span>
+                <span className={cn('font-semibold')}>{visibleLabel}</span>
             </Tooltip>
             {showRemove && (
                 <IconButton
+                    ref={setRemoveButtonRef}
                     icon={X}
                     iconSize='sm'
                     variant='text'
-                    className='size-5'
-                    tabIndex={-1}
+                    className='size-5 focus-visible:ring-2 focus-visible:ring-offset-2'
+                    tabIndex={enabled && isTabStop ? 0 : -1}
                     disabled={!enabled}
                     aria-label={t('field.occurrence.action.remove')}
                     onPointerDown={event => {
@@ -283,6 +522,7 @@ const TagItem = ({
                         event.preventDefault();
                         onRemovePointerDown();
                     }}
+                    onKeyDown={handleRemoveButtonKeyDown}
                     onClick={onRemove}
                 />
             )}
@@ -296,6 +536,7 @@ const TagItem = ({
 
 export const TagInput = ({
     values,
+    onChange,
     onAdd,
     onRemove,
     onMove,
@@ -306,37 +547,95 @@ export const TagInput = ({
     const t = useI18n();
     const [draft, setDraft] = useState('');
     const [isInputActive, setIsInputActive] = useState(false);
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const tagRefs = useRef<Array<HTMLLIElement | null>>([]);
+    const tagRefs = useRef<Array<HTMLButtonElement | null>>([]);
+    const draftRef = useRef(draft);
     const skipBlurCommit = useRef(false);
     const idsByValue = useRef(new WeakMap<Value, string>());
     const nextId = useRef(0);
-    const {canAdd, canRemove, showDrag} = getTagViewState(occurrences, enabled, values.length);
-    const showInlineInput = canAdd && (isInputActive || draft.length > 0);
+    const scrollListenerCleanupRef = useRef<(() => void) | null>(null);
+    const isDraggingRef = useRef(false);
+    draftRef.current = draft;
+    const tagEntries = values.reduce<TagEntry[]>((entries, value, index) => {
+        if (!isRenderableTagValue(value)) {
+            return entries;
+        }
+
+        entries.push({
+            value,
+            originalIndex: index,
+            id: getOrCreateTagId(idsByValue.current, nextId, value),
+        });
+
+        return entries;
+    }, []);
+    const visibleTagIndexes = new Set(tagEntries.map(entry => entry.originalIndex));
+    const visibleErrors = tagEntries.flatMap(entry =>
+        errors[entry.originalIndex] != null ? [errors[entry.originalIndex]] : [],
+    );
+    const hiddenErrors = errors.filter((_, index) => !visibleTagIndexes.has(index));
+    const visibleTagCount = tagEntries.length;
+    const {canAdd, canRemove, showDrag} = getTagViewState(occurrences, enabled, visibleTagCount);
+    const showInlineInput = canAdd;
+    const isDraftInputVisible = isInputActive || draft.length > 0;
+    const [dragContextKey, setDragContextKey] = useState(0);
     const sensors = useSensors(
-        useSensor(PointerSensor, {activationConstraint: {distance: TAG_DRAG_ACTIVATION_DISTANCE}}),
-        useSensor(KeyboardSensor, {coordinateGetter: sortableKeyboardCoordinates}),
+        useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
+        useSensor(KeyboardSensor, {coordinateGetter: tagKeyboardCoordinates}),
     );
 
-    const ids = values.map(value => getOrCreateTagId(idsByValue.current, nextId, value));
+    const ids = tagEntries.map(entry => entry.id);
+    const normalizedDraft = normalizeTagDraft(draft);
+    const isDraftDuplicate = hasTagLabel(
+        tagEntries.map(entry => entry.value),
+        normalizedDraft,
+    );
 
-    const occurrenceError = getOccurrenceErrorMessage(occurrences, errors, t);
-    const firstFieldError = errors.map(entry => getFirstError(entry.validationResults)).find(Boolean);
-    const helperText = occurrenceError ?? firstFieldError;
+    const clearScrollListener = () => {
+        scrollListenerCleanupRef.current?.();
+        scrollListenerCleanupRef.current = null;
+    };
+
+    useEffect(() => clearScrollListener, []);
+
+    const hasSuppressedHiddenEntries = hiddenErrors.some(
+        entry => !entry.breaksRequired && entry.validationResults.length === 0,
+    );
+    const occurrenceError = hasSuppressedHiddenEntries
+        ? undefined
+        : getOccurrenceErrorMessage(occurrences, visibleErrors, t);
+    const firstVisibleFieldError = tagEntries
+        .map(entry => getFirstError(errors[entry.originalIndex]?.validationResults ?? []))
+        .find(Boolean);
+    const hiddenCustomError = hiddenErrors
+        .flatMap(entry => entry.validationResults.filter(result => result.custom))
+        .map(result => result.message)
+        .find(Boolean);
+    const firstFieldError = firstVisibleFieldError ?? hiddenCustomError;
+    const helperText = firstFieldError ?? occurrenceError;
     const focusInput = () => {
         setIsInputActive(true);
         focusElementNextFrame(inputRef.current);
     };
 
     const handleFieldActivate = () => {
-        if (!canAdd || !enabled) return;
+        if (!canAdd || !enabled) {
+            return;
+        }
         focusInput();
+    };
+
+    const handleInputFocus = () => {
+        setIsInputActive(true);
     };
 
     const focusTagAt = (index: number) => {
         requestAnimationFrame(() => {
-            if (index < 0) return;
-            if (index >= values.length) {
+            if (index < 0) {
+                return;
+            }
+            if (index >= visibleTagCount) {
                 inputRef.current?.focus();
                 return;
             }
@@ -344,30 +643,58 @@ export const TagInput = ({
         });
     };
 
-    const commitDraft = (focusTarget?: HTMLInputElement, excludedIndex?: number) => {
-        const normalized = normalizeTagDraft(draft);
+    const focusTagIndexNextFrame = (index: number) => {
+        requestAnimationFrame(() => {
+            if (index < 0) {
+                return;
+            }
+
+            tagRefs.current[index]?.focus();
+        });
+    };
+
+    const setDraftValue = (value: string) => {
+        draftRef.current = value;
+        setDraft(value);
+    };
+
+    const commitDraft = (
+        focusTarget?: HTMLInputElement,
+        excludedIndex?: number,
+        rawDraft = draftRef.current,
+    ): CommitDraftResult => {
+        const normalized = normalizeTagDraft(rawDraft);
         if (normalized.length === 0) {
-            setDraft('');
-            return;
+            setDraftValue('');
+            return {committed: false, usedHiddenSlot: false};
         }
 
         if (hasTagLabel(values, normalized, excludedIndex)) {
-            setDraft('');
-            return;
+            return {committed: false, usedHiddenSlot: false};
         }
 
         if (!canAdd) {
-            return;
+            return {committed: false, usedHiddenSlot: false};
         }
 
-        onAdd(ValueTypes.STRING.newValue(normalized));
-        setDraft('');
+        const nextValue = ValueTypes.STRING.newValue(normalized);
+        const usedHiddenSlot = values.length > visibleTagCount;
 
-        const hasRoomForAnother = occurrences.getMaximum() === 0 || values.length + 1 < occurrences.getMaximum();
+        if (usedHiddenSlot) {
+            compactHiddenTagSlots(values, onMove);
+            onChange(visibleTagCount, nextValue, normalized);
+        } else {
+            onAdd(nextValue);
+        }
+        setDraftValue('');
+
+        const hasRoomForAnother = occurrences.getMaximum() === 0 || visibleTagCount + 1 < occurrences.getMaximum();
 
         if (focusTarget != null && hasRoomForAnother) {
             focusElementNextFrame(focusTarget);
         }
+
+        return {committed: true, usedHiddenSlot};
     };
 
     const prepareRemove = () => {
@@ -376,10 +703,15 @@ export const TagInput = ({
 
     const handleRemove = (index: number, options: RemoveTagOptions = {}) => {
         const {activateInput = false, commitCurrentDraft = false} = options;
+        let removeIndex = index;
+
         if (commitCurrentDraft) {
-            commitDraft(undefined, index);
+            const {usedHiddenSlot} = commitDraft(undefined, index);
+            if (usedHiddenSlot) {
+                removeIndex = getCompactedTagIndex(values, index);
+            }
         }
-        onRemove(index);
+        onRemove(removeIndex);
         if (activateInput) {
             focusInput();
             return;
@@ -392,32 +724,70 @@ export const TagInput = ({
         focusTagAt(index + direction);
     };
 
+    const handleKeyboardDragMove = (index: number, direction: -1 | 1) => {
+        const targetIndex = index + direction;
+        if (targetIndex < 0 || targetIndex >= visibleTagCount) {
+            return;
+        }
+
+        onMove(tagEntries[index].originalIndex, tagEntries[targetIndex].originalIndex);
+        focusTagAt(targetIndex);
+    };
+
     const handleFieldPointerDown: preact.JSX.PointerEventHandler<HTMLElement> = event => {
         if (event.target === event.currentTarget) {
             handleFieldActivate();
         }
     };
 
-    const getTagItemProps = (value: Value, index: number): TagItemProps => ({
-        id: ids[index],
-        label: getTagLabel(value),
-        error: getFirstError(errors[index]?.validationResults ?? []),
+    const getTagItemProps = (entry: TagEntry, index: number): TagItemProps => ({
+        id: entry.id,
+        label: getTagLabel(entry.value),
+        error: getFirstError(errors[entry.originalIndex]?.validationResults ?? []),
         enabled,
+        isTabStop: !showInlineInput && index === visibleTagCount - 1,
         showDrag,
         showRemove: canRemove,
-        registerItemRef: node => {
+        registerFocusableRef: node => {
             tagRefs.current[index] = node;
         },
         onNavigate: direction => handleTagNavigate(index, direction),
-        onDeleteKey: () => handleRemove(index, {activateInput: true}),
+        onDragMove: direction => handleKeyboardDragMove(index, direction),
+        onDeleteKey: () => handleRemove(entry.originalIndex, {activateInput: true}),
         onRemovePointerDown: prepareRemove,
-        onRemove: () => handleRemove(index, {commitCurrentDraft: true}),
+        onRemoveKey: () => handleRemove(entry.originalIndex, {activateInput: true, commitCurrentDraft: true}),
+        onRemove: () => handleRemove(entry.originalIndex, {commitCurrentDraft: true}),
     });
 
     const handleKeyDown = (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-        if (shouldRemoveLatestTag(event.key, draft, canRemove, event.altKey || event.ctrlKey || event.metaKey)) {
+        if (event.key === 'Escape') {
             event.preventDefault();
-            handleRemove(values.length - 1, {activateInput: true});
+            const {committed} = commitDraft(undefined, undefined, event.currentTarget.value);
+            const focusIndex = committed && visibleTagCount === 0 ? 0 : visibleTagCount - 1;
+            skipBlurCommit.current = true;
+            setIsInputActive(false);
+            event.currentTarget.blur();
+
+            focusTagIndexNextFrame(focusIndex);
+            return;
+        }
+
+        if (
+            draftRef.current.length === 0 &&
+            visibleTagCount > 0 &&
+            (event.key === 'ArrowLeft' || event.key === 'ArrowUp')
+        ) {
+            event.preventDefault();
+            focusTagAt(visibleTagCount - 1);
+            return;
+        }
+
+        if (draftRef.current.length === 0 && event.key === 'Backspace') {
+            event.preventDefault();
+            skipBlurCommit.current = true;
+            setIsInputActive(false);
+            event.currentTarget.blur();
+            focusTagIndexNextFrame(visibleTagCount - 1);
             return;
         }
 
@@ -429,57 +799,101 @@ export const TagInput = ({
         commitDraft(event.currentTarget);
     };
 
-    const handleBlur = () => {
+    const handleBlur = (event: JSX.TargetedFocusEvent<HTMLInputElement>) => {
         if (skipBlurCommit.current) {
             skipBlurCommit.current = false;
             return;
         }
 
-        commitDraft();
+        commitDraft(undefined, undefined, event.currentTarget.value);
         setIsInputActive(false);
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
+        isDraggingRef.current = false;
+        clearScrollListener();
+
         const {active, over} = event;
-        if (over == null || active.id === over.id) return;
+        if (over == null || active.id === over.id) {
+            return;
+        }
 
         const fromIndex = ids.indexOf(String(active.id));
         const toIndex = ids.indexOf(String(over.id));
-        if (fromIndex === -1 || toIndex === -1) return;
-        onMove(fromIndex, toIndex);
+        if (fromIndex === -1 || toIndex === -1) {
+            return;
+        }
+        onMove(tagEntries[fromIndex].originalIndex, tagEntries[toIndex].originalIndex);
+    };
+
+    const handleDragStart = (_event: DragStartEvent) => {
+        isDraggingRef.current = true;
+        clearScrollListener();
+
+        const ownerDocument = wrapperRef.current?.ownerDocument;
+        if (ownerDocument == null) {
+            return;
+        }
+
+        const handleScroll = () => {
+            if (!isDraggingRef.current) {
+                return;
+            }
+
+            isDraggingRef.current = false;
+            clearScrollListener();
+            setDragContextKey(current => current + 1);
+        };
+
+        ownerDocument.addEventListener('scroll', handleScroll, true);
+        scrollListenerCleanupRef.current = () => {
+            ownerDocument.removeEventListener('scroll', handleScroll, true);
+        };
+    };
+
+    const handleDragCancel = () => {
+        isDraggingRef.current = false;
+        clearScrollListener();
     };
 
     return (
         <div data-component={TAG_INPUT_NAME} className='flex flex-col gap-y-2'>
             <div
+                ref={wrapperRef}
                 className={cn(
                     'min-h-14 rounded border border-bdr-subtle px-4 py-3',
                     'hover:outline-2 hover:outline-bdr-subtle hover:-outline-offset-1',
                     'focus-within:border-bdr-solid focus-within:outline-none',
                     'focus-within:ring-3 focus-within:ring-ring focus-within:ring-offset-3 focus-within:ring-offset-ring-offset',
                     'transition-highlight',
+                    canAdd && 'cursor-text',
                     helperText && 'border-error focus-within:border-error focus-within:ring-error hover:outline-error',
                 )}
                 onPointerDown={handleFieldPointerDown}
-                onFocus={event => {
-                    if (event.target === event.currentTarget) {
-                        handleFieldActivate();
-                    }
-                }}
-                tabIndex={enabled && canAdd && !showInlineInput ? 0 : -1}
             >
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <DndContext
+                    key={dragContextKey}
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    autoScroll={false}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    onDragCancel={handleDragCancel}
+                >
                     <SortableContext items={ids} strategy={rectSortingStrategy}>
                         <ul className='flex flex-wrap items-center gap-2' onPointerDown={handleFieldPointerDown}>
-                            {values.map((value, index) => (
-                                <TagItem key={ids[index]} {...getTagItemProps(value, index)} />
+                            {tagEntries.map((entry, index) => (
+                                <TagItem key={entry.id} {...getTagItemProps(entry, index)} />
                             ))}
                             {showInlineInput &&
                                 renderTagDraftInput({
                                     draft,
                                     enabled,
+                                    invalid: isDraftDuplicate,
+                                    visible: isDraftInputVisible,
                                     inputRef,
-                                    onChange: setDraft,
+                                    onChange: setDraftValue,
+                                    onFocus: handleInputFocus,
                                     onKeyDown: handleKeyDown,
                                     onBlur: handleBlur,
                                 })}

@@ -17,6 +17,7 @@ const mocks = vi.hoisted(() => ({
         typeof initial === 'function' ? (initial as () => unknown)() : initial,
         vi.fn(),
     ]),
+    useRawValueMap: vi.fn(() => undefined),
     usePropertyArray: vi.fn(),
     useOccurrenceManager: vi.fn(),
     useValidationVisibility: vi.fn((): string => 'all'),
@@ -40,7 +41,7 @@ vi.mock('../../ValidationContext', () => ({
 }));
 
 vi.mock('../../RawValueContext', () => ({
-    useRawValueMap: vi.fn(() => undefined),
+    useRawValueMap: mocks.useRawValueMap,
 }));
 
 vi.mock('../input-label', () => ({
@@ -79,12 +80,12 @@ vi.mock('../unsupported-input', () => ({
     UnsupportedInput: mocks.unsupportedInput,
 }));
 
-function makeInput(typeName: string) {
+function makeInput(typeName: string, max = 1) {
     return new InputBuilder()
         .setName('testField')
         .setInputType(new InputTypeName(typeName, false))
         .setLabel('Test')
-        .setOccurrences(Occurrences.minmax(0, 1))
+        .setOccurrences(Occurrences.minmax(0, max))
         .setHelpText('')
         .setInputTypeConfig({})
         .build();
@@ -128,6 +129,7 @@ function getChildAt(element: {props: {children: unknown}}, index: number): VNode
 describe('InputField', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        mocks.useRawValueMap.mockReturnValue(undefined);
         mocks.usePropertyArray.mockReturnValue({values: [], size: 0});
         mocks.useOccurrenceManager.mockReturnValue({
             state: makeManagerState(),
@@ -218,6 +220,232 @@ describe('InputField', () => {
 
         child.props.onMove(0, 1);
         expect(move).toHaveBeenCalledWith(0, 1);
+    });
+
+    it('remaps touched indexes when internal inputs move occurrences', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector', 3);
+        const propertySet = new PropertyTree().getRoot();
+        const values = [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')];
+        const setTouched = vi.fn();
+        const move = vi.fn(() => true);
+
+        propertySet.setProperty('testField', 0, values[0]);
+        propertySet.setProperty('testField', 1, values[1]);
+        mocks.useState.mockImplementationOnce(() => [new Set([1]), setTouched]);
+        mocks.usePropertyArray.mockReturnValue({values, size: values.length});
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: {
+                ...makeManagerState(values[0]),
+                values,
+                occurrenceValidation: [
+                    {index: 0, breaksRequired: false, validationResults: []},
+                    {index: 1, breaksRequired: false, validationResults: []},
+                ],
+                canRemove: true,
+            },
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move,
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getChildAt(element, 1);
+
+        child.props.onMove(1, 0);
+
+        expect(move).toHaveBeenCalledWith(1, 0);
+        expect(setTouched).toHaveBeenCalledOnce();
+
+        const updateTouched = setTouched.mock.calls[0][0] as (prev: Set<number>) => Set<number>;
+        expect(Array.from(updateTouched(new Set([1])))).toEqual([0]);
+    });
+
+    it('moves raw values with internal occurrence reordering', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector', 3);
+        const propertySet = new PropertyTree().getRoot();
+        const values = [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')];
+        const rawValueMap = new Map([['testField', ['raw-alpha', 'raw-beta']]]);
+        const move = vi.fn(() => true);
+
+        propertySet.setProperty('testField', 0, values[0]);
+        propertySet.setProperty('testField', 1, values[1]);
+        mocks.useRawValueMap.mockReturnValue(rawValueMap);
+        mocks.usePropertyArray.mockReturnValue({values, size: values.length});
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: {
+                ...makeManagerState(values[0]),
+                values,
+                occurrenceValidation: [
+                    {index: 0, breaksRequired: false, validationResults: []},
+                    {index: 1, breaksRequired: false, validationResults: []},
+                ],
+                canRemove: true,
+            },
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move,
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getChildAt(element, 1);
+
+        child.props.onMove(1, 0);
+
+        expect(rawValueMap.get('testField')).toEqual(['raw-beta', 'raw-alpha']);
+    });
+
+    it('drops the removed touched index and shifts higher touched indexes left', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector', 4);
+        const propertySet = new PropertyTree().getRoot();
+        const values = [
+            ValueTypes.STRING.newValue('alpha'),
+            ValueTypes.STRING.newValue('beta'),
+            ValueTypes.STRING.newValue('gamma'),
+        ];
+        const setTouched = vi.fn();
+        const remove = vi.fn(() => true);
+
+        propertySet.setProperty('testField', 0, values[0]);
+        propertySet.setProperty('testField', 1, values[1]);
+        propertySet.setProperty('testField', 2, values[2]);
+        mocks.useState.mockImplementationOnce(() => [new Set([1, 2]), setTouched]);
+        mocks.usePropertyArray.mockReturnValue({values, size: values.length});
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: {
+                ...makeManagerState(values[0]),
+                values,
+                occurrenceValidation: [
+                    {index: 0, breaksRequired: false, validationResults: []},
+                    {index: 1, breaksRequired: false, validationResults: []},
+                    {index: 2, breaksRequired: false, validationResults: []},
+                ],
+                canRemove: true,
+            },
+            add: vi.fn(() => true),
+            remove,
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getChildAt(element, 1);
+
+        child.props.onRemove(1);
+
+        expect(remove).toHaveBeenCalledWith(1);
+        expect(setTouched).toHaveBeenCalledOnce();
+
+        const updateTouched = setTouched.mock.calls[0][0] as (prev: Set<number>) => Set<number>;
+        expect(Array.from(updateTouched(new Set([1, 2])))).toEqual([1]);
+    });
+
+    it('removes raw values with internal occurrence deletion', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector', 4);
+        const propertySet = new PropertyTree().getRoot();
+        const values = [
+            ValueTypes.STRING.newValue('alpha'),
+            ValueTypes.STRING.newValue('beta'),
+            ValueTypes.STRING.newValue('gamma'),
+        ];
+        const rawValueMap = new Map([['testField', ['raw-alpha', 'raw-beta', 'raw-gamma']]]);
+        const remove = vi.fn(() => true);
+
+        propertySet.setProperty('testField', 0, values[0]);
+        propertySet.setProperty('testField', 1, values[1]);
+        propertySet.setProperty('testField', 2, values[2]);
+        mocks.useRawValueMap.mockReturnValue(rawValueMap);
+        mocks.usePropertyArray.mockReturnValue({values, size: values.length});
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: {
+                ...makeManagerState(values[0]),
+                values,
+                occurrenceValidation: [
+                    {index: 0, breaksRequired: false, validationResults: []},
+                    {index: 1, breaksRequired: false, validationResults: []},
+                    {index: 2, breaksRequired: false, validationResults: []},
+                ],
+                canRemove: true,
+            },
+            add: vi.fn(() => true),
+            remove,
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getChildAt(element, 1);
+
+        child.props.onRemove(1);
+
+        expect(rawValueMap.get('testField')).toEqual(['raw-alpha', 'raw-gamma']);
+    });
+
+    it('preserves earlier empty raw-value slots when deleting an occurrence', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector', 4);
+        const propertySet = new PropertyTree().getRoot();
+        const values = [
+            ValueTypes.STRING.newValue('alpha'),
+            ValueTypes.STRING.newValue('beta'),
+            ValueTypes.STRING.newValue('gamma'),
+        ];
+        const rawValues: Array<string | undefined> = [];
+        rawValues[2] = 'raw-gamma';
+        const rawValueMap = new Map([['testField', rawValues]]);
+        const remove = vi.fn(() => true);
+
+        propertySet.setProperty('testField', 0, values[0]);
+        propertySet.setProperty('testField', 1, values[1]);
+        propertySet.setProperty('testField', 2, values[2]);
+        mocks.useRawValueMap.mockReturnValue(rawValueMap);
+        mocks.usePropertyArray.mockReturnValue({values, size: values.length});
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: {
+                ...makeManagerState(values[0]),
+                values,
+                occurrenceValidation: [
+                    {index: 0, breaksRequired: false, validationResults: []},
+                    {index: 1, breaksRequired: false, validationResults: []},
+                    {index: 2, breaksRequired: false, validationResults: []},
+                ],
+                canRemove: true,
+            },
+            add: vi.fn(() => true),
+            remove,
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getChildAt(element, 1);
+
+        child.props.onRemove(0);
+
+        const remainingRawValues = rawValueMap.get('testField');
+        expect(remainingRawValues).toHaveLength(2);
+        expect(remainingRawValues?.[0]).toBeUndefined();
+        expect(remainingRawValues?.[1]).toBe('raw-gamma');
     });
 
     it('memoizes occurrences so useOccurrenceManager receives a stable reference', () => {
