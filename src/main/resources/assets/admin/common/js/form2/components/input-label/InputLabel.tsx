@@ -43,6 +43,7 @@ const InputLabelRoot = ({input, children, className, ...props}: InputLabelRootPr
     if (!label && !description) return null;
 
     const hasChildren = children != null;
+    const required = input.getOccurrences().required();
 
     return (
         <div
@@ -53,6 +54,7 @@ const InputLabelRoot = ({input, children, className, ...props}: InputLabelRootPr
             {label && (
                 <div className={cn('font-semibold text-base text-main', hasChildren && description && 'col-span-full')}>
                     {label}
+                    {required && ' *'}
                 </div>
             )}
             {description && <div className='text-sm text-subtle'>{description}</div>}

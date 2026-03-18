@@ -5,12 +5,17 @@ import {OccurrencesBuilder} from '../../../form/Occurrences';
 import type {InputLabelRootProps} from './InputLabel';
 import {InputLabel} from './InputLabel';
 
-function makeInput(overrides: {label?: string; helpText?: string} = {}) {
+function makeInput(overrides: {label?: string; helpText?: string; minOccurrences?: number} = {}) {
     return new InputBuilder()
         .setName('myInput')
         .setInputType(new InputTypeName('TextLine', false))
         .setLabel(overrides.label ?? '')
-        .setOccurrences(new OccurrencesBuilder().setMinimum(0).setMaximum(1).build())
+        .setOccurrences(
+            new OccurrencesBuilder()
+                .setMinimum(overrides.minOccurrences ?? 0)
+                .setMaximum(1)
+                .build(),
+        )
         .setHelpText(overrides.helpText ?? '')
         .setInputTypeConfig({})
         .build();
@@ -32,6 +37,11 @@ type Story = StoryObj<InputLabelRootProps>;
 export const LabelOnly: Story = {
     name: 'Examples / Label Only',
     render: () => <InputLabel input={makeInput({label: 'Full Name'})} />,
+};
+
+export const RequiredLabel: Story = {
+    name: 'Examples / Required Label',
+    render: () => <InputLabel input={makeInput({label: 'Full Name', minOccurrences: 1})} />,
 };
 
 export const DescriptionOnly: Story = {
@@ -76,6 +86,13 @@ export const AllVariants: Story = {
                 <h3 className='mb-3 font-medium text-sm'>Label Only</h3>
                 <InputLabel
                     input={makeInput({label: 'Full Name'})}
+                    className='rounded border border-bdr-subtle border-dashed p-2'
+                />
+            </div>
+            <div>
+                <h3 className='mb-3 font-medium text-sm'>Required Label</h3>
+                <InputLabel
+                    input={makeInput({label: 'Full Name', minOccurrences: 1})}
                     className='rounded border border-bdr-subtle border-dashed p-2'
                 />
             </div>
