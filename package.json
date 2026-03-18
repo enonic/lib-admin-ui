@@ -70,7 +70,7 @@
     "husky": "^9.1.7",
     "jiti": "~2.6.1",
     "less": "^4.6.4",
-    "lucide-react": "^0.540.0",
+    "lucide-react": "^0.577.0",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^5.2.0",
     "preact": "^10.29.0",
