@@ -201,6 +201,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                     keyExtractor={keyExtractor}
                     onMove={onMove}
                     enabled={enabled}
+                    dragLabel={t('field.occurrence.action.reorder')}
                     className='flex flex-col gap-y-2.5'
                     itemClassName={({isMovable}) => cn('-my-1 gap-2 py-1', isMovable && 'pl-2', showRemove && 'pr-2')}
                     renderItem={({index}) => <OccurrenceListItemContent {...contentProps(index)} />}

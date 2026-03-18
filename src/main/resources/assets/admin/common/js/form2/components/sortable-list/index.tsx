@@ -51,6 +51,8 @@ export type SortableListProps<T> = {
     fullRowDraggable?: boolean;
     /** Renders the content inside each sortable row. */
     renderItem: (context: SortableListItemContext<T>) => ReactNode;
+    /** Accessible label for drag handle buttons (e.g. "Drag to reorder"). */
+    dragLabel?: string;
     /** Extra classes on each row wrapper; function form receives item context. */
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
     className?: string;
@@ -86,6 +88,7 @@ type SortableListItemInternalProps<T> = {
     isMovable: boolean;
     enabled: boolean;
     fullRowDraggable: boolean;
+    dragLabel?: string;
     renderItem: (context: SortableListItemContext<T>) => ReactNode;
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
 };
@@ -97,6 +100,7 @@ const SortableListItem = <T,>({
     isMovable,
     enabled,
     fullRowDraggable,
+    dragLabel,
     renderItem,
     itemClassName,
 }: SortableListItemInternalProps<T>): ReactElement => {
@@ -166,6 +170,7 @@ const SortableListItem = <T,>({
                     )}
                     tabIndex={-1}
                     disabled={!enabled}
+                    aria-label={dragLabel}
                     {...(fullRowDraggable ? undefined : listeners)}
                 >
                     <GripVertical className='size-5' />
@@ -188,13 +193,14 @@ export const SortableList = <T,>({
     onMove,
     enabled,
     fullRowDraggable = false,
+    dragLabel,
     renderItem,
     itemClassName,
     className,
     'data-component': dataComponent = SORTABLE_LIST_NAME,
 }: SortableListProps<T>): ReactElement => {
     const ids = useMemo(() => items.map((item, i) => keyExtractor(item, i)), [items, keyExtractor]);
-    const isMovable = useMemo(() => items.length >= 2, [items]);
+    const isMovable = items.length >= 2;
 
     const sensors = useSensors(
         useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
@@ -232,6 +238,7 @@ export const SortableList = <T,>({
                             isMovable={isMovable}
                             enabled={enabled}
                             fullRowDraggable={fullRowDraggable}
+                            dragLabel={dragLabel}
                             renderItem={renderItem}
                             itemClassName={itemClassName}
                         />
