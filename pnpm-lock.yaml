@@ -12,8 +12,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.3(@types/react@19.2.2)(react@19.2.4)
       dayjs:
-        specifier: ^1.11.19
-        version: 1.11.19
+        specifier: ^1.11.20
+        version: 1.11.20
       dompurify:
         specifier: ~3.3.3
         version: 3.3.3
@@ -1311,8 +1311,8 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
-  dayjs@1.11.19:
-    resolution: {integrity: sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==}
+  dayjs@1.11.20:
+    resolution: {integrity: sha512-YbwwqR/uYpeoP4pu043q+LTDLFBLApUP6VxRihdfNTqu4ubqMlGDLd6ErXhEgsyvY0K6nCs7nggYumAN+9uEuQ==}
 
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
@@ -3077,7 +3077,7 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  dayjs@1.11.19: {}
+  dayjs@1.11.20: {}
 
   deep-eql@5.0.2: {}
 

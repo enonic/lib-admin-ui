@@ -28,7 +28,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "dayjs": "^1.11.19",
+    "dayjs": "^1.11.20",
     "dompurify": "~3.3.3",
     "fine-uploader": "^5.16.2",
     "jquery": "~3.7.1",
