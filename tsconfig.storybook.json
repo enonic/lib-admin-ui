@@ -3,7 +3,8 @@
     "compilerOptions": {
         "noEmit": true,
         "strict": true,
-        "isolatedModules": true
+        "isolatedModules": true,
+        "types": ["node"]
     },
     "include": [
         "src/**/*.stories.tsx",
