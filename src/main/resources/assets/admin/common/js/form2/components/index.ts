@@ -3,6 +3,7 @@ export * from './counter';
 export * from './date-input';
 export * from './date-time-input';
 export * from './double-input';
+export * from './field-error';
 export * from './geo-point-input';
 export * from './input-label';
 export * from './instant-input';

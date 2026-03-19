@@ -223,6 +223,69 @@ export const WithErrors: Story = {
     },
 };
 
+export const WithMinBreach: Story = {
+    name: 'States / Min Breach',
+    render: () => (
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState(['Alpha'], 2, 5)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(2, 5, 'Min Breach (2:5)', 'Requires at least 2 values, only 1 present')}
+            enabled={true}
+        />
+    ),
+};
+
+export const WithMaxBreach: Story = {
+    name: 'States / Max Breach',
+    render: () => {
+        const occurrences = new OccurrencesBuilder().setMinimum(0).setMaximum(2).build();
+        const config = makeConfig();
+        const values = [
+            ValueTypes.STRING.newValue('Alpha'),
+            ValueTypes.STRING.newValue('Beta'),
+            ValueTypes.STRING.newValue('Gamma'),
+        ];
+        const manager = new OccurrenceManager<TextLineConfig>(occurrences, TextLineDescriptor, config, values);
+        const state = manager.validate();
+
+        return (
+            <OccurrenceList
+                Component={TextLineInput}
+                state={state}
+                onAdd={noop}
+                onRemove={noop}
+                onMove={noop}
+                onChange={noop}
+                config={config}
+                input={makeInput(0, 2, 'Max Breach (0:2)', '3 values exceed max of 2')}
+                enabled={true}
+            />
+        );
+    },
+};
+
+export const WithRequiredEmpty: Story = {
+    name: 'States / Required Empty',
+    render: () => (
+        <OccurrenceList
+            Component={TextLineInput}
+            state={makeState([''], 1, 1)}
+            onAdd={noop}
+            onRemove={noop}
+            onMove={noop}
+            onChange={noop}
+            config={makeConfig()}
+            input={makeInput(1, 1, 'Required Empty (1:1)', 'Single required field with no value')}
+            enabled={true}
+        />
+    ),
+};
+
 export const Disabled: Story = {
     name: 'States / Disabled',
     render: () => (

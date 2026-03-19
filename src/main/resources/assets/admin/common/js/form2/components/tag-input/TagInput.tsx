@@ -15,14 +15,13 @@ import {type JSX, type ReactElement, type RefObject, useRef, useState} from 'rea
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {Occurrences} from '../../../form/Occurrences';
-import type {OccurrenceValidationState} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {SelfManagedComponentProps} from '../../types';
-import {getFirstError} from '../../utils';
+import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
+import {FieldError} from '../field-error';
 
 const TAG_INPUT_NAME = 'TagInput';
 const TAG_WRAPPER_CLASS_NAME = 'rounded border border-bdr-subtle min-h-14 px-4 py-3';
-const TAG_HELPER_TEXT_CLASS_NAME = 'min-h-5 text-error text-sm';
 const TAG_LIST_CLASS_NAME = 'flex flex-wrap items-center gap-2';
 const TAG_DRAFT_INPUT_ITEM_CLASS_NAME = 'w-40';
 const TAG_DRAFT_INPUT_CLASS_NAME =
@@ -39,7 +38,6 @@ const TAG_DRAG_ACTIVATION_DISTANCE = 5;
 // * Types
 //
 
-type TranslateFn = (key: string, ...args: unknown[]) => string;
 type SortableTransform = {x: number; y: number; scaleX: number; scaleY: number};
 
 type TagItemProps = {
@@ -104,31 +102,6 @@ export function isTagLabelCropped(label: string): boolean {
 
 export function getVisibleTagLabel(label: string): string {
     return isTagLabelCropped(label) ? `${label.slice(0, TAG_LABEL_MAX_LENGTH)}...` : label;
-}
-
-export function getOccurrenceErrorMessage(
-    occurrences: Occurrences,
-    validation: OccurrenceValidationState[],
-    t: TranslateFn,
-): string | undefined {
-    const hasFieldErrors = validation.some(entry => entry.validationResults.length > 0);
-    if (hasFieldErrors) {
-        return undefined;
-    }
-
-    const totalValid = validation.filter(entry => !entry.breaksRequired && entry.validationResults.length === 0).length;
-    const min = occurrences.getMinimum();
-    const max = occurrences.getMaximum();
-
-    if (occurrences.minimumBreached(totalValid)) {
-        return min >= 1 && max !== 1 ? t('field.occurrence.breaks.min', min) : t('field.value.required');
-    }
-
-    if (occurrences.maximumBreached(totalValid)) {
-        return max > 1 ? t('field.occurrence.breaks.max.many', max) : t('field.occurrence.breaks.max.one');
-    }
-
-    return undefined;
 }
 
 function toTransformCSS(transform: SortableTransform | null): string | undefined {
@@ -482,7 +455,7 @@ export const TagInput = ({
     };
 
     return (
-        <div data-component={TAG_INPUT_NAME} className='flex flex-col gap-y-2.5'>
+        <div data-component={TAG_INPUT_NAME} className='flex flex-col gap-y-2'>
             <div
                 className={cn(TAG_WRAPPER_CLASS_NAME, helperText && 'border-current')}
                 onPointerDown={handleFieldPointerDown}
@@ -512,7 +485,7 @@ export const TagInput = ({
                     </SortableContext>
                 </DndContext>
             </div>
-            <div className={TAG_HELPER_TEXT_CLASS_NAME}>{helperText}</div>
+            <FieldError message={helperText} />
         </div>
     );
 };
