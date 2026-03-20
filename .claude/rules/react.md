@@ -290,6 +290,20 @@ type InputProps = {
 type BadProps = { value: string } & ComponentProps<'input'>;
 ```
 
+## Derived Objects Must Be Memoized
+
+If a function call in a component body returns an **object, array, or class instance**, wrap it in `useMemo`. A bare call creates a new reference every render, silently breaking downstream hook deps and potentially causing infinite effect loops.
+
+```typescript
+// ❌ Bare call — new object every render
+const filters = buildFilters(query, locale);
+
+// ✅ Memoized — stable reference
+const filters = useMemo(() => buildFilters(query, locale), [query, locale]);
+```
+
+Applies even when only some code paths create a new object. Any value used in hook dep arrays (`useMemo`, `useCallback`, `useEffect`) must be a primitive, a prop/state ref, or memoized.
+
 ## Performance Patterns
 
 ```typescript

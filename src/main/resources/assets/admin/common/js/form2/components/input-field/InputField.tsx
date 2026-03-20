@@ -76,7 +76,10 @@ export const InputFieldResolved = ({
     const inputName = input.getName();
     const descriptor = definition.descriptor;
     const config = useMemo(() => descriptor.readConfig(input.getInputTypeConfig() ?? {}), [descriptor, input]);
-    const occurrences = getEffectiveOccurrences(definition.mode, input.getOccurrences());
+    const occurrences = useMemo(
+        () => getEffectiveOccurrences(definition.mode, input.getOccurrences()),
+        [definition.mode, input],
+    );
     const visibility = useValidationVisibility();
     const rawValueMap = useRawValueMap();
     const [touched, setTouched] = useState<Set<number>>(() => new Set());
@@ -106,8 +109,14 @@ export const InputFieldResolved = ({
     });
 
     useEffect(() => {
-        sync(values);
-    }, [values, sync]);
+        const managerValues = sync(values);
+        // Push seeded values to PropertyArray so they stay in sync.
+        // OccurrenceManager seeds to minFill, but PropertyArray doesn't know about those values.
+        const paSize = propertyArray.getSize();
+        for (let i = paSize; i < managerValues.length; i++) {
+            propertyArray.add(managerValues[i]);
+        }
+    }, [values, sync, propertyArray]);
 
     const markTouched = useCallback((index: number) => {
         setTouched(prev => {

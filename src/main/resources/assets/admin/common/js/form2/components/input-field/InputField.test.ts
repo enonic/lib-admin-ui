@@ -208,6 +208,39 @@ describe('InputField', () => {
         expect(move).toHaveBeenCalledWith(0, 1);
     });
 
+    it('memoizes occurrences so useOccurrenceManager receives a stable reference', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('Checkbox');
+        const propertySet = new PropertyTree().getRoot();
+
+        // Use a real memoization mock: cache by deps identity
+        const cache = new Map<string, unknown>();
+        let callIndex = 0;
+        mocks.useMemo.mockImplementation((...args: unknown[]) => {
+            const factory = args[0] as () => unknown;
+            const deps = args[1] as unknown[] | undefined;
+            const key = `${callIndex++}:${JSON.stringify(deps?.map(d => (typeof d === 'object' ? 'ref' : d)))}`;
+            if (!cache.has(key)) cache.set(key, factory());
+            return cache.get(key);
+        });
+
+        InputFieldResolved({input, propertySet, enabled: true, definition});
+        const firstOccurrences = mocks.useOccurrenceManager.mock.calls[0][0].occurrences;
+
+        // Reset callIndex so the same memo slots are hit on "re-render"
+        callIndex = 0;
+        mocks.useOccurrenceManager.mockClear();
+        InputFieldResolved({input, propertySet, enabled: true, definition});
+        const secondOccurrences = mocks.useOccurrenceManager.mock.calls[0][0].occurrences;
+
+        // ? getEffectiveOccurrences creates a new Occurrences for 'single' mode.
+        // ? Without useMemo, this would be a different reference on each render,
+        // ? causing manager/sync recreation and an infinite effect loop.
+        expect(firstOccurrences).toBe(secondOccurrences);
+    });
+
     it('hides all errors when visibility is none', () => {
         const component: InputTypeComponent = () => null;
         const descriptor = makeDescriptor();
