@@ -24,11 +24,7 @@ export class Timezone
     }
 
     static isValidOffset(s: number): boolean {
-        if (s > -13 && s < 13) {
-            return true;
-        }
-
-        return false;
+        return s >= -12 && s <= 14;
     }
 
     static fromOffset(s: number): Timezone {
@@ -90,14 +86,14 @@ export class Timezone
         return true;
     }
 
-    private padOffset(num: number, length: number = 2): string {
-        let numAsString = String(num);
+    private padOffset(num: number): string {
+        const hours = Math.floor(num);
+        const minutes = Math.round((num - hours) * 60);
 
-        while (numAsString.length < length) {
-            numAsString = '0' + numAsString;
-        }
+        const hoursStr = hours < 10 ? '0' + hours : String(hours);
+        const minutesStr = minutes < 10 ? '0' + minutes : String(minutes);
 
-        return numAsString + ':00';
+        return hoursStr + ':' + minutesStr;
     }
 }
 

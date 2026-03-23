@@ -277,4 +277,149 @@ describe('DateTime', () => {
             expect(originalDate.equals(parsedDate)).toBeTruthy();
         });
     });
+
+    describe('half-hour timezone offsets', () => {
+
+        it('should parse +05:30 offset correctly', () => {
+            dateTime = DateTime.fromString('2015-04-25T12:05:00+05:30');
+            expect(dateTime.getTimezone().getOffset()).toEqual(5.5);
+            expect(dateTime.toString()).toEqual('2015-04-25T12:05:00+05:30');
+        });
+
+        it('should parse +05:45 offset correctly', () => {
+            dateTime = DateTime.fromString('2015-04-25T12:05:00+05:45');
+            expect(dateTime.getTimezone().getOffset()).toEqual(5.75);
+            expect(dateTime.toString()).toEqual('2015-04-25T12:05:00+05:45');
+        });
+
+        it('should parse -09:30 offset correctly', () => {
+            dateTime = DateTime.fromString('2015-04-25T12:05:00-09:30');
+            expect(dateTime.getTimezone().getOffset()).toEqual(-9.5);
+            expect(dateTime.toString()).toEqual('2015-04-25T12:05:00-09:30');
+        });
+
+        it('should render half-hour offset from builder correctly', () => {
+            timeZone = Timezone.create().setOffset(5.5).build();
+            expect(timeZone.toString()).toEqual('+05:30');
+        });
+
+        it('should render negative half-hour offset from builder correctly', () => {
+            timeZone = Timezone.create().setOffset(-9.5).build();
+            expect(timeZone.toString()).toEqual('-09:30');
+        });
+    });
+
+    describe('UTC date parsing', () => {
+
+        it('should convert UTC date to local time', () => {
+            dateTime = DateTime.fromString('2015-01-01T12:00:00Z');
+            let expectedDate = new Date(Date.UTC(2015, 0, 1, 12, 0, 0));
+            expect(dateTime.getHours()).toEqual(expectedDate.getHours());
+            expect(dateTime.getMinutes()).toEqual(expectedDate.getMinutes());
+        });
+
+        it('should set local timezone for UTC date', () => {
+            dateTime = DateTime.fromString('2015-04-25T12:05:00Z');
+            let expectedDate = new Date(Date.UTC(2015, 3, 25, 12, 5, 0));
+            let expectedOffset = expectedDate.getTimezoneOffset() / -60;
+            expect(dateTime.getTimezone().getOffset()).toEqual(expectedOffset);
+        });
+    });
+
+    describe('DST transitions', () => {
+
+        // These tests verify correct UTC-to-local conversion regardless of
+        // whether the test machine is currently in winter or summer time.
+        // Each test compares against a reference Date(Date.UTC(...)) which
+        // JS converts to local time correctly, proving no double-correction.
+
+        it('should correctly convert winter UTC date to local time', () => {
+            // Deep winter — standard time in most timezones
+            dateTime = DateTime.fromString('2015-01-15T14:30:00Z');
+            let expected = new Date(Date.UTC(2015, 0, 15, 14, 30, 0));
+            expect(dateTime.getYear()).toEqual(expected.getFullYear());
+            expect(dateTime.getMonth()).toEqual(expected.getMonth());
+            expect(dateTime.getDay()).toEqual(expected.getDate());
+            expect(dateTime.getHours()).toEqual(expected.getHours());
+            expect(dateTime.getMinutes()).toEqual(expected.getMinutes());
+            expect(dateTime.getTimezone().getOffset()).toEqual(expected.getTimezoneOffset() / -60);
+        });
+
+        it('should correctly convert summer UTC date to local time', () => {
+            // Deep summer — DST active in most timezones that observe it
+            dateTime = DateTime.fromString('2015-07-15T14:30:00Z');
+            let expected = new Date(Date.UTC(2015, 6, 15, 14, 30, 0));
+            expect(dateTime.getYear()).toEqual(expected.getFullYear());
+            expect(dateTime.getMonth()).toEqual(expected.getMonth());
+            expect(dateTime.getDay()).toEqual(expected.getDate());
+            expect(dateTime.getHours()).toEqual(expected.getHours());
+            expect(dateTime.getMinutes()).toEqual(expected.getMinutes());
+            expect(dateTime.getTimezone().getOffset()).toEqual(expected.getTimezoneOffset() / -60);
+        });
+
+        it('should correctly convert date just after spring-forward (EU)', () => {
+            // 2015-03-29 01:00 UTC = moment CET springs forward to CEST
+            dateTime = DateTime.fromString('2015-03-29T02:30:00Z');
+            let expected = new Date(Date.UTC(2015, 2, 29, 2, 30, 0));
+            expect(dateTime.getHours()).toEqual(expected.getHours());
+            expect(dateTime.getMinutes()).toEqual(expected.getMinutes());
+            expect(dateTime.getTimezone().getOffset()).toEqual(expected.getTimezoneOffset() / -60);
+        });
+
+        it('should correctly convert date just after fall-back (EU)', () => {
+            // 2015-10-25 01:00 UTC = moment CEST falls back to CET
+            dateTime = DateTime.fromString('2015-10-25T02:30:00Z');
+            let expected = new Date(Date.UTC(2015, 9, 25, 2, 30, 0));
+            expect(dateTime.getHours()).toEqual(expected.getHours());
+            expect(dateTime.getMinutes()).toEqual(expected.getMinutes());
+            expect(dateTime.getTimezone().getOffset()).toEqual(expected.getTimezoneOffset() / -60);
+        });
+
+        it('should correctly convert date just after spring-forward (US)', () => {
+            // 2015-03-08 07:00 UTC = moment US/Eastern springs forward
+            dateTime = DateTime.fromString('2015-03-08T08:30:00Z');
+            let expected = new Date(Date.UTC(2015, 2, 8, 8, 30, 0));
+            expect(dateTime.getHours()).toEqual(expected.getHours());
+            expect(dateTime.getMinutes()).toEqual(expected.getMinutes());
+            expect(dateTime.getTimezone().getOffset()).toEqual(expected.getTimezoneOffset() / -60);
+        });
+
+        it('should correctly convert date just after fall-back (US)', () => {
+            // 2015-11-01 06:00 UTC = moment US/Eastern falls back
+            dateTime = DateTime.fromString('2015-11-01T06:30:00Z');
+            let expected = new Date(Date.UTC(2015, 10, 1, 6, 30, 0));
+            expect(dateTime.getHours()).toEqual(expected.getHours());
+            expect(dateTime.getMinutes()).toEqual(expected.getMinutes());
+            expect(dateTime.getTimezone().getOffset()).toEqual(expected.getTimezoneOffset() / -60);
+        });
+
+        it('should use correct timezone offset for winter vs summer dates', () => {
+            let winterDt = DateTime.fromString('2015-01-15T12:00:00Z');
+            let summerDt = DateTime.fromString('2015-07-15T12:00:00Z');
+            let winterRef = new Date(Date.UTC(2015, 0, 15, 12, 0, 0));
+            let summerRef = new Date(Date.UTC(2015, 6, 15, 12, 0, 0));
+
+            // Timezone offsets should match JS Date behavior for each season
+            expect(winterDt.getTimezone().getOffset()).toEqual(winterRef.getTimezoneOffset() / -60);
+            expect(summerDt.getTimezone().getOffset()).toEqual(summerRef.getTimezoneOffset() / -60);
+
+            // If the local timezone observes DST, offsets will differ between winter and summer
+            let winterOffset = winterRef.getTimezoneOffset();
+            let summerOffset = summerRef.getTimezoneOffset();
+            if (winterOffset !== summerOffset) {
+                expect(winterDt.getTimezone().getOffset()).not.toEqual(summerDt.getTimezone().getOffset());
+            }
+        });
+
+        it('should handle midnight UTC crossing date boundary', () => {
+            // 2015-07-15T23:30:00Z — in positive-offset timezones this crosses to the next day
+            dateTime = DateTime.fromString('2015-07-15T23:30:00Z');
+            let expected = new Date(Date.UTC(2015, 6, 15, 23, 30, 0));
+            expect(dateTime.getYear()).toEqual(expected.getFullYear());
+            expect(dateTime.getMonth()).toEqual(expected.getMonth());
+            expect(dateTime.getDay()).toEqual(expected.getDate());
+            expect(dateTime.getHours()).toEqual(expected.getHours());
+            expect(dateTime.getMinutes()).toEqual(expected.getMinutes());
+        });
+    });
 });

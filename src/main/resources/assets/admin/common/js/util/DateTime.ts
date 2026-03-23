@@ -75,9 +75,6 @@ export class DateTime
         if (DateHelper.isUTCdate(s)) {
             date = DateHelper.makeDateFromUTCString(s);
             timezone = Timezone.getDateTimezone(date);
-            if (DateHelper.isDST(date)) { // when converting from UTC date, Date object may have an extra hour added due to DST
-                date.setHours(date.getHours() - 1);
-            }
         } else {
             date = DateHelper.parseLongDateTime(
                 DateTime.trimTZ(s),
@@ -132,53 +129,73 @@ export class DateTime
     private static parseOffset(value: string): number {
         if (DateHelper.isUTCdate(value)) {
             return 0;
-        } else {
-            const dateStr = (value || '').trim();
-
-            if (dateStr.indexOf('+') > 0) { // case with positive offset
-                const parts = dateStr.split('+');
-                if (parts.length === 2) {
-                    const offsetPart = parts[1];
-
-                    const offset = parseFloat(offsetPart);
-                    if (isNaN(offset)) {
-                        return 0;
-                    }
-
-                    return offset;
-                } else {
-                    return 0;
-                }
-            } else if (dateStr.split('-').length === 4) { // case with negative offset ('2015-02-29T12:05:59-01:00')
-                const parts = dateStr.split('-');
-                const offsetPart = parts[3];
-
-                const offset = parseFloat(offsetPart);
-                if (isNaN(offset)) {
-                    return 0;
-                }
-
-                return -offset;
-            } else {
-                return 0;
-            }
         }
+
+        const tIndex = (value || '').indexOf('T');
+        if (tIndex < 0) {
+            return null;
+        }
+
+        const timePart = value.substring(tIndex);
+
+        // Check for positive offset (e.g. +05:30)
+        const plusIndex = timePart.indexOf('+');
+        if (plusIndex > 0) {
+            return DateTime.parseOffsetValue(timePart.substring(plusIndex + 1), false);
+        }
+
+        // Check for negative offset (e.g. -05:00) — search for '-' in the time part
+        const minusIndex = timePart.lastIndexOf('-');
+        if (minusIndex > 0) {
+            return DateTime.parseOffsetValue(timePart.substring(minusIndex + 1), true);
+        }
+
+        return null;
+    }
+
+    private static parseOffsetValue(offsetStr: string, negative: boolean): number {
+        const parts = offsetStr.split(':');
+        if (parts.length !== 2) {
+            return null;
+        }
+
+        const hours = parseInt(parts[0], 10);
+        const minutes = parseInt(parts[1], 10);
+
+        if (isNaN(hours) || isNaN(minutes)) {
+            return null;
+        }
+
+        const offset = hours + minutes / 60;
+        return negative ? -offset : offset;
     }
 
     private static trimTZ(dateString: string): string {
-        let tzStartIndex = dateString.indexOf('+');
-        if (tzStartIndex > 0) {
-            return dateString.substr(0, tzStartIndex);
-        } else if (dateString.split('-').length === 4) {
-            // case when there is a negative tz (2015-02-29T12:05:59.001-01:00)
-            tzStartIndex = dateString.lastIndexOf('-');
-            return dateString.substr(0, tzStartIndex);
-        } else {
-            tzStartIndex = dateString.toLowerCase().indexOf('z');
-            if (tzStartIndex > 0) {
-                return dateString.substr(0, tzStartIndex);
-            }
+        const tIndex = dateString.indexOf('T');
+        if (tIndex < 0) {
+            return dateString;
         }
+
+        const timePart = dateString.substring(tIndex);
+
+        // Check for 'Z' / 'z'
+        const zIndex = timePart.toLowerCase().indexOf('z');
+        if (zIndex > 0) {
+            return dateString.substring(0, tIndex + zIndex);
+        }
+
+        // Check for '+' offset in time part
+        const plusIndex = timePart.indexOf('+');
+        if (plusIndex > 0) {
+            return dateString.substring(0, tIndex + plusIndex);
+        }
+
+        // Check for '-' offset in time part (negative timezone)
+        const minusIndex = timePart.lastIndexOf('-');
+        if (minusIndex > 0) {
+            return dateString.substring(0, tIndex + minusIndex);
+        }
+
         return dateString;
     }
 

@@ -17,11 +17,6 @@ export class DateHelper {
         return date.getTimezoneOffset() / -60;
     }
 
-    // returns true if passed date uses daylight savings time
-    public static isDST(date: Date): boolean {
-        return Math.abs(date.getTimezoneOffset() / 60) > DateHelper.getTZOffset();
-    }
-
     /**
      * Parses passed UTC string into Date object.
      * @param value
