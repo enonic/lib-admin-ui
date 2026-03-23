@@ -13,8 +13,13 @@ const mocks = vi.hoisted(() => ({
     useMemo: vi.fn((factory: () => unknown) => factory()),
     useEffect: vi.fn(),
     useCallback: vi.fn((callback: unknown) => callback),
+    useState: vi.fn((initial: unknown) => [
+        typeof initial === 'function' ? (initial as () => unknown)() : initial,
+        vi.fn(),
+    ]),
     usePropertyArray: vi.fn(),
     useOccurrenceManager: vi.fn(),
+    useValidationVisibility: vi.fn((): string => 'all'),
     occurrenceListRoot: vi.fn(() => null),
     unsupportedInput: vi.fn(() => null),
 }));
@@ -23,6 +28,15 @@ vi.mock('react', () => ({
     useMemo: mocks.useMemo,
     useEffect: mocks.useEffect,
     useCallback: mocks.useCallback,
+    useState: mocks.useState,
+}));
+
+vi.mock('../../ValidationContext', () => ({
+    useValidationVisibility: mocks.useValidationVisibility,
+}));
+
+vi.mock('../../RawValueContext', () => ({
+    useRawValueMap: vi.fn(() => undefined),
 }));
 
 vi.mock('../input-label', () => ({
@@ -192,5 +206,118 @@ describe('InputField', () => {
 
         child.props.onMove(0, 1);
         expect(move).toHaveBeenCalledWith(0, 1);
+    });
+
+    it('memoizes occurrences so useOccurrenceManager receives a stable reference', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('Checkbox');
+        const propertySet = new PropertyTree().getRoot();
+
+        // Use a real memoization mock: cache by deps identity
+        const cache = new Map<string, unknown>();
+        let callIndex = 0;
+        mocks.useMemo.mockImplementation((...args: unknown[]) => {
+            const factory = args[0] as () => unknown;
+            const deps = args[1] as unknown[] | undefined;
+            const key = `${callIndex++}:${JSON.stringify(deps?.map(d => (typeof d === 'object' ? 'ref' : d)))}`;
+            if (!cache.has(key)) cache.set(key, factory());
+            return cache.get(key);
+        });
+
+        InputFieldResolved({input, propertySet, enabled: true, definition});
+        const firstOccurrences = mocks.useOccurrenceManager.mock.calls[0][0].occurrences;
+
+        // Reset callIndex so the same memo slots are hit on "re-render"
+        callIndex = 0;
+        mocks.useOccurrenceManager.mockClear();
+        InputFieldResolved({input, propertySet, enabled: true, definition});
+        const secondOccurrences = mocks.useOccurrenceManager.mock.calls[0][0].occurrences;
+
+        // ? getEffectiveOccurrences creates a new Occurrences for 'single' mode.
+        // ? Without useMemo, this would be a different reference on each render,
+        // ? causing manager/sync recreation and an infinite effect loop.
+        expect(firstOccurrences).toBe(secondOccurrences);
+    });
+
+    it('hides all errors when visibility is none', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('TextLine');
+        const propertySet = new PropertyTree().getRoot();
+        const state = makeManagerState();
+        state.occurrenceValidation[0].validationResults = [{message: 'Error'}];
+        mocks.useOccurrenceManager.mockReturnValue({
+            state,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        mocks.useValidationVisibility.mockReturnValue('none');
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getOnlyChild(element);
+
+        expect(child.props.errors).toEqual([]);
+    });
+
+    it('passes through errors when visibility is all', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('TextLine');
+        const propertySet = new PropertyTree().getRoot();
+        const state = makeManagerState();
+        state.occurrenceValidation[0].validationResults = [{message: 'Error'}];
+        mocks.useOccurrenceManager.mockReturnValue({
+            state,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        mocks.useValidationVisibility.mockReturnValue('all');
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getOnlyChild(element);
+
+        expect(child.props.errors).toEqual([{message: 'Error'}]);
+    });
+
+    it('hides errors initially and shows after touch when visibility is interactive', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('TextLine');
+        const propertySet = new PropertyTree().getRoot();
+        const state = makeManagerState();
+        state.occurrenceValidation[0].validationResults = [{message: 'Error'}];
+        mocks.useOccurrenceManager.mockReturnValue({
+            state,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        mocks.useValidationVisibility.mockReturnValue('interactive');
+
+        // Initially untouched: empty set → errors hidden
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getOnlyChild(element);
+
+        expect(child.props.errors).toEqual([]);
+
+        // After touch: render again with touched set containing index 0
+        mocks.useState.mockImplementationOnce(() => [new Set([0]), vi.fn()]);
+        const element2 = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child2 = getOnlyChild(element2);
+
+        expect(child2.props.errors).toEqual([{message: 'Error'}]);
     });
 });

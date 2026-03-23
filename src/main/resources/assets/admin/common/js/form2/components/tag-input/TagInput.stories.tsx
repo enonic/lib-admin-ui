@@ -127,6 +127,16 @@ export const WithFieldError: Story = {
     render: () => <DemoTagInput min={1} max={4} initialTags={['alpha']} config={makeConfig({regexp: /^[A-Z]/})} />,
 };
 
+export const MaxViolation: Story = {
+    name: 'States / Max Violation',
+    render: () => <DemoTagInput min={0} max={2} initialTags={['alpha', 'beta', 'gamma']} />,
+};
+
+export const RequiredEmpty: Story = {
+    name: 'States / Required Empty',
+    render: () => <DemoTagInput min={1} max={3} />,
+};
+
 export const Disabled: Story = {
     name: 'States / Disabled',
     render: () => <DemoTagInput min={0} max={4} initialTags={['alpha', 'beta']} enabled={false} />,

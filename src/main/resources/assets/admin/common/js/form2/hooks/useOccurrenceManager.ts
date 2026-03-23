@@ -21,7 +21,7 @@ type UseOccurrenceManagerResult = {
     remove: (index: number) => boolean;
     move: (fromIndex: number, toIndex: number) => boolean;
     set: (index: number, value: Value, rawValue?: string) => void;
-    sync: (values: Value[]) => void;
+    sync: (values: Value[]) => Value[];
 };
 
 export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig>({
@@ -85,7 +85,7 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     );
 
     const sync = useCallback(
-        (values: Value[]) => {
+        (values: Value[]): Value[] => {
             manager.setValues(values);
             // Re-enforce minFill after external value replacement (e.g., PropertyArray cleared).
             // Break if add() is a no-op (max reached) to prevent infinite loop on malformed schemas.
@@ -93,6 +93,7 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
                 if (!manager.add()) break;
             }
             setState(manager.validate());
+            return manager.getValues();
         },
         [manager, minFill],
     );

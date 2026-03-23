@@ -7,6 +7,8 @@ import type {InputTypeConfig} from '../../descriptor/InputTypeConfig';
 import type {OccurrenceManagerState} from '../../descriptor/OccurrenceManager';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponent} from '../../types';
+import {getOccurrenceErrorMessage} from '../../utils/validation';
+import {FieldError} from '../field-error';
 import {InputLabel} from '../input-label';
 import {SortableList} from '../sortable-list';
 
@@ -144,8 +146,8 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         if (value == null || errors == null) return <div data-component={OCCURRENCE_LIST_NAME} />;
 
         return (
-            <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col'>
-                <InputLabel className='mb-2' input={input} />
+            <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
+                <InputLabel input={input} />
                 <Component
                     value={value}
                     onChange={(v: Value, raw?: string) => onChange(0, v, raw)}
@@ -184,18 +186,20 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
             iconStrokeWidth={1.75}
             endIcon={Plus}
             label={t('action.add')}
-            className='mt-5 w-fit self-end'
+            className='ml-auto w-fit'
             onClick={onAdd}
             disabled={!enabled}
         />
     );
 
+    const occurrenceError = getOccurrenceErrorMessage(occurrences, state.occurrenceValidation, t);
+
     if (isDraggable) {
         const showRemove = state.canRemove && state.values.length > 1;
 
         return (
-            <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col'>
-                <InputLabel className='mb-2' input={input} />
+            <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
+                <InputLabel input={input} />
                 <SortableList
                     items={state.values}
                     keyExtractor={keyExtractor}
@@ -206,20 +210,30 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                     itemClassName={({isMovable}) => cn('-my-1 gap-2 py-1', isMovable && 'pl-2', showRemove && 'pr-2')}
                     renderItem={({index}) => <OccurrenceListItemContent {...contentProps(index)} />}
                 />
-                {addButton}
+                {(occurrenceError != null || addButton) && (
+                    <div className='flex items-start gap-x-2'>
+                        <FieldError className='flex-1' message={occurrenceError} />
+                        {addButton}
+                    </div>
+                )}
             </div>
         );
     }
 
     return (
-        <div data-component={OCCURRENCE_LIST_NAME} className='flex flex-col'>
-            <InputLabel className='mb-2' input={input} />
+        <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
+            <InputLabel input={input} />
             <div className='flex flex-col gap-y-2.5'>
                 {state.values.map((_, i) => (
                     <OccurrenceListItem key={state.ids[i]} {...contentProps(i)} />
                 ))}
             </div>
-            {addButton}
+            {(occurrenceError != null || addButton) && (
+                <div className='flex items-start gap-x-2'>
+                    <FieldError className='flex-1' message={occurrenceError} />
+                    {addButton}
+                </div>
+            )}
         </div>
     );
 };

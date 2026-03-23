@@ -4,8 +4,8 @@ import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {Occurrences} from '../../../form/Occurrences';
 import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
+import {getOccurrenceErrorMessage} from '../../utils/validation';
 import {
-    getOccurrenceErrorMessage,
     getVisibleTagLabel,
     hasTagLabel,
     isTagLabelCropped,
