@@ -8,10 +8,13 @@ import {getEffectiveOccurrences} from '../../descriptor/getEffectiveOccurrences'
 import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
 import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
 import {usePropertyArray} from '../../hooks/usePropertyArray';
+import {useI18n} from '../../I18nContext';
 import {useRawValueMap} from '../../RawValueContext';
 import {InputTypeRegistry} from '../../registry/InputTypeRegistry';
 import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../../types';
+import {getOccurrenceErrorMessage} from '../../utils/validation';
 import {useValidationVisibility} from '../../ValidationContext';
+import {FieldError} from '../field-error';
 import {InputLabel} from '../input-label';
 import {OccurrenceList} from '../occurrence-list';
 import {UnsupportedInput} from '../unsupported-input';
@@ -80,6 +83,7 @@ export const InputFieldResolved = ({
         () => getEffectiveOccurrences(definition.mode, input.getOccurrences()),
         [definition.mode, input],
     );
+    const t = useI18n();
     const visibility = useValidationVisibility();
     const rawValueMap = useRawValueMap();
     const [touched, setTouched] = useState<Set<number>>(() => new Set());
@@ -201,6 +205,7 @@ export const InputFieldResolved = ({
 
         case 'internal': {
             const Component = definition.component;
+            const occurrenceError = getOccurrenceErrorMessage(occurrences, filteredValidation, t);
             // TODO: [#4328] Clamp oversupplied initial values for internal mode to legacy max behavior.
             return (
                 <div data-component={INPUT_FIELD_NAME} className='flex flex-col'>
@@ -217,6 +222,7 @@ export const InputFieldResolved = ({
                         enabled={enabled}
                         errors={filteredValidation}
                     />
+                    {occurrenceError != null && <FieldError className='mt-2' message={occurrenceError} />}
                 </div>
             );
         }

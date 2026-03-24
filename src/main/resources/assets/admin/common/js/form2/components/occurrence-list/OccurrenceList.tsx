@@ -145,6 +145,15 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         const errors = state.occurrenceValidation[0];
         if (value == null || errors == null) return <div data-component={OCCURRENCE_LIST_NAME} />;
 
+        const occurrenceError = getOccurrenceErrorMessage(occurrences, state.occurrenceValidation, t);
+        // Occurrence error is mutually exclusive with field errors (getOccurrenceErrorMessage
+        // returns undefined when field errors exist), so it's safe to merge into the same array.
+        // This lets components render it via their built-in error display (e.g. Input.error).
+        const allErrors =
+            occurrenceError != null
+                ? [...errors.validationResults, {message: occurrenceError}]
+                : errors.validationResults;
+
         return (
             <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
                 <InputLabel input={input} />
@@ -156,7 +165,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                     input={input}
                     enabled={enabled}
                     index={0}
-                    errors={errors.validationResults}
+                    errors={allErrors}
                 />
             </div>
         );
