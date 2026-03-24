@@ -21,16 +21,6 @@ import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
 
 const TAG_INPUT_NAME = 'TagInput';
-const TAG_WRAPPER_CLASS_NAME = 'rounded border border-bdr-subtle min-h-14 px-4 py-3';
-const TAG_LIST_CLASS_NAME = 'flex flex-wrap items-center gap-2';
-const TAG_DRAFT_INPUT_ITEM_CLASS_NAME = 'w-40';
-const TAG_DRAFT_INPUT_CLASS_NAME =
-    '[&>div[data-state]]:h-7.5 [&>div[data-state]]:!border-transparent ' +
-    '[&>div[data-state]]:hover:!outline-none [&>div[data-state]:focus-within]:!border-bdr-subtle ' +
-    '[&>div[data-state]:focus-within]:!ring-0 [&>div[data-state]:focus-within]:!ring-offset-0';
-const TAG_ITEM_BASE_CLASS_NAME = 'inline-flex max-w-full items-center gap-2 rounded-sm border px-2.5 py-0.75';
-const TAG_ITEM_DRAGGABLE_CLASS_NAME = 'cursor-grab outline-none focus-visible:ring-1 focus-visible:ring-ring';
-const TAG_ITEM_DRAGGING_CLASS_NAME = 'cursor-grabbing shadow-md shadow-main/70';
 const TAG_LABEL_MAX_LENGTH = 20;
 const TAG_DRAG_ACTIVATION_DISTANCE = 5;
 
@@ -148,10 +138,15 @@ function renderTagDraftInput({
     onBlur,
 }: TagDraftInputProps): ReactElement {
     return (
-        <li className={TAG_DRAFT_INPUT_ITEM_CLASS_NAME}>
+        <li className='w-36'>
             <Input
                 ref={inputRef}
-                className={TAG_DRAFT_INPUT_CLASS_NAME}
+                className={cn(
+                    '[&_input]:px-2.5 [&_input]:text-sm',
+                    '[&>div[data-state]]:h-7 [&>div[data-state]]:border-transparent! [&>div[data-state]]::text-sm',
+                    '[&>div[data-state]:focus-within]:border-bdr-subtle! [&>div[data-state]]:hover:outline-none!',
+                    '[&>div[data-state]:focus-within]:ring-0! [&>div[data-state]:focus-within]:ring-offset-0!',
+                )}
                 value={draft}
                 onChange={(event: JSX.TargetedEvent<HTMLInputElement>) => onChange(event.currentTarget.value)}
                 onKeyDown={onKeyDown}
@@ -261,11 +256,11 @@ const TagItem = ({
             }}
             title={error}
             className={cn(
-                TAG_ITEM_BASE_CLASS_NAME,
+                'inline-flex max-w-full items-center gap-2 rounded-sm border px-2.5 py-0.75',
                 'bg-surface-neutral text-sm',
-                enabled && showDrag && TAG_ITEM_DRAGGABLE_CLASS_NAME,
+                enabled && showDrag && 'cursor-grab outline-none focus-visible:ring-1 focus-visible:ring-ring',
                 error ? 'border-current text-error' : 'border-bdr-strong text-foreground',
-                isDragging && TAG_ITEM_DRAGGING_CLASS_NAME,
+                isDragging && 'cursor-grabbing shadow-main/70 shadow-md',
             )}
         >
             <Tooltip value={tooltipValue} side='top' className='max-w-64 whitespace-normal break-words'>
@@ -457,7 +452,14 @@ export const TagInput = ({
     return (
         <div data-component={TAG_INPUT_NAME} className='flex flex-col gap-y-2'>
             <div
-                className={cn(TAG_WRAPPER_CLASS_NAME, helperText && 'border-current')}
+                className={cn(
+                    'min-h-14 rounded border border-bdr-subtle px-4 py-3',
+                    'hover:outline-2 hover:outline-bdr-subtle hover:-outline-offset-1',
+                    'focus-within:border-bdr-solid focus-within:outline-none',
+                    'focus-within:ring-3 focus-within:ring-ring focus-within:ring-offset-3 focus-within:ring-offset-ring-offset',
+                    'transition-highlight',
+                    helperText && 'border-error focus-within:border-error focus-within:ring-error hover:outline-error',
+                )}
                 onPointerDown={handleFieldPointerDown}
                 onFocus={event => {
                     if (event.target === event.currentTarget) {
@@ -468,7 +470,7 @@ export const TagInput = ({
             >
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={ids} strategy={rectSortingStrategy}>
-                        <ul className={TAG_LIST_CLASS_NAME} onPointerDown={handleFieldPointerDown}>
+                        <ul className='flex flex-wrap items-center gap-2' onPointerDown={handleFieldPointerDown}>
                             {values.map((value, index) => (
                                 <TagItem key={ids[index]} {...getTagItemProps(value, index)} />
                             ))}
