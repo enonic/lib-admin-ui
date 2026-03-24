@@ -115,6 +115,13 @@ const SortableListItem = <T,>({
         (listeners?.onKeyDown as JSX.KeyboardEventHandler<HTMLDivElement>)?.(e);
     };
 
+    // When fullRowDraggable, dnd-kit listeners must not override the guarded handleKeyDown
+    const rowListenersSafe = useMemo(() => {
+        if (!fullRowDraggable || !isMovable || !listeners) return undefined;
+        const {onKeyDown: _ignored, ...rest} = listeners;
+        return rest;
+    }, [fullRowDraggable, isMovable, listeners]);
+
     const handleFocus = () => setIsFocused(true);
 
     const handleBlur: JSX.FocusEventHandler<HTMLDivElement> = e => {
@@ -130,9 +137,6 @@ const SortableListItem = <T,>({
     const context: SortableListItemContext<T> = {item, index, isDragging, isFocused, isMovable};
 
     const resolvedClassName = typeof itemClassName === 'function' ? itemClassName(context) : itemClassName;
-
-    // ? When fullRowDraggable, listeners attach to the row; otherwise to the grip button
-    const rowListeners = fullRowDraggable && isMovable ? listeners : undefined;
 
     // ? Spread dnd-kit attributes individually to fix Preact type mismatch (string vs AriaRole)
     return (
@@ -155,7 +159,7 @@ const SortableListItem = <T,>({
                 fullRowDraggable && isMovable && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
                 resolvedClassName,
             )}
-            {...rowListeners}
+            {...rowListenersSafe}
         >
             {isMovable && (
                 <button
