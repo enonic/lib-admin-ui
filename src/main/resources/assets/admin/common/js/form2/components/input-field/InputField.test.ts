@@ -31,6 +31,10 @@ vi.mock('react', () => ({
     useState: mocks.useState,
 }));
 
+vi.mock('../../I18nContext', () => ({
+    useI18n: vi.fn(() => (key: string) => key),
+}));
+
 vi.mock('../../ValidationContext', () => ({
     useValidationVisibility: mocks.useValidationVisibility,
 }));
@@ -55,6 +59,14 @@ vi.mock('../../hooks/usePropertyArray', () => ({
 
 vi.mock('../../hooks/useOccurrenceManager', () => ({
     useOccurrenceManager: mocks.useOccurrenceManager,
+}));
+
+vi.mock('../../utils/validation', () => ({
+    getOccurrenceErrorMessage: vi.fn(() => undefined),
+}));
+
+vi.mock('../field-error', () => ({
+    FieldError: () => null,
 }));
 
 vi.mock('../occurrence-list', () => ({
