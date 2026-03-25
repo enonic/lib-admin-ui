@@ -459,4 +459,8 @@ export class FilterableListBoxWrapper<I>
 
         return true;
     }
+
+    getOptionFilterInput(): OptionFilterInput {
+        return this.optionFilterInput;
+    }
 }
