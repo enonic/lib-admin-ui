@@ -1,5 +1,5 @@
-import {Combobox, cn, IconButton, Listbox} from '@enonic/ui';
-import {X} from 'lucide-react';
+import {Combobox, cn, FilledSquareCheck, IconButton, Listbox} from '@enonic/ui';
+import {Square, X} from 'lucide-react';
 import type {ReactElement} from 'react';
 import {useCallback, useMemo, useState} from 'react';
 
@@ -103,8 +103,17 @@ export const ComboBoxInput = ({
                         <Combobox.Popup>
                             <Listbox.Content className='rounded-sm'>
                                 {filteredOptions.map(option => (
-                                    <Listbox.Item key={option.value} value={option.value}>
-                                        {option.label}
+                                    <Listbox.Item key={option.value} value={option.value} className='min-h-5.5'>
+                                        <span className='flex-1'>{option.label}</span>
+                                        {isMultiSelect && (
+                                            <span
+                                                className='pointer-events-none inline-flex shrink-0'
+                                                aria-hidden='true'
+                                            >
+                                                <Square className='size-4 text-main group-aria-selected:hidden group-data-[tone=inverse]:text-alt' />
+                                                <FilledSquareCheck className='hidden size-4 text-main group-aria-selected:block group-data-[tone=inverse]:text-alt' />
+                                            </span>
+                                        )}
                                     </Listbox.Item>
                                 ))}
                             </Listbox.Content>
