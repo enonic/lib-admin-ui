@@ -6,6 +6,8 @@ export default defineConfig({
         include: ['src/main/resources/assets/admin/common/js/form2/**/*.test.ts'],
         environment: 'node',
         passWithNoTests: true,
+        reporters: ['dot'],
+        onConsoleLog: () => false,
     },
     resolve: {
         alias: {
