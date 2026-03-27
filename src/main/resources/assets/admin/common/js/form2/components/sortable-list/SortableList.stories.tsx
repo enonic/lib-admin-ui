@@ -1,8 +1,8 @@
 import {cn} from '@enonic/ui';
 import type {Meta, StoryObj} from '@storybook/preact-vite';
 import {useCallback, useState} from 'react';
-import type {SortableListProps} from './index';
-import {SortableList} from './index';
+import type {SortableListProps} from './SortableList';
+import {SortableList} from './SortableList';
 
 //
 // * Helpers
@@ -52,6 +52,72 @@ function Demo({initialItems = FRUITS, enabled = true, fullRowDraggable, itemClas
                     </div>
                 )}
             />
+        </div>
+    );
+}
+
+type ButtonDemoProps = {
+    fullRowDraggable?: boolean;
+};
+
+function ButtonDemo({fullRowDraggable}: ButtonDemoProps) {
+    const [items, setItems] = useState(FRUITS);
+    const [log, setLog] = useState<string[]>([]);
+    const keyExtractor = useCallback((item: Fruit) => item.id, []);
+
+    const addLog = useCallback((message: string) => {
+        setLog(prev => [...prev.slice(-4), message]);
+    }, []);
+
+    return (
+        <div className='flex flex-col gap-y-4'>
+            <div className='w-80'>
+                <SortableList
+                    items={items}
+                    keyExtractor={keyExtractor}
+                    onMove={(from, to) => {
+                        setItems(prev => moveItem(prev, from, to));
+                        addLog(`Moved "${items[from].label}" from ${from} to ${to}`);
+                    }}
+                    enabled
+                    fullRowDraggable={fullRowDraggable}
+                    dragLabel='Drag to reorder'
+                    className='flex flex-col gap-y-2'
+                    itemClassName='gap-2'
+                    renderItem={({item}) => (
+                        <div
+                            className={cn(
+                                'flex flex-1 items-center justify-between rounded-md px-3 py-2 text-sm',
+                                item.color,
+                            )}
+                        >
+                            <span className='font-medium'>{item.label}</span>
+                            <div className='flex gap-1'>
+                                <button
+                                    type='button'
+                                    className='rounded bg-white/60 px-2 py-0.5 text-xs hover:bg-white/90'
+                                    onClick={() => addLog(`Edit: ${item.label}`)}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    type='button'
+                                    className='rounded bg-white/60 px-2 py-0.5 text-red-600 text-xs hover:bg-white/90'
+                                    onClick={() => {
+                                        setItems(prev => prev.filter(i => i.id !== item.id));
+                                        addLog(`Removed: ${item.label}`);
+                                    }}
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                />
+            </div>
+            <pre className='min-h-24 rounded-md bg-surface-neutral p-3 font-mono text-subtle text-xs'>
+                {log.length > 0 ? log.join('\n') : 'Click buttons or drag items…'}
+            </pre>
         </div>
     );
 }
@@ -115,4 +181,18 @@ export const WithItemClassName: Story = {
             }
         />
     ),
+};
+
+//
+// * Behavior
+//
+
+export const WithButtons: Story = {
+    name: 'Behavior / With Buttons',
+    render: () => <ButtonDemo />,
+};
+
+export const WithButtonsFullRow: Story = {
+    name: 'Behavior / With Buttons (Full Row Draggable)',
+    render: () => <ButtonDemo fullRowDraggable />,
 };
