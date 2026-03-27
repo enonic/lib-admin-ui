@@ -392,14 +392,14 @@ describe('TagInput', () => {
         expect(mocks.input).toHaveBeenCalledTimes(1);
     });
 
-    it('does not let hidden empty tags satisfy minimum occurrences', () => {
+    it('marks the wrapper invalid when hidden empty tags keep the value below minimum occurrences', () => {
         expect(
-            getHelperText({
+            getFieldWrapperProps({
                 values: [ValueTypes.STRING.newValue('')],
                 occurrences: Occurrences.minmax(1, 3),
                 errors: [makeHiddenBlankValidation(0)],
-            }),
-        ).toBe('field.occurrence.breaks.min:1');
+            }).className,
+        ).toContain('border-error');
     });
 
     it('ignores validation errors from hidden empty tags when deriving helper text', () => {
@@ -422,14 +422,14 @@ describe('TagInput', () => {
         ).toBe('Hidden server error');
     });
 
-    it('keeps interactive-suppressed hidden blanks from surfacing minimum occurrence helper text', () => {
+    it('keeps interactive-suppressed hidden blanks from surfacing error styling on the wrapper', () => {
         expect(
-            getHelperText({
+            getFieldWrapperProps({
                 values: [ValueTypes.STRING.newValue('')],
                 occurrences: Occurrences.minmax(1, 3),
                 errors: [makeHiddenBlankValidation(0, undefined, {suppressed: true})],
-            }),
-        ).toBeUndefined();
+            }).className,
+        ).not.toContain('border-error');
     });
 
     it('keeps remove buttons out of the tab order before focus enters the component', () => {
@@ -483,7 +483,7 @@ describe('TagInput', () => {
         expect(getIconButtonProps('field.occurrence.action.reorder', 0).tabIndex).toBe(-1);
         expect(getIconButtonProps('field.occurrence.action.reorder', 1).tabIndex).toBe(0);
         expect(getIconButtonProps('field.occurrence.action.remove', 0).tabIndex).toBe(-1);
-        expect(getIconButtonProps('field.occurrence.action.remove', 1).tabIndex).toBe(0);
+        expect(getIconButtonProps('field.occurrence.action.remove', 1).tabIndex).toBe(-1);
     });
 
     it('makes the last remove button the tab entry point when max tags hide the inline input and dragging is unavailable', () => {
@@ -494,53 +494,6 @@ describe('TagInput', () => {
         });
 
         expect(getFirstRemoveButtonProps().tabIndex).toBe(0);
-    });
-
-    it('moves focus from a drag handle to its remove button on forward Tab', () => {
-        const focus = vi.fn();
-        const wrapperRef = {current: null};
-        const inputRef = {current: null};
-        const tagRefs = {current: []};
-        const draftRef = {current: ''};
-        const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
-        const scrollListenerCleanupRef = {current: null};
-        const isDraggingRef = {current: false};
-        const dragButtonRef = {current: null};
-        const removeButtonRef = {current: {focus}};
-
-        mocks.useRef
-            .mockImplementationOnce(() => wrapperRef)
-            .mockImplementationOnce(() => inputRef)
-            .mockImplementationOnce(() => tagRefs)
-            .mockImplementationOnce(() => draftRef)
-            .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef)
-            .mockImplementationOnce(() => dragButtonRef)
-            .mockImplementationOnce(() => removeButtonRef);
-
-        renderTagInput({
-            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
-            occurrences: Occurrences.minmax(0, 3),
-            errors: [makeOccurrenceValidation(0), makeOccurrenceValidation(1)],
-        });
-
-        const preventDefault = vi.fn();
-        getFirstDragButtonProps().onKeyDown({
-            key: 'Tab',
-            shiftKey: false,
-            altKey: false,
-            ctrlKey: false,
-            metaKey: false,
-            preventDefault,
-        });
-
-        expect(preventDefault).toHaveBeenCalledOnce();
-        expect(focus).toHaveBeenCalledOnce();
     });
 
     it('keeps tag items themselves out of the tab order when focus is within the component', () => {
@@ -569,14 +522,14 @@ describe('TagInput', () => {
         expect(onRemove).toHaveBeenCalledWith(0);
     });
 
-    it('shows the minimum occurrence error when the number of tags drops below the limit', () => {
+    it('marks the wrapper invalid when the number of tags drops below the limit', () => {
         expect(
-            getHelperText({
+            getFieldWrapperProps({
                 values: [ValueTypes.STRING.newValue('alpha')],
                 occurrences: Occurrences.minmax(2, 3),
                 errors: [makeOccurrenceValidation(0)],
-            }),
-        ).toBe('field.occurrence.breaks.min:2');
+            }).className,
+        ).toContain('border-error');
     });
 
     it('disables sortable behavior when the field is disabled', () => {
@@ -608,6 +561,7 @@ describe('TagInput', () => {
 
         mocks.useState
             .mockImplementationOnce(() => ['', vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [0, setDragContextKey]);
         mocks.useRef.mockImplementationOnce(() => wrapperRef);
@@ -849,6 +803,7 @@ describe('TagInput', () => {
         const wrapperRef = {current: null};
         const inputRef = {current: {focus}};
         const tagRefs = {current: []};
+        const removeTagRefs = {current: []};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
         const idsByValue = {current: new WeakMap()};
@@ -857,9 +812,11 @@ describe('TagInput', () => {
         mocks.useState
             .mockImplementationOnce(() => ['alpha', vi.fn()])
             .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [0, vi.fn()])
             .mockImplementationOnce(() => ['beta', vi.fn()])
             .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [0, vi.fn()]);
 
         const scrollListenerCleanupRef = {current: null};
@@ -868,6 +825,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
             .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
             .mockImplementationOnce(() => idsByValue)
@@ -877,6 +835,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
             .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
             .mockImplementationOnce(() => idsByValue)
@@ -968,6 +927,7 @@ describe('TagInput', () => {
         const wrapperRef = {current: null};
         const inputRef = {current: null};
         const tagRefs = {current: [{focus: vi.fn()}, {focus: focusPreviousTag}, {focus: focusNewTag}]};
+        const removeTagRefs = {current: []};
         const draftRef = {current: 'gamma'};
         const skipBlurCommit = {current: false};
         const idsByValue = {current: new WeakMap()};
@@ -983,6 +943,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
             .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
             .mockImplementationOnce(() => idsByValue)
@@ -1024,7 +985,8 @@ describe('TagInput', () => {
         const setIsInputActive = vi.fn();
         const wrapperRef = {current: null};
         const inputRef = {current: null};
-        const tagRefs = {current: [{focus: vi.fn()}, {focus: focusPreviousTag}]};
+        const tagRefs = {current: [{focus: vi.fn()}, {focus: vi.fn()}]};
+        const removeTagRefs = {current: [{focus: vi.fn()}, {focus: focusPreviousTag}]};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
         const idsByValue = {current: new WeakMap()};
@@ -1039,6 +1001,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
             .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
             .mockImplementationOnce(() => idsByValue)
@@ -1059,10 +1022,116 @@ describe('TagInput', () => {
             ctrlKey: false,
             metaKey: false,
             preventDefault: vi.fn(),
-            currentTarget: {blur},
+            currentTarget: {blur, selectionStart: 0, selectionEnd: 0},
         });
 
         expect(onRemove).not.toHaveBeenCalled();
+        expect(blur).toHaveBeenCalledOnce();
+        expect(focusPreviousTag).toHaveBeenCalledOnce();
+        expect(setIsInputActive).toHaveBeenCalledWith(false);
+    });
+
+    it('commits the draft and moves focus to the previous tag on Backspace at cursor position zero', () => {
+        const onAdd = vi.fn();
+        const blur = vi.fn();
+        const focusPreviousTag = vi.fn();
+        const setIsInputActive = vi.fn();
+        const wrapperRef = {current: null};
+        const inputRef = {current: null};
+        const tagRefs = {current: [{focus: vi.fn()}, {focus: vi.fn()}]};
+        const removeTagRefs = {current: [{focus: vi.fn()}, {focus: focusPreviousTag}]};
+        const draftRef = {current: 'gamma'};
+        const skipBlurCommit = {current: false};
+        const idsByValue = {current: new WeakMap()};
+        const nextId = {current: 0};
+        const scrollListenerCleanupRef = {current: null};
+        const isDraggingRef = {current: false};
+
+        mocks.useState
+            .mockImplementationOnce(() => ['gamma', vi.fn()])
+            .mockImplementationOnce(() => [true, setIsInputActive]);
+        mocks.useRef
+            .mockImplementationOnce(() => wrapperRef)
+            .mockImplementationOnce(() => inputRef)
+            .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
+            .mockImplementationOnce(() => draftRef)
+            .mockImplementationOnce(() => skipBlurCommit)
+            .mockImplementationOnce(() => idsByValue)
+            .mockImplementationOnce(() => nextId)
+            .mockImplementationOnce(() => scrollListenerCleanupRef)
+            .mockImplementationOnce(() => isDraggingRef);
+
+        renderTagInput({
+            onAdd,
+            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
+            occurrences: Occurrences.minmax(0, 4),
+        });
+
+        const inputProps = getLastInputProps();
+        inputProps.onKeyDown({
+            key: 'Backspace',
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault: vi.fn(),
+            currentTarget: {blur, value: 'gamma', selectionStart: 0, selectionEnd: 0},
+        });
+
+        expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('gamma'));
+        expect(blur).toHaveBeenCalledOnce();
+        expect(focusPreviousTag).toHaveBeenCalledOnce();
+        expect(setIsInputActive).toHaveBeenCalledWith(false);
+    });
+
+    it('commits the draft and moves focus to the previous tag on ArrowLeft at cursor position zero', () => {
+        const onAdd = vi.fn();
+        const focusPreviousTag = vi.fn();
+        const setIsInputActive = vi.fn();
+        const wrapperRef = {current: null};
+        const inputRef = {current: null};
+        const tagRefs = {current: [{focus: vi.fn()}]};
+        const removeTagRefs = {current: [{focus: focusPreviousTag}]};
+        const draftRef = {current: 'beta'};
+        const skipBlurCommit = {current: false};
+        const idsByValue = {current: new WeakMap()};
+        const nextId = {current: 0};
+        const scrollListenerCleanupRef = {current: null};
+        const isDraggingRef = {current: false};
+
+        mocks.useState
+            .mockImplementationOnce(() => ['beta', vi.fn()])
+            .mockImplementationOnce(() => [true, setIsInputActive]);
+        mocks.useRef
+            .mockImplementationOnce(() => wrapperRef)
+            .mockImplementationOnce(() => inputRef)
+            .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
+            .mockImplementationOnce(() => draftRef)
+            .mockImplementationOnce(() => skipBlurCommit)
+            .mockImplementationOnce(() => idsByValue)
+            .mockImplementationOnce(() => nextId)
+            .mockImplementationOnce(() => scrollListenerCleanupRef)
+            .mockImplementationOnce(() => isDraggingRef);
+
+        renderTagInput({
+            onAdd,
+            values: [ValueTypes.STRING.newValue('alpha')],
+            occurrences: Occurrences.minmax(0, 3),
+        });
+
+        const inputProps = getLastInputProps();
+        const blur = vi.fn();
+        inputProps.onKeyDown({
+            key: 'ArrowLeft',
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault: vi.fn(),
+            currentTarget: {blur, value: 'beta', selectionStart: 0, selectionEnd: 0},
+        });
+
+        expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('beta'));
         expect(blur).toHaveBeenCalledOnce();
         expect(focusPreviousTag).toHaveBeenCalledOnce();
         expect(setIsInputActive).toHaveBeenCalledWith(false);
@@ -1100,6 +1169,7 @@ describe('TagInput', () => {
         const wrapperRef = {current: null};
         const inputRef = {current: {focus}};
         const tagRefs = {current: []};
+        const removeTagRefs = {current: []};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
         const idsByValue = {current: new WeakMap()};
@@ -1112,6 +1182,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
             .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
             .mockImplementationOnce(() => idsByValue)
@@ -1223,6 +1294,7 @@ describe('TagInput', () => {
         const wrapperRef = {current: null};
         const inputRef = {current: {focus: vi.fn()}};
         const tagRefs = {current: []};
+        const removeTagRefs = {current: []};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
         const idsByValue = {current: new WeakMap()};
@@ -1236,6 +1308,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
             .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
             .mockImplementationOnce(() => idsByValue)
@@ -1421,6 +1494,147 @@ describe('TagInput', () => {
 
         expect(preventDefault).toHaveBeenCalledOnce();
         expect(sortableKeyDown).not.toHaveBeenCalled();
+    });
+
+    it('moves focus from drag button to remove button on ArrowRight', () => {
+        const focus = vi.fn();
+        const wrapperRef = {current: null};
+        const inputRef = {current: null};
+        const tagRefs = {current: []};
+        const removeTagRefs = {current: []};
+        const draftRef = {current: ''};
+        const skipBlurCommit = {current: false};
+        const idsByValue = {current: new WeakMap()};
+        const nextId = {current: 0};
+        const scrollListenerCleanupRef = {current: null};
+        const isDraggingRef = {current: false};
+        const dragButtonRef = {current: null};
+        const removeButtonRef = {current: {focus}};
+
+        mocks.useRef
+            .mockImplementationOnce(() => wrapperRef)
+            .mockImplementationOnce(() => inputRef)
+            .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
+            .mockImplementationOnce(() => draftRef)
+            .mockImplementationOnce(() => skipBlurCommit)
+            .mockImplementationOnce(() => idsByValue)
+            .mockImplementationOnce(() => nextId)
+            .mockImplementationOnce(() => scrollListenerCleanupRef)
+            .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => dragButtonRef)
+            .mockImplementationOnce(() => removeButtonRef);
+
+        renderTagInput({
+            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
+            occurrences: Occurrences.minmax(0, 3),
+            errors: [makeOccurrenceValidation(0), makeOccurrenceValidation(1)],
+        });
+
+        const preventDefault = vi.fn();
+        getFirstDragButtonProps().onKeyDown({
+            key: 'ArrowRight',
+            shiftKey: false,
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault,
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(focus).toHaveBeenCalledOnce();
+    });
+
+    it('moves focus from remove button to drag button on ArrowLeft', () => {
+        const focus = vi.fn();
+        const wrapperRef = {current: null};
+        const inputRef = {current: null};
+        const tagRefs = {current: []};
+        const removeTagRefs = {current: []};
+        const draftRef = {current: ''};
+        const skipBlurCommit = {current: false};
+        const idsByValue = {current: new WeakMap()};
+        const nextId = {current: 0};
+        const scrollListenerCleanupRef = {current: null};
+        const isDraggingRef = {current: false};
+        const dragButtonRef = {current: {focus}};
+        const removeButtonRef = {current: null};
+
+        mocks.useRef
+            .mockImplementationOnce(() => wrapperRef)
+            .mockImplementationOnce(() => inputRef)
+            .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
+            .mockImplementationOnce(() => draftRef)
+            .mockImplementationOnce(() => skipBlurCommit)
+            .mockImplementationOnce(() => idsByValue)
+            .mockImplementationOnce(() => nextId)
+            .mockImplementationOnce(() => scrollListenerCleanupRef)
+            .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => dragButtonRef)
+            .mockImplementationOnce(() => removeButtonRef);
+
+        renderTagInput({
+            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
+            occurrences: Occurrences.minmax(0, 3),
+            errors: [makeOccurrenceValidation(0), makeOccurrenceValidation(1)],
+        });
+
+        const preventDefault = vi.fn();
+        getFirstRemoveButtonProps().onKeyDown({
+            key: 'ArrowLeft',
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault,
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(focus).toHaveBeenCalledOnce();
+    });
+
+    it('navigates to the next tag on ArrowRight from remove button', () => {
+        const focusNextTag = vi.fn();
+        const wrapperRef = {current: null};
+        const inputRef = {current: null};
+        const tagRefs = {current: [null, {focus: focusNextTag}]};
+        const removeTagRefs = {current: []};
+        const draftRef = {current: ''};
+        const skipBlurCommit = {current: false};
+        const idsByValue = {current: new WeakMap()};
+        const nextId = {current: 0};
+        const scrollListenerCleanupRef = {current: null};
+        const isDraggingRef = {current: false};
+
+        mocks.useRef
+            .mockImplementationOnce(() => wrapperRef)
+            .mockImplementationOnce(() => inputRef)
+            .mockImplementationOnce(() => tagRefs)
+            .mockImplementationOnce(() => removeTagRefs)
+            .mockImplementationOnce(() => draftRef)
+            .mockImplementationOnce(() => skipBlurCommit)
+            .mockImplementationOnce(() => idsByValue)
+            .mockImplementationOnce(() => nextId)
+            .mockImplementationOnce(() => scrollListenerCleanupRef)
+            .mockImplementationOnce(() => isDraggingRef);
+
+        renderTagInput({
+            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
+            occurrences: Occurrences.minmax(0, 3),
+            errors: [makeOccurrenceValidation(0), makeOccurrenceValidation(1)],
+        });
+
+        const preventDefault = vi.fn();
+        getFirstRemoveButtonProps().onKeyDown({
+            key: 'ArrowRight',
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault,
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(focusNextTag).toHaveBeenCalledOnce();
     });
 
     it('reorders immediately with left and right arrow keys during keyboard drag', () => {

@@ -49,6 +49,7 @@ type TagItemProps = {
     showDrag: boolean;
     showRemove: boolean;
     registerFocusableRef: (node: HTMLButtonElement | null) => void;
+    registerRemoveRef: (node: HTMLButtonElement | null) => void;
     onNavigate: (direction: -1 | 1) => void;
     onDragMove: (direction: -1 | 1) => void;
     onDeleteKey: () => void;
@@ -79,6 +80,7 @@ type TagDraftInputProps = {
 
 type RemoveTagOptions = {
     activateInput?: boolean;
+    focusPreviousTag?: boolean;
     commitCurrentDraft?: boolean;
 };
 
@@ -321,6 +323,7 @@ const TagItem = ({
     showDrag,
     showRemove,
     registerFocusableRef,
+    registerRemoveRef,
     onNavigate,
     onDragMove,
     onDeleteKey,
@@ -345,6 +348,7 @@ const TagItem = ({
     };
     const setRemoveButtonRef = (node: HTMLButtonElement | null) => {
         removeButtonRef.current = node;
+        registerRemoveRef(node);
         if (!showDrag) {
             registerFocusableRef(node);
         }
@@ -403,16 +407,7 @@ const TagItem = ({
                 return;
             }
 
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                event.preventDefault();
-            }
             (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLButtonElement>)?.(event);
-            return;
-        }
-
-        if (event.key === 'Tab' && !event.shiftKey && showRemove && removeButtonRef.current != null) {
-            event.preventDefault();
-            removeButtonRef.current.focus();
             return;
         }
 
@@ -430,7 +425,11 @@ const TagItem = ({
 
         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
             event.preventDefault();
-            onNavigate(1);
+            if (showRemove && removeButtonRef.current != null) {
+                removeButtonRef.current.focus();
+            } else {
+                onNavigate(1);
+            }
             return;
         }
 
@@ -456,6 +455,22 @@ const TagItem = ({
             return;
         }
 
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            if (showDrag && dragButtonRef.current != null) {
+                dragButtonRef.current.focus();
+            } else {
+                onNavigate(-1);
+            }
+            return;
+        }
+
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            onNavigate(1);
+            return;
+        }
+
         if (!isRemoveButtonKey(event.key)) {
             return;
         }
@@ -475,7 +490,9 @@ const TagItem = ({
             }}
             title={error}
             className={cn(
-                'inline-flex max-w-full items-center gap-2 rounded-sm border px-2.5 py-0.75',
+                'inline-flex max-w-full items-center gap-1.5 rounded-sm border py-0.75',
+                showDrag ? 'pl-2' : 'pl-2.5',
+                showRemove ? 'pr-2' : 'pr-2.5',
                 'bg-surface-neutral text-sm',
                 'outline-none',
                 error ? 'border-current text-error ring-error' : 'border-bdr-strong text-foreground ring-ring',
@@ -502,7 +519,7 @@ const TagItem = ({
                 />
             )}
             <Tooltip value={tooltipValue} side='top' className='max-w-64 whitespace-normal break-words'>
-                <span className={cn('font-semibold')}>{visibleLabel}</span>
+                <span className='font-semibold'>{visibleLabel}</span>
             </Tooltip>
             {showRemove && (
                 <IconButton
@@ -511,7 +528,7 @@ const TagItem = ({
                     iconSize='sm'
                     variant='text'
                     className='size-5 focus-visible:ring-2 focus-visible:ring-offset-2'
-                    tabIndex={enabled && isTabStop ? 0 : -1}
+                    tabIndex={enabled && isTabStop && !showDrag ? 0 : -1}
                     disabled={!enabled}
                     aria-label={t('field.occurrence.action.remove')}
                     onPointerDown={event => {
@@ -547,9 +564,11 @@ export const TagInput = ({
     const t = useI18n();
     const [draft, setDraft] = useState('');
     const [isInputActive, setIsInputActive] = useState(false);
+    const [hasFocusWithin, setHasFocusWithin] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const tagRefs = useRef<Array<HTMLButtonElement | null>>([]);
+    const removeTagRefs = useRef<Array<HTMLButtonElement | null>>([]);
     const draftRef = useRef(draft);
     const skipBlurCommit = useRef(false);
     const idsByValue = useRef(new WeakMap<Value, string>());
@@ -612,11 +631,11 @@ export const TagInput = ({
         .flatMap(entry => entry.validationResults.filter(result => result.custom))
         .map(result => result.message)
         .find(Boolean);
-    const firstFieldError = firstVisibleFieldError ?? hiddenCustomError;
-    const helperText = firstFieldError ?? occurrenceError;
+    const fieldErrorText = firstVisibleFieldError ?? hiddenCustomError;
+    const hasErrors = fieldErrorText != null || occurrenceError != null;
     const focusInput = () => {
         setIsInputActive(true);
-        focusElementNextFrame(inputRef.current);
+        requestAnimationFrame(() => inputRef.current?.focus());
     };
 
     const handleFieldActivate = () => {
@@ -640,6 +659,19 @@ export const TagInput = ({
                 return;
             }
             tagRefs.current[index]?.focus();
+        });
+    };
+
+    const focusRemoveAt = (index: number) => {
+        requestAnimationFrame(() => {
+            if (index < 0) {
+                return;
+            }
+            if (index >= visibleTagCount) {
+                inputRef.current?.focus();
+                return;
+            }
+            (removeTagRefs.current[index] ?? tagRefs.current[index])?.focus();
         });
     };
 
@@ -690,8 +722,21 @@ export const TagInput = ({
 
         const hasRoomForAnother = occurrences.getMaximum() === 0 || visibleTagCount + 1 < occurrences.getMaximum();
 
-        if (focusTarget != null && hasRoomForAnother) {
-            focusElementNextFrame(focusTarget);
+        if (focusTarget != null) {
+            if (hasRoomForAnother) {
+                focusElementNextFrame(focusTarget);
+            } else {
+                skipBlurCommit.current = true;
+                setIsInputActive(false);
+                const lastTagIndex = visibleTagCount;
+                // ? Double RAF: first waits for Preact to re-render with the new tag,
+                // second ensures refs are populated before focusing
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        (removeTagRefs.current[lastTagIndex] ?? tagRefs.current[lastTagIndex])?.focus();
+                    });
+                });
+            }
         }
 
         return {committed: true, usedHiddenSlot};
@@ -702,7 +747,7 @@ export const TagInput = ({
     };
 
     const handleRemove = (index: number, options: RemoveTagOptions = {}) => {
-        const {activateInput = false, commitCurrentDraft = false} = options;
+        const {activateInput = false, focusPreviousTag = false, commitCurrentDraft = false} = options;
         let removeIndex = index;
 
         if (commitCurrentDraft) {
@@ -712,6 +757,16 @@ export const TagInput = ({
             }
         }
         onRemove(removeIndex);
+
+        if (focusPreviousTag) {
+            const compactedIndex = getCompactedTagIndex(values, index);
+            const targetIndex = Math.max(0, compactedIndex - 1);
+            requestAnimationFrame(() => {
+                (removeTagRefs.current[targetIndex] ?? tagRefs.current[targetIndex])?.focus();
+            });
+            return;
+        }
+
         if (activateInput) {
             focusInput();
             return;
@@ -721,7 +776,11 @@ export const TagInput = ({
     };
 
     const handleTagNavigate = (index: number, direction: -1 | 1) => {
-        focusTagAt(index + direction);
+        if (direction === -1) {
+            focusRemoveAt(index + direction);
+        } else {
+            focusTagAt(index + direction);
+        }
     };
 
     const handleKeyboardDragMove = (index: number, direction: -1 | 1) => {
@@ -745,49 +804,50 @@ export const TagInput = ({
         label: getTagLabel(entry.value),
         error: getFirstError(errors[entry.originalIndex]?.validationResults ?? []),
         enabled,
-        isTabStop: !showInlineInput && index === visibleTagCount - 1,
+        isTabStop: !showInlineInput && !hasFocusWithin && index === visibleTagCount - 1,
         showDrag,
         showRemove: canRemove,
         registerFocusableRef: node => {
             tagRefs.current[index] = node;
         },
+        registerRemoveRef: node => {
+            removeTagRefs.current[index] = node;
+        },
         onNavigate: direction => handleTagNavigate(index, direction),
         onDragMove: direction => handleKeyboardDragMove(index, direction),
-        onDeleteKey: () => handleRemove(entry.originalIndex, {activateInput: true}),
+        onDeleteKey: () => handleRemove(entry.originalIndex, {focusPreviousTag: true}),
         onRemovePointerDown: prepareRemove,
         onRemoveKey: () => handleRemove(entry.originalIndex, {activateInput: true, commitCurrentDraft: true}),
         onRemove: () => handleRemove(entry.originalIndex, {commitCurrentDraft: true}),
     });
 
+    const commitAndLeaveInput = (input: HTMLInputElement, focusFn: (index: number) => void) => {
+        const {committed} = commitDraft(undefined, undefined, input.value);
+        const focusIndex = committed && visibleTagCount === 0 ? 0 : visibleTagCount - 1;
+        skipBlurCommit.current = true;
+        setIsInputActive(false);
+        input.blur();
+        focusFn(focusIndex);
+    };
+
     const handleKeyDown = (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Escape') {
             event.preventDefault();
-            const {committed} = commitDraft(undefined, undefined, event.currentTarget.value);
-            const focusIndex = committed && visibleTagCount === 0 ? 0 : visibleTagCount - 1;
-            skipBlurCommit.current = true;
-            setIsInputActive(false);
-            event.currentTarget.blur();
-
-            focusTagIndexNextFrame(focusIndex);
+            commitAndLeaveInput(event.currentTarget, focusTagIndexNextFrame);
             return;
         }
 
-        if (
-            draftRef.current.length === 0 &&
-            visibleTagCount > 0 &&
-            (event.key === 'ArrowLeft' || event.key === 'ArrowUp')
-        ) {
+        const isAtStart = event.currentTarget.selectionStart === 0 && event.currentTarget.selectionEnd === 0;
+
+        if (visibleTagCount > 0 && isAtStart && (event.key === 'ArrowLeft' || event.key === 'ArrowUp')) {
             event.preventDefault();
-            focusTagAt(visibleTagCount - 1);
+            commitAndLeaveInput(event.currentTarget, focusRemoveAt);
             return;
         }
 
-        if (draftRef.current.length === 0 && event.key === 'Backspace') {
+        if (visibleTagCount > 0 && isAtStart && event.key === 'Backspace') {
             event.preventDefault();
-            skipBlurCommit.current = true;
-            setIsInputActive(false);
-            event.currentTarget.blur();
-            focusTagIndexNextFrame(visibleTagCount - 1);
+            commitAndLeaveInput(event.currentTarget, focusRemoveAt);
             return;
         }
 
@@ -867,9 +927,17 @@ export const TagInput = ({
                     'focus-within:ring-3 focus-within:ring-ring focus-within:ring-offset-3 focus-within:ring-offset-ring-offset',
                     'transition-highlight',
                     canAdd && 'cursor-text',
-                    helperText && 'border-error focus-within:border-error focus-within:ring-error hover:outline-error',
+                    hasErrors && 'border-error focus-within:border-error focus-within:ring-error hover:outline-error',
                 )}
                 onPointerDown={handleFieldPointerDown}
+                onFocus={() => setHasFocusWithin(true)}
+                onBlur={() => {
+                    requestAnimationFrame(() => {
+                        if (!wrapperRef.current?.contains(document.activeElement)) {
+                            setHasFocusWithin(false);
+                        }
+                    });
+                }}
             >
                 <DndContext
                     key={dragContextKey}
@@ -901,7 +969,7 @@ export const TagInput = ({
                     </SortableContext>
                 </DndContext>
             </div>
-            <FieldError message={helperText} />
+            <FieldError message={fieldErrorText} />
         </div>
     );
 };

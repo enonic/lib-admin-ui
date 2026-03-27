@@ -8,6 +8,9 @@ import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
 import type {TextLineConfig} from '../../descriptor';
 import {OccurrenceManager, TagDescriptor} from '../../descriptor';
+import {useI18n} from '../../I18nContext';
+import {getOccurrenceErrorMessage} from '../../utils/validation';
+import {FieldError} from '../field-error';
 import {TagInput} from './TagInput';
 
 type DemoTagInputProps = {
@@ -55,6 +58,7 @@ function moveValue(values: Value[], fromIndex: number, toIndex: number): Value[]
 }
 
 function DemoTagInput({min, max, initialTags = [], enabled = true, config = makeConfig()}: DemoTagInputProps) {
+    const t = useI18n();
     const input = useMemo(() => makeInput(min, max), [min, max]);
     const occurrences = input.getOccurrences();
     const [values, setValues] = useState<Value[]>(() => toValues(initialTags));
@@ -63,9 +67,10 @@ function DemoTagInput({min, max, initialTags = [], enabled = true, config = make
         () => new OccurrenceManager<TextLineConfig>(occurrences, TagDescriptor, config, values).validate(),
         [config, occurrences, values],
     );
+    const occurrenceError = getOccurrenceErrorMessage(occurrences, state.occurrenceValidation, t);
 
     return (
-        <div className='w-[32rem]'>
+        <div className='flex w-[32rem] flex-col gap-y-2'>
             <TagInput
                 values={values}
                 onChange={(index, value) =>
@@ -85,6 +90,7 @@ function DemoTagInput({min, max, initialTags = [], enabled = true, config = make
                 enabled={enabled}
                 errors={state.occurrenceValidation}
             />
+            <FieldError message={occurrenceError} />
         </div>
     );
 }
