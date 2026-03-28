@@ -20,10 +20,13 @@ export type {
 } from './descriptor/FormValidationResult';
 // Descriptor system
 export {getEffectiveOccurrences} from './descriptor/getEffectiveOccurrences';
+export {SetOccurrenceManager, type SetOccurrenceManagerState} from './descriptor/SetOccurrenceManager';
 export {type RawValueMap, type ValidateFormOptions, validateForm} from './descriptor/validateForm';
 export {type UseInputTypeDescriptorResult, useInputTypeDescriptor} from './hooks/useInputTypeDescriptor';
 export {useOccurrenceManager} from './hooks/useOccurrenceManager';
 export {type UsePropertyArrayResult, usePropertyArray} from './hooks/usePropertyArray';
+export {type UsePropertySetArrayResult, usePropertySetArray} from './hooks/usePropertySetArray';
+export {type UseSetOccurrenceManagerResult, useSetOccurrenceManager} from './hooks/useSetOccurrenceManager';
 export {I18nProvider, useI18n} from './I18nContext';
 export {initBuiltInTypes} from './initBuiltInTypes';
 // Raw value tracking

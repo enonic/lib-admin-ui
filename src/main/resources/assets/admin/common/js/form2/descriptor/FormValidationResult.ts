@@ -20,7 +20,7 @@ export type FieldSetValidationNode = {
     readonly isValid?: boolean;
 };
 
-/** Validation result for a FormItemSet (future — currently produced as SkippedValidationNode). */
+/** Validation result for a FormItemSet, with per-occurrence children and validity. */
 export type ItemSetValidationNode = {
     readonly type: 'itemset';
     readonly path: string;
@@ -32,20 +32,20 @@ export type ItemSetValidationNode = {
     }[];
 };
 
-/** Validation result for a FormOptionSet (future — currently produced as SkippedValidationNode). */
+/** Validation result for a FormOptionSet, with per-occurrence selection and children validation. */
 export type OptionSetValidationNode = {
     readonly type: 'optionset';
     readonly path: string;
     readonly name: string;
     readonly occurrenceError?: string;
-    readonly multiselectionError?: string;
     readonly occurrences: {
         readonly children: FormValidationNode[];
+        readonly multiselectionError?: string;
         readonly isValid?: boolean;
     }[];
 };
 
-/** Placeholder for form items not yet validated (FormItemSet, FormOptionSet). */
+/** Placeholder for unrecognized form item types. */
 export type SkippedValidationNode = {
     readonly type: 'skipped';
     readonly path: string;

@@ -12,6 +12,8 @@ import type {
     FormValidationNode,
     FormValidationResult,
     InputValidationNode,
+    ItemSetValidationNode,
+    OptionSetValidationNode,
     SkippedValidationNode,
 } from './FormValidationResult';
 import type {OccurrenceValidationState} from './OccurrenceManager';
@@ -36,6 +38,24 @@ function matchServerErrors(formPath: string, serverErrors: ValidationError[]): V
     return serverErrors
         .filter(error => error.getPropertyPath().startsWith(stripped))
         .map(error => ({message: error.getMessage(), custom: true}));
+}
+
+function isNodeValid(child: FormValidationNode): boolean {
+    switch (child.type) {
+        case 'skipped':
+            return true;
+        case 'input':
+            return child.errors.every(e => e.length === 0) && child.occurrenceError == null;
+        case 'fieldset':
+            return child.isValid !== false;
+        case 'itemset':
+            return child.occurrenceError == null && child.occurrences.every(o => o.isValid !== false);
+        case 'optionset':
+            return (
+                child.occurrenceError == null &&
+                child.occurrences.every(o => o.multiselectionError == null && o.isValid !== false)
+            );
+    }
 }
 
 function validateInput(input: Input, propertySet: PropertySet, options?: ValidateFormOptions): InputValidationNode {
@@ -113,12 +133,7 @@ function validateFieldSet(
     options?: ValidateFormOptions,
 ): FieldSetValidationNode {
     const children = validateFormItems(fieldSet.getFormItems(), propertySet, options);
-    const isValid = children.every(child => {
-        if (child.type === 'skipped') return true;
-        if (child.type === 'input') return child.errors.every(e => e.length === 0) && child.occurrenceError == null;
-        if (child.type === 'fieldset') return child.isValid !== false;
-        return true;
-    });
+    const isValid = children.every(isNodeValid);
 
     return {
         type: 'fieldset',
@@ -127,6 +142,119 @@ function validateFieldSet(
         children,
         isValid,
     };
+}
+
+function validateItemSet(
+    itemSet: FormItemSet,
+    propertySet: PropertySet,
+    options?: ValidateFormOptions,
+): ItemSetValidationNode {
+    const name = itemSet.getName();
+    const path = safeGetPath(itemSet);
+    const array = propertySet.getPropertyArray(name);
+    const size = array?.getSize() ?? 0;
+
+    // TODO: rawValues are keyed by input name, will collide for nested inputs
+    // with the same name. CS must scope rawValues per-occurrence in Phase 4.
+
+    const occurrences: ItemSetValidationNode['occurrences'] = [];
+
+    for (let i = 0; i < size; i++) {
+        const occurrenceSet = array?.getSet(i);
+        const children = validateFormItems(
+            itemSet.getFormItems(),
+            occurrenceSet ?? propertySet.getTree().newPropertySet(),
+            options,
+        );
+        occurrences.push({children, isValid: children.every(isNodeValid)});
+    }
+
+    const validCount = occurrences.filter(o => o.isValid !== false).length;
+    let occurrenceError: string | undefined;
+
+    if (itemSet.getOccurrences().minimumBreached(validCount)) {
+        const min = itemSet.getOccurrences().getMinimum();
+        occurrenceError = `set.occurrence.breaks.min:${min}`;
+    } else if (itemSet.getOccurrences().maximumBreached(validCount)) {
+        const max = itemSet.getOccurrences().getMaximum();
+        occurrenceError = `set.occurrence.breaks.max:${max}`;
+    }
+
+    // TODO: propagate serverErrors into nested set occurrences (Phase 8)
+
+    return {type: 'itemset', path, name, occurrenceError, occurrences};
+}
+
+function validateOptionSet(
+    optionSet: FormOptionSet,
+    propertySet: PropertySet,
+    options?: ValidateFormOptions,
+): OptionSetValidationNode {
+    const name = optionSet.getName();
+    const path = safeGetPath(optionSet);
+    const array = propertySet.getPropertyArray(name);
+    const size = array?.getSize() ?? 0;
+    const multiselection = optionSet.getMultiselection();
+    const schemaOptionNames = optionSet.getOptions().map(o => o.getName());
+
+    const occurrences: OptionSetValidationNode['occurrences'] = [];
+
+    for (let i = 0; i < size; i++) {
+        const occurrenceSet = array?.getSet(i);
+        if (occurrenceSet == null) {
+            occurrences.push({children: [], multiselectionError: undefined, isValid: true});
+            continue;
+        }
+
+        // Read _selected array — STRING values of selected option names
+        const selectedArray = occurrenceSet.getPropertyArray('_selected');
+        const selectedNames =
+            selectedArray != null
+                ? selectedArray
+                      .getProperties()
+                      .map(p => p.getValue().getString())
+                      .filter((n): n is string => n != null && schemaOptionNames.includes(n))
+                : [];
+
+        // Multiselection validation
+        let multiselectionError: string | undefined;
+        if (multiselection.minimumBreached(selectedNames.length)) {
+            multiselectionError = `optionset.multiselection.breaks.min:${multiselection.getMinimum()}`;
+        } else if (multiselection.maximumBreached(selectedNames.length)) {
+            multiselectionError = `optionset.multiselection.breaks.max:${multiselection.getMaximum()}`;
+        }
+
+        // Validate children of selected options
+        const allChildren: FormValidationNode[] = [];
+        for (const selectedName of selectedNames) {
+            const option = optionSet.getOptions().find(o => o.getName() === selectedName);
+            if (option == null || option.getFormItems().length === 0) continue;
+
+            const optionDataSet = occurrenceSet.getPropertyArray(selectedName)?.getSet(0);
+            const children = validateFormItems(
+                option.getFormItems(),
+                optionDataSet ?? occurrenceSet.getTree().newPropertySet(),
+                options,
+            );
+            allChildren.push(...children);
+        }
+
+        const isValid = multiselectionError == null && allChildren.every(isNodeValid);
+        occurrences.push({children: allChildren, multiselectionError, isValid});
+    }
+
+    const validCount = occurrences.filter(o => o.isValid !== false).length;
+    let occurrenceError: string | undefined;
+
+    if (optionSet.getOccurrences().minimumBreached(validCount)) {
+        const min = optionSet.getOccurrences().getMinimum();
+        occurrenceError = `set.occurrence.breaks.min:${min}`;
+    } else if (optionSet.getOccurrences().maximumBreached(validCount)) {
+        const max = optionSet.getOccurrences().getMaximum();
+        occurrenceError = `set.occurrence.breaks.max:${max}`;
+    }
+
+    return {type: 'optionset', path, name, occurrenceError, occurrences};
 }
 
 function validateFormItems(
@@ -143,15 +271,12 @@ function validateFormItems(
             return validateFieldSet(item as FieldSet, propertySet, options);
         }
 
-        if (
-            ObjectHelper.iFrameSafeInstanceOf(item, FormItemSet) ||
-            ObjectHelper.iFrameSafeInstanceOf(item, FormOptionSet)
-        ) {
-            return {
-                type: 'skipped',
-                path: safeGetPath(item),
-                name: item.getName(),
-            } satisfies SkippedValidationNode;
+        if (ObjectHelper.iFrameSafeInstanceOf(item, FormItemSet)) {
+            return validateItemSet(item as FormItemSet, propertySet, options);
+        }
+
+        if (ObjectHelper.iFrameSafeInstanceOf(item, FormOptionSet)) {
+            return validateOptionSet(item as FormOptionSet, propertySet, options);
         }
 
         return {
@@ -166,8 +291,7 @@ function validateFormItems(
  * Validate an entire form against its property data.
  *
  * Walks the form schema tree, validates each Input via its registered
- * descriptor, recurses into FieldSets, and skips FormItemSet/FormOptionSet
- * (returned as `SkippedValidationNode` for future phases).
+ * descriptor, and recurses into FieldSets, FormItemSets, and FormOptionSets.
  *
  * Unregistered input types produce a valid node with empty errors.
  */
@@ -177,12 +301,7 @@ export function validateForm(
     options?: ValidateFormOptions,
 ): FormValidationResult {
     const children = validateFormItems(form.getFormItems(), propertySet, options);
-    const isValid = children.every(child => {
-        if (child.type === 'skipped') return true;
-        if (child.type === 'input') return child.errors.every(e => e.length === 0) && child.occurrenceError == null;
-        if (child.type === 'fieldset') return child.isValid !== false;
-        return true;
-    });
+    const isValid = children.every(isNodeValid);
 
     return {isValid, children};
 }
