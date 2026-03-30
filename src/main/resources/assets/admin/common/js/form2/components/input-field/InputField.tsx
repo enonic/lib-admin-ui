@@ -299,7 +299,10 @@ export const InputFieldResolved = ({
 
         case 'internal': {
             const Component = definition.component;
-            const occurrenceError = getOccurrenceErrorMessage(occurrences, filteredValidation, t);
+            // ? Selectors don't auto-seed entries, so filterErrors can't suppress
+            // the min-breach on empty fields. Gate on 'all' to match text inputs.
+            const occurrenceError =
+                visibility === 'all' ? getOccurrenceErrorMessage(occurrences, filteredValidation, t) : undefined;
             // TODO: [#4328] Clamp oversupplied initial values for internal mode to legacy max behavior.
             return (
                 <div data-component={INPUT_FIELD_NAME} className='flex flex-col'>
