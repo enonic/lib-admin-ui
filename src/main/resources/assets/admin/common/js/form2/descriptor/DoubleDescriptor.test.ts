@@ -1,8 +1,15 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../data/Value';
 import {ValueTypes} from '../../data/ValueTypes';
 import {DoubleDescriptor} from './DoubleDescriptor';
 import type {NumberConfig} from './InputTypeConfig';
+
+vi.mock('../../util/Messages', () => ({
+    i18n: (key: string, ...args: unknown[]) => {
+        if (args.length > 0) return `#${key}#[${args.join(',')}]`;
+        return `#${key}#`;
+    },
+}));
 
 describe('DoubleDescriptor', () => {
     describe('getValueType', () => {
@@ -98,7 +105,7 @@ describe('DoubleDescriptor', () => {
             const value = ValueTypes.DOUBLE.fromJsonValue(5);
             const results = DoubleDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toBe('Value must be at least 10');
+            expect(results[0].message).toBe('#field.value.breaks.min#[10]');
         });
 
         it('detects value above max', () => {
@@ -106,7 +113,7 @@ describe('DoubleDescriptor', () => {
             const value = ValueTypes.DOUBLE.fromJsonValue(150);
             const results = DoubleDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toBe('Value must be at most 100');
+            expect(results[0].message).toBe('#field.value.breaks.max#[100]');
         });
 
         it('reports only one violation (else-if): min takes precedence', () => {
@@ -114,7 +121,7 @@ describe('DoubleDescriptor', () => {
             const value = ValueTypes.DOUBLE.fromJsonValue(5);
             const results = DoubleDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toContain('at least');
+            expect(results[0].message).toContain('breaks.min');
         });
 
         it('allows value exactly at min boundary', () => {
@@ -175,14 +182,14 @@ describe('DoubleDescriptor', () => {
             const config = DoubleDescriptor.readConfig({min: [{value: 10}]});
             const results = DoubleDescriptor.validate(ValueTypes.DOUBLE.fromJsonValue(5), config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toContain('at least');
+            expect(results[0].message).toContain('breaks.min');
         });
 
         it('rejects value above max parsed from config', () => {
             const config = DoubleDescriptor.readConfig({max: [{value: 100}]});
             const results = DoubleDescriptor.validate(ValueTypes.DOUBLE.fromJsonValue(200), config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toContain('at most');
+            expect(results[0].message).toContain('breaks.max');
         });
 
         it('accepts any value with empty config', () => {

@@ -2,10 +2,21 @@ import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
 import type {RawInputConfig} from '../../form/Input';
+import {i18n} from '../../util/Messages';
 import {NumberHelper} from '../../util/NumberHelper';
 import type {NumberConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
+
+function validateNumberRange(num: number, config: NumberConfig): ValidationResult[] {
+    if (config.min != null && NumberHelper.isNumber(config.min) && num < config.min) {
+        return [{message: i18n('field.value.breaks.min', config.min)}];
+    }
+    if (config.max != null && NumberHelper.isNumber(config.max) && num > config.max) {
+        return [{message: i18n('field.value.breaks.max', config.max)}];
+    }
+    return [];
+}
 
 export const DoubleDescriptor: InputTypeDescriptor<NumberConfig> = {
     name: 'Double',
@@ -28,26 +39,27 @@ export const DoubleDescriptor: InputTypeDescriptor<NumberConfig> = {
         return ValueTypes.DOUBLE.fromJsonValue(raw);
     },
 
-    validate(value: Value, config: NumberConfig): ValidationResult[] {
+    validate(value: Value, config: NumberConfig, rawValue?: string): ValidationResult[] {
         const results: ValidationResult[] = [];
         if (value.isNull()) {
+            if (rawValue != null && rawValue !== '') {
+                const parsed = Number(rawValue);
+                if (NumberHelper.isNumber(parsed)) {
+                    return validateNumberRange(parsed, config);
+                }
+                results.push({message: i18n('field.value.invalid')});
+            }
             return results;
         }
 
         const num = value.getDouble();
 
         if (!NumberHelper.isNumber(num)) {
-            results.push({message: 'Value is not a valid number'});
+            results.push({message: i18n('field.value.invalid')});
             return results;
         }
 
-        if (config.min != null && NumberHelper.isNumber(config.min) && num < config.min) {
-            results.push({message: `Value must be at least ${config.min}`});
-        } else if (config.max != null && NumberHelper.isNumber(config.max) && num > config.max) {
-            results.push({message: `Value must be at most ${config.max}`});
-        }
-
-        return results;
+        return validateNumberRange(num, config);
     },
 
     valueBreaksRequired(value: Value): boolean {

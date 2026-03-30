@@ -223,10 +223,16 @@ export const InputFieldResolved = ({
                 }
                 arr[index] = rawValue;
             }
-            set(index, value, rawValue);
-            propertyArray.set(index, value);
+            // Store null for values that fail validation (e.g., out-of-range numbers),
+            // matching how unparseable values like "abc" are already stored as null.
+            const storedValue =
+                !value.isNull() && descriptor.validate(value, config, rawValue).length > 0
+                    ? descriptor.getValueType().newNullValue()
+                    : value;
+            set(index, storedValue, rawValue);
+            propertyArray.set(index, storedValue);
         },
-        [markTouched, rawValueMap, inputName, set, propertyArray],
+        [markTouched, rawValueMap, inputName, set, propertyArray, descriptor, config],
     );
 
     const handleBlur = useCallback(
