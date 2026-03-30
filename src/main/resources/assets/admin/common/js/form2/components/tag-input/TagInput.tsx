@@ -616,7 +616,12 @@ export const TagInput = ({
         scrollListenerCleanupRef.current = null;
     };
 
-    useEffect(() => clearScrollListener, []);
+    useEffect(() => {
+        return () => {
+            scrollListenerCleanupRef.current?.();
+            scrollListenerCleanupRef.current = null;
+        };
+    }, []);
 
     const hasSuppressedHiddenEntries = hiddenErrors.some(
         entry => !entry.breaksRequired && entry.validationResults.length === 0,
