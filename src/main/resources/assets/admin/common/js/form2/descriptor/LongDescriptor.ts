@@ -8,6 +8,16 @@ import type {NumberConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
 import type {ValidationResult} from './ValidationResult';
 
+function validateNumberRange(num: number, config: NumberConfig): ValidationResult[] {
+    if (config.min != null && NumberHelper.isNumber(config.min) && num < config.min) {
+        return [{message: i18n('field.value.breaks.min', config.min)}];
+    }
+    if (config.max != null && NumberHelper.isNumber(config.max) && num > config.max) {
+        return [{message: i18n('field.value.breaks.max', config.max)}];
+    }
+    return [];
+}
+
 export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
     name: 'Long',
 
@@ -32,8 +42,12 @@ export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
     validate(value: Value, config: NumberConfig, rawValue?: string): ValidationResult[] {
         const results: ValidationResult[] = [];
         if (value.isNull()) {
-            // Distinguish "no input" from "rejected input" (e.g. "1.5" for a Long field)
             if (rawValue != null && rawValue !== '') {
+                // Re-parse to distinguish format errors from range violations
+                const parsed = Number(rawValue);
+                if (NumberHelper.isWholeNumber(parsed)) {
+                    return validateNumberRange(parsed, config);
+                }
                 results.push({message: i18n('field.value.invalid')});
             }
             return results;
@@ -46,13 +60,7 @@ export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
             return results;
         }
 
-        if (config.min != null && NumberHelper.isNumber(config.min) && num < config.min) {
-            results.push({message: i18n('field.value.breaks.min', config.min)});
-        } else if (config.max != null && NumberHelper.isNumber(config.max) && num > config.max) {
-            results.push({message: i18n('field.value.breaks.max', config.max)});
-        }
-
-        return results;
+        return validateNumberRange(num, config);
     },
 
     valueBreaksRequired(value: Value): boolean {
