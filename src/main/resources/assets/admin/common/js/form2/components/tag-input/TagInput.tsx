@@ -237,6 +237,11 @@ function focusElementNextFrame(element: HTMLElement | null | undefined): void {
     requestAnimationFrame(() => element?.focus());
 }
 
+function clearScrollListenerCleanup(scrollListenerCleanupRef: RefObject<(() => void) | null>): void {
+    scrollListenerCleanupRef.current?.();
+    scrollListenerCleanupRef.current = null;
+}
+
 function compactHiddenTagSlots(values: Value[], onMove: (fromIndex: number, toIndex: number) => void): void {
     let targetIndex = 0;
 
@@ -611,16 +616,8 @@ export const TagInput = ({
         normalizedDraft,
     );
 
-    const clearScrollListener = () => {
-        scrollListenerCleanupRef.current?.();
-        scrollListenerCleanupRef.current = null;
-    };
-
     useEffect(() => {
-        return () => {
-            scrollListenerCleanupRef.current?.();
-            scrollListenerCleanupRef.current = null;
-        };
+        return () => clearScrollListenerCleanup(scrollListenerCleanupRef);
     }, []);
 
     const hasSuppressedHiddenEntries = hiddenErrors.some(
@@ -876,7 +873,7 @@ export const TagInput = ({
 
     const handleDragEnd = (event: DragEndEvent) => {
         isDraggingRef.current = false;
-        clearScrollListener();
+        clearScrollListenerCleanup(scrollListenerCleanupRef);
 
         const {active, over} = event;
         if (over == null || active.id === over.id) {
@@ -893,7 +890,7 @@ export const TagInput = ({
 
     const handleDragStart = (_event: DragStartEvent) => {
         isDraggingRef.current = true;
-        clearScrollListener();
+        clearScrollListenerCleanup(scrollListenerCleanupRef);
 
         const ownerDocument = wrapperRef.current?.ownerDocument;
         if (ownerDocument == null) {
@@ -906,7 +903,7 @@ export const TagInput = ({
             }
 
             isDraggingRef.current = false;
-            clearScrollListener();
+            clearScrollListenerCleanup(scrollListenerCleanupRef);
             setDragContextKey(current => current + 1);
         };
 
@@ -918,7 +915,7 @@ export const TagInput = ({
 
     const handleDragCancel = () => {
         isDraggingRef.current = false;
-        clearScrollListener();
+        clearScrollListenerCleanup(scrollListenerCleanupRef);
     };
 
     return (
