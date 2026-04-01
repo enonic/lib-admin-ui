@@ -1,6 +1,6 @@
 export interface ExtensionDescriptorJson {
 
-    displayName: string;
+    title: string;
     description: string;
     iconUrl: string;
     url: string;

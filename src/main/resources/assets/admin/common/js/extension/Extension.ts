@@ -8,7 +8,7 @@ export class Extension<B extends ExtensionBuilder = ExtensionBuilder, C extends 
 
     private readonly url: string;
     private readonly iconUrl: string;
-    private readonly displayName: string;
+    private readonly title: string;
     private readonly description: string;
     private readonly interfaces: string[];
     private readonly extensionDescriptorKey: ExtensionDescriptorKey;
@@ -17,7 +17,7 @@ export class Extension<B extends ExtensionBuilder = ExtensionBuilder, C extends 
     constructor(builder: B) {
         this.url = builder.url;
         this.iconUrl = builder.iconUrl;
-        this.displayName = builder.displayName;
+        this.title = builder.title;
         this.description = builder.description;
         this.interfaces = builder.interfaces;
         this.extensionDescriptorKey = builder.extensionDescriptorKey;
@@ -57,7 +57,7 @@ export class Extension<B extends ExtensionBuilder = ExtensionBuilder, C extends 
     }
 
     public getDisplayName(): string {
-        return this.displayName;
+        return this.title;
     }
 
     public getDescription(): string {
@@ -83,7 +83,7 @@ export class ExtensionBuilder<C extends ExtensionConfig = ExtensionConfig> {
 
     iconUrl: string;
 
-    displayName: string;
+    title: string;
 
     description: string;
 
@@ -97,7 +97,7 @@ export class ExtensionBuilder<C extends ExtensionConfig = ExtensionConfig> {
         if (source) {
             this.url = source.getUrl();
             this.iconUrl = source.getIconUrl();
-            this.displayName = source.getDisplayName();
+            this.title = source.getDisplayName();
             this.description = source.getDescription();
             this.interfaces = source.getInterfaces();
             this.extensionDescriptorKey = source.getDescriptorKey();
@@ -114,7 +114,7 @@ export class ExtensionBuilder<C extends ExtensionConfig = ExtensionConfig> {
     fromJson(json: ExtensionDescriptorJson): ExtensionBuilder {
         this.url = json.url;
         this.iconUrl = json.iconUrl;
-        this.displayName = json.displayName;
+        this.title = json.title;
         this.description = json.description;
         this.interfaces = json.interfaces;
         this.extensionDescriptorKey = ExtensionBuilder.makeExtensionDescriptorKey(json.key);
@@ -136,8 +136,8 @@ export class ExtensionBuilder<C extends ExtensionConfig = ExtensionConfig> {
         return this;
     }
 
-    setDisplayName(displayName: string): ExtensionBuilder {
-        this.displayName = displayName;
+    setDisplayName(title: string): ExtensionBuilder {
+        this.title = title;
         return this;
     }
 
