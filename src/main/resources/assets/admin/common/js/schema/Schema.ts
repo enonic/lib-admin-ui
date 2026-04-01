@@ -8,7 +8,7 @@ export class Schema
 
     private name: string;
 
-    private displayName: string;
+    private title: string;
 
     private description: string;
 
@@ -17,7 +17,7 @@ export class Schema
     constructor(builder: SchemaBuilder) {
         super(builder);
         this.name = builder.name;
-        this.displayName = builder.displayName;
+        this.title = builder.title;
         this.description = builder.description;
         this.iconUrl = builder.iconUrl;
     }
@@ -30,8 +30,8 @@ export class Schema
         return this.name;
     }
 
-    getDisplayName(): string {
-        return this.displayName;
+    getTitle(): string {
+        return this.title;
     }
 
     getDescription(): string {
@@ -58,7 +58,7 @@ export class Schema
             return false;
         }
 
-        if (!ObjectHelper.stringEquals(this.displayName, other.displayName)) {
+        if (!ObjectHelper.stringEquals(this.title, other.title)) {
             return false;
         }
 
@@ -75,7 +75,7 @@ export class SchemaBuilder
 
     name: string;
 
-    displayName: string;
+    title: string;
 
     description: string;
 
@@ -85,7 +85,7 @@ export class SchemaBuilder
         super(source);
         if (source) {
             this.name = source.getName();
-            this.displayName = source.getDisplayName();
+            this.title = source.getTitle();
             this.description = source.getDescription();
             this.iconUrl = source.getIconUrl();
         }
@@ -95,7 +95,7 @@ export class SchemaBuilder
         super.fromBaseItemJson(json, 'name');
 
         this.name = json.name;
-        this.displayName = json.displayName;
+        this.title = json.title;
         this.description = json.description;
         this.iconUrl = json.iconUrl;
         return this;
@@ -106,8 +106,8 @@ export class SchemaBuilder
         return this;
     }
 
-    setDisplayName(value: string): SchemaBuilder {
-        this.displayName = value;
+    setTitle(value: string): SchemaBuilder {
+        this.title = value;
         return this;
     }
 
