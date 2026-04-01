@@ -19,7 +19,7 @@ export class ContentTypeSummary
 
     private readonly displayNameExpression: string;
 
-    private readonly displayNameLabel: string;
+    private readonly displayNamePlaceholder: string;
 
     private readonly modifier: string;
 
@@ -37,7 +37,7 @@ export class ContentTypeSummary
         this.displayNameExpression = builder.displayNameExpression;
         this.owner = builder.owner;
         this.modifier = builder.modifier;
-        this.displayNameLabel = builder.displayNameLabel;
+        this.displayNamePlaceholder = builder.displayNamePlaceholder;
         this.allowedChildContentTypes = builder.allowedChildContentTypes;
     }
 
@@ -102,8 +102,8 @@ export class ContentTypeSummary
         return this.displayNameExpression;
     }
 
-    getDisplayNameLabel(): string {
-        return this.displayNameLabel;
+    getDisplayNamePlaceholder(): string {
+        return this.displayNamePlaceholder;
     }
 
     getOwner(): string {
@@ -146,7 +146,7 @@ export class ContentTypeSummary
             return false;
         }
 
-        if (!ObjectHelper.stringEquals(this.displayNameLabel, other.displayNameLabel)) {
+        if (!ObjectHelper.stringEquals(this.displayNamePlaceholder, other.displayNamePlaceholder)) {
             return false;
         }
 
@@ -176,7 +176,7 @@ export class ContentTypeSummaryBuilder
 
     displayNameExpression: string;
 
-    displayNameLabel: string;
+    displayNamePlaceholder: string;
 
     modifier: string;
 
@@ -193,7 +193,7 @@ export class ContentTypeSummaryBuilder
             this.final = source.isFinal();
             this.superType = source.getSuperType();
             this.displayNameExpression = source.getDisplayNameExpression();
-            this.displayNameLabel = source.getDisplayNameLabel();
+            this.displayNamePlaceholder = source.getDisplayNamePlaceholder();
             this.modifier = source.getModifier();
             this.owner = source.getOwner();
             this.allowedChildContentTypes = source.getAllowedChildContentTypes();
@@ -208,7 +208,7 @@ export class ContentTypeSummaryBuilder
         this.abstract = json.abstract;
         this.superType = json.superType ? new ContentTypeName(json.superType) : null;
         this.displayNameExpression = json.displayNameExpression;
-        this.displayNameLabel = json.displayNameLabel;
+        this.displayNamePlaceholder = json.displayNameLabel;
         this.owner = json.owner;
         this.modifier = json.modifier;
         this.allowedChildContentTypes = json.allowChildContentType;

@@ -3,7 +3,7 @@ import {ItemJson} from '../item/ItemJson';
 export interface SchemaJson
     extends ItemJson {
 
-    displayName: string;
+    title: string;
 
     description: string;
 
