@@ -56,8 +56,13 @@ export class Extension<B extends ExtensionBuilder = ExtensionBuilder, C extends 
         return (CONFIG.getString('extensionApiUrl') || '').replace(/\/+$/, '');
     }
 
-    public getDisplayName(): string {
+    public getTitle(): string {
         return this.title;
+    }
+
+    /** @deprecated Use {@link getTitle} instead. */
+    public getDisplayName(): string {
+        return this.getTitle();
     }
 
     public getDescription(): string {
@@ -97,7 +102,7 @@ export class ExtensionBuilder<C extends ExtensionConfig = ExtensionConfig> {
         if (source) {
             this.url = source.getUrl();
             this.iconUrl = source.getIconUrl();
-            this.title = source.getDisplayName();
+            this.title = source.getTitle();
             this.description = source.getDescription();
             this.interfaces = source.getInterfaces();
             this.extensionDescriptorKey = source.getDescriptorKey();
@@ -136,9 +141,14 @@ export class ExtensionBuilder<C extends ExtensionConfig = ExtensionConfig> {
         return this;
     }
 
-    setDisplayName(title: string): ExtensionBuilder {
+    setTitle(title: string): ExtensionBuilder {
         this.title = title;
         return this;
+    }
+
+    /** @deprecated Use {@link setTitle} instead. */
+    setDisplayName(title: string): ExtensionBuilder {
+        return this.setTitle(title);
     }
 
     setDescription(description: string): ExtensionBuilder {
