@@ -168,7 +168,16 @@ export const InputFieldResolved = ({
     const rawValueMap = useRawValueMap();
     const [touched, setTouched] = useState<Set<number>>(() => new Set());
 
-    // TODO: [#4328] Seed default value from schema when creating a new PropertyArray
+    const defaultValue = useMemo((): Value => {
+        // biome-ignore lint/complexity/useLiteralKeys: 'default' is a reserved word
+        const raw = input.getInputTypeConfig()?.['default']?.[0]?.value;
+        if (raw == null) return descriptor.getValueType().newNullValue();
+        const value = descriptor.createDefaultValue(raw);
+        if (value.isNull()) return descriptor.getValueType().newNullValue();
+        if (descriptor.validate(value, config).length > 0) return descriptor.getValueType().newNullValue();
+        return value;
+    }, [input, descriptor, config]);
+
     const propertyArray = useMemo(() => {
         let arr = propertySet.getPropertyArray(inputName);
         if (arr == null) {
@@ -190,6 +199,7 @@ export const InputFieldResolved = ({
         config,
         initialValues: values,
         autoSeed: definition.mode !== 'internal',
+        defaultValue,
     });
 
     useEffect(() => {
@@ -244,11 +254,11 @@ export const InputFieldResolved = ({
 
     const handleAdd = useCallback(
         (value?: Value) => {
-            if (!add()) return;
-            const newValue = value ?? descriptor.getValueType().newNullValue();
+            const newValue = value ?? defaultValue;
+            if (!add(newValue)) return;
             propertyArray.add(newValue);
         },
-        [add, propertyArray, descriptor],
+        [add, propertyArray, defaultValue],
     );
 
     const handleRemove = useCallback(

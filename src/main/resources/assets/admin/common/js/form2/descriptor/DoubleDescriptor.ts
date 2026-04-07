@@ -33,9 +33,14 @@ export const DoubleDescriptor: InputTypeDescriptor<NumberConfig> = {
     },
 
     createDefaultValue(raw: unknown): Value {
-        if (typeof raw !== 'number') {
+        if (typeof raw === 'string') {
+            if (raw.trim() === '') return ValueTypes.DOUBLE.newNullValue();
+            const parsed = Number(raw);
+            if (NumberHelper.isNumber(parsed)) return ValueTypes.DOUBLE.fromJsonValue(parsed);
             return ValueTypes.DOUBLE.newNullValue();
         }
+
+        if (typeof raw !== 'number') return ValueTypes.DOUBLE.newNullValue();
         return ValueTypes.DOUBLE.fromJsonValue(raw);
     },
 

@@ -21,6 +21,7 @@ export const DateTimeDescriptor: InputTypeDescriptor<DateTimeConfig> = {
 
     readConfig(raw: RawInputConfig): DateTimeConfig {
         const rawDefault = raw.default?.[0]?.value;
+
         let defaultDateTime: Date | undefined;
         if (typeof rawDefault === 'string' && rawDefault.length > 0) {
             if (DATETIME_PATTERN.test(rawDefault)) {

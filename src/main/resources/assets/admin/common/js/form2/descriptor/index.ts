@@ -17,6 +17,7 @@ export type {
     DateTimeRangeConfig,
     GeoPointConfig,
     InputTypeConfig,
+    InstantConfig,
     NumberConfig,
     PrincipalSelectorConfig,
     RadioButtonConfig,
@@ -26,6 +27,7 @@ export type {
     TimeConfig,
 } from './InputTypeConfig';
 export type {InputTypeDescriptor} from './InputTypeDescriptor';
+export {InstantDescriptor} from './InstantDescriptor';
 // Config types
 export {LongDescriptor} from './LongDescriptor';
 export {OccurrenceManager, type OccurrenceManagerState, type OccurrenceValidationState} from './OccurrenceManager';

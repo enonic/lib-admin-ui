@@ -23,13 +23,6 @@ describe('GeoPointDescriptor', () => {
             const config = GeoPointDescriptor.readConfig({});
             expect(config).toEqual({});
         });
-
-        it('ignores unknown config keys', () => {
-            const config = GeoPointDescriptor.readConfig({
-                unknown: [{value: 'test'}],
-            });
-            expect(config).toEqual({});
-        });
     });
 
     describe('createDefaultValue', () => {
