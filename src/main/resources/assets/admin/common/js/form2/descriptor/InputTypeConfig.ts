@@ -49,19 +49,19 @@ export type PrincipalSelectorConfig = {
 export type GeoPointConfig = Record<string, never>;
 
 export type DateConfig = {
-    default: Date | undefined;
+    default?: Date | undefined;
 };
 
 export type DateTimeConfig = {
-    default: Date | undefined;
+    default?: Date | undefined;
 };
 
 export type InstantConfig = {
-    default: Date | undefined;
+    default?: Date | undefined;
 };
 
 export type TimeConfig = {
-    default: Date | undefined;
+    default?: Date | undefined;
 };
 
 export type DateTimeRangeConfig = {

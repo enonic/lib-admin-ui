@@ -67,8 +67,24 @@ describe('DoubleDescriptor', () => {
             expect(value.getDouble()).toBe(42);
         });
 
-        it('returns null Value for string input', () => {
+        it('creates DOUBLE value from valid numeric string', () => {
             const value = DoubleDescriptor.createDefaultValue('3.14');
+            expect(value.isNull()).toBe(false);
+            expect(value.getDouble()).toBe(3.14);
+        });
+
+        it('returns null Value for non-numeric string', () => {
+            const value = DoubleDescriptor.createDefaultValue('abc');
+            expect(value.isNull()).toBe(true);
+        });
+
+        it('returns null Value for empty string', () => {
+            const value = DoubleDescriptor.createDefaultValue('');
+            expect(value.isNull()).toBe(true);
+        });
+
+        it('returns null Value for whitespace-only string', () => {
+            const value = DoubleDescriptor.createDefaultValue('  ');
             expect(value.isNull()).toBe(true);
         });
 

@@ -67,8 +67,29 @@ describe('LongDescriptor', () => {
             expect(value.getLong()).toBe(0);
         });
 
-        it('returns null Value for string input', () => {
+        it('creates LONG value from valid integer string', () => {
             const value = LongDescriptor.createDefaultValue('42');
+            expect(value.isNull()).toBe(false);
+            expect(value.getLong()).toBe(42);
+        });
+
+        it('returns null Value for non-integer string', () => {
+            const value = LongDescriptor.createDefaultValue('3.14');
+            expect(value.isNull()).toBe(true);
+        });
+
+        it('returns null Value for non-numeric string', () => {
+            const value = LongDescriptor.createDefaultValue('abc');
+            expect(value.isNull()).toBe(true);
+        });
+
+        it('returns null Value for empty string', () => {
+            const value = LongDescriptor.createDefaultValue('');
+            expect(value.isNull()).toBe(true);
+        });
+
+        it('returns null Value for whitespace-only string', () => {
+            const value = LongDescriptor.createDefaultValue('  ');
             expect(value.isNull()).toBe(true);
         });
 

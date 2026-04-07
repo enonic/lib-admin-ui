@@ -22,6 +22,7 @@ export const TimeDescriptor: InputTypeDescriptor<TimeConfig> = {
 
     readConfig(raw: RawInputConfig): TimeConfig {
         const rawDefault = raw.default?.[0]?.value;
+
         let defaultTime: Date | undefined;
         if (typeof rawDefault === 'string' && rawDefault.length > 0) {
             if (TIME_PATTERN.test(rawDefault)) {

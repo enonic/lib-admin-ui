@@ -13,11 +13,13 @@ type UseOccurrenceManagerParams<C extends InputTypeConfig = InputTypeConfig> = {
     /** One-time seed values for construction. Not reactive — use `sync()` to push updates after mount. */
     initialValues: Value[];
     autoSeed?: boolean;
+    /** Value used when auto-seeding to minFill. Falls back to null value when omitted. */
+    defaultValue?: Value;
 };
 
 type UseOccurrenceManagerResult = {
     state: OccurrenceManagerState;
-    add: () => boolean;
+    add: (value?: Value) => boolean;
     remove: (index: number) => boolean;
     move: (fromIndex: number, toIndex: number) => boolean;
     set: (index: number, value: Value, rawValue?: string) => void;
@@ -30,6 +32,7 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     config,
     initialValues,
     autoSeed = true,
+    defaultValue,
 }: UseOccurrenceManagerParams<C>): UseOccurrenceManagerResult {
     const minFill = useMemo(() => (autoSeed ? Math.max(occurrences.getMinimum(), 1) : 0), [occurrences, autoSeed]);
 
@@ -40,11 +43,11 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
         // Eagerly fill to minFill so the first render already has values.
         // Break if add() is a no-op (max reached) to prevent infinite loop on malformed schemas.
         while (m.getCount() < minFill) {
-            if (!m.add()) break;
+            if (!m.add(defaultValue)) break;
         }
 
         return m;
-    }, [occurrences, descriptor, config, minFill]);
+    }, [occurrences, descriptor, config, minFill, defaultValue]);
 
     const [state, setState] = useState<OccurrenceManagerState>(() => manager.validate());
 
@@ -52,11 +55,14 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
         setState(manager.validate());
     }, [manager]);
 
-    const add = useCallback((): boolean => {
-        const added = manager.add();
-        if (added) setState(manager.validate());
-        return added;
-    }, [manager]);
+    const add = useCallback(
+        (value?: Value): boolean => {
+            const added = manager.add(value);
+            if (added) setState(manager.validate());
+            return added;
+        },
+        [manager],
+    );
 
     const remove = useCallback(
         (index: number): boolean => {
@@ -90,12 +96,12 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
             // Re-enforce minFill after external value replacement (e.g., PropertyArray cleared).
             // Break if add() is a no-op (max reached) to prevent infinite loop on malformed schemas.
             while (manager.getCount() < minFill) {
-                if (!manager.add()) break;
+                if (!manager.add(defaultValue)) break;
             }
             setState(manager.validate());
             return manager.getValues();
         },
-        [manager, minFill],
+        [manager, minFill, defaultValue],
     );
 
     return {state, add, remove, move, set, sync};

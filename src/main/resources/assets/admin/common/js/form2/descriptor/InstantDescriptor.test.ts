@@ -185,19 +185,25 @@ describe('InstantDescriptor', () => {
             expect(value.getType()).toBe(ValueTypes.DATE_TIME);
         });
 
-        it('creates value from datetime without Z by appending Z', () => {
-            const value = InstantDescriptor.createDefaultValue('2025-06-15T14:30');
+        it('creates value from naive datetime by converting local time to UTC', () => {
+            const input = '2025-06-15T14:30';
+            const value = InstantDescriptor.createDefaultValue(input);
+            // ? new Date() parses naive datetime as local time per JS spec
+            const expected = new Date(input).toISOString().replace(/\.000Z$/, 'Z');
 
             expect(value.isNull()).toBe(false);
             expect(value.getType()).toBe(ValueTypes.DATE_TIME);
-            expect(value.getString()).toContain('Z');
+            expect(value.getString()).toBe(expected);
         });
 
-        it('creates value from datetime with seconds without Z by appending Z', () => {
-            const value = InstantDescriptor.createDefaultValue('2025-06-15T14:30:45');
+        it('creates value from naive datetime with seconds by converting local time to UTC', () => {
+            const input = '2025-06-15T14:30:45';
+            const value = InstantDescriptor.createDefaultValue(input);
+            const expected = new Date(input).toISOString().replace(/\.000Z$/, 'Z');
 
             expect(value.isNull()).toBe(false);
-            expect(value.getString()).toBe('2025-06-15T14:30:45Z');
+            expect(value.getType()).toBe(ValueTypes.DATE_TIME);
+            expect(value.getString()).toBe(expected);
         });
 
         it('creates value from instant with seconds', () => {

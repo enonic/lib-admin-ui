@@ -33,9 +33,13 @@ export const LongDescriptor: InputTypeDescriptor<NumberConfig> = {
     },
 
     createDefaultValue(raw: unknown): Value {
-        if (typeof raw !== 'number') {
+        if (typeof raw === 'string') {
+            if (raw.trim() === '') return ValueTypes.LONG.newNullValue();
+            const parsed = Number(raw);
+            if (NumberHelper.isWholeNumber(parsed)) return ValueTypes.LONG.fromJsonValue(parsed);
             return ValueTypes.LONG.newNullValue();
         }
+        if (typeof raw !== 'number') return ValueTypes.LONG.newNullValue();
         return ValueTypes.LONG.fromJsonValue(raw);
     },
 

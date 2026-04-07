@@ -23,6 +23,7 @@ export const InstantDescriptor: InputTypeDescriptor<InstantConfig> = {
 
     readConfig(raw: RawInputConfig): InstantConfig {
         const rawDefault = raw.default?.[0]?.value;
+
         let defaultDateTime: Date | undefined;
         if (typeof rawDefault === 'string' && rawDefault.length > 0) {
             if (
@@ -66,8 +67,9 @@ export const InstantDescriptor: InputTypeDescriptor<InstantConfig> = {
         }
 
         if (DATETIME_PATTERN.test(raw)) {
-            // ? Append Z to treat as UTC when no timezone specified
-            return ValueTypes.DATE_TIME.newValue(`${raw}Z`);
+            // ? Parse as local time (JS spec: naive datetime → local), then convert to UTC
+            const value = DateTime.fromDate(new Date(raw));
+            return new Value(value, ValueTypes.DATE_TIME);
         }
 
         if (!RELATIVE_EXPR.test(raw)) {
