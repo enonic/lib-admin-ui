@@ -22,15 +22,26 @@ import type {SelfManagedComponentProps} from '../../types';
 import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
 import {
+    getPastedTagLabels,
     getTagLabel,
     getVisibleTagLabel,
+    hasPastedTagSeparators,
+    hasRenderableTagLabel,
     hasTagLabel,
     isRenderableTagValue,
     isTagLabelCropped,
     normalizeTagDraft,
 } from './tagInputUtils';
 
-export {getTagLabel, getVisibleTagLabel, hasTagLabel, isTagLabelCropped, normalizeTagDraft} from './tagInputUtils';
+export {
+    getPastedTagLabels,
+    getTagLabel,
+    getVisibleTagLabel,
+    hasPastedTagSeparators,
+    hasTagLabel,
+    isTagLabelCropped,
+    normalizeTagDraft,
+} from './tagInputUtils';
 
 const TAG_INPUT_NAME = 'TagInput';
 
@@ -75,6 +86,7 @@ type TagDraftInputProps = {
     onChange: (value: string) => void;
     onFocus: () => void;
     onKeyDown: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
+    onPaste: (event: JSX.TargetedClipboardEvent<HTMLInputElement>) => void;
     onBlur: (event: JSX.TargetedFocusEvent<HTMLInputElement>) => void;
 };
 
@@ -87,6 +99,16 @@ type RemoveTagOptions = {
 type CommitDraftResult = {
     committed: boolean;
     usedHiddenSlot: boolean;
+};
+
+type CommitTagLabelsOptions = {
+    focusTarget?: HTMLInputElement;
+    clearDraft?: boolean;
+};
+
+type CommitTagLabelsResult = {
+    committedCount: number;
+    usedHiddenSlots: number;
 };
 
 type SortableDataEntry = {
@@ -308,6 +330,7 @@ function renderTagDraftInput({
     onChange,
     onFocus,
     onKeyDown,
+    onPaste,
     onBlur,
 }: TagDraftInputProps): ReactElement {
     return (
@@ -332,6 +355,7 @@ function renderTagDraftInput({
                 onChange={(event: JSX.TargetedEvent<HTMLInputElement>) => onChange(event.currentTarget.value)}
                 onFocus={onFocus}
                 onKeyDown={onKeyDown}
+                onPaste={onPaste}
                 onBlur={onBlur}
                 disabled={!enabled}
                 aria-invalid={invalid || undefined}
@@ -713,6 +737,81 @@ export const TagInput = ({
         setDraft(value);
     };
 
+    const commitTagLabels = (
+        rawLabels: string[],
+        {focusTarget, clearDraft = false}: CommitTagLabelsOptions = {},
+    ): CommitTagLabelsResult => {
+        const maximum = occurrences.getMaximum();
+        const remainingCapacity = maximum === 0 ? Number.POSITIVE_INFINITY : Math.max(maximum - visibleTagCount, 0);
+
+        if (remainingCapacity === 0) {
+            return {committedCount: 0, usedHiddenSlots: 0};
+        }
+
+        const knownLabels = new Set(
+            values.map(value => normalizeTagDraft(getTagLabel(value))).filter(hasRenderableTagLabel),
+        );
+        const labelsToCommit: string[] = [];
+
+        rawLabels.forEach(rawLabel => {
+            if (labelsToCommit.length >= remainingCapacity) {
+                return;
+            }
+
+            const normalizedLabel = normalizeTagDraft(rawLabel);
+            if (!hasRenderableTagLabel(normalizedLabel) || knownLabels.has(normalizedLabel)) {
+                return;
+            }
+
+            knownLabels.add(normalizedLabel);
+            labelsToCommit.push(normalizedLabel);
+        });
+
+        if (labelsToCommit.length === 0) {
+            return {committedCount: 0, usedHiddenSlots: 0};
+        }
+
+        const usedHiddenSlots = Math.min(Math.max(values.length - visibleTagCount, 0), labelsToCommit.length);
+
+        if (usedHiddenSlots > 0) {
+            compactHiddenTagSlots(values, onMove);
+        }
+
+        labelsToCommit.forEach((label, index) => {
+            const nextValue = ValueTypes.STRING.newValue(label);
+            if (index < usedHiddenSlots) {
+                onChange(visibleTagCount + index, nextValue, label);
+                return;
+            }
+
+            onAdd(nextValue);
+        });
+
+        const nextVisibleTagCount = visibleTagCount + labelsToCommit.length;
+        const hasRoomForAnother = maximum === 0 || nextVisibleTagCount < maximum;
+
+        if (clearDraft || !hasRoomForAnother) {
+            setDraftValue('');
+        }
+
+        if (focusTarget != null) {
+            if (hasRoomForAnother) {
+                focusElementNextFrame(focusTarget);
+            } else {
+                skipBlurCommit.current = true;
+                setIsInputActive(false);
+                const lastTagIndex = nextVisibleTagCount - 1;
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        (removeTagRefs.current[lastTagIndex] ?? tagRefs.current[lastTagIndex])?.focus();
+                    });
+                });
+            }
+        }
+
+        return {committedCount: labelsToCommit.length, usedHiddenSlots};
+    };
+
     const commitDraft = (
         focusTarget?: HTMLInputElement,
         excludedIndex?: number,
@@ -732,37 +831,12 @@ export const TagInput = ({
             return {committed: false, usedHiddenSlot: false};
         }
 
-        const nextValue = ValueTypes.STRING.newValue(normalized);
-        const usedHiddenSlot = values.length > visibleTagCount;
+        const {committedCount, usedHiddenSlots} = commitTagLabels([normalized], {focusTarget, clearDraft: true});
 
-        if (usedHiddenSlot) {
-            compactHiddenTagSlots(values, onMove);
-            onChange(visibleTagCount, nextValue, normalized);
-        } else {
-            onAdd(nextValue);
-        }
-        setDraftValue('');
-
-        const hasRoomForAnother = occurrences.getMaximum() === 0 || visibleTagCount + 1 < occurrences.getMaximum();
-
-        if (focusTarget != null) {
-            if (hasRoomForAnother) {
-                focusElementNextFrame(focusTarget);
-            } else {
-                skipBlurCommit.current = true;
-                setIsInputActive(false);
-                const lastTagIndex = visibleTagCount;
-                // ? Double RAF: first waits for Preact to re-render with the new tag,
-                // second ensures refs are populated before focusing
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        (removeTagRefs.current[lastTagIndex] ?? tagRefs.current[lastTagIndex])?.focus();
-                    });
-                });
-            }
-        }
-
-        return {committed: true, usedHiddenSlot};
+        return {
+            committed: committedCount > 0,
+            usedHiddenSlot: usedHiddenSlots > 0,
+        };
     };
 
     const prepareRemove = () => {
@@ -882,6 +956,28 @@ export const TagInput = ({
         commitDraft(event.currentTarget);
     };
 
+    const handlePaste = (event: JSX.TargetedClipboardEvent<HTMLInputElement>) => {
+        const pastedText = event.clipboardData?.getData('text/plain');
+        if (pastedText == null || !hasPastedTagSeparators(pastedText)) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const pastedLabels = getPastedTagLabels(pastedText);
+        if (pastedLabels.length === 0) {
+            return;
+        }
+
+        const currentDraft = normalizeTagDraft(draftRef.current);
+        const labelsToCommit = hasRenderableTagLabel(currentDraft) ? [currentDraft, ...pastedLabels] : pastedLabels;
+
+        commitTagLabels(labelsToCommit, {
+            focusTarget: event.currentTarget,
+            clearDraft: true,
+        });
+    };
+
     const handleBlur = (event: JSX.TargetedFocusEvent<HTMLInputElement>) => {
         if (skipBlurCommit.current) {
             skipBlurCommit.current = false;
@@ -941,7 +1037,7 @@ export const TagInput = ({
             <div
                 ref={wrapperRef}
                 className={cn(
-                    'min-h-14 rounded border border-bdr-subtle px-4 py-3',
+                    'rounded border border-bdr-subtle px-2 py-2',
                     'hover:outline-2 hover:outline-bdr-subtle hover:-outline-offset-1',
                     'focus-within:border-bdr-solid focus-within:outline-none',
                     'focus-within:ring-3 focus-within:ring-ring focus-within:ring-offset-3 focus-within:ring-offset-ring-offset',
@@ -983,6 +1079,7 @@ export const TagInput = ({
                                     onChange: setDraftValue,
                                     onFocus: handleInputFocus,
                                     onKeyDown: handleKeyDown,
+                                    onPaste: handlePaste,
                                     onBlur: handleBlur,
                                 })}
                         </ul>

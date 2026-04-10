@@ -1,9 +1,19 @@
 import type {Value} from '../../../data/Value';
 
 const TAG_LABEL_MAX_LENGTH = 20;
+const PASTED_TAG_SEPARATOR_PATTERN = /[\t\r\n]+/;
+const PASTED_TAG_SEPARATOR_DETECTION_PATTERN = /[\t\r\n]/;
 
 export function normalizeTagDraft(raw: string): string {
     return raw.trim().replace(/,+$/, '').trim();
+}
+
+export function hasPastedTagSeparators(raw: string): boolean {
+    return PASTED_TAG_SEPARATOR_DETECTION_PATTERN.test(raw);
+}
+
+export function getPastedTagLabels(raw: string): string[] {
+    return raw.split(PASTED_TAG_SEPARATOR_PATTERN).map(normalizeTagDraft).filter(hasRenderableTagLabel);
 }
 
 export function getTagLabel(value: Value): string {
