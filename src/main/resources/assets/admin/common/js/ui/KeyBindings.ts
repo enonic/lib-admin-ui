@@ -1,6 +1,6 @@
 import {KeyBinding, KeyBindingAction} from './KeyBinding';
-import * as Mousetrap from 'mousetrap';
-import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
+import './MousetrapSetup';
+import Mousetrap from 'mousetrap';
 import {Store} from '../store/Store';
 
 export const KEY_BINDINGS_KEY = 'keyBindings';
