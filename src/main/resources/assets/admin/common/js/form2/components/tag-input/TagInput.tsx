@@ -110,6 +110,11 @@ type TagEntry = {
     id: string;
 };
 
+type DragScrollListener = {
+    clear: () => void;
+    listen: (ownerDocument: Document, onScroll: () => void) => void;
+};
+
 //
 // * Helpers
 //
@@ -237,9 +242,29 @@ function focusElementNextFrame(element: HTMLElement | null | undefined): void {
     requestAnimationFrame(() => element?.focus());
 }
 
-function clearScrollListenerCleanup(scrollListenerCleanupRef: RefObject<(() => void) | null>): void {
-    scrollListenerCleanupRef.current?.();
-    scrollListenerCleanupRef.current = null;
+function clearCleanupRef(cleanupRef: RefObject<(() => void) | null>): void {
+    cleanupRef.current?.();
+    cleanupRef.current = null;
+}
+
+function useDragScrollListener(): DragScrollListener {
+    const cleanupRef = useRef<(() => void) | null>(null);
+
+    const clear = () => clearCleanupRef(cleanupRef);
+
+    useEffect(() => {
+        return () => clearCleanupRef(cleanupRef);
+    }, []);
+
+    const listen = (ownerDocument: Document, onScroll: () => void) => {
+        clear();
+        ownerDocument.addEventListener('scroll', onScroll, true);
+        cleanupRef.current = () => {
+            ownerDocument.removeEventListener('scroll', onScroll, true);
+        };
+    };
+
+    return {clear, listen};
 }
 
 function compactHiddenTagSlots(values: Value[], onMove: (fromIndex: number, toIndex: number) => void): void {
@@ -578,8 +603,8 @@ export const TagInput = ({
     const skipBlurCommit = useRef(false);
     const idsByValue = useRef(new WeakMap<Value, string>());
     const nextId = useRef(0);
-    const scrollListenerCleanupRef = useRef<(() => void) | null>(null);
     const isDraggingRef = useRef(false);
+    const dragScrollListener = useDragScrollListener();
     draftRef.current = draft;
     const tagEntries = values.reduce<TagEntry[]>((entries, value, index) => {
         if (!isRenderableTagValue(value)) {
@@ -615,10 +640,6 @@ export const TagInput = ({
         tagEntries.map(entry => entry.value),
         normalizedDraft,
     );
-
-    useEffect(() => {
-        return () => clearScrollListenerCleanup(scrollListenerCleanupRef);
-    }, []);
 
     const hasSuppressedHiddenEntries = hiddenErrors.some(
         entry => !entry.breaksRequired && entry.validationResults.length === 0,
@@ -873,7 +894,7 @@ export const TagInput = ({
 
     const handleDragEnd = (event: DragEndEvent) => {
         isDraggingRef.current = false;
-        clearScrollListenerCleanup(scrollListenerCleanupRef);
+        dragScrollListener.clear();
 
         const {active, over} = event;
         if (over == null || active.id === over.id) {
@@ -890,7 +911,7 @@ export const TagInput = ({
 
     const handleDragStart = (_event: DragStartEvent) => {
         isDraggingRef.current = true;
-        clearScrollListenerCleanup(scrollListenerCleanupRef);
+        dragScrollListener.clear();
 
         const ownerDocument = wrapperRef.current?.ownerDocument;
         if (ownerDocument == null) {
@@ -903,19 +924,16 @@ export const TagInput = ({
             }
 
             isDraggingRef.current = false;
-            clearScrollListenerCleanup(scrollListenerCleanupRef);
+            dragScrollListener.clear();
             setDragContextKey(current => current + 1);
         };
 
-        ownerDocument.addEventListener('scroll', handleScroll, true);
-        scrollListenerCleanupRef.current = () => {
-            ownerDocument.removeEventListener('scroll', handleScroll, true);
-        };
+        dragScrollListener.listen(ownerDocument, handleScroll);
     };
 
     const handleDragCancel = () => {
         isDraggingRef.current = false;
-        clearScrollListenerCleanup(scrollListenerCleanupRef);
+        dragScrollListener.clear();
     };
 
     return (
