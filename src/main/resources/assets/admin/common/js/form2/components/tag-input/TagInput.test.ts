@@ -226,6 +226,41 @@ function getLastDndContextProps(): Record<string, any> {
     return call[0];
 }
 
+function mockWrapperOwnerDocument() {
+    const addEventListener = vi.fn();
+    const removeEventListener = vi.fn();
+
+    mocks.useRef.mockImplementationOnce(() => ({
+        current: {
+            ownerDocument: {addEventListener, removeEventListener},
+        },
+    }));
+
+    return {addEventListener, removeEventListener};
+}
+
+function runEffectCleanupsOnUnmount(): Array<() => void> {
+    const cleanups: Array<() => void> = [];
+
+    mocks.useEffect.mockImplementation((effect: () => undefined | (() => void)) => {
+        const cleanup = effect();
+
+        if (typeof cleanup === 'function') {
+            cleanups.push(cleanup);
+        }
+    });
+
+    return cleanups;
+}
+
+function renderDraggableTagInput(overrides: Partial<TagInputProps> = {}): void {
+    renderTagInput({
+        values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
+        occurrences: Occurrences.minmax(0, 3),
+        ...overrides,
+    });
+}
+
 function getKeyboardSensorOptions(): Record<string, any> {
     const call = (mocks.useSensor.mock.calls as unknown as Array<[unknown, Record<string, any>]>).find(
         entry => entry[0] === 'KeyboardSensor',
@@ -554,22 +589,16 @@ describe('TagInput', () => {
     });
 
     it('cancels an active drag when scrolling starts', () => {
-        const addEventListener = vi.fn();
-        const removeEventListener = vi.fn();
+        const {addEventListener, removeEventListener} = mockWrapperOwnerDocument();
         const setDragContextKey = vi.fn();
-        const wrapperRef = {current: {ownerDocument: {addEventListener, removeEventListener}}};
 
         mocks.useState
             .mockImplementationOnce(() => ['', vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [0, setDragContextKey]);
-        mocks.useRef.mockImplementationOnce(() => wrapperRef);
 
-        renderTagInput({
-            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
-            occurrences: Occurrences.minmax(0, 3),
-        });
+        renderDraggableTagInput();
 
         const dndContextProps = getLastDndContextProps();
         dndContextProps.onDragStart({});
@@ -580,6 +609,23 @@ describe('TagInput', () => {
         scrollHandler();
 
         expect(setDragContextKey).toHaveBeenCalledOnce();
+        expect(removeEventListener).toHaveBeenCalledWith('scroll', scrollHandler, true);
+    });
+
+    it('removes the active drag scroll listener on unmount', () => {
+        const {addEventListener, removeEventListener} = mockWrapperOwnerDocument();
+        const effectCleanups = runEffectCleanupsOnUnmount();
+
+        renderDraggableTagInput();
+
+        const dndContextProps = getLastDndContextProps();
+        dndContextProps.onDragStart({});
+
+        const scrollHandler = addEventListener.mock.calls[0]?.[1];
+        effectCleanups.forEach(cleanup => {
+            cleanup();
+        });
+
         expect(removeEventListener).toHaveBeenCalledWith('scroll', scrollHandler, true);
     });
 
