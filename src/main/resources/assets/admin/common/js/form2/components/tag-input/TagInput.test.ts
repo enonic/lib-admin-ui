@@ -3,10 +3,12 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {Occurrences} from '../../../form/Occurrences';
-import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
-import {getOccurrenceErrorMessage} from '../../utils/validation';
+import type {OccurrenceValidationState} from '../../descriptor';
+import {getOccurrenceErrorMessage} from '../../utils';
 import {
+    getPastedTagLabels,
     getVisibleTagLabel,
+    hasPastedTagSeparators,
     hasTagLabel,
     isTagLabelCropped,
     normalizeTagDraft,
@@ -311,6 +313,21 @@ describe('TagInput helpers', () => {
     it('trims whitespace and trailing separators from draft values', () => {
         expect(normalizeTagDraft('  alpha,  ')).toBe('alpha');
         expect(normalizeTagDraft('   ')).toBe('');
+    });
+
+    it('detects spreadsheet separators and splits pasted cells into labels', () => {
+        expect(hasPastedTagSeparators('This\tis\ta\ttest yes\r\nSecond\trow\ttest\there')).toBe(true);
+        expect(getPastedTagLabels('This\tis\ta\ttest yes\r\nSecond\trow\ttest\there')).toEqual([
+            'This',
+            'is',
+            'a',
+            'test yes',
+            'Second',
+            'row',
+            'test',
+            'here',
+        ]);
+        expect(hasPastedTagSeparators('single value only')).toBe(false);
     });
 
     it('returns minimum occurrence errors when no valid tags are present', () => {
@@ -803,6 +820,145 @@ describe('TagInput', () => {
         expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('alpha'));
         expect(setDraft).toHaveBeenCalledWith('');
         expect(focus).toHaveBeenCalledOnce();
+    });
+
+    it('creates one tag per pasted spreadsheet cell', () => {
+        const onAdd = vi.fn();
+        const preventDefault = vi.fn();
+
+        renderTagInput({
+            onAdd,
+            values: [],
+            occurrences: Occurrences.minmax(0, 10),
+            errors: [],
+        });
+
+        getLastInputProps().onPaste({
+            preventDefault,
+            clipboardData: {
+                getData: (type: string) =>
+                    type === 'text/plain' ? 'This\tis\ta\ttest yes\r\nSecond\trow\ttest\there' : '',
+            },
+            currentTarget: {focus: vi.fn()},
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(onAdd).toHaveBeenCalledTimes(8);
+        expect(onAdd).toHaveBeenNthCalledWith(1, ValueTypes.STRING.newValue('This'));
+        expect(onAdd).toHaveBeenNthCalledWith(2, ValueTypes.STRING.newValue('is'));
+        expect(onAdd).toHaveBeenNthCalledWith(3, ValueTypes.STRING.newValue('a'));
+        expect(onAdd).toHaveBeenNthCalledWith(4, ValueTypes.STRING.newValue('test yes'));
+        expect(onAdd).toHaveBeenNthCalledWith(5, ValueTypes.STRING.newValue('Second'));
+        expect(onAdd).toHaveBeenNthCalledWith(6, ValueTypes.STRING.newValue('row'));
+        expect(onAdd).toHaveBeenNthCalledWith(7, ValueTypes.STRING.newValue('test'));
+        expect(onAdd).toHaveBeenNthCalledWith(8, ValueTypes.STRING.newValue('here'));
+    });
+
+    it('prepends the current draft before pasted spreadsheet cells', () => {
+        const onAdd = vi.fn();
+        const preventDefault = vi.fn();
+        const setDraft = vi.fn();
+        mocks.useState.mockImplementationOnce(() => ['beta', setDraft]);
+
+        renderTagInput({
+            onAdd,
+            values: [ValueTypes.STRING.newValue('alpha')],
+            occurrences: Occurrences.minmax(0, 2),
+            errors: [makeOccurrenceValidation(0)],
+        });
+
+        getLastInputProps().onPaste({
+            preventDefault,
+            clipboardData: {
+                getData: (type: string) => (type === 'text/plain' ? 'gamma\tdelta' : ''),
+            },
+            currentTarget: {focus: vi.fn()},
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(onAdd).toHaveBeenCalledOnce();
+        expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('beta'));
+        expect(setDraft).toHaveBeenCalledWith('');
+    });
+
+    it('clears the draft when the same label is included in the pasted spreadsheet cells', () => {
+        const onAdd = vi.fn();
+        const preventDefault = vi.fn();
+        const setDraft = vi.fn();
+        mocks.useState.mockImplementationOnce(() => ['beta', setDraft]);
+
+        renderTagInput({
+            onAdd,
+            values: [ValueTypes.STRING.newValue('alpha')],
+            occurrences: Occurrences.minmax(0, 4),
+            errors: [makeOccurrenceValidation(0)],
+        });
+
+        getLastInputProps().onPaste({
+            preventDefault,
+            clipboardData: {
+                getData: (type: string) => (type === 'text/plain' ? 'beta\tgamma' : ''),
+            },
+            currentTarget: {focus: vi.fn()},
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(onAdd).toHaveBeenNthCalledWith(1, ValueTypes.STRING.newValue('beta'));
+        expect(onAdd).toHaveBeenNthCalledWith(2, ValueTypes.STRING.newValue('gamma'));
+        expect(setDraft).toHaveBeenCalledWith('');
+    });
+
+    it('fills hidden slots first and skips duplicate pasted spreadsheet cells', () => {
+        const onAdd = vi.fn();
+        const onChange = vi.fn();
+        const onMove = vi.fn();
+        const preventDefault = vi.fn();
+
+        renderTagInput({
+            onAdd,
+            onChange,
+            onMove,
+            values: [ValueTypes.STRING.newValue(''), ValueTypes.STRING.newValue('alpha')],
+            errors: [makeHiddenBlankValidation(0), makeOccurrenceValidation(1)],
+            occurrences: Occurrences.minmax(0, 3),
+        });
+
+        getLastInputProps().onPaste({
+            preventDefault,
+            clipboardData: {
+                getData: (type: string) => (type === 'text/plain' ? 'alpha\tbeta\r\nbeta\tgamma' : ''),
+            },
+            currentTarget: {focus: vi.fn()},
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(onMove).toHaveBeenCalledWith(1, 0);
+        expect(onChange).toHaveBeenCalledWith(1, ValueTypes.STRING.newValue('beta'), 'beta');
+        expect(onAdd).toHaveBeenCalledOnce();
+        expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('gamma'));
+    });
+
+    it('keeps native single-value paste behavior', () => {
+        const onAdd = vi.fn();
+        const preventDefault = vi.fn();
+
+        renderTagInput({
+            onAdd,
+            values: [],
+            occurrences: Occurrences.minmax(0, 3),
+            errors: [],
+        });
+
+        getLastInputProps().onPaste({
+            preventDefault,
+            clipboardData: {
+                getData: (type: string) => (type === 'text/plain' ? 'single value only' : ''),
+            },
+            currentTarget: {focus: vi.fn()},
+        });
+
+        expect(preventDefault).not.toHaveBeenCalled();
+        expect(onAdd).not.toHaveBeenCalled();
     });
 
     it('compacts hidden tag slots before writing a new tag so the new tag appends after visible tags', () => {
