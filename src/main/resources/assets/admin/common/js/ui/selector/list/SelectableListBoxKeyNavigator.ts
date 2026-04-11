@@ -225,7 +225,19 @@ export class SelectableListBoxKeyNavigator<I> {
     }
 
     protected onSpaceKeyPress(event: Mousetrap.ExtendedKeyboardEvent) {
-        //
+        const lastSelectedItem = this.selectableWrapper.getSelectedItems().pop();
+
+        if (lastSelectedItem) {
+            event.preventDefault();
+
+            if (this.selectableWrapper.hasHighlightMode()) {
+                this.selectableWrapper.setSelectionMode(
+                    this.selectableWrapper.getSelectionMode() === SelectionMode.HIGHLIGHT ? SelectionMode.SELECT : SelectionMode.HIGHLIGHT);
+                this.selectableWrapper.select(lastSelectedItem);
+            } else {
+                this.selectableWrapper.deselect(lastSelectedItem);
+            }
+        }
     }
 
     protected scrollIfCloseToBottom(item: I): void {

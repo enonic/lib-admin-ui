@@ -1,6 +1,5 @@
 import {SelectableListBoxKeyNavigator} from './SelectableListBoxKeyNavigator';
 import {TreeListBox} from './TreeListBox';
-import {SelectionMode} from './SelectableListBoxWrapper';
 
 export class SelectableTreeListBoxKeyNavigator<I> extends SelectableListBoxKeyNavigator<I> {
 
@@ -80,19 +79,4 @@ export class SelectableTreeListBoxKeyNavigator<I> extends SelectableListBoxKeyNa
         }
     }
 
-    protected onSpaceKeyPress(event: Mousetrap.ExtendedKeyboardEvent): void {
-        const lastSelectedItem  = this.selectableWrapper.getSelectedItems().pop();
-
-        if (lastSelectedItem) {
-            event.preventDefault();
-
-            if (this.selectableWrapper.hasHighlightMode()) {
-                this.selectableWrapper.setSelectionMode(
-                    this.selectableWrapper.getSelectionMode() === SelectionMode.HIGHLIGHT ? SelectionMode.SELECT : SelectionMode.HIGHLIGHT);
-                this.selectableWrapper.select(lastSelectedItem);
-            } else {
-                this.selectableWrapper.deselect(lastSelectedItem);
-            }
-        }
-    }
 }
