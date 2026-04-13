@@ -103,6 +103,28 @@ describe('TextLineDescriptor', () => {
             return {regexp: undefined, maxLength: -1, showCounter: false, ...overrides};
         }
 
+        it('validates rawValue when stored value is null and regexp is broken', () => {
+            const config = makeConfig({regexp: /^[A-Z]+$/});
+            const results = TextLineDescriptor.validate(ValueTypes.STRING.newNullValue(), config, 'abc');
+
+            expect(results).toHaveLength(1);
+            expect(results[0].message).toContain('field.value.invalid');
+        });
+
+        it('validates rawValue when stored value is null and maxLength is exceeded', () => {
+            const config = makeConfig({maxLength: 3});
+            const results = TextLineDescriptor.validate(ValueTypes.STRING.newNullValue(), config, 'abcd');
+
+            expect(results).toHaveLength(1);
+            expect(results[0].message).toContain('field.value.breaks.maxlength');
+        });
+
+        it('does not report an error for empty rawValue when stored value is null', () => {
+            const config = makeConfig({regexp: /^[A-Z]+$/});
+
+            expect(TextLineDescriptor.validate(ValueTypes.STRING.newNullValue(), config, '')).toEqual([]);
+        });
+
         it('returns empty array for valid input', () => {
             const config = makeConfig();
             const value = ValueTypes.STRING.newValue('hello');
