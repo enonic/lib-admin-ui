@@ -49,7 +49,7 @@
     "preact": "^10.29.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.4.10",
+    "@biomejs/biome": "~2.4.11",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@enonic/ui": "~0.47.5",
