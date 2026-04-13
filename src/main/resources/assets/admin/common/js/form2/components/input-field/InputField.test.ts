@@ -5,6 +5,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {Occurrences} from '../../../form/Occurrences';
+import type {InputTypeConfig, InputTypeDescriptor} from '../../descriptor';
 import type {InputTypeComponent, SelfManagedInputTypeComponent} from '../../types';
 import {InputField, InputFieldResolved} from './InputField';
 
@@ -91,13 +92,13 @@ function makeInput(typeName: string, max = 1) {
         .build();
 }
 
-function makeDescriptor() {
+function makeDescriptor(): InputTypeDescriptor<InputTypeConfig> {
     return {
         name: 'TestType',
         getValueType: () => ValueTypes.STRING,
         readConfig: vi.fn(() => ({})),
         createDefaultValue: () => ValueTypes.STRING.newNullValue(),
-        validate: () => [],
+        validate: (_value: Value, _config: InputTypeConfig, _rawValue?: string) => [],
         valueBreaksRequired: (value: Value) => value.isNull(),
     };
 }
@@ -189,6 +190,49 @@ describe('InputField', () => {
 
         expect(child.type).toBe(mocks.occurrenceListRoot);
         expect(child.props.Component).toBe(component);
+    });
+
+    it('stores null plus rawValue for invalid TextLine edits', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'list' as const, descriptor, component};
+        const input = makeInput('TextLine', 2);
+        const propertySet = new PropertyTree().getRoot();
+        const set = vi.fn();
+        const rawValueMap = new Map<string, (string | undefined)[]>();
+
+        descriptor.validate = vi.fn((value: Value, _config: unknown, rawValue?: string) => {
+            const text = value.isNull() ? rawValue : value.getString();
+            return text === 'abc' ? [{message: 'field.value.invalid'}] : [];
+        });
+
+        mocks.useRawValueMap.mockReturnValue(rawValueMap);
+        mocks.usePropertyArray.mockReturnValue({values: [ValueTypes.STRING.newNullValue()], size: 1});
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: {
+                ...makeManagerState(ValueTypes.STRING.newNullValue()),
+                values: [ValueTypes.STRING.newNullValue()],
+                occurrenceValidation: [{index: 0, breaksRequired: false, validationResults: []}],
+                totalValid: 0,
+            },
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set,
+            sync: vi.fn(),
+        });
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getOnlyChild(element);
+
+        child.props.onChange(0, ValueTypes.STRING.newValue('abc'), 'abc');
+
+        expect(set).toHaveBeenCalledOnce();
+        expect(set.mock.calls[0][0]).toBe(0);
+        expect((set.mock.calls[0][1] as Value).isNull()).toBe(true);
+        expect(set.mock.calls[0][2]).toBe('abc');
+        expect(rawValueMap.get('testField')).toEqual(['abc']);
+        expect(propertySet.getPropertyArray('testField')?.getValue(0)?.isNull()).toBe(true);
     });
 
     it('renders internal components with onMove and disables auto-seeding', () => {
