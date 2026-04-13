@@ -73,7 +73,7 @@
     "less": "^4.6.4",
     "lucide-react": "^1.7.0",
     "postcss-normalize": "^13.0.1",
-    "postcss-sort-media-queries": "^6.3.3",
+    "postcss-sort-media-queries": "^6.4.4",
     "preact": "^10.29.1",
     "storybook": "~10.3.4",
     "tailwindcss": "~4.2.2",
