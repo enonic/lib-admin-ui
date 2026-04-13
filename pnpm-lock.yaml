@@ -118,8 +118,8 @@ importers:
         specifier: ^13.0.1
         version: 13.0.1(browserslist@4.28.2)(postcss@8.5.8)
       postcss-sort-media-queries:
-        specifier: ^6.3.3
-        version: 6.3.3(nanoid@5.1.7)(postcss@8.5.8)
+        specifier: ^6.4.4
+        version: 6.4.4(nanoid@5.1.7)(postcss@8.5.8)
       preact:
         specifier: ^10.29.1
         version: 10.29.1
@@ -1593,8 +1593,8 @@ packages:
     resolution: {integrity: sha512-orRsuYpJVw8LdAwqqLykBj9ecS5/cRHlI5+nvTo8LcCKmzDmqVORXtOIYEEQuL9D4BxtA1lm5isAqzQZCoQ6Eg==}
     engines: {node: '>=4'}
 
-  postcss-sort-media-queries@6.3.3:
-    resolution: {integrity: sha512-k1rrzbgWcezofnn7JvqgMCznAYRMbF7WUJlLRN6sYX3yeg3V/wKL4Duv8HpP2q0UBLLhqnlzgEdAR7QWrMv3kg==}
+  postcss-sort-media-queries@6.4.4:
+    resolution: {integrity: sha512-Bt1ITSNrSfZzh7Gw0AJse0aoJEGzwKVEDU850bexExP8vX9Ehm5XE66xech8Q/c3j8kLGr1oP5Suw5tAb2O5Nw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       nanoid: ^5.1.6
@@ -1699,8 +1699,8 @@ packages:
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
 
-  sort-css-media-queries@3.0.3:
-    resolution: {integrity: sha512-8q8y3i1wCZJbRRkX40aRAT5IAw2NWytQHOjqTOBMUnhwS1OUg3P09IlXjtLWIAX+d4nE2dsTOBKiySGLzcHCiw==}
+  sort-css-media-queries@3.0.5:
+    resolution: {integrity: sha512-wRgTa9kOgx5nV+lp/uwT0XBlH/WN5dpsOxyIkbtQud65Ie66TYjHceWH/8d1C0siMjcdSjjXg4zV022QmvLsaw==}
     engines: {node: '>= 16'}
 
   source-map-js@1.2.1:
@@ -3152,11 +3152,11 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-sort-media-queries@6.3.3(nanoid@5.1.7)(postcss@8.5.8):
+  postcss-sort-media-queries@6.4.4(nanoid@5.1.7)(postcss@8.5.8):
     dependencies:
       nanoid: 5.1.7
       postcss: 8.5.8
-      sort-css-media-queries: 3.0.3
+      sort-css-media-queries: 3.0.5
 
   postcss-svgo@7.1.1(postcss@8.5.8):
     dependencies:
@@ -3267,7 +3267,7 @@ snapshots:
 
   siginfo@2.0.0: {}
 
-  sort-css-media-queries@3.0.3: {}
+  sort-css-media-queries@3.0.5: {}
 
   source-map-js@1.2.1: {}
 
