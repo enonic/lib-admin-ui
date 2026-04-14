@@ -2,6 +2,8 @@ import {
     closestCenter,
     DndContext,
     type DragEndEvent,
+    type DragOverEvent,
+    type DragStartEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -43,16 +45,24 @@ export type SortableListProps<T> = {
     items: T[];
     /** Unique string ID for dnd-kit; called once per item. */
     keyExtractor: (item: T, index: number) => string;
+    /** Called when a drag starts with the index of the dragged item. */
+    onDragStart?: (index: number) => void;
     /** Called after a drag completes with the old and new indices. */
     onMove: (fromIndex: number, toIndex: number) => void;
     /** Controls whether drag handles are interactive. */
     enabled: boolean;
     /** When `true`, the entire row becomes the drag target instead of just the grip handle. Defaults to `false`. */
     fullRowDraggable?: boolean;
+    /** Per-item override for movability. When provided, its return value replaces the global `isMovable` check for that item. */
+    isItemMovable?: (item: T, index: number) => boolean;
     /** Renders the content inside each sortable row. */
     renderItem: (context: SortableListItemContext<T>) => ReactNode;
     /** Accessible label for drag handle buttons (e.g. "Drag to reorder"). */
     dragLabel?: string;
+    /** Called during drag to check if the current drop position is valid. Controls dragged item opacity. */
+    isDropAllowed?: (fromIndex: number, toIndex: number) => boolean;
+    /** Custom function to control when layout-change animations run. Passed to `useSortable`. */
+    animateLayoutChanges?: (args: {isSorting: boolean; wasDragging: boolean}) => boolean;
     /** Extra classes on each row wrapper; function form receives item context. */
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
     className?: string;
@@ -88,9 +98,12 @@ type SortableListItemInternalProps<T> = {
     isMovable: boolean;
     enabled: boolean;
     fullRowDraggable: boolean;
+    dropAllowed: boolean;
     dragLabel?: string;
+    animateLayoutChanges?: (args: {isSorting: boolean; wasDragging: boolean}) => boolean;
     renderItem: (context: SortableListItemContext<T>) => ReactNode;
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
+    itemTabIndex?: number;
 };
 
 const SortableListItem = <T,>({
@@ -100,14 +113,18 @@ const SortableListItem = <T,>({
     isMovable,
     enabled,
     fullRowDraggable,
+    dropAllowed,
     dragLabel,
+    animateLayoutChanges,
     renderItem,
     itemClassName,
+    itemTabIndex,
 }: SortableListItemInternalProps<T>): ReactElement => {
     const [isFocused, setIsFocused] = useState(false);
     const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id,
         disabled: !isMovable,
+        animateLayoutChanges,
     });
 
     const handleKeyDown: JSX.KeyboardEventHandler<HTMLDivElement> = e => {
@@ -152,7 +169,7 @@ const SortableListItem = <T,>({
             onFocus={handleFocus}
             onBlur={handleBlur}
             role={attributes.role as JSX.AriaRole}
-            tabIndex={isMovable ? attributes.tabIndex : undefined}
+            tabIndex={itemTabIndex ?? (isMovable ? attributes.tabIndex : undefined)}
             aria-disabled={attributes['aria-disabled']}
             aria-pressed={attributes['aria-pressed']}
             aria-roledescription={attributes['aria-roledescription']}
@@ -162,6 +179,7 @@ const SortableListItem = <T,>({
                 'relative flex items-center rounded outline-none',
                 'focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-inset',
                 isDragging && 'bg-surface-neutral shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5',
+                isDragging && !dropAllowed && 'opacity-40',
                 fullRowDraggable && isMovable && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
                 resolvedClassName,
             )}
@@ -200,9 +218,13 @@ const SORTABLE_LIST_NAME = 'SortableList';
 export const SortableList = <T,>({
     items,
     keyExtractor,
+    onDragStart: onDragStartProp,
     onMove,
     enabled,
     fullRowDraggable = false,
+    isItemMovable,
+    isDropAllowed,
+    animateLayoutChanges,
     dragLabel,
     renderItem,
     itemClassName,
@@ -211,6 +233,7 @@ export const SortableList = <T,>({
 }: SortableListProps<T>): ReactElement => {
     const ids = useMemo(() => items.map((item, i) => keyExtractor(item, i)), [items, keyExtractor]);
     const isMovable = items.length >= 2;
+    const [dropAllowed, setDropAllowed] = useState(true);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
@@ -219,14 +242,47 @@ export const SortableList = <T,>({
         }),
     );
 
+    const handleDragStart = useCallback(
+        (event: DragStartEvent) => {
+            setDropAllowed(true);
+            if (onDragStartProp != null) {
+                const index = ids.indexOf(String(event.active.id));
+                if (index !== -1) {
+                    onDragStartProp(index);
+                }
+            }
+        },
+        [ids, onDragStartProp],
+    );
+
+    const handleDragOver = useCallback(
+        (event: DragOverEvent) => {
+            if (isDropAllowed == null) return;
+
+            const {active, over} = event;
+            if (over == null || active.id === over.id) {
+                setDropAllowed(true);
+                return;
+            }
+
+            const fromIndex = ids.indexOf(String(active.id));
+            const toIndex = ids.indexOf(String(over.id));
+            setDropAllowed(fromIndex !== -1 && toIndex !== -1 && isDropAllowed(fromIndex, toIndex));
+        },
+        [ids, isDropAllowed],
+    );
+
     const handleDragEnd = useCallback(
         (event: DragEndEvent) => {
+            setDropAllowed(true);
+
             const {active, over} = event;
             if (over == null || active.id === over.id) return;
 
             const oldIndex = ids.indexOf(String(active.id));
             const newIndex = ids.indexOf(String(over.id));
             if (oldIndex === -1 || newIndex === -1) return;
+
             onMove(oldIndex, newIndex);
         },
         [ids, onMove],
@@ -238,6 +294,8 @@ export const SortableList = <T,>({
                 sensors={sensors}
                 collisionDetection={closestCenter}
                 modifiers={[restrictToVerticalAxis]}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
             >
                 <SortableContext items={ids} strategy={verticalListSortingStrategy}>
@@ -247,10 +305,12 @@ export const SortableList = <T,>({
                             id={ids[i]}
                             item={item}
                             index={i}
-                            isMovable={isMovable}
+                            isMovable={isItemMovable?.(item, i) ?? isMovable}
                             enabled={enabled}
                             fullRowDraggable={fullRowDraggable}
+                            dropAllowed={dropAllowed}
                             dragLabel={dragLabel}
+                            animateLayoutChanges={animateLayoutChanges}
                             renderItem={renderItem}
                             itemClassName={itemClassName}
                         />
