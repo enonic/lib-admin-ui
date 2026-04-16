@@ -1,10 +1,18 @@
-export class ValidationErrorJson {
+export type ValidationErrorJson = {
 
-    attachment: string;
+    type: string;
 
     errorCode: string;
 
     message: string;
 
     propertyPath: string;
-}
+
+    attachment: string;
+
+    applicationKey: string;
+
+    mixinName: string;
+
+    componentPath: string;
+};
