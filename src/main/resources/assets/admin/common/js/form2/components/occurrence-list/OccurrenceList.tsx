@@ -3,14 +3,13 @@ import {Plus, X} from 'lucide-react';
 import {type ReactElement, type ReactNode, useCallback} from 'react';
 import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
-import type {InputTypeConfig} from '../../descriptor/InputTypeConfig';
-import type {OccurrenceManagerState} from '../../descriptor/OccurrenceManager';
+import type {InputTypeConfig, OccurrenceManagerState} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponent} from '../../types';
-import {getOccurrenceErrorMessage} from '../../utils/validation';
+import {getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
 import {InputLabel} from '../input-label';
-import {SortableList} from '../sortable-list';
+import {SortableGridList} from '../sortable-grid-list';
 
 //
 // * Types
@@ -209,7 +208,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         return (
             <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
                 <InputLabel input={input} />
-                <SortableList
+                <SortableGridList
                     items={state.values}
                     keyExtractor={keyExtractor}
                     onMove={onMove}

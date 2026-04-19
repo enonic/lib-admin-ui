@@ -5,12 +5,12 @@ import {useCallback, useMemo, useState} from 'react';
 
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
-import type {ComboBoxConfig} from '../../descriptor/InputTypeConfig';
+import type {ComboBoxConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {SelfManagedComponentProps} from '../../types';
 import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
-import {SortableList} from '../sortable-list';
+import {SortableGridList} from '../sortable-grid-list';
 
 //
 // * ComboBoxInput
@@ -73,7 +73,7 @@ export const ComboBoxInput = ({
         [selectedSet, values, onAdd, onRemove],
     );
 
-    // ? Stable reference for SortableList — used in its internal useMemo for IDs
+    // ? Stable reference for SortableGridList — used in its internal useMemo for IDs
     const keyExtractor = useCallback(
         (item: Value, index: number) => (item.isNull() ? `null-${index}` : item.getString()),
         [],
@@ -123,7 +123,7 @@ export const ComboBoxInput = ({
             )}
 
             {values.length > 0 && (
-                <SortableList
+                <SortableGridList
                     items={values}
                     keyExtractor={keyExtractor}
                     onMove={onMove}

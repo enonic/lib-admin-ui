@@ -3,7 +3,10 @@ import {defineConfig} from 'vitest/config';
 
 export default defineConfig({
     test: {
-        include: ['src/main/resources/assets/admin/common/js/form2/**/*.test.ts'],
+        include: [
+            'src/main/resources/assets/admin/common/js/form2/**/*.test.ts',
+            'src/main/resources/assets/admin/common/js/form2/**/*.test.tsx',
+        ],
         environment: 'node',
         passWithNoTests: true,
         reporters: ['dot'],
