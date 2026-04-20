@@ -404,12 +404,13 @@ const SortableGridListItem = <T,>({
         (listeners?.onKeyDown as JSX.KeyboardEventHandler<HTMLDivElement>)?.(e);
     };
 
+    // ? useSortable returns a fresh listeners object each render, so memoizing is a no-op
     // When fullRowDraggable, dnd-kit listeners must not override the guarded handleKeyDown
-    const rowListenersSafe = useMemo(() => {
-        if (!fullRowDraggable || !isMovable || !listeners) return undefined;
+    let rowListenersSafe: Omit<NonNullable<typeof listeners>, 'onKeyDown'> | undefined;
+    if (fullRowDraggable && isMovable && listeners != null) {
         const {onKeyDown: _ignored, ...rest} = listeners;
-        return rest;
-    }, [fullRowDraggable, isMovable, listeners]);
+        rowListenersSafe = rest;
+    }
 
     const handleFocus: JSX.FocusEventHandler<HTMLDivElement> = e => {
         syncRowNavigationTargetsTabIndex(e.currentTarget, isNavigable);
@@ -726,15 +727,11 @@ export const SortableGridList = <T,>({
 
             const nextFocusedIndex = resolveFocusedIndexAfterMove(focusedIndex, oldIndex, newIndex);
             setFocusedIndex(nextFocusedIndex);
-
-            if (!hasFocusWithinRef.current) {
-                onMove(oldIndex, newIndex);
-                return;
-            }
-
             onMove(oldIndex, newIndex);
 
-            focusRowByIndex(nextFocusedIndex, focusedTargetIndex);
+            if (hasFocusWithinRef.current) {
+                focusRowByIndex(nextFocusedIndex, focusedTargetIndex);
+            }
         },
         [focusRowByIndex, focusedIndex, focusedItemId, focusedTargetIndex, ids, onMove],
     );
