@@ -15,7 +15,7 @@ const mocks = vi.hoisted(() => ({
                 args.length > 0 ? `${key}:${args.join(',')}` : key,
     ),
     useCallback: vi.fn((callback: unknown) => callback),
-    sortableList: vi.fn(() => null),
+    sortableGridList: vi.fn(() => null),
     inputLabel: vi.fn(() => null),
     fieldError: vi.fn(() => null),
     cn: vi.fn((...tokens: Array<string | false | undefined>) => tokens.filter(Boolean).join(' ')),
@@ -37,8 +37,8 @@ vi.mock('../../I18nContext', () => ({
     useI18n: mocks.useI18n,
 }));
 
-vi.mock('../sortable-list', () => ({
-    SortableList: mocks.sortableList,
+vi.mock('../sortable-grid-list', () => ({
+    SortableGridList: mocks.sortableGridList,
 }));
 
 vi.mock('../input-label', () => ({
@@ -124,7 +124,7 @@ describe('OccurrenceList', () => {
         vi.clearAllMocks();
         mocks.button.mockImplementation(() => null);
         mocks.iconButton.mockImplementation(() => null);
-        mocks.sortableList.mockImplementation(() => null);
+        mocks.sortableGridList.mockImplementation(() => null);
         mocks.inputLabel.mockImplementation(() => null);
         mocks.fieldError.mockImplementation(() => null);
     });
