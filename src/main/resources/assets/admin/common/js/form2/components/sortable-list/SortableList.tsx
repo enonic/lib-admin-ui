@@ -55,8 +55,10 @@ export type SortableListProps<T> = {
     fullRowDraggable?: boolean;
     /** Per-item override for movability. When provided, its return value replaces the global `isMovable` check for that item. */
     isItemMovable?: (item: T, index: number) => boolean;
+    /** When `false`, the drag handle is not rendered. If true, the drag handle is passed to renderItem as a second argument. Defaults to `false`. */
+    controlGrip?: boolean;
     /** Renders the content inside each sortable row. */
-    renderItem: (context: SortableListItemContext<T>) => ReactNode;
+    renderItem: (context: SortableListItemContext<T>, grip?: ReactNode) => ReactNode;
     /** Accessible label for drag handle buttons (e.g. "Drag to reorder"). */
     dragLabel?: string;
     /** Called during drag to check if the current drop position is valid. Controls dragged item opacity. */
@@ -97,11 +99,12 @@ type SortableListItemInternalProps<T> = {
     index: number;
     isMovable: boolean;
     enabled: boolean;
+    controlGrip: boolean;
     fullRowDraggable: boolean;
     dropAllowed: boolean;
     dragLabel?: string;
     animateLayoutChanges?: (args: {isSorting: boolean; wasDragging: boolean}) => boolean;
-    renderItem: (context: SortableListItemContext<T>) => ReactNode;
+    renderItem: (context: SortableListItemContext<T>, grip?: ReactNode) => ReactNode;
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
     itemTabIndex?: number;
 };
@@ -112,6 +115,7 @@ const SortableListItem = <T,>({
     index,
     isMovable,
     enabled,
+    controlGrip,
     fullRowDraggable,
     dropAllowed,
     dragLabel,
@@ -161,6 +165,26 @@ const SortableListItem = <T,>({
 
     const resolvedClassName = typeof itemClassName === 'function' ? itemClassName(context) : itemClassName;
 
+    const grip = isMovable && (
+        <button
+            type='button'
+            className={cn(
+                'flex shrink-0 items-center text-subtle',
+                fullRowDraggable
+                    ? 'pointer-events-none'
+                    : cn('cursor-grab', 'hover:text-foreground', isDragging && 'cursor-grabbing'),
+                'focus-visible:outline-none',
+                !enabled && 'pointer-events-none opacity-30',
+            )}
+            tabIndex={-1}
+            disabled={!enabled}
+            aria-label={dragLabel}
+            {...(fullRowDraggable ? undefined : listeners)}
+        >
+            <GripVertical className='size-5' />
+        </button>
+    );
+
     // ? Spread dnd-kit attributes individually to fix Preact type mismatch (string vs AriaRole)
     return (
         <div
@@ -185,26 +209,8 @@ const SortableListItem = <T,>({
             )}
             {...rowListenersSafe}
         >
-            {isMovable && (
-                <button
-                    type='button'
-                    className={cn(
-                        'flex shrink-0 items-center text-subtle',
-                        fullRowDraggable
-                            ? 'pointer-events-none'
-                            : cn('cursor-grab', 'hover:text-foreground', isDragging && 'cursor-grabbing'),
-                        'focus-visible:outline-none',
-                        !enabled && 'pointer-events-none opacity-30',
-                    )}
-                    tabIndex={-1}
-                    disabled={!enabled}
-                    aria-label={dragLabel}
-                    {...(fullRowDraggable ? undefined : listeners)}
-                >
-                    <GripVertical className='size-5' />
-                </button>
-            )}
-            {renderItem(context)}
+            {!controlGrip && grip}
+            {renderItem(context, grip)}
         </div>
     );
 };
@@ -226,9 +232,11 @@ export const SortableList = <T,>({
     isDropAllowed,
     animateLayoutChanges,
     dragLabel,
+    controlGrip = false,
     renderItem,
     itemClassName,
     className,
+
     'data-component': dataComponent = SORTABLE_LIST_NAME,
 }: SortableListProps<T>): ReactElement => {
     const ids = useMemo(() => items.map((item, i) => keyExtractor(item, i)), [items, keyExtractor]);
@@ -306,6 +314,7 @@ export const SortableList = <T,>({
                             item={item}
                             index={i}
                             isMovable={isItemMovable?.(item, i) ?? isMovable}
+                            controlGrip={controlGrip}
                             enabled={enabled}
                             fullRowDraggable={fullRowDraggable}
                             dropAllowed={dropAllowed}

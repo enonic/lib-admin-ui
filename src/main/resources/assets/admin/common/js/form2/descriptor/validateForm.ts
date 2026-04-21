@@ -1,5 +1,6 @@
 import type {PropertySet} from '../../data/PropertySet';
 import type {Form} from '../../form/Form';
+import type {FormItem} from '../../form/FormItem';
 import {Input} from '../../form/Input';
 import {FieldSet} from '../../form/set/fieldset/FieldSet';
 import {FormItemSet} from '../../form/set/itemset/FormItemSet';
@@ -304,4 +305,17 @@ export function validateForm(
     const isValid = children.every(isNodeValid);
 
     return {isValid, children};
+}
+
+/**
+ * Check whether a list of form items are all valid against a property set.
+ * Lightweight alternative to `validateForm()` when only a boolean is needed
+ * and no `Form` object is available.
+ */
+export function validateFormItemsValid(
+    items: FormItem[],
+    propertySet: PropertySet,
+    options?: ValidateFormOptions,
+): boolean {
+    return validateFormItems(items, propertySet, options).every(isNodeValid);
 }

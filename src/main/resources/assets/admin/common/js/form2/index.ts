@@ -21,7 +21,12 @@ export type {
 // Descriptor system
 export {getEffectiveOccurrences} from './descriptor/getEffectiveOccurrences';
 export {SetOccurrenceManager, type SetOccurrenceManagerState} from './descriptor/SetOccurrenceManager';
-export {type RawValueMap, type ValidateFormOptions, validateForm} from './descriptor/validateForm';
+export {
+    type RawValueMap,
+    type ValidateFormOptions,
+    validateForm,
+    validateFormItemsValid,
+} from './descriptor/validateForm';
 export {type UseInputTypeDescriptorResult, useInputTypeDescriptor} from './hooks/useInputTypeDescriptor';
 export {useOccurrenceManager} from './hooks/useOccurrenceManager';
 export {type UsePropertyArrayResult, usePropertyArray} from './hooks/usePropertyArray';
