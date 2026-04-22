@@ -32,6 +32,8 @@ export type SortableListItemContext<T> = {
     index: number;
     /** `true` while this item is actively being dragged. */
     isDragging: boolean;
+    /** `true` while any item in the list is being dragged. */
+    isDragActive: boolean;
     /** `true` when the row or any of its children has DOM focus. */
     isFocused: boolean;
     /** `true` when the list has 2+ items (drag handles visible). */
@@ -98,6 +100,7 @@ type SortableListItemInternalProps<T> = {
     item: T;
     index: number;
     isMovable: boolean;
+    isDragActive: boolean;
     enabled: boolean;
     controlGrip: boolean;
     fullRowDraggable: boolean;
@@ -114,6 +117,7 @@ const SortableListItem = <T,>({
     item,
     index,
     isMovable,
+    isDragActive,
     enabled,
     controlGrip,
     fullRowDraggable,
@@ -159,6 +163,7 @@ const SortableListItem = <T,>({
         item,
         index,
         isDragging,
+        isDragActive,
         isFocused,
         isMovable,
     };
@@ -242,6 +247,7 @@ export const SortableList = <T,>({
     const ids = useMemo(() => items.map((item, i) => keyExtractor(item, i)), [items, keyExtractor]);
     const isMovable = items.length >= 2;
     const [dropAllowed, setDropAllowed] = useState(true);
+    const [isDragActive, setIsDragActive] = useState(false);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
@@ -253,6 +259,7 @@ export const SortableList = <T,>({
     const handleDragStart = useCallback(
         (event: DragStartEvent) => {
             setDropAllowed(true);
+            setIsDragActive(true);
             if (onDragStartProp != null) {
                 const index = ids.indexOf(String(event.active.id));
                 if (index !== -1) {
@@ -283,6 +290,7 @@ export const SortableList = <T,>({
     const handleDragEnd = useCallback(
         (event: DragEndEvent) => {
             setDropAllowed(true);
+            setIsDragActive(false);
 
             const {active, over} = event;
             if (over == null || active.id === over.id) return;
@@ -296,8 +304,17 @@ export const SortableList = <T,>({
         [ids, onMove],
     );
 
+    const handleDragCancel = useCallback(() => {
+        setDropAllowed(true);
+        setIsDragActive(false);
+    }, []);
+
     return (
-        <div data-component={dataComponent} className={className}>
+        <div
+            data-component={dataComponent}
+            data-drag-active={isDragActive || undefined}
+            className={cn(isDragActive && '[&_*]:pointer-events-none', className)}
+        >
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
@@ -305,6 +322,7 @@ export const SortableList = <T,>({
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
+                onDragCancel={handleDragCancel}
             >
                 <SortableContext items={ids} strategy={verticalListSortingStrategy}>
                     {items.map((item, i) => (
@@ -314,6 +332,7 @@ export const SortableList = <T,>({
                             item={item}
                             index={i}
                             isMovable={isItemMovable?.(item, i) ?? isMovable}
+                            isDragActive={isDragActive}
                             controlGrip={controlGrip}
                             enabled={enabled}
                             fullRowDraggable={fullRowDraggable}
