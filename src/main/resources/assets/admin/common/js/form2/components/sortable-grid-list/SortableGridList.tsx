@@ -2,6 +2,7 @@ import {
     closestCenter,
     DndContext,
     type DragEndEvent,
+    type DragStartEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -30,6 +31,8 @@ export type SortableGridListItemContext<T> = {
     index: number;
     /** `true` while this item is actively being dragged. */
     isDragging: boolean;
+    /** `true` while any item in the list is being dragged. */
+    isDragActive: boolean;
     /** `true` when the row or any of its children has DOM focus. */
     isFocused: boolean;
     /** `true` when this row can be reordered. */
@@ -301,6 +304,7 @@ type SortableGridListItemInternalProps<T> = {
     index: number;
     isMovable: boolean;
     isNavigable: boolean;
+    isDragActive: boolean;
     enabled: boolean;
     fullRowDraggable: boolean;
     isTabStop: boolean;
@@ -319,6 +323,7 @@ const SortableGridListItem = <T,>({
     index,
     isMovable,
     isNavigable,
+    isDragActive,
     enabled,
     fullRowDraggable,
     isTabStop,
@@ -432,6 +437,7 @@ const SortableGridListItem = <T,>({
         item,
         index,
         isDragging,
+        isDragActive,
         isFocused,
         isMovable,
     };
@@ -518,6 +524,7 @@ export const SortableGridList = <T,>({
     const [focusedIndex, setFocusedIndex] = useState(0);
     const [focusedTargetIndex, setFocusedTargetIndex] = useState(0);
     const [focusedItemId, setFocusedItemId] = useState<string | null>(null);
+    const [isDragActive, setIsDragActive] = useState(false);
     const rowRefs = useRef<Array<HTMLDivElement | null>>([]);
     const hasFocusWithinRef = useRef(false);
     const pendingBlurClearVersionRef = useRef(0);
@@ -711,8 +718,14 @@ export const SortableGridList = <T,>({
         }
     }, [focusRowByIndex, focusedIndex, focusedItemId, focusedTargetIndex, ids, items.length]);
 
+    const handleDragStart = useCallback((_event: DragStartEvent) => {
+        setIsDragActive(true);
+    }, []);
+
     const handleDragEnd = useCallback(
         (event: DragEndEvent) => {
+            setIsDragActive(false);
+
             const {active, over} = event;
             if (over == null || active.id === over.id) return;
 
@@ -736,13 +749,25 @@ export const SortableGridList = <T,>({
         [focusRowByIndex, focusedIndex, focusedItemId, focusedTargetIndex, ids, onMove],
     );
 
+    const handleDragCancel = useCallback(() => {
+        setIsDragActive(false);
+    }, []);
+
     return (
-        <div data-component={dataComponent} className={className} onFocus={handleListFocus} onBlur={handleListBlur}>
+        <div
+            data-component={dataComponent}
+            data-drag-active={isDragActive || undefined}
+            className={cn(isDragActive && '[&_*]:pointer-events-none', className)}
+            onFocus={handleListFocus}
+            onBlur={handleListBlur}
+        >
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
                 modifiers={[restrictToVerticalAxis]}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
+                onDragCancel={handleDragCancel}
             >
                 <SortableContext items={ids} strategy={verticalListSortingStrategy}>
                     {items.map((item, i) => (
@@ -753,6 +778,7 @@ export const SortableGridList = <T,>({
                             index={i}
                             isMovable={getIsItemMovable(item, i)}
                             isNavigable={isNavigable}
+                            isDragActive={isDragActive}
                             enabled={enabled}
                             fullRowDraggable={fullRowDraggable}
                             isTabStop={focusedIndex === i}
