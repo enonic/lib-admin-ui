@@ -11,6 +11,19 @@ export function getFirstError(errors: ValidationResult[]): string | undefined {
     return errors.at(0)?.message ?? undefined;
 }
 
+type OccurrenceBreach = 'none' | 'min' | 'max';
+
+function getOccurrenceBreach(occurrences: Occurrences, validation: OccurrenceValidationState[]): OccurrenceBreach {
+    const hasFieldErrors = validation.some(entry => entry.validationResults.length > 0);
+    if (hasFieldErrors) return 'none';
+
+    const totalValid = validation.filter(entry => !entry.breaksRequired && entry.validationResults.length === 0).length;
+
+    if (occurrences.minimumBreached(totalValid)) return 'min';
+    if (occurrences.maximumBreached(totalValid)) return 'max';
+    return 'none';
+}
+
 /**
  * Derive an occurrence-level error message from validation state.
  *
@@ -22,22 +35,27 @@ export function getOccurrenceErrorMessage(
     validation: OccurrenceValidationState[],
     t: TranslateFn,
 ): string | undefined {
-    const hasFieldErrors = validation.some(entry => entry.validationResults.length > 0);
-    if (hasFieldErrors) return undefined;
+    const breach = getOccurrenceBreach(occurrences, validation);
+    if (breach === 'none') return undefined;
 
-    const totalValid = validation.filter(entry => !entry.breaksRequired && entry.validationResults.length === 0).length;
     const min = occurrences.getMinimum();
     const max = occurrences.getMaximum();
 
-    if (occurrences.minimumBreached(totalValid)) {
+    if (breach === 'min') {
         return min >= 1 && max !== 1 ? t('field.occurrence.breaks.min', min) : t('field.value.required');
     }
 
-    if (occurrences.maximumBreached(totalValid)) {
-        return max > 1 ? t('field.occurrence.breaks.max.many', max) : t('field.occurrence.breaks.max.one');
-    }
+    return max > 1 ? t('field.occurrence.breaks.max.many', max) : t('field.occurrence.breaks.max.one');
+}
 
-    return undefined;
+/**
+ * Check whether occurrence counts breach min/max bounds.
+ *
+ * Boolean counterpart to {@link getOccurrenceErrorMessage} — use when
+ * only the presence of an occurrence error matters and no message is needed.
+ */
+export function hasOccurrenceError(occurrences: Occurrences, validation: OccurrenceValidationState[]): boolean {
+    return getOccurrenceBreach(occurrences, validation) !== 'none';
 }
 
 function search(nodes: FormValidationNode[], path: string): FormValidationNode | undefined {

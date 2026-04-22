@@ -46,7 +46,13 @@ export type {
     SelfManagedComponentProps,
     SelfManagedInputTypeComponent,
 } from './types';
-export {findByPath, getFirstError, getOccurrenceErrorMessage, type TranslateFn} from './utils/validation';
+export {
+    findByPath,
+    getFirstError,
+    getOccurrenceErrorMessage,
+    hasOccurrenceError,
+    type TranslateFn,
+} from './utils/validation';
 // Validation
 export {
     useValidationVisibility,
