@@ -63,7 +63,7 @@
     "@types/mousetrap": "^1.6.15",
     "@types/node": "~25.6.0",
     "@types/q": "^1.5.8",
-    "autoprefixer": "^10.4.24",
+    "autoprefixer": "^10.5.0",
     "browserslist-config-enonic": "^1.0.8",
     "cross-env": "^10.1.0",
     "cssnano": "^7.1.4",
