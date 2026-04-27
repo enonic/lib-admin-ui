@@ -118,8 +118,8 @@ importers:
         specifier: ^13.0.1
         version: 13.0.1(browserslist@4.28.2)(postcss@8.5.12)
       postcss-sort-media-queries:
-        specifier: ^6.4.4
-        version: 6.4.4(nanoid@5.1.9)(postcss@8.5.12)
+        specifier: ^6.5.0
+        version: 6.5.0(nanoid@5.1.9)(postcss@8.5.12)
       preact:
         specifier: ^10.29.1
         version: 10.29.1
@@ -1693,8 +1693,8 @@ packages:
     resolution: {integrity: sha512-orRsuYpJVw8LdAwqqLykBj9ecS5/cRHlI5+nvTo8LcCKmzDmqVORXtOIYEEQuL9D4BxtA1lm5isAqzQZCoQ6Eg==}
     engines: {node: '>=4'}
 
-  postcss-sort-media-queries@6.4.4:
-    resolution: {integrity: sha512-Bt1ITSNrSfZzh7Gw0AJse0aoJEGzwKVEDU850bexExP8vX9Ehm5XE66xech8Q/c3j8kLGr1oP5Suw5tAb2O5Nw==}
+  postcss-sort-media-queries@6.5.0:
+    resolution: {integrity: sha512-iKKsWQIhCNWx/5xY83erLyZCN1NMdeJ8TOe2Zi2i40uPgQqn5iUt1O3OyEJqs7rzAj/dUExXO5XH0P3b94jTnw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       nanoid: ^5.1.6
@@ -3321,7 +3321,7 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-sort-media-queries@6.4.4(nanoid@5.1.9)(postcss@8.5.12):
+  postcss-sort-media-queries@6.5.0(nanoid@5.1.9)(postcss@8.5.12):
     dependencies:
       nanoid: 5.1.9
       postcss: 8.5.12
