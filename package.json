@@ -35,7 +35,7 @@
     "jquery-simulate": "^1.0.2",
     "jquery-ui": "^1.14.2",
     "mousetrap": "^1.6.5",
-    "nanoid": "~5.1.5",
+    "nanoid": "~5.1.9",
     "nanostores": "~1.2.0",
     "q": "^1.5.1"
   },
