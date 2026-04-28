@@ -1,8 +1,8 @@
 import type {Value} from '../../../data/Value';
 
 const TAG_LABEL_MAX_LENGTH = 20;
-const PASTED_TAG_SEPARATOR_PATTERN = /[\t\r\n]+/;
-const PASTED_TAG_SEPARATOR_DETECTION_PATTERN = /[\t\r\n]/;
+const PASTED_TAG_SEPARATOR_PATTERN = /[,\t\r\n]+/;
+const PASTED_TAG_SEPARATOR_DETECTION_PATTERN = /[,\t\r\n]/;
 
 export function normalizeTagDraft(raw: string): string {
     return raw.trim().replace(/,+$/, '').trim();
