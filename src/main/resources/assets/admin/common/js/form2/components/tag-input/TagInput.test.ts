@@ -327,6 +327,8 @@ describe('TagInput helpers', () => {
             'test',
             'here',
         ]);
+        expect(hasPastedTagSeparators('foo, bars')).toBe(true);
+        expect(getPastedTagLabels('foo, bars')).toEqual(['foo', 'bars']);
         expect(hasPastedTagSeparators('single value only')).toBe(false);
     });
 
@@ -852,6 +854,31 @@ describe('TagInput', () => {
         expect(onAdd).toHaveBeenNthCalledWith(6, ValueTypes.STRING.newValue('row'));
         expect(onAdd).toHaveBeenNthCalledWith(7, ValueTypes.STRING.newValue('test'));
         expect(onAdd).toHaveBeenNthCalledWith(8, ValueTypes.STRING.newValue('here'));
+    });
+
+    it('creates one tag per comma-separated pasted value', () => {
+        const onAdd = vi.fn();
+        const preventDefault = vi.fn();
+
+        renderTagInput({
+            onAdd,
+            values: [],
+            occurrences: Occurrences.minmax(0, 10),
+            errors: [],
+        });
+
+        getLastInputProps().onPaste({
+            preventDefault,
+            clipboardData: {
+                getData: (type: string) => (type === 'text/plain' ? 'foo, bars' : ''),
+            },
+            currentTarget: {focus: vi.fn()},
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(onAdd).toHaveBeenCalledTimes(2);
+        expect(onAdd).toHaveBeenNthCalledWith(1, ValueTypes.STRING.newValue('foo'));
+        expect(onAdd).toHaveBeenNthCalledWith(2, ValueTypes.STRING.newValue('bars'));
     });
 
     it('prepends the current draft before pasted spreadsheet cells', () => {
