@@ -10,15 +10,15 @@
         "jsxImportSource": "preact",
         "moduleResolution": "bundler",
         "moduleDetection": "force",
-        "baseUrl": ".",
+        "strict": false,
         "allowJs": false,
         "skipLibCheck": true,
         "removeComments": true,
         "useDefineForClassFields": false,
         "forceConsistentCasingInFileNames": true,
         "paths": {
-            "react": ["node_modules/preact/compat"],
-            "react-dom": ["node_modules/preact/compat"]
+            "react": ["./node_modules/preact/compat"],
+            "react-dom": ["./node_modules/preact/compat"]
         }
     }
 }
