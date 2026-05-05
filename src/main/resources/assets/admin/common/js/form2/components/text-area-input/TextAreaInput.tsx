@@ -40,6 +40,7 @@ export const TextAreaInput = ({
 
     return (
         <TextArea
+            autoSize
             value={stringValue}
             onChange={handleChange}
             onBlur={onBlur}
