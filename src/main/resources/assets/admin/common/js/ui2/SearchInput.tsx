@@ -1,12 +1,13 @@
 import {SearchField, type SearchFieldRootProps} from '@enonic/ui';
 import type {ReactElement} from 'react';
+import {i18n} from '../util/Messages';
 import {LegacyElement} from './LegacyElement';
 
 const SEARCH_INPUT_NAME = 'SearchInput';
 
-const SearchInput = (props: SearchFieldRootProps): ReactElement => {
+const SearchInput = ({placeholder, ...props}: SearchFieldRootProps): ReactElement => {
     return (
-        <SearchField.Root {...props}>
+        <SearchField.Root placeholder={placeholder ?? i18n('panel.filter.search')} {...props}>
             <SearchField.Icon />
             <SearchField.Input />
             <SearchField.Clear />

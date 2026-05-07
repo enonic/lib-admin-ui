@@ -181,7 +181,7 @@ export const InstantInput = ({value, onChange, onBlur, config, enabled, errors}:
                 <Input
                     ref={inputRef}
                     type='text'
-                    placeholder='YYYY-MM-DD hh:mm'
+                    placeholder={t('field.dateTime.placeholder')}
                     value={rawInput}
                     onChange={handleInputChange}
                     onBlur={onBlur}
@@ -189,7 +189,7 @@ export const InstantInput = ({value, onChange, onBlur, config, enabled, errors}:
                     error={getFirstError(errors)}
                     endAddon={
                         <div className='flex h-full w-11 items-center justify-center bg-transparent'>
-                            <DatePicker.Trigger disabled={!enabled} aria-label='Open date and time picker' />
+                            <DatePicker.Trigger disabled={!enabled} aria-label={t('field.dateTime.trigger')} />
                         </div>
                     }
                 />
