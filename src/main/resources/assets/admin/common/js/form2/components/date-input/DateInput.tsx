@@ -89,7 +89,7 @@ export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: Da
                 <Input
                     ref={inputRef}
                     type='text'
-                    placeholder='YYYY-MM-DD'
+                    placeholder={t('field.date.placeholder')}
                     value={rawInput}
                     onChange={handleInputChange}
                     onBlur={onBlur}
@@ -97,7 +97,7 @@ export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: Da
                     error={getFirstError(errors)}
                     endAddon={
                         <div className='flex h-full w-11 items-center justify-center bg-transparent'>
-                            <DatePicker.Trigger disabled={!enabled} aria-label='Open calendar' />
+                            <DatePicker.Trigger disabled={!enabled} aria-label={t('field.date.trigger')} />
                         </div>
                     }
                 />

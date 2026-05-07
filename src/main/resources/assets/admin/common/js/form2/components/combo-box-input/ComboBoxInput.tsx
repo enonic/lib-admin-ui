@@ -95,8 +95,8 @@ export const ComboBoxInput = ({
                         <Combobox.Control>
                             <Combobox.Search>
                                 <Combobox.SearchIcon />
-                                <Combobox.Input placeholder='Type to search...' />
-                                {isMultiSelect && <Combobox.Apply />}
+                                <Combobox.Input placeholder={t('field.option.placeholder')} />
+                                {isMultiSelect && <Combobox.Apply label={t('button.apply')} />}
                                 <Combobox.Toggle />
                             </Combobox.Search>
                         </Combobox.Control>

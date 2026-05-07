@@ -97,7 +97,7 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
                 <Input
                     ref={inputRef}
                     type='text'
-                    placeholder='HH:MM'
+                    placeholder={t('field.time.placeholder')}
                     value={rawInput}
                     onChange={handleInputChange}
                     onBlur={onBlur}
@@ -108,7 +108,7 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
                             <TimePicker.Trigger
                                 className='size-8 bg-transparent'
                                 disabled={!enabled}
-                                aria-label='Open time picker'
+                                aria-label={t('field.time.trigger')}
                             />
                         </div>
                     }
