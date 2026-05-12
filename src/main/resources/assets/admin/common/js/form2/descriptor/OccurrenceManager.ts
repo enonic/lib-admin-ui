@@ -35,6 +35,10 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
     private values: Value[];
     private rawValues: (string | undefined)[];
     private ids: string[];
+    // Keyed by stable occurrence ID rather than position so async callers can capture
+    // an ID and use it later without the entry following whatever happens to be at the
+    // captured index after intervening moves/removes.
+    private transientErrors: Map<string, string> = new Map();
     private nextId = 0;
 
     constructor(occurrences: Occurrences, descriptor: InputTypeDescriptor<C>, config: C, initialValues: Value[] = []) {
@@ -70,6 +74,9 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
             i < oldValues.length && oldValues[i] === v ? oldRawValues[i] : undefined,
         );
         this.ids = this.values.map((_, i) => (i < oldIds.length ? oldIds[i] : this.generateId()));
+        // External value replacement invalidates any transient errors — the values they
+        // were tied to no longer exist (or were replaced wholesale).
+        this.transientErrors.clear();
     }
 
     getCount(): number {
@@ -88,6 +95,8 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         this.values.push(value ?? this.descriptor.getValueType().newNullValue());
         this.rawValues.push(undefined);
         this.ids.push(this.generateId());
+        // New occurrence has a fresh ID, so existing transient entries stay attached
+        // to their original IDs — no bookkeeping needed.
         return true;
     }
 
@@ -96,9 +105,13 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
             return false;
         }
 
+        const removedId = this.ids[index];
         this.values.splice(index, 1);
         this.rawValues.splice(index, 1);
         this.ids.splice(index, 1);
+        // Only drop the transient for the removed occurrence. Surviving occurrences
+        // keep their entries because they keep their IDs.
+        this.transientErrors.delete(removedId);
         return true;
     }
 
@@ -121,6 +134,9 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
 
         const [movedId] = this.ids.splice(fromIndex, 1);
         this.ids.splice(toIndex, 0, movedId);
+
+        // ID-keyed storage means transient errors follow their occurrence
+        // automatically — no key remapping needed on reorder.
         return true;
     }
 
@@ -131,6 +147,35 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
 
         this.values[index] = value;
         this.rawValues[index] = rawValue;
+        // Any user-driven value change clears the transient for that occurrence so
+        // descriptor validation owns the slot from here on.
+        this.transientErrors.delete(this.ids[index]);
+    }
+
+    setTransientError(occurrenceId: string, message: string): boolean {
+        // Rejects unknown IDs so callers learn their captured ID is stale (the
+        // occurrence was removed or values were wholesale-replaced via setValues).
+        if (!this.ids.includes(occurrenceId)) {
+            return false;
+        }
+        this.transientErrors.set(occurrenceId, message);
+        return true;
+    }
+
+    clearTransientError(occurrenceId: string): boolean {
+        return this.transientErrors.delete(occurrenceId);
+    }
+
+    clearAllTransientErrors(): void {
+        this.transientErrors.clear();
+    }
+
+    getTransientError(occurrenceId: string): string | undefined {
+        return this.transientErrors.get(occurrenceId);
+    }
+
+    hasTransientErrors(): boolean {
+        return this.transientErrors.size > 0;
     }
 
     // ? Uses total count (not totalValid) so UI buttons gate on all values including empty ones
@@ -149,10 +194,20 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
 
     /**
      * Full validation of all occurrences: per-value validation + occurrence count checks.
+     *
+     * Transient errors (set via {@link setTransientError}) are prepended to each
+     * occurrence's validationResults with `transient: true`. They count as field errors
+     * for totalValid/min-max calculations — matching the rule that a field with an
+     * error doesn't satisfy required.
      */
     validate(): OccurrenceManagerState {
         const occurrenceValidation: OccurrenceValidationState[] = this.values.map((value, index) => {
-            const validationResults = this.descriptor.validate(value, this.config, this.rawValues[index]);
+            const descriptorResults = this.descriptor.validate(value, this.config, this.rawValues[index]);
+            const transientMessage = this.transientErrors.get(this.ids[index]);
+            const validationResults: ValidationResult[] =
+                transientMessage != null
+                    ? [{message: transientMessage, transient: true}, ...descriptorResults]
+                    : descriptorResults;
             const breaksRequired = this.descriptor.valueBreaksRequired(value);
 
             return {index, breaksRequired, validationResults};

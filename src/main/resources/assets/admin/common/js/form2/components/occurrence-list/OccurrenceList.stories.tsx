@@ -1,3 +1,4 @@
+import {Button} from '@enonic/ui';
 import type {Meta, StoryObj} from '@storybook/preact-vite';
 import type {ReactElement} from 'react';
 import {useMemo} from 'react';
@@ -61,6 +62,66 @@ export default {
     parameters: {layout: 'centered'},
     tags: ['autodocs'],
 } satisfies Meta<typeof OccurrenceList>;
+
+function TransientErrorsDemo({min, max}: {min: number; max: number}): ReactElement {
+    const occurrences = useMemo(() => new OccurrencesBuilder().setMinimum(min).setMaximum(max).build(), [min, max]);
+    const config = useMemo(makeConfig, []);
+    const initialValues = useMemo(() => [ValueTypes.STRING.newValue('Alpha'), ValueTypes.STRING.newValue('Beta')], []);
+
+    const {state, add, remove, move, set, setTransientError, clearTransientError, clearAllTransientErrors} =
+        useOccurrenceManager<TextLineConfig>({
+            occurrences,
+            descriptor: TextLineDescriptor,
+            config,
+            initialValues,
+        });
+
+    const input = useMemo(() => makeInput(min, max, 'Transient errors demo'), [min, max]);
+
+    return (
+        <div className='flex flex-col gap-y-4 p-4'>
+            <div className='max-w-120 text-sm text-subtle'>
+                Click "Inject error" to push a transient error onto an occurrence — it shows immediately regardless of
+                touched state. Edit the field to auto-clear it. Add/remove/move occurrences to see indices follow. Sync
+                (the "Reset values" button below) clears all transient errors.
+            </div>
+
+            <OccurrenceList
+                Component={TextLineInput}
+                state={state}
+                onAdd={() => add()}
+                onRemove={remove}
+                onMove={move}
+                onChange={(index, value, rawValue) => set(index, value, rawValue)}
+                config={config}
+                input={input}
+                enabled={true}
+            />
+
+            <div className='flex flex-wrap gap-2'>
+                {state.ids.map((id, index) => (
+                    <Button
+                        key={`set-${id}`}
+                        variant='outline'
+                        size='sm'
+                        label={`Inject error on #${index + 1}`}
+                        onClick={() => setTransientError(id, `Translation failed for #${index + 1}`)}
+                    />
+                ))}
+                {state.ids.map((id, index) => (
+                    <Button
+                        key={`clear-${id}`}
+                        variant='outline'
+                        size='sm'
+                        label={`Clear error #${index + 1}`}
+                        onClick={() => clearTransientError(id)}
+                    />
+                ))}
+                <Button variant='outline' size='sm' label='Clear all' onClick={clearAllTransientErrors} />
+            </div>
+        </div>
+    );
+}
 
 //
 // * Examples
@@ -464,4 +525,9 @@ const InteractiveUnlimitedDemo = (): ReactElement => {
 export const InteractiveUnlimited: Story = {
     name: 'Features / Interactive Unlimited',
     render: () => <InteractiveUnlimitedDemo />,
+};
+
+export const TransientErrors: Story = {
+    name: 'Features / Transient Errors',
+    render: () => <TransientErrorsDemo min={1} max={5} />,
 };

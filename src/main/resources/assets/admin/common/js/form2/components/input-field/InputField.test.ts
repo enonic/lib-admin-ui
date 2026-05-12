@@ -45,6 +45,10 @@ vi.mock('../../RawValueContext', () => ({
     useRawValueMap: mocks.useRawValueMap,
 }));
 
+vi.mock('../../FieldRegistryContext', () => ({
+    useFieldRegistry: () => undefined,
+}));
+
 vi.mock('../input-label', () => ({
     InputLabel: () => null,
 }));
@@ -571,6 +575,93 @@ describe('InputField', () => {
         const child = getOnlyChild(element);
 
         expect(child.props.errors).toEqual([{message: 'Error'}]);
+    });
+
+    it('keeps transient errors visible when visibility is none', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('TextLine');
+        const propertySet = new PropertyTree().getRoot();
+        const state = makeManagerState();
+        state.occurrenceValidation[0].validationResults = [
+            {message: 'Translation failed', transient: true},
+            {message: 'Descriptor error'},
+        ];
+        mocks.useOccurrenceManager.mockReturnValue({
+            state,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        mocks.useValidationVisibility.mockReturnValue('none');
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getOnlyChild(element);
+
+        // ? Transient survives the visibility filter; descriptor error gets stripped.
+        expect(child.props.errors).toEqual([{message: 'Translation failed', transient: true}]);
+    });
+
+    it('keeps transient errors visible on untouched fields when visibility is interactive', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('TextLine');
+        const propertySet = new PropertyTree().getRoot();
+        const state = makeManagerState();
+        state.occurrenceValidation[0].validationResults = [
+            {message: 'Translation failed', transient: true},
+            {message: 'Descriptor error'},
+        ];
+        mocks.useOccurrenceManager.mockReturnValue({
+            state,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        mocks.useValidationVisibility.mockReturnValue('interactive');
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getOnlyChild(element);
+
+        // ? Untouched + interactive normally hides errors — transient bypasses the gate.
+        expect(child.props.errors).toEqual([{message: 'Translation failed', transient: true}]);
+    });
+
+    it('shows all errors once touched, including transient, when visibility is interactive', () => {
+        const component: InputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'single' as const, descriptor, component};
+        const input = makeInput('TextLine');
+        const propertySet = new PropertyTree().getRoot();
+        const state = makeManagerState();
+        state.occurrenceValidation[0].validationResults = [
+            {message: 'Translation failed', transient: true},
+            {message: 'Descriptor error'},
+        ];
+        mocks.useOccurrenceManager.mockReturnValue({
+            state,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        mocks.useValidationVisibility.mockReturnValue('interactive');
+        mocks.useState.mockImplementationOnce(() => [new Set([0]), vi.fn()]);
+
+        const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const child = getOnlyChild(element);
+
+        expect(child.props.errors).toEqual([
+            {message: 'Translation failed', transient: true},
+            {message: 'Descriptor error'},
+        ]);
     });
 
     it('hides errors initially and shows after touch when visibility is interactive', () => {

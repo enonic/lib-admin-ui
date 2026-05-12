@@ -230,6 +230,185 @@ describe('OccurrenceManager', () => {
         });
     });
 
+    describe('transient errors', () => {
+        it('folds a transient error into the occurrence with the matching ID', () => {
+            const mgr = createManager({values: ['a', 'b']});
+            const ids = mgr.getIds();
+            mgr.setTransientError(ids[1], 'Translation failed');
+            const state = mgr.validate();
+
+            expect(state.occurrenceValidation[0].validationResults).toHaveLength(0);
+            expect(state.occurrenceValidation[1].validationResults).toEqual([
+                {message: 'Translation failed', transient: true},
+            ]);
+        });
+
+        it('prepends transient before descriptor errors so it appears first', () => {
+            const occurrences = Occurrences.minmax(0, 0);
+            const config: TextLineConfig = {regexp: /^[0-9]+$/, maxLength: -1, showCounter: false};
+            const values = [ValueTypes.STRING.newValue('abc')];
+            const mgr = new OccurrenceManager<TextLineConfig>(occurrences, TextLineDescriptor, config, values);
+            const [id] = mgr.getIds();
+            mgr.setTransientError(id, 'Translation failed');
+            const state = mgr.validate();
+
+            expect(state.occurrenceValidation[0].validationResults[0]).toEqual({
+                message: 'Translation failed',
+                transient: true,
+            });
+            expect(state.occurrenceValidation[0].validationResults.length).toBeGreaterThan(1);
+        });
+
+        it('rejects setTransientError for unknown IDs (e.g. stale ID captured before removal)', () => {
+            const mgr = createManager({values: ['a']});
+            expect(mgr.setTransientError('occurrence-does-not-exist', 'x')).toBe(false);
+            expect(mgr.validate().occurrenceValidation[0].validationResults).toHaveLength(0);
+        });
+
+        it('rejects setTransientError after the captured occurrence has been removed', () => {
+            const mgr = createManager({values: ['a', 'b']});
+            const removedId = mgr.getIds()[1];
+
+            mgr.remove(1);
+
+            // ? Simulates an async caller that captured the ID before remove() landed.
+            expect(mgr.setTransientError(removedId, 'late')).toBe(false);
+            expect(mgr.hasTransientErrors()).toBe(false);
+        });
+
+        it('counts transient errors as field errors for totalValid', () => {
+            const mgr = createManager({min: 1, values: ['hello']});
+            const [id] = mgr.getIds();
+            mgr.setTransientError(id, 'Translation failed');
+            const state = mgr.validate();
+
+            expect(state.totalValid).toBe(0);
+            expect(state.isValid).toBe(false);
+            expect(state.isMinimumBreached).toBe(true);
+        });
+
+        it('clears transient on set() (user edit) for the matching ID', () => {
+            const mgr = createManager({values: ['a', 'b']});
+            const [idA, idB] = mgr.getIds();
+            mgr.setTransientError(idA, 'Translation failed');
+            mgr.setTransientError(idB, 'Other');
+
+            mgr.set(0, ValueTypes.STRING.newValue('a2'));
+            const state = mgr.validate();
+
+            expect(state.occurrenceValidation[0].validationResults).toHaveLength(0);
+            expect(state.occurrenceValidation[1].validationResults).toEqual([{message: 'Other', transient: true}]);
+        });
+
+        it('clears all transient on setValues (sync)', () => {
+            const mgr = createManager({values: ['a', 'b']});
+            const [idA, idB] = mgr.getIds();
+            mgr.setTransientError(idA, 'One');
+            mgr.setTransientError(idB, 'Two');
+
+            mgr.setValues([ValueTypes.STRING.newValue('x'), ValueTypes.STRING.newValue('y')]);
+            const state = mgr.validate();
+
+            expect(state.occurrenceValidation[0].validationResults).toHaveLength(0);
+            expect(state.occurrenceValidation[1].validationResults).toHaveLength(0);
+            expect(mgr.hasTransientErrors()).toBe(false);
+        });
+
+        it('preserves transient errors on add() (existing IDs untouched)', () => {
+            const mgr = createManager({values: ['a']});
+            const [idA] = mgr.getIds();
+            mgr.setTransientError(idA, 'One');
+            mgr.add(ValueTypes.STRING.newValue('b'));
+            const state = mgr.validate();
+
+            expect(state.occurrenceValidation[0].validationResults).toEqual([{message: 'One', transient: true}]);
+            expect(state.occurrenceValidation[1].validationResults).toHaveLength(0);
+        });
+
+        it('drops only the removed occurrence on remove(), preserving siblings via ID', () => {
+            const mgr = createManager({values: ['a', 'b', 'c']});
+            const [idA, idB, idC] = mgr.getIds();
+            mgr.setTransientError(idA, 'A');
+            mgr.setTransientError(idB, 'B');
+            mgr.setTransientError(idC, 'C');
+
+            mgr.remove(1);
+            const state = mgr.validate();
+
+            expect(state.occurrenceValidation).toHaveLength(2);
+            expect(state.occurrenceValidation[0].validationResults).toEqual([{message: 'A', transient: true}]);
+            expect(state.occurrenceValidation[1].validationResults).toEqual([{message: 'C', transient: true}]);
+        });
+
+        it('follows the moved occurrence to its new position via stable ID', () => {
+            const mgr = createManager({values: ['a', 'b', 'c']});
+            const [idA, , idC] = mgr.getIds();
+            mgr.setTransientError(idA, 'A');
+            mgr.setTransientError(idC, 'C');
+
+            mgr.move(0, 2); // values: b, c, a — error on A should now render at index 2
+
+            const state = mgr.validate();
+            expect(state.occurrenceValidation[2].validationResults).toEqual([{message: 'A', transient: true}]);
+            expect(state.occurrenceValidation[1].validationResults).toEqual([{message: 'C', transient: true}]);
+            expect(state.occurrenceValidation[0].validationResults).toHaveLength(0);
+        });
+
+        it('captured ID survives intervening reorder before the error is pushed (the use case this fix targets)', () => {
+            const mgr = createManager({values: ['a', 'b', 'c']});
+            const idB = mgr.getIds()[1]; // simulate sync capture by an async caller
+
+            mgr.move(1, 0); // values: b, a, c — idB now resides at index 0
+            mgr.setTransientError(idB, 'Translation failed');
+
+            const state = mgr.validate();
+            expect(state.occurrenceValidation[0].validationResults).toEqual([
+                {message: 'Translation failed', transient: true},
+            ]);
+            expect(state.occurrenceValidation[1].validationResults).toHaveLength(0);
+            expect(state.occurrenceValidation[2].validationResults).toHaveLength(0);
+        });
+
+        it('clearTransientError removes a single entry by ID and returns true', () => {
+            const mgr = createManager({values: ['a', 'b']});
+            const [idA, idB] = mgr.getIds();
+            mgr.setTransientError(idA, 'A');
+            mgr.setTransientError(idB, 'B');
+
+            expect(mgr.clearTransientError(idA)).toBe(true);
+            const state = mgr.validate();
+
+            expect(state.occurrenceValidation[0].validationResults).toHaveLength(0);
+            expect(state.occurrenceValidation[1].validationResults).toEqual([{message: 'B', transient: true}]);
+        });
+
+        it('clearTransientError returns false when nothing exists for the ID', () => {
+            const mgr = createManager({values: ['a']});
+            const [id] = mgr.getIds();
+            expect(mgr.clearTransientError(id)).toBe(false);
+        });
+
+        it('clearAllTransientErrors drops every entry', () => {
+            const mgr = createManager({values: ['a', 'b']});
+            const [idA, idB] = mgr.getIds();
+            mgr.setTransientError(idA, 'A');
+            mgr.setTransientError(idB, 'B');
+            mgr.clearAllTransientErrors();
+
+            expect(mgr.hasTransientErrors()).toBe(false);
+            expect(mgr.validate().occurrenceValidation.every(ov => ov.validationResults.length === 0)).toBe(true);
+        });
+
+        it('overwrites the existing message when the same ID is set twice', () => {
+            const mgr = createManager({values: ['a']});
+            const [id] = mgr.getIds();
+            mgr.setTransientError(id, 'first');
+            mgr.setTransientError(id, 'second');
+
+            expect(mgr.getTransientError(id)).toBe('second');
+        });
+    });
+
     describe('with DoubleDescriptor', () => {
         function createDoubleManager(opts: {min?: number; max?: number; values?: number[]} = {}) {
             const {min = 0, max = 0, values = []} = opts;

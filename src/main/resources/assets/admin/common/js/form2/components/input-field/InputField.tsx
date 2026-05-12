@@ -6,6 +6,7 @@ import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
 import {getEffectiveOccurrences} from '../../descriptor/getEffectiveOccurrences';
 import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
+import {useFieldRegistry} from '../../FieldRegistryContext';
 import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
 import {usePropertyArray} from '../../hooks/usePropertyArray';
 import {useI18n} from '../../I18nContext';
@@ -64,7 +65,14 @@ function filterErrors(
             // Clear both per-field errors AND breaksRequired so that
             // getOccurrenceErrorMessage sees suppressed entries as valid
             // and won't generate min/max occurrence errors prematurely.
-            return {...entry, breaksRequired: false, validationResults: []};
+            // Transient entries (externally injected, e.g. translation errors) bypass
+            // this filter — they represent system messages that should be visible
+            // regardless of user interaction state.
+            const transientOnly = entry.validationResults.filter(r => r.transient === true);
+            if (transientOnly.length === 0) {
+                return {...entry, breaksRequired: false, validationResults: []};
+            }
+            return {...entry, breaksRequired: false, validationResults: transientOnly};
         }
         return entry;
     });
@@ -193,7 +201,18 @@ export const InputFieldResolved = ({
 
     const {values} = usePropertyArray(propertyArray);
 
-    const {state, add, remove, move, set, sync} = useOccurrenceManager({
+    const {
+        state,
+        add,
+        remove,
+        move,
+        set,
+        sync,
+        setTransientError,
+        clearTransientError,
+        clearAllTransientErrors,
+        getOccurrenceIds,
+    } = useOccurrenceManager({
         occurrences,
         descriptor,
         config,
@@ -201,6 +220,19 @@ export const InputFieldResolved = ({
         autoSeed: definition.mode !== 'internal',
         defaultValue,
     });
+
+    const fieldRegistry = useFieldRegistry();
+    const fieldPath = useMemo(() => input.getPath().toString(), [input]);
+
+    useEffect(() => {
+        if (fieldRegistry == null) return undefined;
+        return fieldRegistry.register(fieldPath, {
+            setTransientError,
+            clearTransientError,
+            clearAllTransientErrors,
+            getOccurrenceIds,
+        });
+    }, [fieldRegistry, fieldPath, setTransientError, clearTransientError, clearAllTransientErrors, getOccurrenceIds]);
 
     useEffect(() => {
         const managerValues = sync(values);

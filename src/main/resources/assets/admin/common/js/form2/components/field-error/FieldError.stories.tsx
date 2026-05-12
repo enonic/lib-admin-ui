@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/preact-vite';
+import {useState} from 'react';
 import {FieldError} from './FieldError';
 
 const meta: Meta<typeof FieldError> = {
@@ -29,6 +30,33 @@ export const LongMessage: Story = {
 export const NoMessage: Story = {
     name: 'States / No Message',
     render: () => <FieldError message={undefined} />,
+};
+
+function DismissibleDemo() {
+    const [visible, setVisible] = useState(true);
+
+    if (!visible) {
+        return (
+            <div className='flex flex-col gap-y-3 p-4'>
+                <div className='max-w-120 text-sm text-subtle'>Dismissed. Reload the story to bring it back.</div>
+            </div>
+        );
+    }
+
+    return (
+        <div className='flex flex-col gap-y-3 p-4'>
+            <div className='max-w-120 text-sm text-subtle'>
+                Click the X to dismiss. The `onDismiss` prop renders the close affordance and lets the parent clear the
+                message — used for transient errors (e.g. translation failures).
+            </div>
+            <FieldError message='Translation failed for this field' onDismiss={() => setVisible(false)} />
+        </div>
+    );
+}
+
+export const Dismissible: Story = {
+    name: 'Features / Dismissible',
+    render: () => <DismissibleDemo />,
 };
 
 export const AllVariants: Story = {
