@@ -1,3 +1,4 @@
+import {Button} from '@enonic/ui';
 import type {Meta, StoryObj} from '@storybook/preact-vite';
 import {useState} from 'react';
 import type {Value} from '../../../data/Value';
@@ -7,7 +8,7 @@ import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
 import type {TextAreaConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {TextAreaInput} from './TextAreaInput';
+import {TextAreaInput, type TextAreaInputProps} from './TextAreaInput';
 
 function makeConfig(overrides: Partial<TextAreaConfig> = {}): TextAreaConfig {
     return {maxLength: -1, showCounter: false, ...overrides};
@@ -24,7 +25,7 @@ function makeInput(): InstanceType<typeof InputBuilder>['build'] extends () => i
         .build();
 }
 
-const meta: Meta<InputTypeComponentProps<TextAreaConfig>> = {
+const meta: Meta<TextAreaInputProps> = {
     title: 'InputTypes/TextAreaInput',
     component: TextAreaInput,
     parameters: {
@@ -44,9 +45,9 @@ const meta: Meta<InputTypeComponentProps<TextAreaConfig>> = {
 
 export default meta;
 
-type Story = StoryObj<InputTypeComponentProps<TextAreaConfig>>;
+type Story = StoryObj<TextAreaInputProps>;
 
-const defaultArgs: InputTypeComponentProps<TextAreaConfig> = {
+const defaultArgs: TextAreaInputProps = {
     value: ValueTypes.STRING.newNullValue(),
     onChange: v => console.log('onChange', v.getString()),
     config: makeConfig(),
@@ -98,6 +99,27 @@ export const Disabled: Story = {
     },
 };
 
+export const ReadOnly: Story = {
+    name: 'States / Read-Only',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue(
+            'Selectable but not editable.\nUseful while showing computed or imported text.',
+        ),
+        readOnly: true,
+    },
+};
+
+export const Processing: Story = {
+    name: 'States / Processing',
+    args: {
+        ...defaultArgs,
+        value: ValueTypes.STRING.newValue('Saving…'),
+        processing: true,
+        config: makeConfig({maxLength: 100, showCounter: true}),
+    },
+};
+
 export const WithError: Story = {
     name: 'States / With Error',
     args: {
@@ -146,6 +168,32 @@ export const WithMaxLengthAndCounter: Story = {
     render: args => <StatefulTextArea {...args} />,
 };
 
+function HighlightDemo() {
+    const [highlight, setHighlight] = useState(false);
+
+    const handleClick = () => {
+        setHighlight(false);
+        window.setTimeout(() => setHighlight(true), 0);
+    };
+
+    return (
+        <div className='flex flex-col gap-y-3 p-4'>
+            <div className='max-w-120 text-sm text-subtle'>
+                Click the button to scroll the field into view and trigger a pulse animation.
+            </div>
+            <Button onClick={handleClick}>Highlight field</Button>
+            <div className='h-96' />
+            <TextAreaInput {...defaultArgs} value={ValueTypes.STRING.newValue('Find me')} highlight={highlight} />
+            <div className='h-96' />
+        </div>
+    );
+}
+
+export const Highlight: Story = {
+    name: 'Features / Highlight',
+    render: () => <HighlightDemo />,
+};
+
 export const AllStates: Story = {
     name: 'States / All States',
     render: () => (
@@ -165,6 +213,14 @@ export const AllStates: Story = {
             <div>
                 <h3 className='mb-3 font-medium text-sm'>Disabled</h3>
                 <TextAreaInput {...defaultArgs} value={ValueTypes.STRING.newValue('Cannot edit')} enabled={false} />
+            </div>
+            <div>
+                <h3 className='mb-3 font-medium text-sm'>Read-Only</h3>
+                <TextAreaInput {...defaultArgs} value={ValueTypes.STRING.newValue('Read only')} readOnly />
+            </div>
+            <div>
+                <h3 className='mb-3 font-medium text-sm'>Processing</h3>
+                <TextAreaInput {...defaultArgs} value={ValueTypes.STRING.newValue('Saving…')} processing />
             </div>
             <div>
                 <h3 className='mb-3 font-medium text-sm'>Error</h3>

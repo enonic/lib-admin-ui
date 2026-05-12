@@ -1,7 +1,7 @@
 apply plugin: 'com.github.node-gradle.node'
 
 node {
-    version = '24.13.0'
-    pnpmVersion = '10.30.2'
+    version = '24.15.0'
+    pnpmVersion = '11.1.1'
     download = true
 }
