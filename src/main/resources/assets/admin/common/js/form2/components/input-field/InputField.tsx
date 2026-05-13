@@ -1,4 +1,4 @@
-import {type ReactElement, useCallback, useEffect, useMemo, useState} from 'react';
+import {type ReactElement, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {PropertyArray} from '../../../data/PropertyArray';
 import type {PropertySet} from '../../../data/PropertySet';
@@ -6,6 +6,7 @@ import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
 import {getEffectiveOccurrences} from '../../descriptor/getEffectiveOccurrences';
 import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
+import {generateProcessingToken, type ProcessingToken, type RevealOptions} from '../../FieldRegistry';
 import {useFieldRegistry} from '../../FieldRegistryContext';
 import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
 import {usePropertyArray} from '../../hooks/usePropertyArray';
@@ -221,18 +222,36 @@ export const InputFieldResolved = ({
         defaultValue,
     });
 
+    const inputRefsRef = useRef<Map<string, HTMLElement>>(new Map());
+    const inputRefCallbacksRef = useRef<Map<string, (el: HTMLElement | null) => void>>(new Map());
+    const processingTokensRef = useRef<Map<string, ProcessingToken>>(new Map());
+    const suppressBlurNotifyRef = useRef(false);
+    const activeNotifierRef = useRef<((path: string | undefined) => void) | null>(null);
+    const [, setTick] = useState(0);
+    const forceRender = useCallback((): void => setTick(tick => tick + 1), []);
+
+    // Prune processing tokens and cached ref callbacks for occurrences that no
+    // longer exist. Runs every render; the Maps are small (one entry per
+    // locked / mounted occurrence).
+    useEffect(() => {
+        const ids = new Set(state.ids);
+        let pruned = false;
+        processingTokensRef.current.forEach((_token, occId) => {
+            if (!ids.has(occId)) {
+                processingTokensRef.current.delete(occId);
+                pruned = true;
+            }
+        });
+        inputRefCallbacksRef.current.forEach((_cb, occId) => {
+            if (!ids.has(occId)) {
+                inputRefCallbacksRef.current.delete(occId);
+            }
+        });
+        if (pruned) forceRender();
+    }, [state.ids, forceRender]);
+
     const fieldRegistry = useFieldRegistry();
     const fieldPath = useMemo(() => input.getPath().toString(), [input]);
-
-    useEffect(() => {
-        if (fieldRegistry == null) return undefined;
-        return fieldRegistry.register(fieldPath, {
-            setTransientError,
-            clearTransientError,
-            clearAllTransientErrors,
-            getOccurrenceIds,
-        });
-    }, [fieldRegistry, fieldPath, setTransientError, clearTransientError, clearAllTransientErrors, getOccurrenceIds]);
 
     useEffect(() => {
         const managerValues = sync(values);
@@ -326,20 +345,173 @@ export const InputFieldResolved = ({
     const filteredValidation = filterErrors(state.occurrenceValidation, visibility, touched);
     const filteredState = visibility === 'all' ? state : {...state, occurrenceValidation: filteredValidation};
 
+    const isOccurrenceProcessing = useCallback((occurrenceId: string | undefined): boolean => {
+        if (occurrenceId == null) return false;
+        return processingTokensRef.current.has(occurrenceId);
+    }, []);
+
+    const getInputRefCallback = useCallback((occurrenceId: string): ((el: HTMLElement | null) => void) => {
+        const cached = inputRefCallbacksRef.current.get(occurrenceId);
+        if (cached != null) return cached;
+        const callback = (el: HTMLElement | null): void => {
+            if (el == null) {
+                inputRefsRef.current.delete(occurrenceId);
+            } else {
+                inputRefsRef.current.set(occurrenceId, el);
+            }
+        };
+        inputRefCallbacksRef.current.set(occurrenceId, callback);
+        return callback;
+    }, []);
+
+    const handleOccurrenceFocus = useCallback((): void => {
+        activeNotifierRef.current?.(fieldPath);
+    }, [fieldPath]);
+
+    const handleOccurrenceBlur = useCallback(
+        (occurrenceIndex: number): void => {
+            if (suppressBlurNotifyRef.current) {
+                suppressBlurNotifyRef.current = false;
+            } else {
+                activeNotifierRef.current?.(undefined);
+            }
+            handleBlur(occurrenceIndex);
+        },
+        [handleBlur],
+    );
+
+    const handleAcquireProcessing = useCallback(
+        (occurrenceId: string): ProcessingToken | null => {
+            if (!state.ids.includes(occurrenceId)) return null;
+            if (processingTokensRef.current.has(occurrenceId)) return null;
+            const token = generateProcessingToken();
+            processingTokensRef.current.set(occurrenceId, token);
+
+            // Blur-on-acquire: if this occurrence's input is currently focused, drop
+            // focus AND suppress the resulting notifyActivePath(undefined) so subscribers
+            // do not see a fake user blur.
+            const el = inputRefsRef.current.get(occurrenceId);
+            if (el != null && document.activeElement === el) {
+                suppressBlurNotifyRef.current = true;
+                el.blur();
+            }
+
+            forceRender();
+            return token;
+        },
+        [state.ids, forceRender],
+    );
+
+    const handleReleaseProcessing = useCallback(
+        (token: ProcessingToken): boolean => {
+            for (const [occId, storedToken] of processingTokensRef.current.entries()) {
+                if (storedToken === token) {
+                    processingTokensRef.current.delete(occId);
+                    forceRender();
+                    return true;
+                }
+            }
+            return false;
+        },
+        [forceRender],
+    );
+
+    const handleIsProcessing = useCallback((occurrenceId: string): boolean => {
+        return processingTokensRef.current.has(occurrenceId);
+    }, []);
+
+    const handleReveal = useCallback(
+        (occurrenceId?: string, options?: RevealOptions): boolean => {
+            const targetId = occurrenceId ?? state.ids[0];
+            if (targetId == null) return false;
+            if (!state.ids.includes(targetId)) return false;
+            const el = inputRefsRef.current.get(targetId);
+            if (el == null) return false;
+            if (options?.focus === true) {
+                if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+                    if (el.readOnly) return false;
+                }
+            }
+            el.scrollIntoView({block: 'center', behavior: 'smooth'});
+            if (options?.focus === true) {
+                el.focus({preventScroll: true});
+            }
+            return true;
+        },
+        [state.ids],
+    );
+
+    const handleFocus = useCallback(
+        (occurrenceId?: string): boolean => {
+            const targetId = occurrenceId ?? state.ids[0];
+            if (targetId == null) return false;
+            if (!state.ids.includes(targetId)) return false;
+            const el = inputRefsRef.current.get(targetId);
+            if (el == null) return false;
+            if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+                if (el.readOnly) return false;
+            }
+            el.focus();
+            return true;
+        },
+        [state.ids],
+    );
+
+    useEffect(() => {
+        if (fieldRegistry == null) {
+            activeNotifierRef.current = null;
+            return undefined;
+        }
+        const {unregister, notifyActivePath} = fieldRegistry.register(fieldPath, {
+            setTransientError,
+            clearTransientError,
+            clearAllTransientErrors,
+            getOccurrenceIds,
+            acquireProcessing: handleAcquireProcessing,
+            releaseProcessing: handleReleaseProcessing,
+            isProcessing: handleIsProcessing,
+            reveal: handleReveal,
+            focus: handleFocus,
+        });
+        activeNotifierRef.current = notifyActivePath;
+        return () => {
+            activeNotifierRef.current = null;
+            unregister();
+        };
+    }, [
+        fieldRegistry,
+        fieldPath,
+        setTransientError,
+        clearTransientError,
+        clearAllTransientErrors,
+        getOccurrenceIds,
+        handleAcquireProcessing,
+        handleReleaseProcessing,
+        handleIsProcessing,
+        handleReveal,
+        handleFocus,
+    ]);
+
     switch (definition.mode) {
         case 'single': {
             const Component = definition.component;
+            const occId = state.ids[0];
+            const processing = isOccurrenceProcessing(occId);
             return (
                 <div data-component={INPUT_FIELD_NAME}>
                     <Component
                         value={state.values[0] ?? descriptor.getValueType().newNullValue()}
                         onChange={(value: Value, rawValue?: string) => handleChange(0, value, rawValue)}
-                        onBlur={() => handleBlur(0)}
+                        onBlur={() => handleOccurrenceBlur(0)}
+                        onFocus={handleOccurrenceFocus}
                         config={config}
                         input={input}
                         enabled={enabled}
                         index={0}
                         errors={filteredValidation[0]?.validationResults ?? []}
+                        readOnly={!enabled || processing}
+                        processing={processing}
+                        inputRef={occId != null ? getInputRefCallback(occId) : undefined}
                     />
                 </div>
             );

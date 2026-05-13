@@ -9,8 +9,6 @@ import {getFirstError, getInputAccessibleName} from '../../utils';
 import {Counter} from '../counter';
 
 export type TextLineInputProps = InputTypeComponentProps<TextLineConfig> & {
-    readOnly?: boolean;
-    processing?: boolean;
     highlight?: boolean;
 };
 
@@ -24,6 +22,7 @@ export const TextLineInput = ({
     value,
     onChange,
     onBlur,
+    onFocus,
     config,
     input,
     enabled,
@@ -32,6 +31,7 @@ export const TextLineInput = ({
     readOnly = false,
     processing = false,
     highlight = false,
+    inputRef: externalInputRef,
 }: TextLineInputProps): JSX.Element => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const isLocalChange = useRef(false);
@@ -50,6 +50,12 @@ export const TextLineInput = ({
 
         setRawInput(valueToString(value));
     }, [value]);
+
+    useEffect(() => {
+        if (externalInputRef == null) return undefined;
+        externalInputRef(inputRef.current);
+        return () => externalInputRef(null);
+    }, [externalInputRef]);
 
     const counterAddon = config.showCounter ? (
         <div
@@ -77,9 +83,11 @@ export const TextLineInput = ({
             value={rawInput}
             onChange={handleChange}
             onBlur={onBlur}
+            onFocus={onFocus}
             disabled={!enabled}
             readOnly={readOnly}
             processing={processing}
+            tabIndex={processing ? -1 : undefined}
             highlight={isBlinking}
             error={getFirstError(errors)}
             maxLength={hasBoth ? undefined : maxLength}

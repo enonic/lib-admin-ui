@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => ({
         typeof initial === 'function' ? (initial as () => unknown)() : initial,
         vi.fn(),
     ]),
+    useRef: vi.fn((initial: unknown) => ({current: initial})),
     useRawValueMap: vi.fn(() => undefined),
     usePropertyArray: vi.fn(),
     useOccurrenceManager: vi.fn(),
@@ -31,6 +32,7 @@ vi.mock('react', () => ({
     useEffect: mocks.useEffect,
     useCallback: mocks.useCallback,
     useState: mocks.useState,
+    useRef: mocks.useRef,
 }));
 
 vi.mock('../../I18nContext', () => ({
@@ -46,7 +48,7 @@ vi.mock('../../RawValueContext', () => ({
 }));
 
 vi.mock('../../FieldRegistryContext', () => ({
-    useFieldRegistry: () => undefined,
+    useFieldRegistry: vi.fn(() => undefined),
 }));
 
 vi.mock('../input-label', () => ({
@@ -143,6 +145,10 @@ describe('InputField', () => {
             move: vi.fn(() => true),
             set: vi.fn(),
             sync: vi.fn(),
+            setTransientError: vi.fn(() => false),
+            clearTransientError: vi.fn(() => false),
+            clearAllTransientErrors: vi.fn(),
+            getOccurrenceIds: vi.fn(() => []),
         });
     });
 
@@ -694,5 +700,151 @@ describe('InputField', () => {
         const child2 = getOnlyChild(element2);
 
         expect(child2.props.errors).toEqual([{message: 'Error'}]);
+    });
+
+    describe('AI affordances (handle contract)', () => {
+        function makeSingleModeContext() {
+            const component: InputTypeComponent = () => null;
+            const descriptor = makeDescriptor();
+            const definition = {mode: 'single' as const, descriptor, component};
+            const input = makeInput('TextLine');
+            const propertySet = new PropertyTree().getRoot();
+            return {input, propertySet, definition};
+        }
+
+        it('registers a FieldHandle exposing the new AI affordance methods', async () => {
+            const {FieldRegistry} = await import('../../FieldRegistry');
+            const registry = new FieldRegistry();
+            const registerSpy = vi.spyOn(registry, 'register');
+
+            // Replace the useFieldRegistry mock to return our real registry for this
+            // one test only. mockReturnValueOnce ensures subsequent tests see undefined.
+            const {useFieldRegistry} = await import('../../FieldRegistryContext');
+            vi.mocked(useFieldRegistry).mockReturnValueOnce(registry);
+
+            // sync() is called inside the sync effect — it must return an array so the
+            // for-loop that seeds the PropertyArray doesn't crash on .length.
+            mocks.useOccurrenceManager.mockReturnValue({
+                state: makeManagerState(),
+                add: vi.fn(() => true),
+                remove: vi.fn(() => true),
+                move: vi.fn(() => true),
+                set: vi.fn(),
+                sync: vi.fn(() => []),
+                setTransientError: vi.fn(() => false),
+                clearTransientError: vi.fn(() => false),
+                clearAllTransientErrors: vi.fn(),
+                getOccurrenceIds: vi.fn(() => []),
+            });
+
+            // Invoke effects synchronously so register() actually runs during the render.
+            mocks.useEffect.mockImplementation((effect: () => unknown) => {
+                effect();
+            });
+
+            const {input, propertySet, definition} = makeSingleModeContext();
+            InputFieldResolved({input, propertySet, enabled: true, definition});
+
+            expect(registerSpy).toHaveBeenCalled();
+            const lastCall = registerSpy.mock.calls.at(-1);
+            if (lastCall == null) throw new Error('register was not called');
+            const handle = lastCall[1];
+
+            expect(typeof handle.setTransientError).toBe('function');
+            expect(typeof handle.clearTransientError).toBe('function');
+            expect(typeof handle.clearAllTransientErrors).toBe('function');
+            expect(typeof handle.getOccurrenceIds).toBe('function');
+            expect(typeof handle.acquireProcessing).toBe('function');
+            expect(typeof handle.releaseProcessing).toBe('function');
+            expect(typeof handle.isProcessing).toBe('function');
+            expect(typeof handle.reveal).toBe('function');
+            expect(typeof handle.focus).toBe('function');
+
+            mocks.useEffect.mockReset();
+        });
+
+        it('blurs the focused input without emitting active-path null to subscribers', async () => {
+            const {FieldRegistry} = await import('../../FieldRegistry');
+            const registry = new FieldRegistry();
+            const {useFieldRegistry} = await import('../../FieldRegistryContext');
+            vi.mocked(useFieldRegistry).mockReturnValueOnce(registry);
+
+            const occurrenceId = 'occurrence-0';
+            const fieldPath = '.testField';
+
+            mocks.useOccurrenceManager.mockReturnValue({
+                state: {
+                    ids: [occurrenceId],
+                    values: [ValueTypes.STRING.newValue('hello')],
+                    occurrenceValidation: [{index: 0, breaksRequired: false, validationResults: []}],
+                    totalValid: 1,
+                    isMinimumBreached: false,
+                    isMaximumBreached: false,
+                    isValid: true,
+                    canAdd: true,
+                    canRemove: false,
+                },
+                add: vi.fn(() => true),
+                remove: vi.fn(() => true),
+                move: vi.fn(() => true),
+                set: vi.fn(),
+                sync: vi.fn(() => []),
+                setTransientError: vi.fn(() => false),
+                clearTransientError: vi.fn(() => false),
+                clearAllTransientErrors: vi.fn(),
+                getOccurrenceIds: vi.fn(() => [occurrenceId]),
+            });
+
+            // Invoke effects synchronously so register() runs and notifyActivePath wires up.
+            mocks.useEffect.mockImplementation((effect: () => unknown) => {
+                effect();
+            });
+
+            // Minimal HTMLElement stand-in: needs `blur()` and identity match against
+            // document.activeElement. Stays opaque enough for handleAcquireProcessing's
+            // `instanceof` guards (which apply only on the focus/reveal paths, not here).
+            const mockEl = {blur: vi.fn()} as unknown as HTMLElement;
+            vi.stubGlobal('document', {activeElement: mockEl});
+
+            const registerSpy = vi.spyOn(registry, 'register');
+            const subscriber = vi.fn();
+            const unsubscribe = registry.subscribeActivePath(subscriber);
+
+            const {input, propertySet, definition} = makeSingleModeContext();
+            const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+            const child = getOnlyChild(element);
+
+            const lastCall = registerSpy.mock.calls.at(-1);
+            if (lastCall == null) throw new Error('register was not called');
+            const handle = lastCall[1];
+
+            // Wire the leaf's inputRef so handleAcquireProcessing can find the element.
+            child.props.inputRef(mockEl);
+
+            // Simulate the user focusing the input — leaf calls onFocus, which
+            // notifyActivePath(fieldPath) routes through the registry.
+            child.props.onFocus();
+            await Promise.resolve();
+            expect(subscriber).toHaveBeenCalledWith(fieldPath);
+            subscriber.mockClear();
+
+            // Now the controller acquires a processing lock on the focused occurrence.
+            // The input must be blurred AND the resulting onBlur from the leaf must not
+            // emit `undefined` to subscribers (suppressBlurNotifyRef gates that).
+            const token = handle.acquireProcessing(occurrenceId);
+            expect(token).not.toBeNull();
+            expect(mockEl.blur).toHaveBeenCalledOnce();
+
+            // The leaf observes the blur and forwards it to handleOccurrenceBlur — this
+            // is the call site that, without the suppression flag, would emit undefined.
+            child.props.onBlur();
+            await Promise.resolve();
+
+            expect(subscriber).not.toHaveBeenCalledWith(undefined);
+
+            unsubscribe();
+            vi.unstubAllGlobals();
+            mocks.useEffect.mockReset();
+        });
     });
 });

@@ -1,4 +1,30 @@
 /**
+ * Opaque ownership token returned by {@link FieldRegistry.acquireProcessing}. Callers
+ * MUST treat it as opaque — no parsing, no comparison except via
+ * {@link FieldRegistry.releaseProcessing}.
+ */
+export type ProcessingToken = string;
+
+let processingTokenCounter = 0;
+
+export function generateProcessingToken(): ProcessingToken {
+    // crypto.randomUUID is available in all modern browsers and JSDOM 22+.
+    // Fallback covers older test environments.
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID();
+    }
+    processingTokenCounter += 1;
+    return `pt-${Date.now()}-${processingTokenCounter}-${Math.random().toString(36).slice(2)}`;
+}
+
+export type FieldRegistration = {
+    unregister: () => void;
+    notifyActivePath: (path: string | undefined) => void;
+};
+
+export type RevealOptions = {focus?: boolean};
+
+/**
  * Routes external messages (e.g. translation failures) to specific input fields by path.
  *
  * Each {@link InputField} registers a handle keyed by its property path
@@ -23,26 +49,40 @@ export type FieldHandle = {
     clearAllTransientErrors: () => void;
     /** Snapshot of current occurrence IDs at call time — use to capture a stable ID before firing async work. */
     getOccurrenceIds: () => string[];
+    acquireProcessing: (occurrenceId: string) => ProcessingToken | null;
+    releaseProcessing: (token: ProcessingToken) => boolean;
+    isProcessing: (occurrenceId: string) => boolean;
+    reveal: (occurrenceId?: string, options?: RevealOptions) => boolean;
+    focus: (occurrenceId?: string) => boolean;
 };
 
 export class FieldRegistry {
     private readonly handles = new Map<string, FieldHandle>();
+    private readonly activePathSubscribers = new Set<(path: string | undefined) => void>();
+    private pendingActivePath: string | undefined = undefined;
+    private hasPendingActivePath = false;
 
     /**
-     * Register a field handle under a property path. Returns an unregister function;
-     * use it in cleanup to drop the handle when the field unmounts.
+     * Register a field handle under a property path. Returns an object exposing
+     * `unregister` and `notifyActivePath`.
+     *
+     * `notifyActivePath` is the only path by which active-field changes can reach
+     * subscribers — it is intentionally NOT on the public `FieldRegistry` surface so
+     * external consumers cannot spoof focus events.
      *
      * Re-registering the same path replaces the previous handle — last writer wins.
-     * This is intentional: a single mounted instance per path is the expected case.
      */
-    register(path: string, handle: FieldHandle): () => void {
+    register(path: string, handle: FieldHandle): FieldRegistration {
         this.handles.set(path, handle);
-        return () => {
-            // Guard against unregistering a stale handle after a re-register replaced it.
+        const unregister = (): void => {
             if (this.handles.get(path) === handle) {
                 this.handles.delete(path);
             }
         };
+        const notifyActivePath = (active: string | undefined): void => {
+            this.scheduleActivePathEmit(active);
+        };
+        return {unregister, notifyActivePath};
     }
 
     setTransientError(path: string, occurrenceId: string, message: string): boolean {
@@ -71,6 +111,42 @@ export class FieldRegistry {
         });
     }
 
+    acquireProcessing(path: string, occurrenceId: string): ProcessingToken | null {
+        const handle = this.handles.get(path);
+        if (handle == null) return null;
+        return handle.acquireProcessing(occurrenceId);
+    }
+
+    /**
+     * Release a processing lock by token. Scans registered handles for the owner
+     * (the token does not carry its path). Linear in the number of registered
+     * fields, which is small (one InputField per visible path).
+     */
+    releaseProcessing(token: ProcessingToken): boolean {
+        for (const handle of this.handles.values()) {
+            if (handle.releaseProcessing(token)) return true;
+        }
+        return false;
+    }
+
+    isProcessing(path: string, occurrenceId: string): boolean {
+        const handle = this.handles.get(path);
+        if (handle == null) return false;
+        return handle.isProcessing(occurrenceId);
+    }
+
+    reveal(path: string, occurrenceId?: string, options?: RevealOptions): boolean {
+        const handle = this.handles.get(path);
+        if (handle == null) return false;
+        return handle.reveal(occurrenceId, options);
+    }
+
+    focus(path: string, occurrenceId?: string): boolean {
+        const handle = this.handles.get(path);
+        if (handle == null) return false;
+        return handle.focus(occurrenceId);
+    }
+
     /** Returns the current occurrence IDs for a registered field, or `undefined` if the path isn't registered. */
     getOccurrenceIds(path: string): string[] | undefined {
         return this.handles.get(path)?.getOccurrenceIds();
@@ -78,5 +154,30 @@ export class FieldRegistry {
 
     hasField(path: string): boolean {
         return this.handles.has(path);
+    }
+
+    subscribeActivePath(handler: (path: string | undefined) => void): () => void {
+        this.activePathSubscribers.add(handler);
+        return () => {
+            this.activePathSubscribers.delete(handler);
+        };
+    }
+
+    private scheduleActivePathEmit(active: string | undefined): void {
+        this.pendingActivePath = active;
+        if (this.hasPendingActivePath) return;
+        this.hasPendingActivePath = true;
+        queueMicrotask(() => {
+            const value = this.pendingActivePath;
+            this.hasPendingActivePath = false;
+            this.pendingActivePath = undefined;
+            this.activePathSubscribers.forEach(handler => {
+                try {
+                    handler(value);
+                } catch (error) {
+                    console.error('FieldRegistry: active-path subscriber threw', error);
+                }
+            });
+        });
     }
 }

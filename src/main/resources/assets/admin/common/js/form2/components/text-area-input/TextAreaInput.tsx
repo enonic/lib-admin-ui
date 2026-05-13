@@ -1,6 +1,6 @@
 import {cn, TextArea, useBlinkAttention} from '@enonic/ui';
 import type {JSX} from 'react';
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextAreaConfig} from '../../descriptor';
@@ -9,8 +9,6 @@ import {getFirstError, getInputAccessibleName} from '../../utils';
 import {Counter} from '../counter';
 
 export type TextAreaInputProps = InputTypeComponentProps<TextAreaConfig> & {
-    readOnly?: boolean;
-    processing?: boolean;
     highlight?: boolean;
 };
 
@@ -20,6 +18,7 @@ export const TextAreaInput = ({
     value,
     onChange,
     onBlur,
+    onFocus,
     config,
     input,
     enabled,
@@ -28,9 +27,16 @@ export const TextAreaInput = ({
     readOnly = false,
     processing = false,
     highlight = false,
+    inputRef: externalInputRef,
 }: TextAreaInputProps): JSX.Element => {
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
     const isBlinking = useBlinkAttention(textAreaRef, highlight);
+
+    useEffect(() => {
+        if (externalInputRef == null) return undefined;
+        externalInputRef(textAreaRef.current);
+        return () => externalInputRef(null);
+    }, [externalInputRef]);
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
@@ -62,9 +68,11 @@ export const TextAreaInput = ({
             value={stringValue}
             onChange={handleChange}
             onBlur={onBlur}
+            onFocus={onFocus}
             disabled={!enabled}
             readOnly={readOnly}
             processing={processing}
+            tabIndex={processing ? -1 : undefined}
             highlight={isBlinking}
             error={getFirstError(errors)}
             maxLength={hasBoth ? undefined : maxLength}

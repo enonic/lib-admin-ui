@@ -1,12 +1,14 @@
 import {Button} from '@enonic/ui';
 import type {Meta, StoryObj} from '@storybook/preact-vite';
-import {useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {OccurrencesBuilder} from '../../../form/Occurrences';
 import type {TextAreaConfig} from '../../descriptor';
+import {FieldRegistry, generateProcessingToken, type ProcessingToken} from '../../FieldRegistry';
+import {FieldRegistryProvider} from '../../FieldRegistryContext';
 import type {InputTypeComponentProps} from '../../types';
 import {TextAreaInput, type TextAreaInputProps} from './TextAreaInput';
 
@@ -192,6 +194,92 @@ function HighlightDemo() {
 export const Highlight: Story = {
     name: 'Features / Highlight',
     render: () => <HighlightDemo />,
+};
+
+const STORY_PATH = '.story.field';
+const OCCURRENCE_ID = 'occurrence-0';
+
+function WithRegistryDemo() {
+    const registry = useMemo(() => new FieldRegistry(), []);
+    const [token, setToken] = useState<ProcessingToken | null>(null);
+    const [processing, setProcessing] = useState(false);
+    const processingTokenRef = useRef<Map<string, ProcessingToken>>(new Map());
+
+    useEffect(() => {
+        const registration = registry.register(STORY_PATH, {
+            setTransientError: () => false,
+            clearTransientError: () => false,
+            clearAllTransientErrors: () => undefined,
+            getOccurrenceIds: () => [OCCURRENCE_ID],
+            acquireProcessing: (occurrenceId: string) => {
+                if (occurrenceId !== OCCURRENCE_ID) return null;
+                if (processingTokenRef.current.has(occurrenceId)) return null;
+                const t = generateProcessingToken();
+                processingTokenRef.current.set(occurrenceId, t);
+                setProcessing(true);
+                return t;
+            },
+            releaseProcessing: (t: ProcessingToken) => {
+                for (const [occId, stored] of processingTokenRef.current.entries()) {
+                    if (stored === t) {
+                        processingTokenRef.current.delete(occId);
+                        setProcessing(false);
+                        return true;
+                    }
+                }
+                return false;
+            },
+            isProcessing: (occurrenceId: string) => processingTokenRef.current.has(occurrenceId),
+            reveal: () => false,
+            focus: () => false,
+        });
+
+        return () => registration.unregister();
+    }, [registry]);
+
+    const handleAcquire = () => {
+        const t = registry.acquireProcessing(STORY_PATH, OCCURRENCE_ID);
+        if (t != null) setToken(t);
+    };
+
+    const handleRelease = () => {
+        if (token == null) return;
+        registry.releaseProcessing(token);
+        setToken(null);
+    };
+
+    return (
+        <FieldRegistryProvider registry={registry}>
+            <div className='flex flex-col gap-y-3 p-4'>
+                <div className='max-w-120 text-sm text-subtle'>
+                    Acquire a processing lock via the registry. The textarea becomes read-only and shows a spinner.
+                    Release the lock to restore the normal state.
+                </div>
+                <TextAreaInput
+                    {...defaultArgs}
+                    value={ValueTypes.STRING.newValue(
+                        'Generating a long-form summary…\n\nThe AI translator is preparing a translated version of this paragraph.',
+                    )}
+                    config={makeConfig({maxLength: 200, showCounter: true})}
+                    readOnly={processing}
+                    processing={processing}
+                />
+                <div className='flex gap-x-2'>
+                    <Button onClick={handleAcquire} disabled={token != null}>
+                        Acquire processing
+                    </Button>
+                    <Button onClick={handleRelease} disabled={token == null}>
+                        Release processing
+                    </Button>
+                </div>
+            </div>
+        </FieldRegistryProvider>
+    );
+}
+
+export const WithRegistry: Story = {
+    name: 'Features / With Registry',
+    render: () => <WithRegistryDemo />,
 };
 
 export const AllStates: Story = {
