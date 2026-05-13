@@ -26,6 +26,13 @@ export type OccurrenceListRootProps<C extends InputTypeConfig = InputTypeConfig>
     config: C;
     input: Input;
     enabled: boolean;
+    /**
+     * Occurrence IDs currently held in a processing lock by an external caller (e.g.
+     * an in-flight AI translation). Items whose ID is in the set render their inner
+     * Component with `processing={true}`, which propagates the readOnly + busy
+     * affordance through TextLine/TextArea inputs.
+     */
+    processingOccurrenceIds?: ReadonlySet<string>;
 };
 
 type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig> = {
@@ -37,6 +44,7 @@ type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig>
     enabled: boolean;
     errors: OccurrenceManagerState['occurrenceValidation'][number];
     showRemove: boolean;
+    processing: boolean;
     onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
     onRemove: (index: number) => void;
@@ -59,6 +67,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
     enabled,
     errors,
     showRemove,
+    processing,
     onChange,
     onBlur,
     onRemove,
@@ -77,6 +86,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
                     enabled={enabled}
                     index={index}
                     errors={errors.validationResults}
+                    processing={processing}
                 />
             </div>
             {showRemove && (
@@ -124,7 +134,9 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     config,
     input,
     enabled,
+    processingOccurrenceIds,
 }: OccurrenceListRootProps<C>): ReactElement => {
+    const isProcessing = (index: number): boolean => processingOccurrenceIds?.has(state.ids[index]) ?? false;
     const t = useI18n();
     const occurrences = input.getOccurrences();
     const min = occurrences.getMinimum();
@@ -165,6 +177,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                     enabled={enabled}
                     index={0}
                     errors={allErrors}
+                    processing={isProcessing(0)}
                 />
             </div>
         );
@@ -181,6 +194,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         // canRemove reflects the schema minimum; the count > 1 guard is a UX policy
         // matching legacy isRemoveButtonRequiredStrict() — never remove the last visible input.
         showRemove: state.canRemove && state.values.length > 1 && !isFixed,
+        processing: isProcessing(index),
         onChange,
         onBlur,
         onRemove,

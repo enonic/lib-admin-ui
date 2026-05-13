@@ -549,6 +549,9 @@ export const InputFieldResolved = ({
 
         case 'list': {
             const Component = definition.component;
+            // A fresh Set per render — keys live in a mutable ref, so the prop value
+            // must be recomputed every render to reflect acquire/release transitions.
+            const processingOccurrenceIds = new Set(processingTokensRef.current.keys());
             return (
                 <div data-component={INPUT_FIELD_NAME}>
                     <OccurrenceList.Root
@@ -562,6 +565,7 @@ export const InputFieldResolved = ({
                         config={config}
                         input={input}
                         enabled={enabled}
+                        processingOccurrenceIds={processingOccurrenceIds}
                     />
                 </div>
             );
