@@ -10,21 +10,26 @@ export class WindowDOM {
 
     private onBeforeUnloadListeners: ((event: UIEvent) => void)[] = [];
 
-    private onUnloadListeners: ((event: UIEvent) => void)[] = [];
+    private onUnloadListeners: ((event: PageTransitionEvent) => void)[] = [];
 
     constructor(element: Window = window) {
         this.el = element;
 
-        const handle = function (event: UIEvent, listeners: ((event: UIEvent) => void)[]) {
+        const handle = function <TEvent extends Event>(event: TEvent, listeners: ((event: TEvent) => void)[]) {
             listeners.forEach(l => l(event));
         };
 
         this.el.onbeforeunload = (event) => {
             handle(event, this.onBeforeUnloadListeners);
         };
-        this.el.onunload = (event) => {
+        // Avoid the unload event: it can be disabled by Permissions-Policy and
+        // logs a browser violation when registered. pagehide still covers page
+        // exit cleanup, including bfcache navigations. Listeners intentionally
+        // run for persisted pages too, matching the old "leaving the page"
+        // semantics.
+        this.el.addEventListener('pagehide', (event: PageTransitionEvent) => {
             handle(event, this.onUnloadListeners);
-        };
+        }, {capture: true});
 
         Store.instance().set(WINDOW_KEY, this);
     }
@@ -133,11 +138,11 @@ export class WindowDOM {
         return this;
     }
 
-    onUnload(listener: (event: UIEvent) => void) {
+    onUnload(listener: (event: PageTransitionEvent) => void) {
         this.onUnloadListeners.push(listener);
     }
 
-    unUnload(listener: (event: UIEvent) => void) {
+    unUnload(listener: (event: PageTransitionEvent) => void) {
         this.onUnloadListeners = this.onUnloadListeners.filter(curr => curr !== listener);
         return this;
     }
