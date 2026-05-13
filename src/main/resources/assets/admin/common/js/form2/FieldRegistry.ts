@@ -61,6 +61,7 @@ export class FieldRegistry {
     private readonly activePathSubscribers = new Set<(path: string | undefined) => void>();
     private pendingActivePath: string | undefined = undefined;
     private hasPendingActivePath = false;
+    private lastFocusOwner: string | undefined = undefined;
 
     /**
      * Register a field handle under a property path. Returns an object exposing
@@ -80,6 +81,15 @@ export class FieldRegistry {
             }
         };
         const notifyActivePath = (active: string | undefined): void => {
+            if (active === undefined) {
+                // Only the field that currently owns the active state can clear it.
+                // Filters out stale blurs that arrive after another field already took
+                // focus, and unmount cleanups from fields that were never active.
+                if (this.lastFocusOwner !== path) return;
+                this.lastFocusOwner = undefined;
+            } else {
+                this.lastFocusOwner = active;
+            }
             this.scheduleActivePathEmit(active);
         };
         return {unregister, notifyActivePath};

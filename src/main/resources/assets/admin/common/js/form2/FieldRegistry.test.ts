@@ -413,5 +413,54 @@ describe('FieldRegistry', () => {
             expect(a).toHaveBeenCalledExactlyOnceWith('.foo');
             expect(b).toHaveBeenCalledExactlyOnceWith('.foo');
         });
+
+        it('emits undefined when the owning field clears its active state', async () => {
+            const subscriber = vi.fn();
+            registry.subscribeActivePath(subscriber);
+
+            const {notifyActivePath} = registry.register('.foo', makeHandle());
+            notifyActivePath('.foo');
+            await flushMicrotasks();
+            expect(subscriber).toHaveBeenLastCalledWith('.foo');
+
+            subscriber.mockClear();
+            notifyActivePath(undefined);
+            await flushMicrotasks();
+
+            expect(subscriber).toHaveBeenCalledExactlyOnceWith(undefined);
+        });
+
+        it('ignores notifyActivePath(undefined) when the caller is not the active owner', async () => {
+            const subscriber = vi.fn();
+            registry.subscribeActivePath(subscriber);
+
+            const {notifyActivePath: notifyA} = registry.register('.foo', makeHandle());
+            const {notifyActivePath: notifyB} = registry.register('.bar', makeHandle());
+
+            notifyA('.foo');
+            await flushMicrotasks();
+            notifyB('.bar');
+            await flushMicrotasks();
+            expect(subscriber).toHaveBeenLastCalledWith('.bar');
+
+            // ? A's late blur arrives after B already took ownership — must NOT emit
+            // ? undefined (focus didn't go to nothing, it went to B).
+            subscriber.mockClear();
+            notifyA(undefined);
+            await flushMicrotasks();
+
+            expect(subscriber).not.toHaveBeenCalled();
+        });
+
+        it('ignores notifyActivePath(undefined) when no field currently owns active state', async () => {
+            const subscriber = vi.fn();
+            registry.subscribeActivePath(subscriber);
+
+            const {notifyActivePath} = registry.register('.foo', makeHandle());
+            notifyActivePath(undefined);
+            await flushMicrotasks();
+
+            expect(subscriber).not.toHaveBeenCalled();
+        });
     });
 });

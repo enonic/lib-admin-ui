@@ -846,5 +846,99 @@ describe('InputField', () => {
             vi.unstubAllGlobals();
             mocks.useEffect.mockReset();
         });
+
+        it('emits notifyActivePath(undefined) when an active field unmounts', async () => {
+            const {FieldRegistry} = await import('../../FieldRegistry');
+            const registry = new FieldRegistry();
+            const {useFieldRegistry} = await import('../../FieldRegistryContext');
+            vi.mocked(useFieldRegistry).mockReturnValueOnce(registry);
+
+            mocks.useOccurrenceManager.mockReturnValue({
+                state: makeManagerState(),
+                add: vi.fn(() => true),
+                remove: vi.fn(() => true),
+                move: vi.fn(() => true),
+                set: vi.fn(),
+                sync: vi.fn(() => []),
+                setTransientError: vi.fn(() => false),
+                clearTransientError: vi.fn(() => false),
+                clearAllTransientErrors: vi.fn(),
+                getOccurrenceIds: vi.fn(() => ['occurrence-0']),
+            });
+
+            // Capture cleanup functions so we can simulate unmount.
+            const cleanups: Array<() => void> = [];
+            mocks.useEffect.mockImplementation((effect: () => unknown) => {
+                const cleanup = effect();
+                if (typeof cleanup === 'function') cleanups.push(cleanup as () => void);
+            });
+
+            const subscriber = vi.fn();
+            const unsubscribe = registry.subscribeActivePath(subscriber);
+
+            const {input, propertySet, definition} = makeSingleModeContext();
+            const element = InputFieldResolved({input, propertySet, enabled: true, definition});
+            const child = getOnlyChild(element);
+
+            // Simulate the user focusing the input — field becomes the active owner.
+            child.props.onFocus();
+            await Promise.resolve();
+            expect(subscriber).toHaveBeenLastCalledWith('.testField');
+            subscriber.mockClear();
+
+            // Simulate unmount: run all captured effect cleanups.
+            cleanups.forEach(cleanup => {
+                cleanup();
+            });
+            await Promise.resolve();
+
+            expect(subscriber).toHaveBeenCalledExactlyOnceWith(undefined);
+
+            unsubscribe();
+            mocks.useEffect.mockReset();
+        });
+
+        it('does not emit on unmount when the field was never active', async () => {
+            const {FieldRegistry} = await import('../../FieldRegistry');
+            const registry = new FieldRegistry();
+            const {useFieldRegistry} = await import('../../FieldRegistryContext');
+            vi.mocked(useFieldRegistry).mockReturnValueOnce(registry);
+
+            mocks.useOccurrenceManager.mockReturnValue({
+                state: makeManagerState(),
+                add: vi.fn(() => true),
+                remove: vi.fn(() => true),
+                move: vi.fn(() => true),
+                set: vi.fn(),
+                sync: vi.fn(() => []),
+                setTransientError: vi.fn(() => false),
+                clearTransientError: vi.fn(() => false),
+                clearAllTransientErrors: vi.fn(),
+                getOccurrenceIds: vi.fn(() => ['occurrence-0']),
+            });
+
+            const cleanups: Array<() => void> = [];
+            mocks.useEffect.mockImplementation((effect: () => unknown) => {
+                const cleanup = effect();
+                if (typeof cleanup === 'function') cleanups.push(cleanup as () => void);
+            });
+
+            const subscriber = vi.fn();
+            const unsubscribe = registry.subscribeActivePath(subscriber);
+
+            const {input, propertySet, definition} = makeSingleModeContext();
+            InputFieldResolved({input, propertySet, enabled: true, definition});
+
+            // No focus, then unmount — registry filter must suppress the emit.
+            cleanups.forEach(cleanup => {
+                cleanup();
+            });
+            await Promise.resolve();
+
+            expect(subscriber).not.toHaveBeenCalled();
+
+            unsubscribe();
+            mocks.useEffect.mockReset();
+        });
     });
 });

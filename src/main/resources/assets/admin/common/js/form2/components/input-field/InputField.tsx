@@ -475,6 +475,9 @@ export const InputFieldResolved = ({
         });
         activeNotifierRef.current = notifyActivePath;
         return () => {
+            // Clear active-path subscribers if this field was the focus owner. The
+            // registry filters by ownership, so unmounting a non-active field is a no-op.
+            notifyActivePath(undefined);
             activeNotifierRef.current = null;
             unregister();
         };
