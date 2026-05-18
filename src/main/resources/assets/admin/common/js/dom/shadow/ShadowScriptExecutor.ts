@@ -1,9 +1,9 @@
 /**
  * Handles script execution within Shadow DOM.
  *
- * Interceptors are installed once via activate() and remain active until cleanup() is called.
- * This ensures that async callbacks (setTimeout, setInterval) can still query the shadow root
- * after initial script execution completes.
+ * Document-method interceptors (querySelector, getElementById, etc.) are installed once via
+ * activate() and remain active until cleanup() is called, so async widget code can still
+ * query the shadow root after initial script execution completes.
  *
  * Scripts and hoisted font-face <style> elements executed/injected by this instance are tagged
  * with a unique instance ID so that cleanup() removes only this element's assets from document.head.
@@ -18,10 +18,6 @@ export class ShadowScriptExecutor {
 
     private readonly fontStyleElements: {el: HTMLStyleElement; onRemove?: () => void}[] = [];
 
-    private readonly timeouts = new Set<number>();
-
-    private readonly intervals = new Set<number>();
-
     // Store original document methods for restoration
     private static originalMethods: {
         querySelector: typeof document.querySelector;
@@ -29,8 +25,6 @@ export class ShadowScriptExecutor {
         getElementById: typeof document.getElementById;
         getElementsByClassName: typeof document.getElementsByClassName;
         getElementsByTagName: typeof document.getElementsByTagName;
-        setTimeout: typeof window.setTimeout;
-        setInterval: typeof window.setInterval;
     } | null = null;
 
     private static activeExecutor: ShadowScriptExecutor | null = null;
@@ -68,18 +62,12 @@ export class ShadowScriptExecutor {
             return;
         }
 
-        // Store original methods and property descriptors
-        const originalSetTimeout = window.setTimeout.bind(window);
-        const originalSetInterval = window.setInterval.bind(window);
-
         ShadowScriptExecutor.originalMethods = {
             querySelector: document.querySelector.bind(document),
             querySelectorAll: document.querySelectorAll.bind(document),
             getElementById: document.getElementById.bind(document),
             getElementsByClassName: document.getElementsByClassName.bind(document),
             getElementsByTagName: document.getElementsByTagName.bind(document),
-            setTimeout: originalSetTimeout,
-            setInterval: originalSetInterval,
         };
 
         ShadowScriptExecutor.activeExecutorCount = 1;
@@ -159,25 +147,6 @@ export class ShadowScriptExecutor {
             }
             return ShadowScriptExecutor.originalMethods.getElementsByTagName.call(document, qualifiedName) as HTMLCollectionOf<HTMLElementTagNameMap[K] | Element>;
         };
-
-        // Override window.setTimeout/setInterval so async callbacks run with interceptors active.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any).setTimeout = (fn: TimerHandler, delay?: number, ...args: unknown[]): number => {
-            const executor = ShadowScriptExecutor.activeExecutor;
-            if (executor) {
-                return executor.trackTimeout(fn, delay, ...args);
-            }
-            return originalSetTimeout(fn, delay, ...args);
-        };
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any).setInterval = (fn: TimerHandler, delay?: number, ...args: unknown[]): number => {
-            const executor = ShadowScriptExecutor.activeExecutor;
-            if (executor) {
-                return executor.trackInterval(fn, delay, ...args);
-            }
-            return originalSetInterval(fn, delay, ...args);
-        };
     }
 
     /**
@@ -197,11 +166,6 @@ export class ShadowScriptExecutor {
             document.getElementById = ShadowScriptExecutor.originalMethods.getElementById;
             document.getElementsByClassName = ShadowScriptExecutor.originalMethods.getElementsByClassName;
             document.getElementsByTagName = ShadowScriptExecutor.originalMethods.getElementsByTagName;
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any).setTimeout = ShadowScriptExecutor.originalMethods.setTimeout;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any).setInterval = ShadowScriptExecutor.originalMethods.setInterval;
 
             ShadowScriptExecutor.originalMethods = null;
         }
@@ -259,10 +223,8 @@ export class ShadowScriptExecutor {
             }
 
             // For module scripts without src, they're async so resolve after a tick.
-            // Use the stored original setTimeout to avoid triggering the tracked override.
             if (!scriptEl.src && scriptEl.type === 'module') {
-                const originalSetTimeout = ShadowScriptExecutor.originalMethods?.setTimeout ?? window.setTimeout.bind(window);
-                originalSetTimeout(() => resolve(), 0);
+                setTimeout(() => resolve(), 0);
             }
         });
     }
@@ -280,37 +242,6 @@ export class ShadowScriptExecutor {
     }
 
     /**
-     * Creates tracked setTimeout that can be cleaned up.
-     * Uses the original (pre-override) window.setTimeout to avoid recursion.
-     */
-    trackTimeout(fn: TimerHandler, delay?: number, ...args: unknown[]): number {
-        const originalSetTimeout = ShadowScriptExecutor.originalMethods?.setTimeout ?? window.setTimeout.bind(window);
-        const id = originalSetTimeout(() => {
-            this.timeouts.delete(id);
-            if (typeof fn === 'function') {
-                fn(...args);
-            }
-        }, delay) as number;
-        this.timeouts.add(id);
-        return id;
-    }
-
-    /**
-     * Creates tracked setInterval that can be cleaned up.
-     * Uses the original (pre-override) window.setInterval to avoid recursion.
-     */
-    trackInterval(fn: TimerHandler, delay?: number, ...args: unknown[]): number {
-        const originalSetInterval = ShadowScriptExecutor.originalMethods?.setInterval ?? window.setInterval.bind(window);
-        const id = originalSetInterval(() => {
-            if (typeof fn === 'function') {
-                fn(...args);
-            }
-        }, delay) as number;
-        this.intervals.add(id);
-        return id;
-    }
-
-    /**
      * Registers a @font-face <style> element that was hoisted to document.head by this widget.
      * The element will be removed from document.head when cleanup() is called.
      * onRemove is invoked after removal, allowing the caller to evict deduplication state.
@@ -322,20 +253,12 @@ export class ShadowScriptExecutor {
 
     /**
      * Cleans up all resources for this executor instance:
-     * removes interceptors, cancels timers, and removes this instance's script tags and
-     * hoisted font-face <style> elements from document.head.
+     * removes interceptors and removes this instance's script tags and hoisted font-face
+     * <style> elements from document.head.
      */
     cleanup(): void {
         // Remove interceptors
         this.removeInterceptors();
-
-        // Clear all tracked timeouts
-        this.timeouts.forEach(id => window.clearTimeout(id));
-        this.timeouts.clear();
-
-        // Clear all tracked intervals
-        this.intervals.forEach(id => window.clearInterval(id));
-        this.intervals.clear();
 
         // Remove only this instance's script elements from document.head
         this.scriptElements.forEach(script => {
