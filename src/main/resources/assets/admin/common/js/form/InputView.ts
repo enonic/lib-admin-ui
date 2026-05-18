@@ -1,5 +1,4 @@
 import Q from 'q';
-import {AiToolType} from '../ai/tool/AiToolType';
 import {Property} from '../data/Property';
 import {PropertyArray} from '../data/PropertyArray';
 import {PropertySet} from '../data/PropertySet';
@@ -84,15 +83,10 @@ export class InputView
         }
 
         this.inputTypeView = this.createInputTypeView();
-        const hasAiIcon = this.inputTypeView.getAiConfig()?.aiTools.has(AiToolType.DIALOG);
-        this.toggleClass('ai-editable', hasAiIcon);
 
         if (this.input.getHelpText()) {
             this.helpText = new HelpTextContainer(this.input.getHelpText());
-
-            if (!hasAiIcon) {
-                this.appendChild(this.helpText.getToggler());
-            }
+            this.appendChild(this.helpText.getToggler());
         }
 
         this.propertyArray = this.getPropertyArray(this.parentPropertySet);

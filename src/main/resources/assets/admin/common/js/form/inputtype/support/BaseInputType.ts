@@ -1,5 +1,4 @@
 import Q from 'q';
-import {AiToolType} from '../../../ai/tool/AiToolType';
 import {ClassHelper} from '../../../ClassHelper';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Value} from '../../../data/Value';
@@ -7,7 +6,6 @@ import {ValueType} from '../../../data/ValueType';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {Input} from '../../Input';
-import {AiConfig} from '../InputAiConfig';
 import {InputTypeView} from '../InputTypeView';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputValidationRecording} from '../InputValidationRecording';
@@ -140,11 +138,5 @@ export abstract class BaseInputType extends DivEl
 
     validate(silent: boolean) {
     //
-    }
-
-    getAiConfig(): AiConfig {
-        return {
-            aiTools: new Set<AiToolType>(),
-        }
     }
 }

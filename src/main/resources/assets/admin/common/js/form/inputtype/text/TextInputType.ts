@@ -12,7 +12,6 @@ import {i18n} from '../../../util/Messages';
 import {StringHelper} from '../../../util/StringHelper';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
-import {AiConfig} from '../InputAiConfig';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {InputValueLengthCounterEl} from './InputValueLengthCounterEl';
@@ -166,14 +165,5 @@ export abstract class TextInputType
 
             return rendered;
         });
-    }
-
-    getAiConfig(): AiConfig {
-        const formContext = this.getContext().formContext;
-
-        return formContext ? {
-            group: formContext.getName(),
-            aiTools: formContext.getAiTools(),
-        } : super.getAiConfig();
     }
 }
