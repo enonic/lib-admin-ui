@@ -3,7 +3,7 @@ import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {NumberConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 import {getStep} from './utils';
 
 const DOUBLE_INPUT_NAME = 'DoubleInput';
@@ -14,7 +14,16 @@ function valueToString(value: DoubleInputProps['value']): string {
     return value.isNull() ? '' : String(value.getDouble() ?? '');
 }
 
-export const DoubleInput = ({value, onChange, onBlur, config, enabled, errors}: DoubleInputProps): ReactElement => {
+export const DoubleInput = ({
+    value,
+    onChange,
+    onBlur,
+    config,
+    input,
+    enabled,
+    index,
+    errors,
+}: DoubleInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const minStep = useRef(getStep(rawInput));
     const prevRawInput = useRef(rawInput);
@@ -66,6 +75,7 @@ export const DoubleInput = ({value, onChange, onBlur, config, enabled, errors}: 
     return (
         <Input
             data-component={DOUBLE_INPUT_NAME}
+            aria-label={getInputAccessibleName(input, index)}
             type='number'
             step={step}
             value={rawInput}

@@ -19,7 +19,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import type {Occurrences} from '../../../form/Occurrences';
 import {useI18n} from '../../I18nContext';
 import type {SelfManagedComponentProps} from '../../types';
-import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
+import {getFirstError, getInputAccessibleName, getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
 import {
     getPastedTagLabels,
@@ -79,6 +79,7 @@ type TagViewState = {
 
 type TagDraftInputProps = {
     draft: string;
+    accessibleName: string;
     enabled: boolean;
     invalid: boolean;
     visible: boolean;
@@ -323,6 +324,7 @@ function getCompactedTagIndex(values: Value[], index: number): number {
 
 function renderTagDraftInput({
     draft,
+    accessibleName,
     enabled,
     invalid,
     visible,
@@ -344,6 +346,7 @@ function renderTagDraftInput({
         >
             <Input
                 ref={inputRef}
+                aria-label={accessibleName}
                 className={cn(
                     '[&_input]:px-2.5 [&_input]:text-sm',
                     '[&>div[data-state]]:h-7 [&>div[data-state]]:border-transparent! [&>div[data-state]]::text-sm',
@@ -612,6 +615,7 @@ export const TagInput = ({
     onRemove,
     onMove,
     occurrences,
+    input,
     enabled,
     errors,
 }: TagInputProps): ReactElement => {
@@ -1072,6 +1076,7 @@ export const TagInput = ({
                             {showInlineInput &&
                                 renderTagDraftInput({
                                     draft,
+                                    accessibleName: getInputAccessibleName(input),
                                     enabled,
                                     invalid: isDraftDuplicate,
                                     visible: isDraftInputVisible,

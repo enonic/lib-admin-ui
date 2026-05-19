@@ -5,7 +5,7 @@ import {useEffect, useRef, useState} from 'react';
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextLineConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 import {Counter} from '../counter';
 
 export type TextLineInputProps = InputTypeComponentProps<TextLineConfig>;
@@ -16,7 +16,16 @@ function valueToString(value: TextLineInputProps['value']): string {
 
 const TEXT_LINE_INPUT_NAME = 'TextLineInput';
 
-export const TextLineInput = ({value, onChange, onBlur, config, enabled, errors}: TextLineInputProps): JSX.Element => {
+export const TextLineInput = ({
+    value,
+    onChange,
+    onBlur,
+    config,
+    input,
+    enabled,
+    index,
+    errors,
+}: TextLineInputProps): JSX.Element => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const isLocalChange = useRef(false);
     const hasMaxLength = config.maxLength > 0;
@@ -48,6 +57,7 @@ export const TextLineInput = ({value, onChange, onBlur, config, enabled, errors}
 
     return (
         <Input
+            aria-label={getInputAccessibleName(input, index)}
             value={rawInput}
             onChange={handleChange}
             onBlur={onBlur}

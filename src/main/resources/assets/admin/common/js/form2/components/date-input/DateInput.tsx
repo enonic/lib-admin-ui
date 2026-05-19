@@ -3,11 +3,11 @@ import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
+import type {DateConfig} from '../../descriptor';
 import {DATE_PATTERN} from '../../descriptor/DateDescriptor';
-import type {DateConfig} from '../../descriptor/InputTypeConfig';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils/validation';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 
 const DATE_INPUT_NAME = 'DateInput';
 
@@ -17,7 +17,16 @@ function valueToString(value: DateInputProps['value']): string {
     return value.isNull() ? '' : (value.getString() ?? '');
 }
 
-export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: DateInputProps): ReactElement => {
+export const DateInput = ({
+    value,
+    onChange,
+    onBlur,
+    config,
+    input,
+    enabled,
+    index,
+    errors,
+}: DateInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const [open, setOpen] = useState(false);
     // ? DatePicker API uses null for "no selection" — applies to draftDate, selectedDate, calendarValue
@@ -88,6 +97,7 @@ export const DateInput = ({value, onChange, onBlur, config, enabled, errors}: Da
             <div ref={inputWrapperRef}>
                 <Input
                     ref={inputRef}
+                    aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.date.placeholder')}
                     value={rawInput}

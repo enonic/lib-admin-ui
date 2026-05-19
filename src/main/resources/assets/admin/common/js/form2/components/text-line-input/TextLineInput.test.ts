@@ -2,6 +2,9 @@ import type {JSX} from 'react';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
+import {InputBuilder} from '../../../form/Input';
+import {InputTypeName} from '../../../form/InputTypeName';
+import {Occurrences} from '../../../form/Occurrences';
 import type {ValidationResult} from '../../descriptor';
 import {getFirstError} from '../../utils';
 import {TextLineInput, type TextLineInputProps} from './TextLineInput';
@@ -31,13 +34,24 @@ vi.mock('@enonic/ui', () => ({
     Input: mocks.input,
 }));
 
+function makeInput() {
+    return new InputBuilder()
+        .setName('textLine')
+        .setInputType(new InputTypeName('TextLine', false))
+        .setLabel('Text line')
+        .setOccurrences(Occurrences.max(1))
+        .setHelpText('')
+        .setInputTypeConfig({})
+        .build();
+}
+
 function makeProps(overrides: Partial<TextLineInputProps> = {}): TextLineInputProps {
     return {
         value: ValueTypes.STRING.newNullValue(),
         onChange: vi.fn(),
         onBlur: vi.fn(),
         config: {regexp: undefined, maxLength: -1, showCounter: false},
-        input: {} as TextLineInputProps['input'],
+        input: makeInput(),
         enabled: true,
         index: 0,
         errors: [],

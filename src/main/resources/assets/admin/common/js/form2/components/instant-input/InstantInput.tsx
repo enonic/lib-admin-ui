@@ -3,10 +3,10 @@ import {type JSX, type ReactElement, useEffect, useMemo, useRef, useState} from 
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-import type {InstantConfig} from '../../descriptor/InputTypeConfig';
+import type {InstantConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils/validation';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 
 const INSTANT_INPUT_NAME = 'InstantInput';
 
@@ -90,7 +90,16 @@ function formatTimezoneLabel(date: Date | null, time: string | null): string {
     return `UTC${sign}${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`;
 }
 
-export const InstantInput = ({value, onChange, onBlur, config, enabled, errors}: InstantInputProps): ReactElement => {
+export const InstantInput = ({
+    value,
+    onChange,
+    onBlur,
+    config,
+    input,
+    enabled,
+    index,
+    errors,
+}: InstantInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToDisplay(value));
     const [open, setOpen] = useState(false);
     // ? DatePicker/TimePicker API uses null for "no selection"
@@ -180,6 +189,7 @@ export const InstantInput = ({value, onChange, onBlur, config, enabled, errors}:
             <div ref={inputWrapperRef}>
                 <Input
                     ref={inputRef}
+                    aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.dateTime.placeholder')}
                     value={rawInput}

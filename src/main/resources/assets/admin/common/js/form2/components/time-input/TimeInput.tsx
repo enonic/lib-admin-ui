@@ -3,11 +3,11 @@ import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-import type {TimeConfig} from '../../descriptor/InputTypeConfig';
+import type {TimeConfig} from '../../descriptor';
 import {TIME_PATTERN} from '../../descriptor/TimeDescriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils/validation';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 
 const TIME_INPUT_NAME = 'TimeInput';
 
@@ -32,7 +32,16 @@ function parseTimeToPickerValue(raw: string): string | null {
     return `${DateHelper.padNumber(hour)}:${DateHelper.padNumber(minute)}`;
 }
 
-export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: TimeInputProps): ReactElement => {
+export const TimeInput = ({
+    value,
+    onChange,
+    onBlur,
+    config,
+    input,
+    enabled,
+    index,
+    errors,
+}: TimeInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const [open, setOpen] = useState(false);
     // ? Uses `null` instead of `undefined` because TimePicker API uses `null` for empty value
@@ -96,6 +105,7 @@ export const TimeInput = ({value, onChange, onBlur, config, enabled, errors}: Ti
             <div data-component={TIME_INPUT_NAME} ref={inputWrapperRef}>
                 <Input
                     ref={inputRef}
+                    aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.time.placeholder')}
                     value={rawInput}

@@ -3,10 +3,10 @@ import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-import type {DateTimeConfig} from '../../descriptor/InputTypeConfig';
+import type {DateTimeConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils/validation';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 
 const DATE_TIME_INPUT_NAME = 'DateTimeInput';
 
@@ -55,7 +55,16 @@ function parseTimeFromDisplay(raw: string): string | null {
     return `${DateHelper.padNumber(hour)}:${DateHelper.padNumber(minute)}`;
 }
 
-export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}: DateTimeInputProps): ReactElement => {
+export const DateTimeInput = ({
+    value,
+    onChange,
+    onBlur,
+    config,
+    input,
+    enabled,
+    index,
+    errors,
+}: DateTimeInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToDisplay(value));
     const [open, setOpen] = useState(false);
     // ? DatePicker/TimePicker API uses null for "no selection"
@@ -143,6 +152,7 @@ export const DateTimeInput = ({value, onChange, onBlur, config, enabled, errors}
             <div ref={inputWrapperRef}>
                 <Input
                     ref={inputRef}
+                    aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.dateTime.placeholder')}
                     value={rawInput}

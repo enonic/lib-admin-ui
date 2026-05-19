@@ -4,7 +4,7 @@ import type {JSX} from 'react';
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextAreaConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 import {Counter} from '../counter';
 
 const TEXT_AREA_INPUT_NAME = 'TextAreaInput';
@@ -14,7 +14,9 @@ export const TextAreaInput = ({
     onChange,
     onBlur,
     config,
+    input,
     enabled,
+    index,
     errors,
 }: InputTypeComponentProps<TextAreaConfig>): JSX.Element => {
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
@@ -40,6 +42,7 @@ export const TextAreaInput = ({
 
     return (
         <TextArea
+            aria-label={getInputAccessibleName(input, index)}
             autoSize
             value={stringValue}
             onChange={handleChange}
