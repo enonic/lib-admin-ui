@@ -4,7 +4,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {GeoPoint} from '../../../util/GeoPoint';
 import type {GeoPointConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 
 const GEO_POINT_INPUT_NAME = 'GeoPointInput';
 
@@ -14,7 +14,15 @@ function valueToString(value: GeoPointInputProps['value']): string {
     return value.isNull() ? '' : (value.getGeoPoint().toString() ?? '');
 }
 
-export const GeoPointInput = ({value, onChange, onBlur, enabled, errors}: GeoPointInputProps): ReactElement => {
+export const GeoPointInput = ({
+    value,
+    onChange,
+    onBlur,
+    input,
+    enabled,
+    index,
+    errors,
+}: GeoPointInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const lastEmitted = useRef<string | undefined>(undefined);
 
@@ -50,6 +58,7 @@ export const GeoPointInput = ({value, onChange, onBlur, enabled, errors}: GeoPoi
     return (
         <Input
             data-component={GEO_POINT_INPUT_NAME}
+            aria-label={getInputAccessibleName(input, index)}
             type='text'
             value={rawInput}
             onChange={handleChange}

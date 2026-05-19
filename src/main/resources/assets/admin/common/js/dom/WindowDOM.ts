@@ -22,11 +22,7 @@ export class WindowDOM {
         this.el.onbeforeunload = (event) => {
             handle(event, this.onBeforeUnloadListeners);
         };
-        // Avoid the unload event: it can be disabled by Permissions-Policy and
-        // logs a browser violation when registered. pagehide still covers page
-        // exit cleanup, including bfcache navigations. Listeners intentionally
-        // run for persisted pages too, matching the old "leaving the page"
-        // semantics.
+
         this.el.addEventListener('pagehide', (event: PageTransitionEvent) => {
             handle(event, this.onUnloadListeners);
         }, {capture: true});
