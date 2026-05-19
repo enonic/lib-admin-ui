@@ -34,7 +34,9 @@ export const TextLineInput = ({
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const isLocalChange = useRef(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const isBlinking = useBlinkAttention(inputRef, highlight);
+    // ? Scroll is owned by the parent InputField (gated on RevealOptions.scroll);
+    // the inner blink should highlight only, never scroll again.
+    const isBlinking = useBlinkAttention(inputRef, highlight, {scrollIntoView: false});
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
     const hasBoth = hasMaxLength && config.showCounter;

@@ -28,7 +28,9 @@ export const TextAreaInput = ({
     inputRef: externalInputRef,
 }: TextAreaInputProps): JSX.Element => {
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-    const isBlinking = useBlinkAttention(textAreaRef, highlight);
+    // ? Scroll is owned by the parent InputField (gated on RevealOptions.scroll);
+    // the inner blink should highlight only, never scroll again.
+    const isBlinking = useBlinkAttention(textAreaRef, highlight, {scrollIntoView: false});
 
     useEffect(() => {
         if (externalInputRef == null) return undefined;
