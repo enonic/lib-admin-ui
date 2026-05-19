@@ -23,6 +23,7 @@ export type OccurrenceListRootProps<C extends InputTypeConfig = InputTypeConfig>
     onMove: (fromIndex: number, toIndex: number) => void;
     onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
+    onFocus?: () => void;
     config: C;
     input: Input;
     enabled: boolean;
@@ -33,6 +34,17 @@ export type OccurrenceListRootProps<C extends InputTypeConfig = InputTypeConfig>
      * affordance through TextLine/TextArea inputs.
      */
     processingOccurrenceIds?: ReadonlySet<string>;
+    /**
+     * Resolves the `inputRef` callback for an occurrence ID. InputField supplies this so
+     * each rendered occurrence reports its focusable DOM element back into the field's
+     * ref map — backing reveal/focus/blur-on-acquire for list-mode input types.
+     */
+    getInputRef?: (occurrenceId: string) => (el: HTMLElement | null) => void;
+    /**
+     * Attention-blink trigger for a single occurrence. The matching occurrence receives
+     * `count` as its `highlight` prop; every other occurrence receives `undefined`.
+     */
+    highlight?: {occurrenceId: string; count: number};
 };
 
 type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig> = {
@@ -45,8 +57,11 @@ type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig>
     errors: OccurrenceManagerState['occurrenceValidation'][number];
     showRemove: boolean;
     processing: boolean;
+    inputRef?: (el: HTMLElement | null) => void;
+    highlight?: number;
     onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
+    onFocus?: () => void;
     onRemove: (index: number) => void;
 };
 
@@ -68,8 +83,11 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
     errors,
     showRemove,
     processing,
+    inputRef,
+    highlight,
     onChange,
     onBlur,
+    onFocus,
     onRemove,
 }: OccurrenceListItemContentProps<C>): ReactNode => {
     const t = useI18n();
@@ -81,12 +99,15 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
                     value={value}
                     onChange={(v: Value, raw?: string) => onChange(index, v, raw)}
                     onBlur={onBlur ? () => onBlur(index) : undefined}
+                    onFocus={onFocus}
                     config={config}
                     input={input}
                     enabled={enabled}
                     index={index}
                     errors={errors.validationResults}
                     processing={processing}
+                    inputRef={inputRef}
+                    highlight={highlight}
                 />
             </div>
             {showRemove && (
@@ -131,12 +152,23 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     onMove,
     onChange,
     onBlur,
+    onFocus,
     config,
     input,
     enabled,
     processingOccurrenceIds,
+    getInputRef,
+    highlight,
 }: OccurrenceListRootProps<C>): ReactElement => {
     const isProcessing = (index: number): boolean => processingOccurrenceIds?.has(state.ids[index]) ?? false;
+    const occurrenceInputRef = (index: number): ((el: HTMLElement | null) => void) | undefined => {
+        const occurrenceId = state.ids[index];
+        return occurrenceId != null ? getInputRef?.(occurrenceId) : undefined;
+    };
+    const occurrenceHighlight = (index: number): number | undefined => {
+        const occurrenceId = state.ids[index];
+        return highlight != null && highlight.occurrenceId === occurrenceId ? highlight.count : undefined;
+    };
     const t = useI18n();
     const occurrences = input.getOccurrences();
     const min = occurrences.getMinimum();
@@ -172,12 +204,15 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                     value={value}
                     onChange={(v: Value, raw?: string) => onChange(0, v, raw)}
                     onBlur={onBlur ? () => onBlur(0) : undefined}
+                    onFocus={onFocus}
                     config={config}
                     input={input}
                     enabled={enabled}
                     index={0}
                     errors={allErrors}
                     processing={isProcessing(0)}
+                    inputRef={occurrenceInputRef(0)}
+                    highlight={occurrenceHighlight(0)}
                 />
             </div>
         );
@@ -195,8 +230,11 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         // matching legacy isRemoveButtonRequiredStrict() — never remove the last visible input.
         showRemove: state.canRemove && state.values.length > 1 && !isFixed,
         processing: isProcessing(index),
+        inputRef: occurrenceInputRef(index),
+        highlight: occurrenceHighlight(index),
         onChange,
         onBlur,
+        onFocus,
         onRemove,
     });
 

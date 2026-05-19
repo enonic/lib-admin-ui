@@ -229,6 +229,9 @@ export const InputFieldResolved = ({
     const activeNotifierRef = useRef<((path: string | undefined) => void) | null>(null);
     const [, setTick] = useState(0);
     const forceRender = useCallback((): void => setTick(tick => tick + 1), []);
+    const [highlightTrigger, setHighlightTrigger] = useState<{occurrenceId: string; count: number} | undefined>(
+        undefined,
+    );
 
     // Prune processing tokens and cached ref callbacks for occurrences that no
     // longer exist. Runs every render; the Maps are small (one entry per
@@ -432,7 +435,13 @@ export const InputFieldResolved = ({
                     if (el.readOnly) return false;
                 }
             }
-            el.scrollIntoView({block: 'center', behavior: 'smooth'});
+            if (options?.scroll !== false) {
+                el.scrollIntoView({block: 'center', behavior: 'smooth'});
+            }
+            setHighlightTrigger(prev => ({
+                occurrenceId: targetId,
+                count: (prev?.occurrenceId === targetId ? prev.count : 0) + 1,
+            }));
             if (options?.focus === true) {
                 el.focus({preventScroll: true});
             }
@@ -515,6 +524,11 @@ export const InputFieldResolved = ({
                         readOnly={!enabled || processing}
                         processing={processing}
                         inputRef={occId != null ? getInputRefCallback(occId) : undefined}
+                        highlight={
+                            occId != null && highlightTrigger?.occurrenceId === occId
+                                ? highlightTrigger.count
+                                : undefined
+                        }
                     />
                 </div>
             );
@@ -561,11 +575,14 @@ export const InputFieldResolved = ({
                         onRemove={handleRemove}
                         onMove={handleMove}
                         onChange={handleChange}
-                        onBlur={handleBlur}
+                        onBlur={handleOccurrenceBlur}
+                        onFocus={handleOccurrenceFocus}
                         config={config}
                         input={input}
                         enabled={enabled}
                         processingOccurrenceIds={processingOccurrenceIds}
+                        getInputRef={getInputRefCallback}
+                        highlight={highlightTrigger}
                     />
                 </div>
             );

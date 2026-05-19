@@ -22,7 +22,7 @@ export type FieldRegistration = {
     notifyActivePath: (path: string | undefined) => void;
 };
 
-export type RevealOptions = {focus?: boolean};
+export type RevealOptions = {focus?: boolean; scroll?: boolean};
 
 /**
  * Routes external messages (e.g. translation failures) to specific input fields by path.
