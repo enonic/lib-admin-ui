@@ -1,9 +1,6 @@
-ignoredBuiltDependencies:
-  - less
-
-onlyBuiltDependencies:
-  - esbuild
-  - less
+allowBuilds:
+  esbuild: false
+  less: false
 
 minimumReleaseAge: 1440
 

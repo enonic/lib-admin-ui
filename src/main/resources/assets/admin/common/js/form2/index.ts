@@ -27,6 +27,15 @@ export {
     validateForm,
     validateFormItemsValid,
 } from './descriptor/validateForm';
+// Field registry — external error/state injection by path
+export {
+    type FieldHandle,
+    type FieldRegistration,
+    FieldRegistry,
+    type ProcessingToken,
+    type RevealOptions,
+} from './FieldRegistry';
+export {FieldRegistryProvider, type FieldRegistryProviderProps, useFieldRegistry} from './FieldRegistryContext';
 export {type UseInputTypeDescriptorResult, useInputTypeDescriptor} from './hooks/useInputTypeDescriptor';
 export {useOccurrenceManager} from './hooks/useOccurrenceManager';
 export {type UsePropertyArrayResult, usePropertyArray} from './hooks/usePropertyArray';

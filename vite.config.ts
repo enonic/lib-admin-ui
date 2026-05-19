@@ -34,7 +34,7 @@ export default defineConfig(({mode}) => {
             build: {
                 outDir: OUT_PATH,
                 emptyOutDir: false,
-                target: 'ES2023',
+                target: 'es2023',
                 minify: isProduction,
                 sourcemap: isDevelopment ? 'inline' : false,
                 ...(isProduction && {

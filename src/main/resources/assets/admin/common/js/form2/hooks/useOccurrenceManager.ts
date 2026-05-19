@@ -24,6 +24,11 @@ type UseOccurrenceManagerResult = {
     move: (fromIndex: number, toIndex: number) => boolean;
     set: (index: number, value: Value, rawValue?: string) => void;
     sync: (values: Value[]) => Value[];
+    setTransientError: (occurrenceId: string, message: string) => boolean;
+    clearTransientError: (occurrenceId: string) => boolean;
+    clearAllTransientErrors: () => void;
+    /** Snapshot of current occurrence IDs at call time. Use to translate a captured ID back to position if needed. */
+    getOccurrenceIds: () => string[];
 };
 
 export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig>({
@@ -104,5 +109,42 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
         [manager, minFill, defaultValue],
     );
 
-    return {state, add, remove, move, set, sync};
+    const setTransientError = useCallback(
+        (occurrenceId: string, message: string): boolean => {
+            const ok = manager.setTransientError(occurrenceId, message);
+            if (ok) setState(manager.validate());
+            return ok;
+        },
+        [manager],
+    );
+
+    const clearTransientError = useCallback(
+        (occurrenceId: string): boolean => {
+            const cleared = manager.clearTransientError(occurrenceId);
+            if (cleared) setState(manager.validate());
+            return cleared;
+        },
+        [manager],
+    );
+
+    const clearAllTransientErrors = useCallback(() => {
+        if (!manager.hasTransientErrors()) return;
+        manager.clearAllTransientErrors();
+        setState(manager.validate());
+    }, [manager]);
+
+    const getOccurrenceIds = useCallback((): string[] => manager.getIds(), [manager]);
+
+    return {
+        state,
+        add,
+        remove,
+        move,
+        set,
+        sync,
+        setTransientError,
+        clearTransientError,
+        clearAllTransientErrors,
+        getOccurrenceIds,
+    };
 }
