@@ -164,12 +164,9 @@ export const WithMaxLengthAndCounter: Story = {
 };
 
 function HighlightDemo() {
-    const [highlight, setHighlight] = useState(false);
+    const [highlight, setHighlight] = useState(0);
 
-    const handleClick = () => {
-        setHighlight(false);
-        window.setTimeout(() => setHighlight(true), 0);
-    };
+    const handleClick = () => setHighlight(count => count + 1);
 
     return (
         <div className='flex flex-col gap-y-3 p-4'>
