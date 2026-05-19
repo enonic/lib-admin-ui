@@ -3,9 +3,9 @@ import type {JSX, ReactElement} from 'react';
 import {useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
-import type {NumberConfig} from '../../descriptor/InputTypeConfig';
+import type {NumberConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError} from '../../utils';
+import {getFirstError, getInputAccessibleName} from '../../utils';
 
 const LONG_INPUT_NAME = 'LongInput';
 
@@ -15,7 +15,16 @@ function valueToString(value: LongInputProps['value']): string {
     return value.isNull() ? '' : String(value.getLong() ?? '');
 }
 
-export const LongInput = ({value, onChange, onBlur, config, enabled, errors}: LongInputProps): ReactElement => {
+export const LongInput = ({
+    value,
+    onChange,
+    onBlur,
+    config,
+    input,
+    enabled,
+    index,
+    errors,
+}: LongInputProps): ReactElement => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));
     const isLocalChange = useRef(false);
 
@@ -43,6 +52,7 @@ export const LongInput = ({value, onChange, onBlur, config, enabled, errors}: Lo
     return (
         <Input
             data-component={LONG_INPUT_NAME}
+            aria-label={getInputAccessibleName(input, index)}
             type='number'
             step={1}
             value={rawInput}
