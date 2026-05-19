@@ -5,7 +5,6 @@ import {ValueTypeConverter} from '../data/ValueTypeConverter';
 import {type Element, LangDirection} from '../dom/Element';
 import type {FormInputEl} from '../dom/FormInputEl';
 import {AdditionalValidationRecord} from '../form/AdditionalValidationRecord';
-import type {AiConfig} from '../form/inputtype/InputAiConfig';
 import type {InputTypeViewContext} from '../form/inputtype/InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../form/inputtype/support/BaseInputTypeNotManagingAdd';
 import {Locale} from '../locale/Locale';
@@ -100,17 +99,6 @@ export abstract class BaseInputType<C extends InputTypeConfig = InputTypeConfig>
                 inputEl.setDir(LangDirection.RTL);
             }
         }
-    }
-
-    getAiConfig(): AiConfig {
-        const formContext = this.getContext().formContext;
-
-        return formContext
-            ? {
-                  group: formContext.getName(),
-                  aiTools: formContext.getAiTools(),
-              }
-            : super.getAiConfig();
     }
 
     private hasDefaultValue(occurrence: FormInputEl): boolean {

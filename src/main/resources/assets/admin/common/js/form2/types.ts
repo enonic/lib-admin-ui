@@ -14,11 +14,22 @@ export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig>
     value: Value;
     onChange: (value: Value, rawValue?: string) => void;
     onBlur?: () => void;
+    onFocus?: () => void;
     config: C;
     input: Input;
     enabled: boolean;
     index: number;
     errors: ValidationResult[];
+    /** True while the field is read-only at the form level. Leaf inputs should treat as non-editable. */
+    readOnly?: boolean;
+    /** True while an external caller (e.g. AI bridge) holds a processing lock on this occurrence. */
+    processing?: boolean;
+    /**
+     * Callback ref invoked with the leaf input's focusable DOM element. InputField uses this
+     * to drive reveal/focus/blur-on-acquire by occurrenceId. Leaf inputs forward the latest
+     * value of their internal ref and call with `null` on unmount.
+     */
+    inputRef?: (el: HTMLElement | null) => void;
 };
 
 /** The shape stored in ComponentRegistry: a Preact functional or class component. */

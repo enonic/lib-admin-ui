@@ -1,8 +1,4 @@
 import Q from 'q';
-import {AiAnimationTool} from '../../../ai/tool/AiAnimationTool';
-import {AiDialogIconTool} from '../../../ai/tool/AiDialogIconTool';
-import {AiStateTool} from '../../../ai/tool/AiStateTool';
-import {AiToolType} from '../../../ai/tool/AiToolType';
 import {Property} from '../../../data/Property';
 import {PropertyPath} from '../../../data/PropertyPath';
 import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
@@ -198,50 +194,6 @@ export class InputOccurrenceView
         });
 
         this.property.onPropertyValueChanged(this.propertyValueChangedHandler);
-
-        this.initAiFunctionality();
-    }
-
-    private initAiFunctionality(): void {
-        const aiTools = this.inputTypeView.getAiConfig().aiTools;
-        aiTools.forEach((aiTool) => this.addAiTool(aiTool));
-    }
-
-    private addAiTool(aiTool: AiToolType): void {
-        if (aiTool === AiToolType.STATE) {
-            new AiStateTool({
-                stateContainer: this.inputWrapper,
-                label: this.inputTypeView.getInput().getLabel(),
-                pathElement: this.inputElement,
-                getPath: () => this.getDataPath(),
-                group: this.inputTypeView.getAiConfig().group,
-            });
-
-            return;
-        }
-
-        if (aiTool === AiToolType.DIALOG) {
-            new AiDialogIconTool({
-                group: this.inputTypeView.getAiConfig().group,
-                getPath: () => this.getDataPath(),
-                pathElement: this.inputElement,
-                aiButtonContainer: this.inputTypeView,
-                setContextOnFocus: true,
-            });
-            return;
-        }
-
-        if (aiTool === AiToolType.ANIMATE) {
-            new AiAnimationTool({
-                group: this.inputTypeView.getAiConfig().group,
-                getPath: () => this.getDataPath(),
-                pathElement: this.inputElement,
-            });
-
-            return;
-        }
-
-        console.warn('Unknown AI tool: ', aiTool);
     }
 
     private registerProperty(property: Property) {

@@ -32,6 +32,8 @@ vi.mock('react', async importOriginal => {
 
 vi.mock('@enonic/ui', () => ({
     Input: mocks.input,
+    cn: (...classes: unknown[]) => classes.filter(Boolean).join(' '),
+    useBlinkAttention: () => false,
 }));
 
 function makeInput() {
