@@ -8,9 +8,7 @@ import type {InputTypeComponentProps} from '../../types';
 import {getFirstError, getInputAccessibleName} from '../../utils';
 import {Counter} from '../counter';
 
-export type TextLineInputProps = InputTypeComponentProps<TextLineConfig> & {
-    highlight?: boolean;
-};
+export type TextLineInputProps = InputTypeComponentProps<TextLineConfig>;
 
 function valueToString(value: TextLineInputProps['value']): string {
     return value.isNull() ? '' : (value.getString() ?? '');
@@ -30,7 +28,7 @@ export const TextLineInput = ({
     errors,
     readOnly = false,
     processing = false,
-    highlight = false,
+    highlight,
     inputRef: externalInputRef,
 }: TextLineInputProps): JSX.Element => {
     const [rawInput, setRawInput] = useState(() => valueToString(value));

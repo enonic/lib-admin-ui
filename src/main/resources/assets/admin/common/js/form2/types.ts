@@ -30,6 +30,12 @@ export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig>
      * value of their internal ref and call with `null` on unmount.
      */
     inputRef?: (el: HTMLElement | null) => void;
+    /**
+     * Edge-trigger counter for the attention blink. Each increment restarts the one-shot
+     * ring pulse — InputField bumps it on `reveal`. Input types that support the affordance
+     * forward the value straight to `useBlinkAttention`; others ignore it.
+     */
+    highlight?: number;
 };
 
 /** The shape stored in ComponentRegistry: a Preact functional or class component. */

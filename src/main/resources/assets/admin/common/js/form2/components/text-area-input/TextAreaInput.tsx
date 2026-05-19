@@ -8,9 +8,7 @@ import type {InputTypeComponentProps} from '../../types';
 import {getFirstError, getInputAccessibleName} from '../../utils';
 import {Counter} from '../counter';
 
-export type TextAreaInputProps = InputTypeComponentProps<TextAreaConfig> & {
-    highlight?: boolean;
-};
+export type TextAreaInputProps = InputTypeComponentProps<TextAreaConfig>;
 
 const TEXT_AREA_INPUT_NAME = 'TextAreaInput';
 
@@ -26,7 +24,7 @@ export const TextAreaInput = ({
     errors,
     readOnly = false,
     processing = false,
-    highlight = false,
+    highlight,
     inputRef: externalInputRef,
 }: TextAreaInputProps): JSX.Element => {
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
