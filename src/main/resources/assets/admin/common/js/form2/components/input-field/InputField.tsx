@@ -1,6 +1,7 @@
 import {type ReactElement, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {PropertyArray} from '../../../data/PropertyArray';
+import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 import type {PropertySet} from '../../../data/PropertySet';
 import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
@@ -254,7 +255,11 @@ export const InputFieldResolved = ({
     }, [state.ids, forceRender]);
 
     const fieldRegistry = useFieldRegistry();
-    const fieldPath = useMemo(() => input.getPath().toString(), [input]);
+    // No useMemo: parent reorders mutate propertySet's index without changing identity.
+    const fieldPath = PropertyPath.fromParent(
+        propertySet.getPropertyPath(),
+        new PropertyPathElement(input.getName(), 0),
+    ).toString();
 
     useEffect(() => {
         const managerValues = sync(values);
