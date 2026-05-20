@@ -763,6 +763,52 @@ describe('InputField', () => {
             mocks.useEffect.mockReset();
         });
 
+        it('registers under the data path including occurrence indices for nested PropertySets', async () => {
+            const {FieldRegistry} = await import('../../FieldRegistry');
+            const registry = new FieldRegistry();
+            const registerSpy = vi.spyOn(registry, 'register');
+            const {useFieldRegistry} = await import('../../FieldRegistryContext');
+            vi.mocked(useFieldRegistry).mockReturnValueOnce(registry);
+
+            mocks.useOccurrenceManager.mockReturnValue({
+                state: makeManagerState(),
+                add: vi.fn(() => true),
+                remove: vi.fn(() => true),
+                move: vi.fn(() => true),
+                set: vi.fn(),
+                sync: vi.fn(() => []),
+                setTransientError: vi.fn(() => false),
+                clearTransientError: vi.fn(() => false),
+                clearAllTransientErrors: vi.fn(),
+                getOccurrenceIds: vi.fn(() => []),
+            });
+
+            mocks.useEffect.mockImplementation((effect: () => unknown) => {
+                effect();
+            });
+
+            // Build a tree with `.itemSet[1]` so the input mounted against that
+            // occurrence registers under `.itemSet[1].testField`.
+            const tree = new PropertyTree();
+            const root = tree.getRoot();
+            root.addPropertySet('itemSet');
+            const secondOccurrence = root.addPropertySet('itemSet');
+
+            const component: InputTypeComponent = () => null;
+            const descriptor = makeDescriptor();
+            const definition = {mode: 'single' as const, descriptor, component};
+            const input = makeInput('TextLine');
+
+            InputFieldResolved({input, propertySet: secondOccurrence, enabled: true, definition});
+
+            expect(registerSpy).toHaveBeenCalled();
+            const lastCall = registerSpy.mock.calls.at(-1);
+            if (lastCall == null) throw new Error('register was not called');
+            expect(lastCall[0]).toBe('.itemSet[1].testField');
+
+            mocks.useEffect.mockReset();
+        });
+
         it('blurs the focused input without emitting active-path null to subscribers', async () => {
             const {FieldRegistry} = await import('../../FieldRegistry');
             const registry = new FieldRegistry();
