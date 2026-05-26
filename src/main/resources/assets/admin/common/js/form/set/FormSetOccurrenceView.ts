@@ -17,6 +17,7 @@ import {MoreButton} from '../../ui/button/MoreButton';
 import {KeyBinding} from '../../ui/KeyBinding';
 import {KeyBindings} from '../../ui/KeyBindings';
 import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
+import {AppHelper} from '../../util/AppHelper';
 import {i18n} from '../../util/Messages';
 import {FormContext} from '../FormContext';
 import {FormItem} from '../FormItem';
@@ -88,6 +89,8 @@ export abstract class FormSetOccurrenceView
     private formDataChangedListener: (event: PropertyValueChangedEvent) => void;
 
     private formDataAddedOrRemovedListener: (_event: (PropertyAddedEvent | PropertyRemovedEvent)) => void;
+
+    private debouncedUpdateLabel: () => void;
 
     private expandRequestedListeners: ((view: FormSetOccurrenceView) => void)[] = [];
 
@@ -208,6 +211,8 @@ export abstract class FormSetOccurrenceView
             shelvedBindings = null;
         });
 
+        this.debouncedUpdateLabel = AppHelper.debounce(() => this.updateLabel(), 50);
+
         this.formDataChangedListener = (event: PropertyValueChangedEvent) => {
             const newValue: Value = event.getNewValue();
             const propertyPathAsString: string = event.getPath().toString();
@@ -224,10 +229,10 @@ export abstract class FormSetOccurrenceView
                     currentValue: newValue
                 };
             }
-            this.updateLabel();
+            this.debouncedUpdateLabel();
         };
 
-        this.formDataAddedOrRemovedListener = (_event: PropertyAddedEvent | PropertyRemovedEvent) => this.updateLabel();
+        this.formDataAddedOrRemovedListener = (_event: PropertyAddedEvent | PropertyRemovedEvent) => this.debouncedUpdateLabel();
 
         this.onRemoved(() => {
             if (this.propertySet) {
