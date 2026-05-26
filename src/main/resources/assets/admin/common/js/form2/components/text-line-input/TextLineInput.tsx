@@ -4,8 +4,9 @@ import {useEffect, useRef, useState} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextLineConfig} from '../../descriptor';
+import {useLocale} from '../../LocaleContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError, getInputAccessibleName} from '../../utils';
+import {getFirstError, getInputAccessibleName, getLangAttributes} from '../../utils';
 import {Counter} from '../counter';
 
 export type TextLineInputProps = InputTypeComponentProps<TextLineConfig>;
@@ -37,6 +38,8 @@ export const TextLineInput = ({
     // ? Scroll is owned by the parent InputField (gated on RevealOptions.scroll);
     // the inner blink should highlight only, never scroll again.
     const isBlinking = useBlinkAttention(inputRef, highlight, {scrollIntoView: false});
+    const locale = useLocale();
+    const langAttrs = getLangAttributes(locale);
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
     const hasBoth = hasMaxLength && config.showCounter;
@@ -79,6 +82,7 @@ export const TextLineInput = ({
     return (
         <Input
             ref={inputRef}
+            {...langAttrs}
             aria-label={getInputAccessibleName(input, index)}
             value={rawInput}
             onChange={handleChange}

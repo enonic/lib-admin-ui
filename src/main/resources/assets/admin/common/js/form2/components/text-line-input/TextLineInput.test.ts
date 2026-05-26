@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
     ]),
     useEffect: vi.fn(),
     useRef: vi.fn((initial: unknown) => ({current: initial})),
+    useContext: vi.fn(() => undefined),
     input: vi.fn(() => null),
 }));
 
@@ -27,6 +28,7 @@ vi.mock('react', async importOriginal => {
         useState: mocks.useState,
         useEffect: mocks.useEffect,
         useRef: mocks.useRef,
+        useContext: mocks.useContext,
     };
 });
 
@@ -97,6 +99,7 @@ describe('TextLineInput', () => {
         ]);
         mocks.useEffect.mockImplementation(() => undefined);
         mocks.useRef.mockImplementation((initial: unknown) => ({current: initial}));
+        mocks.useContext.mockImplementation(() => undefined);
     });
 
     describe('value transformation', () => {

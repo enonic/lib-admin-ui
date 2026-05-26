@@ -9,6 +9,7 @@ import {OccurrencesBuilder} from '../../../form/Occurrences';
 import type {TextLineConfig} from '../../descriptor';
 import {FieldRegistry, generateProcessingToken, type ProcessingToken} from '../../FieldRegistry';
 import {FieldRegistryProvider} from '../../FieldRegistryContext';
+import {LocaleProvider} from '../../LocaleContext';
 import type {InputTypeComponentProps} from '../../types';
 import {TextLineInput, type TextLineInputProps} from './TextLineInput';
 
@@ -184,6 +185,37 @@ function HighlightDemo() {
 export const Highlight: Story = {
     name: 'Features / Highlight',
     render: () => <HighlightDemo />,
+};
+
+export const WithLocale: Story = {
+    name: 'Features / Locale (lang)',
+    render: () => (
+        <LocaleProvider locale='nb-NO'>
+            <div className='flex flex-col gap-y-3 p-4'>
+                <div className='max-w-120 text-sm text-subtle'>
+                    Wrapped in <code>LocaleProvider locale="nb-NO"</code>. The rendered input gets{' '}
+                    <code>lang="nb"</code> and <code>spellcheck="true"</code> so the browser uses the Norwegian
+                    dictionary.
+                </div>
+                <TextLineInput {...defaultArgs} value={ValueTypes.STRING.newValue('Hei verden')} />
+            </div>
+        </LocaleProvider>
+    ),
+};
+
+export const WithRtlLocale: Story = {
+    name: 'Features / Locale (RTL)',
+    render: () => (
+        <LocaleProvider locale='ar-SA'>
+            <div className='flex flex-col gap-y-3 p-4'>
+                <div className='max-w-120 text-sm text-subtle'>
+                    Wrapped in <code>LocaleProvider locale="ar-SA"</code>. The input is rendered right-to-left with{' '}
+                    <code>lang="ar" dir="rtl"</code>.
+                </div>
+                <TextLineInput {...defaultArgs} value={ValueTypes.STRING.newValue('مرحبا بالعالم')} />
+            </div>
+        </LocaleProvider>
+    ),
 };
 
 const STORY_PATH = '.story.field';
