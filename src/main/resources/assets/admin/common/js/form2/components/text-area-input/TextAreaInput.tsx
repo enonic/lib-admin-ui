@@ -4,8 +4,9 @@ import {useEffect, useRef} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextAreaConfig} from '../../descriptor';
+import {useLocale} from '../../LocaleContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError, getInputAccessibleName} from '../../utils';
+import {getFirstError, getInputAccessibleName, getLangAttributes} from '../../utils';
 import {Counter} from '../counter';
 
 export type TextAreaInputProps = InputTypeComponentProps<TextAreaConfig>;
@@ -31,6 +32,8 @@ export const TextAreaInput = ({
     // ? Scroll is owned by the parent InputField (gated on RevealOptions.scroll);
     // the inner blink should highlight only, never scroll again.
     const isBlinking = useBlinkAttention(textAreaRef, highlight, {scrollIntoView: false});
+    const locale = useLocale();
+    const langAttrs = getLangAttributes(locale);
 
     useEffect(() => {
         if (externalInputRef == null) return undefined;
@@ -63,6 +66,7 @@ export const TextAreaInput = ({
     return (
         <TextArea
             ref={textAreaRef}
+            {...langAttrs}
             aria-label={getInputAccessibleName(input, index)}
             autoSize
             value={stringValue}

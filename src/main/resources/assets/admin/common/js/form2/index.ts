@@ -43,6 +43,7 @@ export {type UsePropertySetArrayResult, usePropertySetArray} from './hooks/usePr
 export {type UseSetOccurrenceManagerResult, useSetOccurrenceManager} from './hooks/useSetOccurrenceManager';
 export {I18nProvider, useI18n} from './I18nContext';
 export {initBuiltInTypes} from './initBuiltInTypes';
+export {LocaleProvider, type LocaleProviderProps, useLocale} from './LocaleContext';
 // Raw value tracking
 export {RawValueProvider, type RawValueProviderProps, useRawValueMap} from './RawValueContext';
 // React input type system (for CS and future consumers)

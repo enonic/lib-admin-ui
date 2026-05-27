@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
     ]),
     useEffect: vi.fn(),
     useRef: vi.fn((initial: unknown) => ({current: initial})),
+    useContext: vi.fn(() => undefined),
     input: vi.fn(() => null),
 }));
 
@@ -27,6 +28,7 @@ vi.mock('react', async importOriginal => {
         useState: mocks.useState,
         useEffect: mocks.useEffect,
         useRef: mocks.useRef,
+        useContext: mocks.useContext,
     };
 });
 
@@ -97,6 +99,7 @@ describe('TextLineInput', () => {
         ]);
         mocks.useEffect.mockImplementation(() => undefined);
         mocks.useRef.mockImplementation((initial: unknown) => ({current: initial}));
+        mocks.useContext.mockImplementation(() => undefined);
     });
 
     describe('value transformation', () => {
@@ -144,6 +147,36 @@ describe('TextLineInput', () => {
             expect(onChange).toHaveBeenCalledOnce();
             expect((onChange.mock.calls[0][0] as Value).getString()).toBe('abc');
             expect(onChange.mock.calls[0][1]).toBe('abc');
+        });
+    });
+
+    describe('locale attributes', () => {
+        it('defaults to spellCheck only when no locale is provided', () => {
+            const element = TextLineInput(makeProps()) as VNode;
+
+            expect(element.props.spellCheck).toBe(true);
+            expect(element.props.lang).toBeUndefined();
+            expect(element.props.dir).toBeUndefined();
+        });
+
+        it('emits lang for a non-RTL locale', () => {
+            mocks.useContext.mockReturnValue('nb-NO');
+
+            const element = TextLineInput(makeProps()) as VNode;
+
+            expect(element.props.lang).toBe('nb');
+            expect(element.props.spellCheck).toBe(true);
+            expect(element.props.dir).toBeUndefined();
+        });
+
+        it('emits lang and dir=rtl for an RTL locale', () => {
+            mocks.useContext.mockReturnValue('ar-SA');
+
+            const element = TextLineInput(makeProps()) as VNode;
+
+            expect(element.props.lang).toBe('ar');
+            expect(element.props.dir).toBe('rtl');
+            expect(element.props.spellCheck).toBe(true);
         });
     });
 });
