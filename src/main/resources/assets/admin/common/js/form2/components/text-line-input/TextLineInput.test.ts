@@ -149,4 +149,34 @@ describe('TextLineInput', () => {
             expect(onChange.mock.calls[0][1]).toBe('abc');
         });
     });
+
+    describe('locale attributes', () => {
+        it('defaults to spellCheck only when no locale is provided', () => {
+            const element = TextLineInput(makeProps()) as VNode;
+
+            expect(element.props.spellCheck).toBe(true);
+            expect(element.props.lang).toBeUndefined();
+            expect(element.props.dir).toBeUndefined();
+        });
+
+        it('emits lang for a non-RTL locale', () => {
+            mocks.useContext.mockReturnValue('nb-NO');
+
+            const element = TextLineInput(makeProps()) as VNode;
+
+            expect(element.props.lang).toBe('nb');
+            expect(element.props.spellCheck).toBe(true);
+            expect(element.props.dir).toBeUndefined();
+        });
+
+        it('emits lang and dir=rtl for an RTL locale', () => {
+            mocks.useContext.mockReturnValue('ar-SA');
+
+            const element = TextLineInput(makeProps()) as VNode;
+
+            expect(element.props.lang).toBe('ar');
+            expect(element.props.dir).toBe('rtl');
+            expect(element.props.spellCheck).toBe(true);
+        });
+    });
 });
