@@ -46,7 +46,9 @@ function isNodeValid(child: FormValidationNode): boolean {
         case 'skipped':
             return true;
         case 'input':
-            return child.errors.every(e => e.length === 0) && child.occurrenceError == null;
+            if (child.occurrenceError != null) return false;
+            if (child.optional) return true;
+            return child.errors.every(e => e.length === 0);
         case 'fieldset':
             return child.isValid !== false;
         case 'itemset':
@@ -65,13 +67,15 @@ function validateInput(input: Input, propertySet: PropertySet, options?: Validat
     const typeName = input.getInputType().getName();
     const definition = InputTypeRegistry.getDefinition(typeName);
 
+    const occurrences = input.getOccurrences();
+    const optional = occurrences.getMinimum() === 0;
+
     if (definition == null) {
-        return {type: 'input', path, name, errors: []};
+        return {type: 'input', path, name, errors: [], optional};
     }
 
     const descriptor = definition.descriptor;
     const config = descriptor.readConfig(input.getInputTypeConfig() ?? {});
-    const occurrences = input.getOccurrences();
     const propertyArray = propertySet.getPropertyArray(name);
     const size = propertyArray?.getSize() ?? 0;
     const rawValues = options?.rawValues?.get(name);
@@ -117,7 +121,7 @@ function validateInput(input: Input, propertySet: PropertySet, options?: Validat
         }
     }
 
-    return {type: 'input', path, name, errors, occurrenceError};
+    return {type: 'input', path, name, errors, occurrenceError, optional};
 }
 
 function safeGetPath(item: {getName(): string; getPath(): {toString(): string}}): string {

@@ -9,6 +9,8 @@ export type InputValidationNode = {
     readonly errors: ValidationResult[][];
     /** Occurrence-level error message (min/max breach), absent when valid. */
     readonly occurrenceError?: string;
+    /** True when the input is non-required (occurrences min = 0). */
+    readonly optional: boolean;
 };
 
 /** Validation result for a FieldSet — a visual grouping of form items. */
