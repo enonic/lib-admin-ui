@@ -101,13 +101,20 @@ describe('getOccurrenceErrorMessage', () => {
 });
 
 describe('findByPath', () => {
-    const inputNode: InputValidationNode = {type: 'input', path: 'myInput', name: 'myInput', errors: []};
+    const inputNode: InputValidationNode = {
+        type: 'input',
+        path: 'myInput',
+        name: 'myInput',
+        errors: [],
+        optional: false,
+    };
 
     const nestedInput: InputValidationNode = {
         type: 'input',
         path: 'fs.nested',
         name: 'nested',
         errors: [[{message: 'bad'}]],
+        optional: false,
     };
 
     const fieldSetNode: FieldSetValidationNode = {

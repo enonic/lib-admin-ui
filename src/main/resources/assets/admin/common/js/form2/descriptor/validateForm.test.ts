@@ -107,10 +107,10 @@ describe('validateForm', () => {
         expect(result.children[0].type).toBe('input');
     });
 
-    it('returns invalid for Input with validation errors', () => {
+    it('returns invalid for required Input with validation errors', () => {
         mocks.getDefinition.mockReturnValue(makeDefinition({validate: () => [{message: 'Invalid value'}]}));
 
-        const input = makeInput('email', 0, 1);
+        const input = makeInput('email', 1, 1);
         const form = new FormBuilder().addFormItem(input).build();
         const tree = new PropertyTree();
         tree.getRoot().addProperty('email', ValueTypes.STRING.newValue('bad'));
@@ -121,6 +121,28 @@ describe('validateForm', () => {
         const node = result.children[0];
         expect(node.type).toBe('input');
         if (node.type === 'input') {
+            expect(node.optional).toBe(false);
+            expect(node.errors[0]).toEqual([{message: 'Invalid value'}]);
+        }
+    });
+
+    it('keeps form valid when optional Input has validation errors', () => {
+        mocks.getDefinition.mockReturnValue(makeDefinition({validate: () => [{message: 'Invalid value'}]}));
+
+        const input = makeInput('email', 0, 1);
+        const form = new FormBuilder().addFormItem(input).build();
+        const tree = new PropertyTree();
+        tree.getRoot().addProperty('email', ValueTypes.STRING.newValue('bad'));
+
+        const result = validateForm(form, tree.getRoot());
+
+        // Errors are still recorded on the node — UI surfaces them — but the
+        // form-level rollup treats the optional input as valid.
+        expect(result.isValid).toBe(true);
+        const node = result.children[0];
+        expect(node.type).toBe('input');
+        if (node.type === 'input') {
+            expect(node.optional).toBe(true);
             expect(node.errors[0]).toEqual([{message: 'Invalid value'}]);
         }
     });
@@ -162,7 +184,7 @@ describe('validateForm', () => {
         mocks.getDefinition.mockReturnValueOnce(validDef).mockReturnValueOnce(invalidDef);
 
         const goodInput = makeInput('good', 0, 1);
-        const badInput = makeInput('bad', 0, 1);
+        const badInput = makeInput('bad', 1, 1);
 
         const fieldSet = new FieldSet({name: 'fs', label: 'FS', items: []}, noopFactory);
         fieldSet.addFormItem(goodInput);
