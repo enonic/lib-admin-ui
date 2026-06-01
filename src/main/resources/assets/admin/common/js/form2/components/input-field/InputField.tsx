@@ -514,6 +514,9 @@ export const InputFieldResolved = ({
             const Component = definition.component;
             const occId = state.ids[0];
             const processing = isOccurrenceProcessing(occId);
+            const fieldErrors = filteredValidation[0]?.validationResults ?? [];
+            const occurrenceError = getOccurrenceErrorMessage(occurrences, filteredValidation, t);
+            const allErrors = occurrenceError != null ? [...fieldErrors, {message: occurrenceError}] : fieldErrors;
             return (
                 <div data-component={INPUT_FIELD_NAME}>
                     <Component
@@ -525,7 +528,7 @@ export const InputFieldResolved = ({
                         input={input}
                         enabled={enabled}
                         index={0}
-                        errors={filteredValidation[0]?.validationResults ?? []}
+                        errors={allErrors}
                         readOnly={!enabled || processing}
                         processing={processing}
                         inputRef={occId != null ? getInputRefCallback(occId) : undefined}
