@@ -191,14 +191,7 @@ export class ShadowScriptExecutor {
             newScript.setAttribute('data-extension-script-id', this.instanceId);
 
             if (scriptEl.src) {
-                // External script - add cache-busting for modules to ensure re-execution
-                let srcUrl = scriptEl.src;
-                if (scriptEl.type === 'module') {
-                    const separator = srcUrl.includes('?') ? '&' : '?';
-                    srcUrl = `${srcUrl}${separator}_cb=${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
-                }
-                newScript.src = srcUrl;
-
+                newScript.src = scriptEl.src;
                 newScript.onload = () => resolve();
                 newScript.onerror = () => {
                     console.warn(`ShadowScriptExecutor: Failed to load script: ${scriptEl.src}`);
