@@ -71,4 +71,4 @@ Common `.less` styles and mixins can be also found under [enonic-admin-artifacts
 [travis-url]:    https://travis-ci.org/enonic/lib-admin-ui
 [travis-image]:  https://travis-ci.org/enonic/lib-admin-ui.svg?branch=master "Build status"
 [license-url]:   LICENSE.txt
-[license-image]: https://img.shields.io/github/license/enonic/lib-admin-ui.svg "GPL 3.0"
+[license-image]: https://img.shields.io/github/license/enonic/lib-admin-ui.svg "Apache 2.0"
