@@ -2,10 +2,7 @@ import type {ComponentType} from 'react';
 import type {Value} from '../data/Value';
 import type {Input} from '../form/Input';
 import type {Occurrences} from '../form/Occurrences';
-import type {InputTypeConfig} from './descriptor/InputTypeConfig';
-import type {InputTypeDescriptor} from './descriptor/InputTypeDescriptor';
-import type {OccurrenceManagerState} from './descriptor/OccurrenceManager';
-import type {ValidationResult} from './descriptor/ValidationResult';
+import type {InputTypeConfig, InputTypeDescriptor, OccurrenceManagerState, ValidationResult} from './descriptor';
 
 export type InputTypeMode = 'list' | 'single' | 'internal';
 
