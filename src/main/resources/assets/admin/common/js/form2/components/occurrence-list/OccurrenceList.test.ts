@@ -4,7 +4,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {InputBuilder} from '../../../form/Input';
 import {InputTypeName} from '../../../form/InputTypeName';
 import {Occurrences} from '../../../form/Occurrences';
-import type {OccurrenceManagerState} from '../../descriptor/OccurrenceManager';
+import type {OccurrenceManagerState} from '../../descriptor';
 import type {InputTypeComponent} from '../../types';
 import {OccurrenceList, type OccurrenceListRootProps} from './OccurrenceList';
 
@@ -100,19 +100,33 @@ function makeProps(overrides: Partial<OccurrenceListRootProps> = {}): Occurrence
 
 type VNode = {type: unknown; props: Record<string, any>};
 
-function findFieldError(tree: unknown): VNode | undefined {
+function findNodeByType(tree: unknown, type: unknown): VNode | undefined {
     if (tree == null || typeof tree !== 'object') return undefined;
     if (Array.isArray(tree)) {
         for (const child of tree) {
-            const found = findFieldError(child);
+            const found = findNodeByType(child, type);
             if (found != null) return found;
         }
         return undefined;
     }
     if (!('type' in tree) || !('props' in tree)) return undefined;
     const vnode = tree as VNode;
-    if (vnode.type === mocks.fieldError) return vnode;
-    return findFieldError(vnode.props.children);
+    if (vnode.type === type) return vnode;
+    return findNodeByType(vnode.props.children, type);
+}
+
+function findFieldError(tree: unknown): VNode | undefined {
+    return findNodeByType(tree, mocks.fieldError);
+}
+
+function renderSortableItem(tree: unknown): VNode[] {
+    const sortableList = findNodeByType(tree, mocks.sortableGridList);
+    expect(sortableList).toBeDefined();
+    if (sortableList == null) throw new Error('Expected SortableGridList to render');
+
+    const renderedItem = sortableList.props.renderItem({index: 0, isMovable: true}) as VNode;
+    const children = renderedItem.props.children;
+    return Array.isArray(children) ? children : [children];
 }
 
 function getFieldErrorMessage(tree: unknown): string | undefined {
@@ -175,5 +189,32 @@ describe('OccurrenceList', () => {
         const tree = OccurrenceList.Root(makeProps({input, state}));
 
         expect(getFieldErrorMessage(tree)).toBeUndefined();
+    });
+
+    it('externalizes field errors for draggable occurrence rows and suppresses them while processing', () => {
+        const Component: InputTypeComponent = () => null;
+        const input = makeInput(0, 5);
+        const state = makeState([ValueTypes.STRING.newValue('a'), ValueTypes.STRING.newValue('b')], 0, 5);
+        const stateWithError: OccurrenceManagerState = {
+            ...state,
+            occurrenceValidation: state.occurrenceValidation.map((entry, index) =>
+                index === 0 ? {...entry, validationResults: [{message: 'Invalid value entered'}]} : entry,
+            ),
+        };
+
+        const tree = OccurrenceList.Root(makeProps({Component, input, state: stateWithError}));
+        const [contentNode, fieldErrorNode] = renderSortableItem(tree);
+
+        expect(contentNode?.props.errors.validationResults).toEqual([]);
+        expect(fieldErrorNode?.props.message).toBe('Invalid value entered');
+
+        const processingTree = OccurrenceList.Root(
+            makeProps({Component, input, state: stateWithError, processingOccurrenceIds: new Set(['occurrence-0'])}),
+        );
+        const [processingContentNode, processingFieldErrorNode] = renderSortableItem(processingTree);
+
+        expect(processingContentNode?.props.errors.validationResults).toEqual([]);
+        expect(processingContentNode?.props.processing).toBe(true);
+        expect(processingFieldErrorNode?.props.message).toBeUndefined();
     });
 });

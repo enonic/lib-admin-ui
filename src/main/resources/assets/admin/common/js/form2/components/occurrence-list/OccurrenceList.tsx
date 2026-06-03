@@ -6,7 +6,7 @@ import type {Input} from '../../../form/Input';
 import type {InputTypeConfig, OccurrenceManagerState} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponent} from '../../types';
-import {getOccurrenceErrorMessage} from '../../utils';
+import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
 import {InputLabel} from '../input-label';
 import {SortableGridList} from '../sortable-grid-list';
@@ -59,6 +59,7 @@ type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig>
     processing: boolean;
     inputRef?: (el: HTMLElement | null) => void;
     highlight?: number;
+    className?: string;
     onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
     onFocus?: () => void;
@@ -85,6 +86,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
     processing,
     inputRef,
     highlight,
+    className,
     onChange,
     onBlur,
     onFocus,
@@ -94,7 +96,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
 
     return (
         <>
-            <div className='min-w-0 flex-1'>
+            <div className={cn('min-w-0 flex-1', className)}>
                 <Component
                     value={value}
                     onChange={(v: Value, raw?: string) => onChange(index, v, raw)}
@@ -267,8 +269,36 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                     enabled={enabled}
                     dragLabel={t('field.occurrence.action.reorder')}
                     className='flex flex-col gap-y-2.5'
-                    itemClassName={({isMovable}) => cn('-my-1 gap-2 py-1', isMovable && 'pl-2', showRemove && 'pr-2')}
-                    renderItem={({index}) => <OccurrenceListItemContent {...contentProps(index)} />}
+                    itemClassName={({isMovable}) =>
+                        cn(
+                            '-my-1 grid gap-2 py-1',
+                            isMovable ? 'grid-cols-[auto_minmax(0,1fr)_auto] pl-2' : 'grid-cols-[minmax(0,1fr)_auto]',
+                            showRemove && 'pr-2',
+                        )
+                    }
+                    renderItem={({index, isMovable}) => {
+                        const props = contentProps(index);
+                        const fieldError = !props.processing
+                            ? getFirstError(props.errors.validationResults)
+                            : undefined;
+
+                        return (
+                            <>
+                                <OccurrenceListItemContent
+                                    {...props}
+                                    errors={{...props.errors, validationResults: []}}
+                                    className={isMovable ? 'col-start-2' : 'col-start-1'}
+                                />
+                                <FieldError
+                                    className={cn(
+                                        'min-w-0',
+                                        isMovable ? 'col-span-2 col-start-2' : 'col-span-2 col-start-1',
+                                    )}
+                                    message={fieldError}
+                                />
+                            </>
+                        );
+                    }}
                 />
                 {(occurrenceError != null || addButton) && (
                     <div className='flex items-start gap-x-2'>
