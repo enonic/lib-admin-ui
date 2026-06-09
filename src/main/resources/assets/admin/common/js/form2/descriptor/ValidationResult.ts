@@ -1,6 +1,7 @@
 export type ValidationResult = {
     readonly message: string;
     readonly custom?: boolean;
+    readonly server?: boolean;
     /**
      * Marks an error injected from outside the descriptor pipeline (e.g. a translation
      * failure) so renderers can offer dismiss affordances. Transient entries are cleared

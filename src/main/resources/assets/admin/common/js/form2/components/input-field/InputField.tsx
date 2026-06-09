@@ -14,7 +14,9 @@ import {usePropertyArray} from '../../hooks/usePropertyArray';
 import {useI18n} from '../../I18nContext';
 import {useRawValueMap} from '../../RawValueContext';
 import {InputTypeRegistry} from '../../registry/InputTypeRegistry';
+import {useServerErrors} from '../../ServerErrorsContext';
 import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../../types';
+import {bucketServerErrorsByOccurrence, mergeServerErrors} from '../../utils/serverErrors';
 import {getOccurrenceErrorMessage} from '../../utils/validation';
 import {useValidationVisibility} from '../../ValidationContext';
 import {FieldError} from '../field-error';
@@ -255,11 +257,20 @@ export const InputFieldResolved = ({
     }, [state.ids, forceRender]);
 
     const fieldRegistry = useFieldRegistry();
+    const serverErrors = useServerErrors();
     // No useMemo: parent reorders mutate propertySet's index without changing identity.
     const fieldPath = PropertyPath.fromParent(
         propertySet.getPropertyPath(),
         new PropertyPathElement(input.getName(), 0),
     ).toString();
+
+    const fieldDataPath = fieldPath.startsWith('.') ? fieldPath.slice(1) : fieldPath;
+    const serverEntries = serverErrors?.entries;
+    const serverErrorsByOccurrence = useMemo(
+        () => bucketServerErrorsByOccurrence(serverEntries ?? [], fieldDataPath),
+        [serverEntries, fieldDataPath],
+    );
+    const hasServerErrors = serverErrorsByOccurrence.size > 0;
 
     useEffect(() => {
         const managerValues = sync(values);
@@ -300,8 +311,26 @@ export const InputFieldResolved = ({
                     : value;
             set(index, storedValue, rawValue);
             propertyArray.set(index, storedValue);
+            if (serverErrorsByOccurrence.has(index)) {
+                const occurrencePath = PropertyPath.fromParent(
+                    propertySet.getPropertyPath(),
+                    new PropertyPathElement(inputName, index),
+                ).toString();
+                serverErrors?.clear(occurrencePath.startsWith('.') ? occurrencePath.slice(1) : occurrencePath);
+            }
         },
-        [markTouched, rawValueMap, inputName, set, propertyArray, descriptor, config],
+        [
+            markTouched,
+            rawValueMap,
+            inputName,
+            set,
+            propertyArray,
+            descriptor,
+            config,
+            serverErrors,
+            serverErrorsByOccurrence,
+            propertySet,
+        ],
     );
 
     const handleBlur = useCallback(
@@ -316,8 +345,9 @@ export const InputFieldResolved = ({
             const newValue = value ?? defaultValue;
             if (!add(newValue)) return;
             propertyArray.add(newValue);
+            if (hasServerErrors) serverErrors?.clearField(fieldDataPath);
         },
-        [add, propertyArray, defaultValue],
+        [add, propertyArray, defaultValue, hasServerErrors, serverErrors, fieldDataPath],
     );
 
     const handleRemove = useCallback(
@@ -331,8 +361,9 @@ export const InputFieldResolved = ({
                 }
             }
             propertyArray.remove(index);
+            if (hasServerErrors) serverErrors?.clearField(fieldDataPath);
         },
-        [remove, rawValueMap, inputName, propertyArray],
+        [remove, rawValueMap, inputName, propertyArray, hasServerErrors, serverErrors, fieldDataPath],
     );
 
     const handleMove = useCallback(
@@ -346,12 +377,15 @@ export const InputFieldResolved = ({
                 }
             }
             propertyArray.move(fromIndex, toIndex);
+            if (hasServerErrors) serverErrors?.clearField(fieldDataPath);
         },
-        [move, rawValueMap, inputName, propertyArray],
+        [move, rawValueMap, inputName, propertyArray, hasServerErrors, serverErrors, fieldDataPath],
     );
 
     const filteredValidation = filterErrors(state.occurrenceValidation, visibility, touched);
-    const filteredState = visibility === 'all' ? state : {...state, occurrenceValidation: filteredValidation};
+    const displayValidation = mergeServerErrors(filteredValidation, serverErrorsByOccurrence);
+    const filteredState =
+        visibility === 'all' && !hasServerErrors ? state : {...state, occurrenceValidation: displayValidation};
 
     const isOccurrenceProcessing = useCallback((occurrenceId: string | undefined): boolean => {
         if (occurrenceId == null) return false;
@@ -514,7 +548,7 @@ export const InputFieldResolved = ({
             const Component = definition.component;
             const occId = state.ids[0];
             const processing = isOccurrenceProcessing(occId);
-            const fieldErrors = filteredValidation[0]?.validationResults ?? [];
+            const fieldErrors = displayValidation[0]?.validationResults ?? [];
             const occurrenceError = getOccurrenceErrorMessage(occurrences, filteredValidation, t);
             const allErrors = occurrenceError != null ? [...fieldErrors, {message: occurrenceError}] : fieldErrors;
             return (
@@ -562,7 +596,7 @@ export const InputFieldResolved = ({
                         config={config}
                         input={input}
                         enabled={enabled}
-                        errors={filteredValidation}
+                        errors={displayValidation}
                     />
                     {occurrenceError != null && <FieldError className='mt-2' message={occurrenceError} />}
                 </div>

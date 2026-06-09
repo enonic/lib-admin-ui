@@ -1,3 +1,4 @@
+import {PropertyPath, PropertyPathElement} from '../../data/PropertyPath';
 import type {PropertySet} from '../../data/PropertySet';
 import type {Form} from '../../form/Form';
 import type {FormItem} from '../../form/FormItem';
@@ -8,6 +9,7 @@ import {FormOptionSet} from '../../form/set/optionset/FormOptionSet';
 import {ObjectHelper} from '../../ObjectHelper';
 import type {ValidationError} from '../../ValidationError';
 import {InputTypeRegistry} from '../registry/InputTypeRegistry';
+import {matchesFieldPath} from '../utils/serverErrors';
 import type {
     FieldSetValidationNode,
     FormValidationNode,
@@ -34,11 +36,10 @@ function stripLeadingDot(path: string): string {
     return path.startsWith('.') ? path.slice(1) : path;
 }
 
-function matchServerErrors(formPath: string, serverErrors: ValidationError[]): ValidationResult[] {
-    const stripped = stripLeadingDot(formPath);
+function matchServerErrors(dataPath: string, serverErrors: ValidationError[]): ValidationResult[] {
     return serverErrors
-        .filter(error => error.getPropertyPath().startsWith(stripped))
-        .map(error => ({message: error.getMessage(), custom: true}));
+        .filter(error => matchesFieldPath(error.getPropertyPath(), dataPath))
+        .map(error => ({message: error.getMessage(), custom: true, server: true}));
 }
 
 function isNodeValid(child: FormValidationNode): boolean {
@@ -47,7 +48,7 @@ function isNodeValid(child: FormValidationNode): boolean {
             return true;
         case 'input':
             if (child.occurrenceError != null) return false;
-            if (child.optional) return true;
+            if (child.optional) return !child.errors.some(occ => occ.some(e => e.server));
             return child.errors.every(e => e.length === 0);
         case 'fieldset':
             return child.isValid !== false;
@@ -93,12 +94,13 @@ function validateInput(input: Input, propertySet: PropertySet, options?: Validat
         errors.push(validationResults);
     }
 
-    // Append server errors
     const serverErrors = options?.serverErrors;
     if (serverErrors != null && serverErrors.length > 0) {
-        const matched = matchServerErrors(path, serverErrors);
+        const dataPath = stripLeadingDot(
+            PropertyPath.fromParent(propertySet.getPropertyPath(), new PropertyPathElement(name, 0)).toString(),
+        );
+        const matched = matchServerErrors(dataPath, serverErrors);
         if (matched.length > 0) {
-            // Attach server errors to the first occurrence
             errors[0] = [...(errors[0] ?? []), ...matched];
         }
     }
@@ -184,8 +186,6 @@ function validateItemSet(
         const max = itemSet.getOccurrences().getMaximum();
         occurrenceError = `set.occurrence.breaks.max:${max}`;
     }
-
-    // TODO: propagate serverErrors into nested set occurrences (Phase 8)
 
     return {type: 'itemset', path, name, occurrenceError, occurrences};
 }
