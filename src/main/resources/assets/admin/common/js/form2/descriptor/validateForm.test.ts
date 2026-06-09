@@ -888,7 +888,7 @@ describe('validateForm', () => {
         }
     });
 
-    it('attaches server errors matched by path with custom flag', () => {
+    it('attaches server errors matched by path tagged server (and custom)', () => {
         const input = makeInput('myField', 0, 1);
         const form = new FormBuilder().addFormItem(input).build();
         const tree = new PropertyTree();
@@ -901,8 +901,23 @@ describe('validateForm', () => {
         const node = result.children[0];
         if (node.type === 'input') {
             const allErrors = node.errors.flat();
-            expect(allErrors).toContainEqual({message: 'Server says no', custom: true});
+            expect(allErrors).toContainEqual({message: 'Server says no', custom: true, server: true});
         }
+    });
+
+    it('keeps an optional Input valid when it has a client-only custom error (not server)', () => {
+        mocks.getDefinition.mockReturnValue(
+            makeDefinition({validate: () => [{message: 'Client custom', custom: true}]}),
+        );
+
+        const input = makeInput('email', 0, 1);
+        const form = new FormBuilder().addFormItem(input).build();
+        const tree = new PropertyTree();
+        tree.getRoot().addProperty('email', ValueTypes.STRING.newValue('bad'));
+
+        const result = validateForm(form, tree.getRoot());
+
+        expect(result.isValid).toBe(true);
     });
 
     it('does not attach server errors that do not match path', () => {
@@ -919,6 +934,86 @@ describe('validateForm', () => {
         if (node.type === 'input') {
             const allErrors = node.errors.flat();
             expect(allErrors).not.toContainEqual(expect.objectContaining({custom: true}));
+        }
+    });
+
+    it('invalidates the form when an optional Input has a server error', () => {
+        const input = makeInput('myField', 0, 1);
+        const form = new FormBuilder().addFormItem(input).build();
+        const tree = new PropertyTree();
+        tree.getRoot().addProperty('myField', ValueTypes.STRING.newValue('val'));
+
+        const serverError = ValidationError.create().setPropertyPath('myField').setMessage('Server says no').build();
+
+        const result = validateForm(form, tree.getRoot(), {serverErrors: [serverError]});
+
+        expect(result.isValid).toBe(false);
+    });
+
+    it('does not match a server error on a different field with a shared prefix', () => {
+        const input = makeInput('myField', 0, 1);
+        const form = new FormBuilder().addFormItem(input).build();
+        const tree = new PropertyTree();
+        tree.getRoot().addProperty('myField', ValueTypes.STRING.newValue('val'));
+
+        const serverError = ValidationError.create().setPropertyPath('myFieldExtra').setMessage('Other').build();
+
+        const result = validateForm(form, tree.getRoot(), {serverErrors: [serverError]});
+
+        expect(result.isValid).toBe(true);
+        const node = result.children[0];
+        if (node.type === 'input') {
+            expect(node.errors.flat()).not.toContainEqual(expect.objectContaining({custom: true}));
+        }
+    });
+
+    it('matches a server error on a field in a non-first FormItemSet occurrence', () => {
+        const formItemSet = new FormItemSet(
+            {
+                name: 'mySet',
+                label: 'My Set',
+                occurrences: {minimum: 0, maximum: 0},
+                helpText: '',
+                items: [
+                    {
+                        Input: {
+                            name: 'title',
+                            inputType: 'TestType',
+                            label: 'Title',
+                            occurrences: {minimum: 0, maximum: 1},
+                            config: {},
+                            helpText: '',
+                        },
+                    },
+                ],
+            },
+            inputFactory,
+        );
+
+        const form = new FormBuilder().addFormItem(formItemSet).build();
+        const tree = new PropertyTree();
+        const first = tree.getRoot().addPropertySet('mySet');
+        first.addProperty('title', ValueTypes.STRING.newValue('Hello'));
+        const second = tree.getRoot().addPropertySet('mySet');
+        second.addProperty('title', ValueTypes.STRING.newValue('World'));
+
+        const serverError = ValidationError.create()
+            .setPropertyPath('mySet[1].title')
+            .setMessage('Server says no')
+            .build();
+
+        const result = validateForm(form, tree.getRoot(), {serverErrors: [serverError]});
+
+        expect(result.isValid).toBe(false);
+        const node = result.children[0];
+        expect(node.type).toBe('itemset');
+        if (node.type === 'itemset') {
+            expect(node.occurrences[0].isValid).toBe(true);
+            expect(node.occurrences[1].isValid).toBe(false);
+            const inputNode = node.occurrences[1].children[0];
+            if (inputNode.type === 'input') {
+                expect(inputNode.errors.flat()).toContainEqual({message: 'Server says no', custom: true, server: true});
+            }
         }
     });
 
