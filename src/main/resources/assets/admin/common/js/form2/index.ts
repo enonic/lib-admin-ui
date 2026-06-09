@@ -48,6 +48,13 @@ export {LocaleProvider, type LocaleProviderProps, useLocale} from './LocaleConte
 export {RawValueProvider, type RawValueProviderProps, useRawValueMap} from './RawValueContext';
 // React input type system (for CS and future consumers)
 export {InputTypeRegistry} from './registry/InputTypeRegistry';
+export {
+    type ServerErrorEntry,
+    ServerErrorsProvider,
+    type ServerErrorsProviderProps,
+    type ServerErrorsValue,
+    useServerErrors,
+} from './ServerErrorsContext';
 export type {
     InputTypeComponent,
     InputTypeComponentProps,
@@ -56,6 +63,7 @@ export type {
     SelfManagedComponentProps,
     SelfManagedInputTypeComponent,
 } from './types';
+export {matchesFieldPath, matchesOccurrencePath, serverErrorOccurrenceIndex} from './utils/serverErrors';
 export {
     findByPath,
     getFirstError,

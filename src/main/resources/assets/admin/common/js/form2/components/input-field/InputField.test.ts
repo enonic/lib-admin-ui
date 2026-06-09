@@ -47,6 +47,10 @@ vi.mock('../../RawValueContext', () => ({
     useRawValueMap: mocks.useRawValueMap,
 }));
 
+vi.mock('../../ServerErrorsContext', () => ({
+    useServerErrors: vi.fn(() => undefined),
+}));
+
 vi.mock('../../FieldRegistryContext', () => ({
     useFieldRegistry: vi.fn(() => undefined),
 }));
