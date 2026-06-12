@@ -26,6 +26,10 @@ Only run `./gradlew build -Penv=dev` when the task specifically requires testing
 - **Modern** (new code goes here): `js/ui2/`, `js/form/inputtype2/` — Preact/TSX, strict TypeScript, Tailwind
 - **Legacy** (do not add to): `js/ui/`, `js/form/inputtype/` — class-based, jQuery, loose TypeScript
 
+## Storybook Stories
+
+Every new `js/ui2/` component MUST ship with a colocated `*.stories.tsx` (CSF3, `tags: ['autodocs']`, title `ui2/<Name>`) covering its meaningful states/props, verified in both light and dark themes via `pnpm build-storybook` (or the dev server when asked).
+
 ## Git & GitHub
 
 No conventional commit prefixes. Plain descriptive language throughout.
