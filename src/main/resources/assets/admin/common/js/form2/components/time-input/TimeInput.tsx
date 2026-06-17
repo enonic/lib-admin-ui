@@ -46,27 +46,29 @@ export const TimeInput = ({
     const [open, setOpen] = useState(false);
     // ? Uses `null` instead of `undefined` because TimePicker API uses `null` for empty value
     const [draftTime, setDraftTime] = useState<string | null>(null);
-    const lastEmitted = useRef<string | undefined>(undefined);
+    const isLocalChange = useRef(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
 
+    // Sync from parent only on external value changes (e.g. save, form reset).
+    // Skip when the change was triggered by handleInputChange/handleConfirm below.
     useEffect(() => {
-        const parentStr = valueToString(value);
-        if (lastEmitted.current === parentStr) return;
-        setRawInput(parentStr);
+        if (isLocalChange.current) {
+            isLocalChange.current = false;
+            return;
+        }
+        setRawInput(valueToString(value));
     }, [value]);
 
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
+        isLocalChange.current = true;
         setRawInput(inputValue);
         if (inputValue === '') {
-            lastEmitted.current = '';
             onChange(ValueTypes.LOCAL_TIME.newNullValue());
         } else {
-            const newValue = ValueTypes.LOCAL_TIME.newValue(inputValue);
-            lastEmitted.current = valueToString(newValue);
-            onChange(newValue, inputValue);
+            onChange(ValueTypes.LOCAL_TIME.newValue(inputValue), inputValue);
         }
     };
 
@@ -76,8 +78,8 @@ export const TimeInput = ({
 
     const handleConfirm = () => {
         if (draftTime == null) return;
+        isLocalChange.current = true;
         setRawInput(draftTime);
-        lastEmitted.current = draftTime;
         onChange(ValueTypes.LOCAL_TIME.newValue(draftTime));
         setOpen(false);
         inputRef.current?.focus();
