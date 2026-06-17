@@ -162,6 +162,17 @@ function removeIndexedArrayItem<T>(items: T[], index: number): T[] {
     return next;
 }
 
+// Internal-mode inputs (e.g. ComboBox) don't seed via minFill. Apply the
+// configured default once here so it stays removable (minFill would re-add it).
+function seedInitialDefault(
+    propertyArray: PropertyArray,
+    mode: SupportedInputTypeDefinition['mode'],
+    defaultValue: Value,
+): void {
+    if (mode !== 'internal' || defaultValue.isNull()) return;
+    propertyArray.add(defaultValue);
+}
+
 export const InputFieldResolved = ({
     input,
     propertySet,
@@ -199,9 +210,10 @@ export const InputFieldResolved = ({
                 .setParent(propertySet)
                 .build();
             propertySet.addPropertyArray(arr);
+            seedInitialDefault(arr, definition.mode, defaultValue);
         }
         return arr;
-    }, [propertySet, inputName, descriptor]);
+    }, [propertySet, inputName, descriptor, definition.mode, defaultValue]);
 
     const {values} = usePropertyArray(propertyArray);
 
