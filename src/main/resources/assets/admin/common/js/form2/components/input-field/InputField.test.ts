@@ -280,6 +280,40 @@ describe('InputField', () => {
         expect(move).toHaveBeenCalledWith(0, 1);
     });
 
+    it('seeds the configured default once for internal mode with a non-null default', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        descriptor.createDefaultValue = () => ValueTypes.STRING.newValue('o1');
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = new InputBuilder()
+            .setName('testField')
+            .setInputType(new InputTypeName('ComboBox', false))
+            .setLabel('Test')
+            .setOccurrences(Occurrences.minmax(0, 1))
+            .setHelpText('')
+            .setInputTypeConfig({default: [{value: 'o1'}]})
+            .build();
+        const propertySet = new PropertyTree().getRoot();
+
+        InputFieldResolved({input, propertySet, enabled: true, definition});
+
+        const arr = propertySet.getPropertyArray('testField');
+        expect(arr?.getSize()).toBe(1);
+        expect(arr?.getValue(0)?.getString()).toBe('o1');
+    });
+
+    it('does not seed internal mode when no default is configured', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector');
+        const propertySet = new PropertyTree().getRoot();
+
+        InputFieldResolved({input, propertySet, enabled: true, definition});
+
+        expect(propertySet.getPropertyArray('testField')?.getSize()).toBe(0);
+    });
+
     it('remaps touched indexes when internal inputs move occurrences', () => {
         const component: SelfManagedInputTypeComponent = () => null;
         const descriptor = makeDescriptor();
