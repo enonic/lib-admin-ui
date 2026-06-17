@@ -105,30 +105,32 @@ export const InstantInput = ({
     // ? DatePicker/TimePicker API uses null for "no selection"
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const [draftTime, setDraftTime] = useState<string | null>(null);
-    const lastEmitted = useRef<string | undefined>(undefined);
+    const isLocalChange = useRef(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
 
     const timezoneLabel = useMemo(() => formatTimezoneLabel(draftDate, draftTime), [draftDate, draftTime]);
 
+    // Sync from parent only on external value changes (e.g. save, form reset).
+    // Skip when the change was triggered by handleInputChange/handleConfirm below.
     useEffect(() => {
-        const parentDisplay = valueToDisplay(value);
-        if (lastEmitted.current === parentDisplay) return;
-        setRawInput(parentDisplay);
+        if (isLocalChange.current) {
+            isLocalChange.current = false;
+            return;
+        }
+        setRawInput(valueToDisplay(value));
     }, [value]);
 
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
+        isLocalChange.current = true;
         setRawInput(inputValue);
         if (inputValue === '') {
-            lastEmitted.current = '';
             onChange(ValueTypes.DATE_TIME.newNullValue());
         } else {
             const storageValue = displayToStorage(inputValue);
-            const newValue = ValueTypes.DATE_TIME.newValue(storageValue);
-            lastEmitted.current = valueToDisplay(newValue);
-            onChange(newValue, inputValue);
+            onChange(ValueTypes.DATE_TIME.newValue(storageValue), inputValue);
         }
     };
 
@@ -144,10 +146,9 @@ export const InstantInput = ({
         if (draftDate == null) return;
         const display = formatDisplay(draftDate, draftTime);
         const storageValue = displayToStorage(display);
-        const newValue = ValueTypes.DATE_TIME.newValue(storageValue);
+        isLocalChange.current = true;
         setRawInput(display);
-        lastEmitted.current = valueToDisplay(newValue);
-        onChange(newValue);
+        onChange(ValueTypes.DATE_TIME.newValue(storageValue));
         setOpen(false);
         inputRef.current?.focus();
     };

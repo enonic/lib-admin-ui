@@ -31,29 +31,29 @@ export const DateInput = ({
     const [open, setOpen] = useState(false);
     // ? DatePicker API uses null for "no selection" — applies to draftDate, selectedDate, calendarValue
     const [draftDate, setDraftDate] = useState<Date | null>(null);
-    const lastEmitted = useRef<string | undefined>(undefined);
+    const isLocalChange = useRef(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
 
-    // Sync from parent only on external value changes (e.g. form reset).
-    // Skip when the string representation matches what we last emitted.
+    // Sync from parent only on external value changes (e.g. save, form reset).
+    // Skip when the change was triggered by handleInputChange/handleConfirm below.
     useEffect(() => {
-        const parentStr = valueToString(value);
-        if (lastEmitted.current === parentStr) return;
-        setRawInput(parentStr);
+        if (isLocalChange.current) {
+            isLocalChange.current = false;
+            return;
+        }
+        setRawInput(valueToString(value));
     }, [value]);
 
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
+        isLocalChange.current = true;
         setRawInput(inputValue);
         if (inputValue === '') {
-            lastEmitted.current = '';
             onChange(ValueTypes.LOCAL_DATE.newNullValue());
         } else {
-            const newValue = ValueTypes.LOCAL_DATE.newValue(inputValue);
-            lastEmitted.current = valueToString(newValue);
-            onChange(newValue, inputValue);
+            onChange(ValueTypes.LOCAL_DATE.newValue(inputValue), inputValue);
         }
     };
 
@@ -64,8 +64,8 @@ export const DateInput = ({
     const handleConfirm = () => {
         if (draftDate == null) return;
         const formatted = DateHelper.formatDate(draftDate);
+        isLocalChange.current = true;
         setRawInput(formatted);
-        lastEmitted.current = formatted;
         onChange(ValueTypes.LOCAL_DATE.newValue(formatted));
         setOpen(false);
     };
