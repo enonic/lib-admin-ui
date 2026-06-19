@@ -2,9 +2,8 @@ import {useCallback, useEffect, useMemo, useState} from 'react';
 
 import type {Value} from '../../data/Value';
 import type {Occurrences} from '../../form/Occurrences';
-import type {InputTypeConfig} from '../descriptor/InputTypeConfig';
-import type {InputTypeDescriptor} from '../descriptor/InputTypeDescriptor';
-import {OccurrenceManager, type OccurrenceManagerState} from '../descriptor/OccurrenceManager';
+import type {InputTypeConfig, InputTypeDescriptor} from '../descriptor';
+import {OccurrenceManager, type OccurrenceManagerState} from '../descriptor';
 
 type UseOccurrenceManagerParams<C extends InputTypeConfig = InputTypeConfig> = {
     occurrences: Occurrences;
@@ -23,7 +22,8 @@ type UseOccurrenceManagerResult = {
     remove: (index: number) => boolean;
     move: (fromIndex: number, toIndex: number) => boolean;
     set: (index: number, value: Value, rawValue?: string) => void;
-    sync: (values: Value[]) => Value[];
+    sync: (values: Value[], rawValues?: (string | undefined)[]) => OccurrenceManagerState;
+    clearRawValues: () => void;
     setTransientError: (occurrenceId: string, message: string) => boolean;
     clearTransientError: (occurrenceId: string) => boolean;
     clearAllTransientErrors: () => void;
@@ -96,18 +96,24 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
     );
 
     const sync = useCallback(
-        (values: Value[]): Value[] => {
-            manager.setValues(values);
+        (values: Value[], rawValues?: (string | undefined)[]): OccurrenceManagerState => {
+            manager.setValues(values, rawValues);
             // Re-enforce minFill after external value replacement (e.g., PropertyArray cleared).
             // Break if add() is a no-op (max reached) to prevent infinite loop on malformed schemas.
             while (manager.getCount() < minFill) {
                 if (!manager.add(defaultValue)) break;
             }
-            setState(manager.validate());
-            return manager.getValues();
+            const nextState = manager.validate();
+            setState(nextState);
+            return nextState;
         },
         [manager, minFill, defaultValue],
     );
+
+    const clearRawValues = useCallback((): void => {
+        manager.clearRawValues();
+        setState(manager.validate());
+    }, [manager]);
 
     const setTransientError = useCallback(
         (occurrenceId: string, message: string): boolean => {
@@ -142,6 +148,7 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
         move,
         set,
         sync,
+        clearRawValues,
         setTransientError,
         clearTransientError,
         clearAllTransientErrors,

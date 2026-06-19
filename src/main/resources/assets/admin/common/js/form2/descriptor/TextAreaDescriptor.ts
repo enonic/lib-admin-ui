@@ -31,13 +31,13 @@ export const TextAreaDescriptor: InputTypeDescriptor<TextAreaConfig> = {
         return ValueTypes.STRING.newValue(raw);
     },
 
-    validate(value: Value, config: TextAreaConfig): ValidationResult[] {
+    validate(value: Value, config: TextAreaConfig, rawValue?: string): ValidationResult[] {
         const results: ValidationResult[] = [];
-        if (value.isNull()) {
+        const str = value.isNull() ? rawValue : (value.getString() ?? '');
+
+        if (str == null) {
             return results;
         }
-
-        const str = value.getString();
 
         if (config.maxLength > 0 && str.length > config.maxLength) {
             results.push({message: `Value exceeds maximum length of ${config.maxLength}`});
