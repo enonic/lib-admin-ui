@@ -200,7 +200,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                 : errors.validationResults;
 
         return (
-            <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
+            <div data-component={OCCURRENCE_LIST_NAME} className='grid min-w-0 gap-y-2'>
                 <InputLabel input={input} />
                 <Component
                     value={value}
@@ -260,7 +260,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         const showRemove = state.canRemove && state.values.length > 1;
 
         return (
-            <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
+            <div data-component={OCCURRENCE_LIST_NAME} className='grid min-w-0 gap-y-2'>
                 <InputLabel input={input} />
                 <SortableGridList
                     items={state.values}
@@ -311,7 +311,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     }
 
     return (
-        <div data-component={OCCURRENCE_LIST_NAME} className='grid gap-y-2'>
+        <div data-component={OCCURRENCE_LIST_NAME} className='grid min-w-0 gap-y-2'>
             <InputLabel input={input} />
             <div className='flex flex-col gap-y-2.5'>
                 {state.values.map((_, i) => (

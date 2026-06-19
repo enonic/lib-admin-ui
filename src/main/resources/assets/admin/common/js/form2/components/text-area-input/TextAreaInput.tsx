@@ -81,6 +81,7 @@ export const TextAreaInput = ({
             error={getFirstError(errors)}
             maxLength={hasBoth ? undefined : maxLength}
             endAddon={counterAddon}
+            className='min-w-0'
         />
     );
 };
