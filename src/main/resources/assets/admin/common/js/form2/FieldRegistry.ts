@@ -49,6 +49,7 @@ export type FieldHandle = {
     clearAllTransientErrors: () => void;
     /** Snapshot of current occurrence IDs at call time — use to capture a stable ID before firing async work. */
     getOccurrenceIds: () => string[];
+    clearRawValues?: () => void;
     acquireProcessing: (occurrenceId: string) => ProcessingToken | null;
     releaseProcessing: (token: ProcessingToken) => boolean;
     isProcessing: (occurrenceId: string) => boolean;
@@ -118,6 +119,16 @@ export class FieldRegistry {
         }
         this.handles.forEach(handle => {
             handle.clearAllTransientErrors();
+        });
+    }
+
+    clearRawValues(path?: string): void {
+        if (path != null) {
+            this.handles.get(path)?.clearRawValues?.();
+            return;
+        }
+        this.handles.forEach(handle => {
+            handle.clearRawValues?.();
         });
     }
 

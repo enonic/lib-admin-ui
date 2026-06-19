@@ -5,19 +5,17 @@ import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 import type {PropertySet} from '../../../data/PropertySet';
 import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
-import {getEffectiveOccurrences} from '../../descriptor/getEffectiveOccurrences';
-import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
+import type {OccurrenceValidationState} from '../../descriptor';
+import {getEffectiveOccurrences} from '../../descriptor';
 import {generateProcessingToken, type ProcessingToken, type RevealOptions} from '../../FieldRegistry';
 import {useFieldRegistry} from '../../FieldRegistryContext';
-import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
-import {usePropertyArray} from '../../hooks/usePropertyArray';
+import {useOccurrenceManager, usePropertyArray} from '../../hooks';
 import {useI18n} from '../../I18nContext';
 import {useRawValueMap} from '../../RawValueContext';
-import {InputTypeRegistry} from '../../registry/InputTypeRegistry';
+import {InputTypeRegistry} from '../../registry';
 import {useServerErrors} from '../../ServerErrorsContext';
 import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../../types';
-import {bucketServerErrorsByOccurrence, mergeServerErrors} from '../../utils/serverErrors';
-import {getOccurrenceErrorMessage} from '../../utils/validation';
+import {bucketServerErrorsByOccurrence, getOccurrenceErrorMessage, mergeServerErrors} from '../../utils';
 import {useValidationVisibility} from '../../ValidationContext';
 import {FieldError} from '../field-error';
 import {InputLabel} from '../input-label';
@@ -224,6 +222,7 @@ export const InputFieldResolved = ({
         move,
         set,
         sync,
+        clearRawValues,
         setTransientError,
         clearTransientError,
         clearAllTransientErrors,
@@ -285,14 +284,25 @@ export const InputFieldResolved = ({
     const hasServerErrors = serverErrorsByOccurrence.size > 0;
 
     useEffect(() => {
-        const managerValues = sync(values);
+        const rawValues = rawValueMap != null ? (rawValueMap.get(inputName) ?? []) : undefined;
+        const syncedState = sync(values, rawValues);
+        const managerValues = syncedState?.values ?? values;
+        const managerRawValues = syncedState?.rawValues;
+
+        if (rawValueMap != null && managerRawValues != null) {
+            if (managerRawValues.some(rawValue => rawValue != null)) {
+                rawValueMap.set(inputName, managerRawValues);
+            } else {
+                rawValueMap.delete(inputName);
+            }
+        }
         // Push seeded values to PropertyArray so they stay in sync.
         // OccurrenceManager seeds to minFill, but PropertyArray doesn't know about those values.
         const paSize = propertyArray.getSize();
         for (let i = paSize; i < managerValues.length; i++) {
             propertyArray.add(managerValues[i]);
         }
-    }, [values, sync, propertyArray]);
+    }, [values, sync, propertyArray, rawValueMap, inputName]);
 
     const markTouched = useCallback((index: number) => {
         setTouched(prev => {
@@ -474,6 +484,11 @@ export const InputFieldResolved = ({
         return processingTokensRef.current.has(occurrenceId);
     }, []);
 
+    const handleClearRawValues = useCallback((): void => {
+        rawValueMap?.delete(inputName);
+        clearRawValues();
+    }, [rawValueMap, inputName, clearRawValues]);
+
     const handleReveal = useCallback(
         (occurrenceId?: string, options?: RevealOptions): boolean => {
             const targetId = occurrenceId ?? state.ids[0];
@@ -527,6 +542,7 @@ export const InputFieldResolved = ({
             clearTransientError,
             clearAllTransientErrors,
             getOccurrenceIds,
+            clearRawValues: handleClearRawValues,
             acquireProcessing: handleAcquireProcessing,
             releaseProcessing: handleReleaseProcessing,
             isProcessing: handleIsProcessing,
@@ -548,6 +564,7 @@ export const InputFieldResolved = ({
         clearTransientError,
         clearAllTransientErrors,
         getOccurrenceIds,
+        handleClearRawValues,
         handleAcquireProcessing,
         handleReleaseProcessing,
         handleIsProcessing,
@@ -567,6 +584,7 @@ export const InputFieldResolved = ({
                 <div data-component={INPUT_FIELD_NAME}>
                     <Component
                         value={state.values[0] ?? descriptor.getValueType().newNullValue()}
+                        rawValue={state.rawValues?.[0]}
                         onChange={(value: Value, rawValue?: string) => handleChange(0, value, rawValue)}
                         onBlur={() => handleOccurrenceBlur(0)}
                         onFocus={handleOccurrenceFocus}
