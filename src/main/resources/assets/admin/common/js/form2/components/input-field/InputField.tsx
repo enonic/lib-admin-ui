@@ -222,7 +222,6 @@ export const InputFieldResolved = ({
         move,
         set,
         sync,
-        clearRawValues,
         setTransientError,
         clearTransientError,
         clearAllTransientErrors,
@@ -286,9 +285,11 @@ export const InputFieldResolved = ({
     useEffect(() => {
         const rawValues = rawValueMap != null ? (rawValueMap.get(inputName) ?? []) : undefined;
         const syncedState = sync(values, rawValues);
-        const managerValues = syncedState?.values ?? values;
-        const managerRawValues = syncedState?.rawValues;
+        const managerValues = syncedState.values;
+        const managerRawValues = syncedState.rawValues;
 
+        // ? The map retains raw values for non-null values too; they stay masked because
+        // ? displayValue/validate only consult rawValue when the parsed value is null.
         if (rawValueMap != null && managerRawValues != null) {
             if (managerRawValues.some(rawValue => rawValue != null)) {
                 rawValueMap.set(inputName, managerRawValues);
@@ -484,11 +485,6 @@ export const InputFieldResolved = ({
         return processingTokensRef.current.has(occurrenceId);
     }, []);
 
-    const handleClearRawValues = useCallback((): void => {
-        rawValueMap?.delete(inputName);
-        clearRawValues();
-    }, [rawValueMap, inputName, clearRawValues]);
-
     const handleReveal = useCallback(
         (occurrenceId?: string, options?: RevealOptions): boolean => {
             const targetId = occurrenceId ?? state.ids[0];
@@ -542,7 +538,6 @@ export const InputFieldResolved = ({
             clearTransientError,
             clearAllTransientErrors,
             getOccurrenceIds,
-            clearRawValues: handleClearRawValues,
             acquireProcessing: handleAcquireProcessing,
             releaseProcessing: handleReleaseProcessing,
             isProcessing: handleIsProcessing,
@@ -564,7 +559,6 @@ export const InputFieldResolved = ({
         clearTransientError,
         clearAllTransientErrors,
         getOccurrenceIds,
-        handleClearRawValues,
         handleAcquireProcessing,
         handleReleaseProcessing,
         handleIsProcessing,

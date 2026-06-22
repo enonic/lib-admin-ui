@@ -23,7 +23,6 @@ type UseOccurrenceManagerResult = {
     move: (fromIndex: number, toIndex: number) => boolean;
     set: (index: number, value: Value, rawValue?: string) => void;
     sync: (values: Value[], rawValues?: (string | undefined)[]) => OccurrenceManagerState;
-    clearRawValues: () => void;
     setTransientError: (occurrenceId: string, message: string) => boolean;
     clearTransientError: (occurrenceId: string) => boolean;
     clearAllTransientErrors: () => void;
@@ -110,11 +109,6 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
         [manager, minFill, defaultValue],
     );
 
-    const clearRawValues = useCallback((): void => {
-        manager.clearRawValues();
-        setState(manager.validate());
-    }, [manager]);
-
     const setTransientError = useCallback(
         (occurrenceId: string, message: string): boolean => {
             const ok = manager.setTransientError(occurrenceId, message);
@@ -148,7 +142,6 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
         move,
         set,
         sync,
-        clearRawValues,
         setTransientError,
         clearTransientError,
         clearAllTransientErrors,

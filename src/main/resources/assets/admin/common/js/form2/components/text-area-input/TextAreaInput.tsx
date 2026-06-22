@@ -92,7 +92,6 @@ export const TextAreaInput = ({
             {...langAttrs}
             aria-label={getInputAccessibleName(input, index)}
             autoSize
-            className='min-w-0'
             value={rawInput}
             onChange={handleChange}
             onBlur={onBlur}
