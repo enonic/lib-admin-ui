@@ -61,7 +61,7 @@
     "@types/jquery": "^3.5.33",
     "@types/jqueryui": "^1.12.24",
     "@types/mousetrap": "^1.6.15",
-    "@types/node": "~25.9.2",
+    "@types/node": "~26.0.0",
     "@types/q": "^1.5.8",
     "autoprefixer": "^10.5.0",
     "browserslist-config-enonic": "^1.0.8",
