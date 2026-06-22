@@ -157,10 +157,6 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         this.transientErrors.delete(this.ids[index]);
     }
 
-    clearRawValues(): void {
-        this.rawValues = this.values.map(() => undefined);
-    }
-
     setTransientError(occurrenceId: string, message: string): boolean {
         // Rejects unknown IDs so callers learn their captured ID is stale (the
         // occurrence was removed or values were wholesale-replaced via setValues).
