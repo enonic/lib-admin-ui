@@ -7,6 +7,7 @@ import type {OccurrenceValidationState} from '../../descriptor';
 import {getOccurrenceErrorMessage} from '../../utils';
 import {
     getPastedTagLabels,
+    getSuggestedTagLabels,
     getVisibleTagLabel,
     hasPastedTagSeparators,
     hasTagLabel,
@@ -22,6 +23,7 @@ const mocks = vi.hoisted(() => ({
         vi.fn(),
     ]),
     useEffect: vi.fn(),
+    useId: vi.fn(() => 'test-id'),
     useRef: vi.fn((initial: unknown) => ({current: initial})),
     useSensor: vi.fn(() => null),
     useSensors: vi.fn((...sensors: unknown[]) => sensors),
@@ -48,9 +50,12 @@ const mocks = vi.hoisted(() => ({
     cn: vi.fn((...tokens: Array<string | false | undefined>) => tokens.filter(Boolean).join(' ')),
 }));
 
+const SUGGESTION_DEBOUNCE_MS = 300;
+
 vi.mock('react', () => ({
     useState: mocks.useState,
     useEffect: mocks.useEffect,
+    useId: mocks.useId,
     useRef: mocks.useRef,
 }));
 
@@ -309,6 +314,26 @@ function getFirstTagItemProps(overrides: Partial<TagInputProps> = {}): Record<st
     return match.props;
 }
 
+function getSuggestionListElement(overrides: Partial<TagInputProps> = {}) {
+    return findElementInTree(
+        getTagInputElement(overrides),
+        element => element.type === 'ul' && element.props.role === 'listbox',
+    );
+}
+
+function getSuggestionButton(label: string, overrides: Partial<TagInputProps> = {}): Record<string, any> {
+    const match = findElementInTree(
+        getTagInputElement(overrides),
+        element => element.type === 'button' && element.props.children === label,
+    );
+
+    if (match == null) {
+        throw new Error(`Suggestion button "${label}" was not rendered`);
+    }
+
+    return match.props;
+}
+
 describe('TagInput helpers', () => {
     it('trims whitespace and trailing separators from draft values', () => {
         expect(normalizeTagDraft('  alpha,  ')).toBe('alpha');
@@ -361,6 +386,14 @@ describe('TagInput helpers', () => {
         expect(hasTagLabel([ValueTypes.STRING.newValue('')], '')).toBe(false);
     });
 
+    it('filters suggested labels already present in existing tags or the current draft', () => {
+        const values = [ValueTypes.STRING.newValue('alpha')];
+
+        expect(getSuggestedTagLabels(['alpha', 'al', 'alpine', 'alpine', '  spaced  ', '   '], values, ' al ')).toEqual(
+            ['alpine', 'spaced'],
+        );
+    });
+
     it('returns a cropped visible tag label when the text exceeds the limit', () => {
         expect(getVisibleTagLabel('short label')).toBe('short label');
         expect(getVisibleTagLabel('123456789012345678901')).toBe('12345678901234567890...');
@@ -386,6 +419,7 @@ describe('TagInput', () => {
     });
 
     afterEach(() => {
+        vi.useRealTimers();
         vi.unstubAllGlobals();
     });
 
@@ -1043,10 +1077,14 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => [true, vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [[], vi.fn()])
+            .mockImplementationOnce(() => [-1, vi.fn()])
             .mockImplementationOnce(() => ['beta', vi.fn()])
             .mockImplementationOnce(() => [true, vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
-            .mockImplementationOnce(() => [0, vi.fn()]);
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [[], vi.fn()])
+            .mockImplementationOnce(() => [-1, vi.fn()]);
 
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
@@ -1116,6 +1154,221 @@ describe('TagInput', () => {
         expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('alpha'));
         expect(setDraft).toHaveBeenLastCalledWith('');
         expect(setIsInputActive).toHaveBeenCalledWith(false);
+    });
+
+    it('requests async suggestions only for non-blank drafts', () => {
+        vi.useFakeTimers();
+        const suggestTags = vi.fn(() => Promise.resolve(['alpha']));
+        const setSuggestions = vi.fn();
+        const setActiveSuggestionIndex = vi.fn();
+        mocks.useEffect.mockImplementation(effect => {
+            effect();
+        });
+        mocks.useState
+            .mockImplementationOnce(() => ['   ', vi.fn()])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [[], setSuggestions])
+            .mockImplementationOnce(() => [-1, setActiveSuggestionIndex]);
+
+        renderTagInput({suggestTags});
+
+        expect(suggestTags).not.toHaveBeenCalled();
+        expect(setSuggestions).toHaveBeenCalledWith([]);
+        expect(setActiveSuggestionIndex).toHaveBeenCalledWith(-1);
+        expect(vi.getTimerCount()).toBe(0);
+    });
+
+    it('filters async suggestions before showing them', async () => {
+        vi.useFakeTimers();
+        const suggestTags = vi.fn(() => Promise.resolve(['alpha', 'al', 'alpine', 'alpine', '  spaced  ', '   ']));
+        const setSuggestions = vi.fn();
+        mocks.useEffect.mockImplementation(effect => {
+            effect();
+        });
+        mocks.useState
+            .mockImplementationOnce(() => ['al', vi.fn()])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [[], setSuggestions])
+            .mockImplementationOnce(() => [-1, vi.fn()]);
+
+        renderTagInput({
+            suggestTags,
+            values: [ValueTypes.STRING.newValue('alpha')],
+            errors: [makeOccurrenceValidation(0)],
+        });
+        expect(suggestTags).not.toHaveBeenCalled();
+
+        await vi.advanceTimersByTimeAsync(SUGGESTION_DEBOUNCE_MS - 1);
+        expect(suggestTags).not.toHaveBeenCalled();
+
+        await vi.advanceTimersByTimeAsync(1);
+        await Promise.resolve();
+
+        expect(suggestTags).toHaveBeenCalledWith('al');
+        expect(setSuggestions).toHaveBeenCalledWith(['alpine', 'spaced']);
+    });
+
+    it('cancels pending suggestion requests before the debounce finishes', async () => {
+        vi.useFakeTimers();
+        const suggestTags = vi.fn(() => Promise.resolve(['alpha']));
+        const cleanups: Array<() => void> = [];
+        mocks.useEffect.mockImplementation(effect => {
+            const cleanup = effect();
+            if (typeof cleanup === 'function') {
+                cleanups.push(cleanup);
+            }
+        });
+        mocks.useState
+            .mockImplementationOnce(() => ['al', vi.fn()])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [[], vi.fn()])
+            .mockImplementationOnce(() => [-1, vi.fn()]);
+
+        renderTagInput({suggestTags});
+        cleanups[cleanups.length - 1]();
+        await vi.advanceTimersByTimeAsync(SUGGESTION_DEBOUNCE_MS);
+
+        expect(suggestTags).not.toHaveBeenCalled();
+    });
+
+    it('ignores stale async suggestion results', async () => {
+        vi.useFakeTimers();
+        let resolveSuggestions: (suggestions: string[]) => void = () => undefined;
+        const suggestTags = vi.fn(
+            () =>
+                new Promise<string[]>(resolve => {
+                    resolveSuggestions = resolve;
+                }),
+        );
+        const setSuggestions = vi.fn();
+        const cleanups: Array<() => void> = [];
+        mocks.useEffect.mockImplementation(effect => {
+            const cleanup = effect();
+            if (typeof cleanup === 'function') {
+                cleanups.push(cleanup);
+            }
+        });
+        mocks.useState
+            .mockImplementationOnce(() => ['al', vi.fn()])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [[], setSuggestions])
+            .mockImplementationOnce(() => [-1, vi.fn()]);
+
+        renderTagInput({suggestTags});
+        await vi.advanceTimersByTimeAsync(SUGGESTION_DEBOUNCE_MS);
+        expect(suggestTags).toHaveBeenCalledWith('al');
+
+        cleanups[cleanups.length - 1]();
+        resolveSuggestions(['alpha']);
+        await Promise.resolve();
+
+        expect(setSuggestions).not.toHaveBeenCalledWith(['alpha']);
+    });
+
+    it('moves the active suggestion with arrow keys', () => {
+        const setActiveSuggestionIndex = vi.fn();
+        const preventDefault = vi.fn();
+        mocks.useState
+            .mockImplementationOnce(() => ['al', vi.fn()])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [['alpine', 'altitude'], vi.fn()])
+            .mockImplementationOnce(() => [-1, setActiveSuggestionIndex]);
+
+        renderTagInput({suggestTags: vi.fn()});
+
+        getLastInputProps().onKeyDown({
+            key: 'ArrowDown',
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault,
+        });
+
+        const updateIndex = setActiveSuggestionIndex.mock.calls[0]?.[0] as (current: number) => number;
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(updateIndex(-1)).toBe(0);
+        expect(updateIndex(1)).toBe(0);
+    });
+
+    it('commits the selected suggestion with Enter', () => {
+        const onAdd = vi.fn();
+        const setDraft = vi.fn();
+        const preventDefault = vi.fn();
+        const focus = vi.fn();
+        mocks.useState
+            .mockImplementationOnce(() => ['al', setDraft])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [['alpine'], vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()]);
+
+        renderTagInput({onAdd, suggestTags: vi.fn(), values: [], errors: []});
+
+        getLastInputProps().onKeyDown({
+            key: 'Enter',
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault,
+            currentTarget: {focus},
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('alpine'));
+        expect(setDraft).toHaveBeenCalledWith('');
+        expect(focus).toHaveBeenCalledOnce();
+    });
+
+    it('commits a clicked suggestion through the normal tag path', () => {
+        const onAdd = vi.fn();
+        const setDraft = vi.fn();
+        mocks.useState
+            .mockImplementationOnce(() => ['al', setDraft])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [['alpine'], vi.fn()])
+            .mockImplementationOnce(() => [-1, vi.fn()]);
+
+        getSuggestionButton('alpine', {
+            onAdd,
+            suggestTags: vi.fn(),
+            values: [],
+            errors: [],
+        }).onClick();
+
+        expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('alpine'));
+        expect(setDraft).toHaveBeenCalledWith('');
+    });
+
+    it('hides suggestions when no more tags can be added', () => {
+        mocks.useState
+            .mockImplementationOnce(() => ['ga', vi.fn()])
+            .mockImplementationOnce(() => [true, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [['gamma'], vi.fn()])
+            .mockImplementationOnce(() => [-1, vi.fn()]);
+
+        expect(
+            getSuggestionListElement({
+                suggestTags: vi.fn(),
+                values: [ValueTypes.STRING.newValue('alpha')],
+                occurrences: Occurrences.minmax(0, 1),
+                errors: [makeOccurrenceValidation(0)],
+            }),
+        ).toBeUndefined();
     });
 
     it('keeps duplicate draft text and marks the input invalid instead of clearing it', () => {

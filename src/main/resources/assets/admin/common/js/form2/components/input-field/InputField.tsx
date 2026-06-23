@@ -275,6 +275,7 @@ export const InputFieldResolved = ({
     ).toString();
 
     const fieldDataPath = fieldPath.startsWith('.') ? fieldPath.slice(1) : fieldPath;
+    const fieldPropertyPath = useMemo(() => PropertyPath.fromString(fieldPath), [fieldPath]);
     const serverEntries = serverErrors?.entries;
     const serverErrorsByOccurrence = useMemo(
         () => bucketServerErrorsByOccurrence(serverEntries ?? [], fieldDataPath),
@@ -619,6 +620,7 @@ export const InputFieldResolved = ({
                         occurrences={occurrences}
                         config={config}
                         input={input}
+                        dataPath={fieldPropertyPath}
                         enabled={enabled}
                         errors={displayValidation}
                     />
