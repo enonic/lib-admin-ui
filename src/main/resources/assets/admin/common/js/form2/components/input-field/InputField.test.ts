@@ -140,6 +140,7 @@ function getChildAt(element: {props: {children: unknown}}, index: number): VNode
 describe('InputField', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        mocks.useMemo.mockImplementation((factory: () => unknown) => factory());
         mocks.useRawValueMap.mockReturnValue(undefined);
         mocks.usePropertyArray.mockReturnValue({values: [], size: 0});
         mocks.useOccurrenceManager.mockReturnValue({
@@ -278,6 +279,32 @@ describe('InputField', () => {
 
         child.props.onMove(0, 1);
         expect(move).toHaveBeenCalledWith(0, 1);
+    });
+
+    it('keeps the internal component dataPath object stable for the same field path', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector');
+        const propertySet = new PropertyTree().getRoot();
+        const memoizedByPath = new Map<string, unknown>();
+        mocks.useMemo.mockImplementation((factory: () => unknown, deps?: unknown[]) => {
+            const key = deps?.length === 1 && typeof deps[0] === 'string' ? deps[0] : undefined;
+            if (key == null) {
+                return factory();
+            }
+
+            if (!memoizedByPath.has(key)) {
+                memoizedByPath.set(key, factory());
+            }
+
+            return memoizedByPath.get(key);
+        });
+
+        const firstElement = InputFieldResolved({input, propertySet, enabled: true, definition});
+        const secondElement = InputFieldResolved({input, propertySet, enabled: true, definition});
+
+        expect(getChildAt(secondElement, 1).props.dataPath).toBe(getChildAt(firstElement, 1).props.dataPath);
     });
 
     it('seeds the configured default once for internal mode with a non-null default', () => {

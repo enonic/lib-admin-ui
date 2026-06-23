@@ -9,7 +9,7 @@ import {OccurrencesBuilder} from '../../../form/Occurrences';
 import type {TextLineConfig} from '../../descriptor';
 import {OccurrenceManager, TagDescriptor} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
-import {getOccurrenceErrorMessage} from '../../utils/validation';
+import {getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
 import {TagInput} from './TagInput';
 
@@ -19,6 +19,7 @@ type DemoTagInputProps = {
     initialTags?: string[];
     enabled?: boolean;
     config?: TextLineConfig;
+    suggestions?: string[];
 };
 
 function makeConfig(overrides: Partial<TextLineConfig> = {}): TextLineConfig {
@@ -57,7 +58,14 @@ function moveValue(values: Value[], fromIndex: number, toIndex: number): Value[]
     return next;
 }
 
-function DemoTagInput({min, max, initialTags = [], enabled = true, config = makeConfig()}: DemoTagInputProps) {
+function DemoTagInput({
+    min,
+    max,
+    initialTags = [],
+    enabled = true,
+    config = makeConfig(),
+    suggestions,
+}: DemoTagInputProps) {
     const t = useI18n();
     const input = useMemo(() => makeInput(min, max), [min, max]);
     const occurrences = input.getOccurrences();
@@ -89,6 +97,16 @@ function DemoTagInput({min, max, initialTags = [], enabled = true, config = make
                 input={input}
                 enabled={enabled}
                 errors={state.occurrenceValidation}
+                suggestTags={
+                    suggestions
+                        ? query =>
+                              Promise.resolve(
+                                  suggestions.filter(suggestion =>
+                                      suggestion.toLowerCase().startsWith(query.toLowerCase()),
+                                  ),
+                              )
+                        : undefined
+                }
             />
             <FieldError message={occurrenceError} />
         </div>
@@ -116,6 +134,18 @@ export const Default: Story = {
 export const Multiple: Story = {
     name: 'Examples / Multiple',
     render: () => <DemoTagInput min={0} max={4} initialTags={['alpha', 'beta', 'gamma']} />,
+};
+
+export const WithSuggestions: Story = {
+    name: 'Examples / With Suggestions',
+    render: () => (
+        <DemoTagInput
+            min={0}
+            max={4}
+            initialTags={['alpha']}
+            suggestions={['alpha', 'alpine', 'alpha beta', 'release/2026', 'feature:tag']}
+        />
+    ),
 };
 
 export const MinViolation: Story = {

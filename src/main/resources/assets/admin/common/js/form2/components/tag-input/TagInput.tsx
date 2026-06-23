@@ -12,17 +12,19 @@ import {
 import {rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable} from '@dnd-kit/sortable';
 import {cn, IconButton, Input, Tooltip} from '@enonic/ui';
 import {GripVertical, X} from 'lucide-react';
-import {type JSX, type ReactElement, type RefObject, useEffect, useRef, useState} from 'react';
+import {type JSX, type ReactElement, type RefObject, useEffect, useId, useRef, useState} from 'react';
 
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {Occurrences} from '../../../form/Occurrences';
+import type {InputTypeConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {SelfManagedComponentProps} from '../../types';
 import {getFirstError, getInputAccessibleName, getOccurrenceErrorMessage} from '../../utils';
 import {FieldError} from '../field-error';
 import {
     getPastedTagLabels,
+    getSuggestedTagLabels,
     getTagLabel,
     getVisibleTagLabel,
     hasPastedTagSeparators,
@@ -31,19 +33,22 @@ import {
     isRenderableTagValue,
     isTagLabelCropped,
     normalizeTagDraft,
-} from './tagInputUtils';
+} from './tag-input.utils';
 
 export {
     getPastedTagLabels,
+    getSuggestedTagLabels,
     getTagLabel,
     getVisibleTagLabel,
     hasPastedTagSeparators,
     hasTagLabel,
     isTagLabelCropped,
     normalizeTagDraft,
-} from './tagInputUtils';
+} from './tag-input.utils';
 
 const TAG_INPUT_NAME = 'TagInput';
+const SUGGESTION_LIST_ID = 'tag-input-suggestions';
+const SUGGESTION_DEBOUNCE_MS = 300;
 
 //
 // * Types
@@ -69,7 +74,11 @@ type TagItemProps = {
     onRemove: () => void;
 };
 
-export type TagInputProps = SelfManagedComponentProps;
+export type TagSuggester = (query: string) => Promise<string[]>;
+
+export type TagInputProps<C extends InputTypeConfig = InputTypeConfig> = SelfManagedComponentProps<C> & {
+    suggestTags?: TagSuggester;
+};
 
 type TagViewState = {
     canAdd: boolean;
@@ -89,6 +98,9 @@ type TagDraftInputProps = {
     onKeyDown: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
     onPaste: (event: JSX.TargetedClipboardEvent<HTMLInputElement>) => void;
     onBlur: (event: JSX.TargetedFocusEvent<HTMLInputElement>) => void;
+    suggestionListId?: string;
+    activeSuggestionId?: string;
+    suggestionsExpanded: boolean;
 };
 
 type RemoveTagOptions = {
@@ -334,6 +346,9 @@ function renderTagDraftInput({
     onKeyDown,
     onPaste,
     onBlur,
+    suggestionListId,
+    activeSuggestionId,
+    suggestionsExpanded,
 }: TagDraftInputProps): ReactElement {
     return (
         <li
@@ -362,6 +377,10 @@ function renderTagDraftInput({
                 onBlur={onBlur}
                 disabled={!enabled}
                 aria-invalid={invalid || undefined}
+                aria-autocomplete='list'
+                aria-expanded={suggestionsExpanded}
+                aria-controls={suggestionsExpanded ? suggestionListId : undefined}
+                aria-activedescendant={activeSuggestionId}
             />
         </li>
     );
@@ -618,8 +637,10 @@ export const TagInput = ({
     input,
     enabled,
     errors,
+    suggestTags,
 }: TagInputProps): ReactElement => {
     const t = useI18n();
+    const suggestionListId = `${SUGGESTION_LIST_ID}-${useId()}`;
     const [draft, setDraft] = useState('');
     const [isInputActive, setIsInputActive] = useState(false);
     const [hasFocusWithin, setHasFocusWithin] = useState(false);
@@ -657,6 +678,8 @@ export const TagInput = ({
     const showInlineInput = canAdd;
     const isDraftInputVisible = isInputActive || draft.length > 0;
     const [dragContextKey, setDragContextKey] = useState(0);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const sensors = useSensors(
         useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
         useSensor(KeyboardSensor, {coordinateGetter: tagKeyboardCoordinates}),
@@ -664,6 +687,10 @@ export const TagInput = ({
 
     const ids = tagEntries.map(entry => entry.id);
     const normalizedDraft = normalizeTagDraft(draft);
+    const suggestionsVisible = enabled && canAdd && hasRenderableTagLabel(normalizedDraft) && suggestions.length > 0;
+    const activeSuggestion =
+        suggestionsVisible && activeSuggestionIndex >= 0 ? suggestions[activeSuggestionIndex] : undefined;
+    const activeSuggestionId = activeSuggestion != null ? `${suggestionListId}-${activeSuggestionIndex}` : undefined;
     const isDraftDuplicate = hasTagLabel(
         tagEntries.map(entry => entry.value),
         normalizedDraft,
@@ -688,6 +715,40 @@ export const TagInput = ({
         setIsInputActive(true);
         requestAnimationFrame(() => inputRef.current?.focus());
     };
+
+    useEffect(() => {
+        if (suggestTags == null || !enabled || !canAdd || !hasRenderableTagLabel(normalizedDraft)) {
+            setSuggestions([]);
+            setActiveSuggestionIndex(-1);
+            return undefined;
+        }
+
+        let stale = false;
+        setSuggestions([]);
+        setActiveSuggestionIndex(-1);
+
+        const timeoutId = setTimeout(() => {
+            suggestTags(normalizedDraft).then(
+                suggestedLabels => {
+                    if (stale) {
+                        return;
+                    }
+
+                    setSuggestions(getSuggestedTagLabels(suggestedLabels, values, normalizedDraft));
+                },
+                () => {
+                    if (!stale) {
+                        setSuggestions([]);
+                    }
+                },
+            );
+        }, SUGGESTION_DEBOUNCE_MS);
+
+        return () => {
+            stale = true;
+            clearTimeout(timeoutId);
+        };
+    }, [suggestTags, normalizedDraft, enabled, canAdd, values]);
 
     const handleFieldActivate = () => {
         if (!canAdd || !enabled) {
@@ -843,6 +904,15 @@ export const TagInput = ({
         };
     };
 
+    const commitSuggestion = (label: string, focusTarget: HTMLInputElement | null = inputRef.current) => {
+        commitTagLabels([label], {
+            focusTarget: focusTarget ?? undefined,
+            clearDraft: true,
+        });
+        setSuggestions([]);
+        setActiveSuggestionIndex(-1);
+    };
+
     const prepareRemove = () => {
         skipBlurCommit.current = true;
     };
@@ -932,6 +1002,24 @@ export const TagInput = ({
     };
 
     const handleKeyDown = (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+        if (suggestionsVisible && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
+            event.preventDefault();
+            setActiveSuggestionIndex(current => {
+                if (event.key === 'ArrowDown') {
+                    return current < suggestions.length - 1 ? current + 1 : 0;
+                }
+
+                return current > 0 ? current - 1 : suggestions.length - 1;
+            });
+            return;
+        }
+
+        if (event.key === 'Enter' && activeSuggestion != null) {
+            event.preventDefault();
+            commitSuggestion(activeSuggestion, event.currentTarget);
+            return;
+        }
+
         if (event.key === 'Escape') {
             event.preventDefault();
             commitAndLeaveInput(event.currentTarget, focusTagIndexNextFrame);
@@ -1086,10 +1174,45 @@ export const TagInput = ({
                                     onKeyDown: handleKeyDown,
                                     onPaste: handlePaste,
                                     onBlur: handleBlur,
+                                    suggestionListId,
+                                    activeSuggestionId,
+                                    suggestionsExpanded: suggestionsVisible,
                                 })}
                         </ul>
                     </SortableContext>
                 </DndContext>
+                {suggestionsVisible ? (
+                    <ul
+                        id={suggestionListId}
+                        role='listbox'
+                        className='mt-2 max-h-48 overflow-y-auto rounded border border-bdr-subtle bg-surface-primary shadow-md'
+                    >
+                        {suggestions.map((suggestion, index) => (
+                            <li
+                                key={suggestion}
+                                id={`${suggestionListId}-${index}`}
+                                role='option'
+                                aria-selected={activeSuggestionIndex === index}
+                            >
+                                <button
+                                    type='button'
+                                    className={cn(
+                                        'block w-full px-3 py-1.5 text-left text-sm',
+                                        activeSuggestionIndex === index
+                                            ? 'bg-surface-selected text-alt'
+                                            : 'hover:bg-surface-neutral',
+                                    )}
+                                    onPointerDown={event => event.preventDefault()}
+                                    onMouseDown={event => event.preventDefault()}
+                                    onMouseEnter={() => setActiveSuggestionIndex(index)}
+                                    onClick={() => commitSuggestion(suggestion)}
+                                >
+                                    {suggestion}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : null}
             </div>
             <FieldError message={fieldErrorText} />
         </div>

@@ -1,4 +1,5 @@
 import type {ComponentType} from 'react';
+import type {PropertyPath} from '../data/PropertyPath';
 import type {Value} from '../data/Value';
 import type {Input} from '../form/Input';
 import type {Occurrences} from '../form/Occurrences';
@@ -49,6 +50,7 @@ export type SelfManagedComponentProps<C extends InputTypeConfig = InputTypeConfi
     occurrences: Occurrences;
     config: C;
     input: Input;
+    dataPath?: PropertyPath;
     enabled: boolean;
     errors: OccurrenceManagerState['occurrenceValidation'];
 };
