@@ -36,6 +36,39 @@ export function hasTagLabel(values: Value[], label: string, excludedIndex?: numb
     return values.some((value, index) => index !== excludedIndex && normalizeTagDraft(getTagLabel(value)) === label);
 }
 
+export function getSuggestedTagLabels(suggestions: string[], values: Value[], draft: string): string[] {
+    const normalizedDraft = normalizeTagDraft(draft);
+
+    if (!hasRenderableTagLabel(normalizedDraft)) {
+        return [];
+    }
+
+    const unavailableLabels = new Set<string>([normalizedDraft]);
+
+    for (const value of values) {
+        const label = normalizeTagDraft(getTagLabel(value));
+
+        if (hasRenderableTagLabel(label)) {
+            unavailableLabels.add(label);
+        }
+    }
+
+    const result: string[] = [];
+
+    for (const suggestion of suggestions) {
+        const label = normalizeTagDraft(suggestion);
+
+        if (!hasRenderableTagLabel(label) || unavailableLabels.has(label)) {
+            continue;
+        }
+
+        unavailableLabels.add(label);
+        result.push(label);
+    }
+
+    return result;
+}
+
 export function isTagLabelCropped(label: string): boolean {
     return label.length > TAG_LABEL_MAX_LENGTH;
 }
