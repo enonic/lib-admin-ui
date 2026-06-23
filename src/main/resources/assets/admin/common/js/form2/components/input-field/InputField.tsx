@@ -5,17 +5,19 @@ import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 import type {PropertySet} from '../../../data/PropertySet';
 import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
-import type {OccurrenceValidationState} from '../../descriptor';
-import {getEffectiveOccurrences} from '../../descriptor';
+import {getEffectiveOccurrences} from '../../descriptor/getEffectiveOccurrences';
+import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
 import {generateProcessingToken, type ProcessingToken, type RevealOptions} from '../../FieldRegistry';
 import {useFieldRegistry} from '../../FieldRegistryContext';
-import {useOccurrenceManager, usePropertyArray} from '../../hooks';
+import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
+import {usePropertyArray} from '../../hooks/usePropertyArray';
 import {useI18n} from '../../I18nContext';
 import {useRawValueMap} from '../../RawValueContext';
-import {InputTypeRegistry} from '../../registry';
+import {InputTypeRegistry} from '../../registry/InputTypeRegistry';
 import {useServerErrors} from '../../ServerErrorsContext';
 import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../../types';
-import {bucketServerErrorsByOccurrence, getOccurrenceErrorMessage, mergeServerErrors} from '../../utils';
+import {bucketServerErrorsByOccurrence, mergeServerErrors} from '../../utils/serverErrors';
+import {getOccurrenceErrorMessage} from '../../utils/validation';
 import {useValidationVisibility} from '../../ValidationContext';
 import {FieldError} from '../field-error';
 import {InputLabel} from '../input-label';
@@ -283,27 +285,14 @@ export const InputFieldResolved = ({
     const hasServerErrors = serverErrorsByOccurrence.size > 0;
 
     useEffect(() => {
-        const rawValues = rawValueMap != null ? (rawValueMap.get(inputName) ?? []) : undefined;
-        const syncedState = sync(values, rawValues);
-        const managerValues = syncedState.values;
-        const managerRawValues = syncedState.rawValues;
-
-        // ? The map retains raw values for non-null values too; they stay masked because
-        // ? displayValue/validate only consult rawValue when the parsed value is null.
-        if (rawValueMap != null && managerRawValues != null) {
-            if (managerRawValues.some(rawValue => rawValue != null)) {
-                rawValueMap.set(inputName, managerRawValues);
-            } else {
-                rawValueMap.delete(inputName);
-            }
-        }
+        const managerValues = sync(values);
         // Push seeded values to PropertyArray so they stay in sync.
         // OccurrenceManager seeds to minFill, but PropertyArray doesn't know about those values.
         const paSize = propertyArray.getSize();
         for (let i = paSize; i < managerValues.length; i++) {
             propertyArray.add(managerValues[i]);
         }
-    }, [values, sync, propertyArray, rawValueMap, inputName]);
+    }, [values, sync, propertyArray]);
 
     const markTouched = useCallback((index: number) => {
         setTouched(prev => {
@@ -578,7 +567,6 @@ export const InputFieldResolved = ({
                 <div data-component={INPUT_FIELD_NAME}>
                     <Component
                         value={state.values[0] ?? descriptor.getValueType().newNullValue()}
-                        rawValue={state.rawValues?.[0]}
                         onChange={(value: Value, rawValue?: string) => handleChange(0, value, rawValue)}
                         onBlur={() => handleOccurrenceBlur(0)}
                         onFocus={handleOccurrenceFocus}
