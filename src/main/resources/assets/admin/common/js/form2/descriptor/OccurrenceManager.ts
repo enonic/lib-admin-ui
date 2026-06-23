@@ -13,7 +13,6 @@ export type OccurrenceValidationState = {
 export type OccurrenceManagerState = {
     readonly ids: string[];
     readonly values: Value[];
-    readonly rawValues?: (string | undefined)[];
     readonly occurrenceValidation: OccurrenceValidationState[];
     readonly totalValid: number;
     readonly isMinimumBreached: boolean;
@@ -64,7 +63,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
     }
 
     // ? No maximum enforcement — reflects external data as-is. Validation reports isMaximumBreached.
-    setValues(values: Value[], rawValues?: (string | undefined)[]): void {
+    setValues(values: Value[]): void {
         const oldIds = this.ids;
         const oldValues = this.values;
         const oldRawValues = this.rawValues;
@@ -72,11 +71,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         // ? Preserve rawValues when the value reference at that position hasn't changed,
         // ? so that sync cycles after direct set() calls don't wipe rawValues.
         this.rawValues = values.map((v, i) =>
-            rawValues !== undefined
-                ? rawValues[i]
-                : i < oldValues.length && oldValues[i] === v
-                  ? oldRawValues[i]
-                  : undefined,
+            i < oldValues.length && oldValues[i] === v ? oldRawValues[i] : undefined,
         );
         this.ids = this.values.map((_, i) => (i < oldIds.length ? oldIds[i] : this.generateId()));
         // External value replacement invalidates any transient errors — the values they
@@ -230,7 +225,6 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         return {
             ids: this.getIds(),
             values: this.getValues(),
-            rawValues: [...this.rawValues],
             occurrenceValidation,
             totalValid,
             isMinimumBreached,

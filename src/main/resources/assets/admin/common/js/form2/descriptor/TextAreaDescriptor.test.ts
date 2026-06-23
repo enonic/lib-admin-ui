@@ -120,36 +120,6 @@ describe('TextAreaDescriptor', () => {
             const results = TextAreaDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
         });
-
-        // When over-limit text is typed, InputField stores the value as null and keeps the
-        // raw string, so validate must fall back to rawValue to keep reporting the breach (#4544).
-        it('detects maxLength breach on rawValue when value is null', () => {
-            const config = makeConfig({maxLength: 5});
-            const results = TextAreaDescriptor.validate(ValueTypes.STRING.newNullValue(), config, 'toolong');
-            expect(results).toHaveLength(1);
-            expect(results[0].message).toBe('Value exceeds maximum length of 5');
-        });
-
-        it('returns empty when null value has an in-limit rawValue', () => {
-            const config = makeConfig({maxLength: 5});
-            expect(TextAreaDescriptor.validate(ValueTypes.STRING.newNullValue(), config, 'ok')).toEqual([]);
-        });
-
-        it('returns empty for null value with undefined rawValue', () => {
-            const config = makeConfig({maxLength: 5});
-            expect(TextAreaDescriptor.validate(ValueTypes.STRING.newNullValue(), config, undefined)).toEqual([]);
-        });
-
-        it('ignores rawValue when the value is non-null', () => {
-            const config = makeConfig({maxLength: 5});
-            const value = ValueTypes.STRING.newValue('ok');
-            expect(TextAreaDescriptor.validate(value, config, 'toolong')).toEqual([]);
-        });
-
-        it('treats rawValue at the boundary as valid when value is null', () => {
-            const config = makeConfig({maxLength: 5});
-            expect(TextAreaDescriptor.validate(ValueTypes.STRING.newNullValue(), config, 'exact')).toEqual([]);
-        });
     });
 
     describe('valueBreaksRequired', () => {
