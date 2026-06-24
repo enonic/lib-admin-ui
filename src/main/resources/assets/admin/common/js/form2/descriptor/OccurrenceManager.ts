@@ -13,6 +13,7 @@ export type OccurrenceValidationState = {
 export type OccurrenceManagerState = {
     readonly ids: string[];
     readonly values: Value[];
+    readonly rawValues: (string | undefined)[];
     readonly occurrenceValidation: OccurrenceValidationState[];
     readonly totalValid: number;
     readonly isMinimumBreached: boolean;
@@ -225,6 +226,7 @@ export class OccurrenceManager<C extends InputTypeConfig = InputTypeConfig> {
         return {
             ids: this.getIds(),
             values: this.getValues(),
+            rawValues: [...this.rawValues],
             occurrenceValidation,
             totalValid,
             isMinimumBreached,
