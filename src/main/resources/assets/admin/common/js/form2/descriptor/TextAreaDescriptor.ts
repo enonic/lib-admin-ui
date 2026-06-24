@@ -2,6 +2,7 @@ import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
 import type {RawInputConfig} from '../../form/Input';
+import {i18n} from '../../util/Messages';
 import {StringHelper} from '../../util/StringHelper';
 import type {TextAreaConfig} from './InputTypeConfig';
 import type {InputTypeDescriptor} from './InputTypeDescriptor';
@@ -31,16 +32,16 @@ export const TextAreaDescriptor: InputTypeDescriptor<TextAreaConfig> = {
         return ValueTypes.STRING.newValue(raw);
     },
 
-    validate(value: Value, config: TextAreaConfig): ValidationResult[] {
+    validate(value: Value, config: TextAreaConfig, rawValue?: string): ValidationResult[] {
         const results: ValidationResult[] = [];
-        if (value.isNull()) {
+        const str = value.isNull() ? rawValue : (value.getString() ?? '');
+
+        if (str == null) {
             return results;
         }
 
-        const str = value.getString();
-
         if (config.maxLength > 0 && str.length > config.maxLength) {
-            results.push({message: `Value exceeds maximum length of ${config.maxLength}`});
+            results.push({message: i18n('field.value.breaks.maxlength', config.maxLength)});
         }
 
         return results;

@@ -2,19 +2,25 @@ import {cn, TextArea, useBlinkAttention} from '@enonic/ui';
 import type {JSX} from 'react';
 import {useEffect, useRef} from 'react';
 
+import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextAreaConfig} from '../../descriptor';
 import {useLocale} from '../../LocaleContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError, getInputAccessibleName, getLangAttributes} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName, getLangAttributes} from '../../utils';
 import {Counter} from '../counter';
 
 export type TextAreaInputProps = InputTypeComponentProps<TextAreaConfig>;
 
 const TEXT_AREA_INPUT_NAME = 'TextAreaInput';
 
+function valueToString(value: Value): string {
+    return value.getString() ?? '';
+}
+
 export const TextAreaInput = ({
     value,
+    rawValue,
     onChange,
     onBlur,
     onFocus,
@@ -40,10 +46,9 @@ export const TextAreaInput = ({
         externalInputRef(textAreaRef.current);
         return () => externalInputRef(null);
     }, [externalInputRef]);
-    const stringValue = value.isNull() ? '' : (value.getString() ?? '');
+    const stringValue = displayValue(value, rawValue, valueToString);
     const hasMaxLength = config.maxLength > 0;
     const maxLength = hasMaxLength ? config.maxLength : undefined;
-    const hasBoth = hasMaxLength && config.showCounter;
     const effectiveReadOnly = readOnly || processing;
 
     const counterAddon = config.showCounter ? (
@@ -60,7 +65,8 @@ export const TextAreaInput = ({
     ) : undefined;
 
     const handleChange = (e: JSX.TargetedEvent<HTMLTextAreaElement>) => {
-        onChange(ValueTypes.STRING.newValue(e.currentTarget.value));
+        const inputValue = e.currentTarget.value;
+        onChange(ValueTypes.STRING.newValue(inputValue), inputValue);
     };
 
     return (
@@ -79,8 +85,8 @@ export const TextAreaInput = ({
             tabIndex={processing ? -1 : undefined}
             highlight={isBlinking}
             error={getFirstError(errors)}
-            maxLength={hasBoth ? undefined : maxLength}
             endAddon={counterAddon}
+            className='min-w-0'
         />
     );
 };
