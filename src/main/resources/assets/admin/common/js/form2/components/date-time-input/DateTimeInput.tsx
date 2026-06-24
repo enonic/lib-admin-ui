@@ -1,12 +1,13 @@
 import {Button, DatePicker, Input, TimePicker} from '@enonic/ui';
-import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useRef, useState} from 'react';
 
+import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
 import type {DateTimeConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
 
 const DATE_TIME_INPUT_NAME = 'DateTimeInput';
 
@@ -23,8 +24,7 @@ function displayToStorage(s: string): string {
     return s.replace(' ', 'T');
 }
 
-function valueToDisplay(value: DateTimeInputProps['value']): string {
-    if (value.isNull()) return '';
+function valueToDisplay(value: Value): string {
     const str = value.getString();
     return str ? storageToDisplay(str) : '';
 }
@@ -57,6 +57,7 @@ function parseTimeFromDisplay(raw: string): string | null {
 
 export const DateTimeInput = ({
     value,
+    rawValue,
     onChange,
     onBlur,
     config,
@@ -65,30 +66,18 @@ export const DateTimeInput = ({
     index,
     errors,
 }: DateTimeInputProps): ReactElement => {
-    const [rawInput, setRawInput] = useState(() => valueToDisplay(value));
     const [open, setOpen] = useState(false);
     // ? DatePicker/TimePicker API uses null for "no selection"
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const [draftTime, setDraftTime] = useState<string | null>(null);
-    const isLocalChange = useRef(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
 
-    // Sync from parent only on external value changes (e.g. save, form reset).
-    // Skip when the change was triggered by handleInputChange/handleConfirm below.
-    useEffect(() => {
-        if (isLocalChange.current) {
-            isLocalChange.current = false;
-            return;
-        }
-        setRawInput(valueToDisplay(value));
-    }, [value]);
+    const display = displayValue(value, rawValue, valueToDisplay);
 
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
-        isLocalChange.current = true;
-        setRawInput(inputValue);
         if (inputValue === '') {
             onChange(ValueTypes.LOCAL_DATE_TIME.newNullValue());
         } else {
@@ -107,11 +96,9 @@ export const DateTimeInput = ({
 
     const handleConfirm = () => {
         if (draftDate == null) return;
-        const display = formatDisplay(draftDate, draftTime);
-        const storageValue = displayToStorage(display);
-        isLocalChange.current = true;
-        setRawInput(display);
-        onChange(ValueTypes.LOCAL_DATE_TIME.newValue(storageValue));
+        const displayValueStr = formatDisplay(draftDate, draftTime);
+        const storageValue = displayToStorage(displayValueStr);
+        onChange(ValueTypes.LOCAL_DATE_TIME.newValue(storageValue), displayValueStr);
         setOpen(false);
         inputRef.current?.focus();
     };
@@ -124,8 +111,8 @@ export const DateTimeInput = ({
         setDraftTime(`${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`);
     };
 
-    const selectedDate = parseDateFromDisplay(rawInput);
-    const selectedTime = parseTimeFromDisplay(rawInput);
+    const selectedDate = parseDateFromDisplay(display);
+    const selectedTime = parseTimeFromDisplay(display);
 
     return (
         <DatePicker.Root
@@ -156,7 +143,7 @@ export const DateTimeInput = ({
                     aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.dateTime.placeholder')}
-                    value={rawInput}
+                    value={display}
                     onChange={handleInputChange}
                     onBlur={onBlur}
                     disabled={!enabled}

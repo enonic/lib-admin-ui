@@ -130,23 +130,24 @@ describe('TextLineInput', () => {
             expect(newValue.getType()).toBe(ValueTypes.STRING);
         });
 
-        it('forwards raw input value through onChange', () => {
+        it('forwards parsed Value and rawValue through onChange', () => {
             const onChange = vi.fn();
-            const setRawInput = vi.fn();
-
-            mocks.useState.mockImplementationOnce((initial: unknown) => [
-                typeof initial === 'function' ? (initial as () => unknown)() : initial,
-                setRawInput,
-            ]);
 
             const element = TextLineInput(makeProps({onChange})) as VNode;
 
             element.props.onChange({currentTarget: {value: 'abc'}} as JSX.TargetedEvent<HTMLInputElement>);
 
-            expect(setRawInput).toHaveBeenCalledWith('abc');
             expect(onChange).toHaveBeenCalledOnce();
             expect((onChange.mock.calls[0][0] as Value).getString()).toBe('abc');
             expect(onChange.mock.calls[0][1]).toBe('abc');
+        });
+
+        it('prefers rawValue over value for display', () => {
+            const element = TextLineInput(
+                makeProps({value: ValueTypes.STRING.newNullValue(), rawValue: 'typed-but-invalid'}),
+            ) as VNode;
+
+            expect(element.props.value).toBe('typed-but-invalid');
         });
     });
 
