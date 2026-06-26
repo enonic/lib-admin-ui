@@ -48,6 +48,7 @@ const mocks = vi.hoisted(() => ({
     iconButton: vi.fn(),
     tooltip: vi.fn(({children}: {children: unknown}) => children),
     cn: vi.fn((...tokens: Array<string | false | undefined>) => tokens.filter(Boolean).join(' ')),
+    useValidationVisibility: vi.fn(() => 'all'),
 }));
 
 const SUGGESTION_DEBOUNCE_MS = 300;
@@ -85,6 +86,10 @@ vi.mock('@dnd-kit/sortable', () => ({
 
 vi.mock('../../I18nContext', () => ({
     useI18n: mocks.useI18n,
+}));
+
+vi.mock('../../ValidationContext', () => ({
+    useValidationVisibility: mocks.useValidationVisibility,
 }));
 
 function makeInput(min: number, max: number) {
@@ -416,6 +421,7 @@ describe('TagInput', () => {
             typeof initial === 'function' ? (initial as () => unknown)() : initial,
             vi.fn(),
         ]);
+        mocks.useValidationVisibility.mockReturnValue('all');
     });
 
     afterEach(() => {
@@ -508,6 +514,44 @@ describe('TagInput', () => {
                 errors: [makeHiddenBlankValidation(0, 'Hidden server error', {custom: true})],
             }),
         ).toBe('Hidden server error');
+    });
+
+    it('does not surface the occurrence error border on untouched new content in interactive mode', () => {
+        mocks.useValidationVisibility.mockReturnValue('interactive');
+
+        expect(
+            getFieldWrapperProps({
+                values: [],
+                occurrences: Occurrences.minmax(1, 3),
+                errors: [],
+            }).className,
+        ).not.toContain('border-error');
+    });
+
+    it('surfaces the occurrence error border for an empty required field once validation is fully visible', () => {
+        expect(
+            getFieldWrapperProps({
+                values: [],
+                occurrences: Occurrences.minmax(1, 3),
+                errors: [],
+            }).className,
+        ).toContain('border-error');
+    });
+
+    it('surfaces the occurrence error on new content once the field has been interacted with', () => {
+        mocks.useValidationVisibility.mockReturnValue('interactive');
+        mocks.useState.mockImplementation((initial: unknown) => [
+            initial === false ? true : typeof initial === 'function' ? (initial as () => unknown)() : initial,
+            vi.fn(),
+        ]);
+
+        expect(
+            getFieldWrapperProps({
+                values: [],
+                occurrences: Occurrences.minmax(1, 3),
+                errors: [],
+            }).className,
+        ).toContain('border-error');
     });
 
     it('keeps interactive-suppressed hidden blanks from surfacing error styling on the wrapper', () => {
@@ -1079,12 +1123,14 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => [0, vi.fn()])
             .mockImplementationOnce(() => [[], vi.fn()])
             .mockImplementationOnce(() => [-1, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => ['beta', vi.fn()])
             .mockImplementationOnce(() => [true, vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [0, vi.fn()])
             .mockImplementationOnce(() => [[], vi.fn()])
-            .mockImplementationOnce(() => [-1, vi.fn()]);
+            .mockImplementationOnce(() => [-1, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()]);
 
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
@@ -1154,6 +1200,23 @@ describe('TagInput', () => {
         expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('alpha'));
         expect(setDraft).toHaveBeenLastCalledWith('');
         expect(setIsInputActive).toHaveBeenCalledWith(false);
+    });
+
+    it('marks the field touched on blur even when no tag is committed', () => {
+        const setTouched = vi.fn();
+        mocks.useState
+            .mockImplementationOnce(() => ['', vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [0, vi.fn()])
+            .mockImplementationOnce(() => [[], vi.fn()])
+            .mockImplementationOnce(() => [-1, vi.fn()])
+            .mockImplementationOnce(() => [false, setTouched]);
+
+        renderTagInput({values: [], errors: []});
+        getLastInputProps().onBlur({currentTarget: {value: ''}});
+
+        expect(setTouched).toHaveBeenCalledWith(true);
     });
 
     it('requests async suggestions only for non-blank drafts', () => {

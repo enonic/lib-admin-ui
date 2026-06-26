@@ -21,6 +21,7 @@ import type {InputTypeConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {SelfManagedComponentProps} from '../../types';
 import {getFirstError, getInputAccessibleName, getOccurrenceErrorMessage} from '../../utils';
+import {useValidationVisibility} from '../../ValidationContext';
 import {FieldError} from '../field-error';
 import {
     getPastedTagLabels,
@@ -640,6 +641,7 @@ export const TagInput = ({
     suggestTags,
 }: TagInputProps): ReactElement => {
     const t = useI18n();
+    const visibility = useValidationVisibility();
     const suggestionListId = `${SUGGESTION_LIST_ID}-${useId()}`;
     const [draft, setDraft] = useState('');
     const [isInputActive, setIsInputActive] = useState(false);
@@ -680,6 +682,7 @@ export const TagInput = ({
     const [dragContextKey, setDragContextKey] = useState(0);
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+    const [touched, setTouched] = useState(false);
     const sensors = useSensors(
         useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
         useSensor(KeyboardSensor, {coordinateGetter: tagKeyboardCoordinates}),
@@ -699,9 +702,11 @@ export const TagInput = ({
     const hasSuppressedHiddenEntries = hiddenErrors.some(
         entry => !entry.breaksRequired && entry.validationResults.length === 0,
     );
-    const occurrenceError = hasSuppressedHiddenEntries
-        ? undefined
-        : getOccurrenceErrorMessage(occurrences, visibleErrors, t);
+    const occurrenceErrorVisible = visibility === 'all' || (visibility === 'interactive' && touched);
+    const occurrenceError =
+        !occurrenceErrorVisible || hasSuppressedHiddenEntries
+            ? undefined
+            : getOccurrenceErrorMessage(occurrences, visibleErrors, t);
     const firstVisibleFieldError = tagEntries
         .map(entry => getFirstError(errors[entry.originalIndex]?.validationResults ?? []))
         .find(Boolean);
@@ -710,6 +715,7 @@ export const TagInput = ({
         .map(result => result.message)
         .find(Boolean);
     const fieldErrorText = firstVisibleFieldError ?? hiddenCustomError;
+    const fieldMessage = fieldErrorText ?? (visibility !== 'all' ? occurrenceError : undefined);
     const hasErrors = fieldErrorText != null || occurrenceError != null;
     const focusInput = () => {
         setIsInputActive(true);
@@ -806,6 +812,7 @@ export const TagInput = ({
         rawLabels: string[],
         {focusTarget, clearDraft = false}: CommitTagLabelsOptions = {},
     ): CommitTagLabelsResult => {
+        setTouched(true);
         const maximum = occurrences.getMaximum();
         const remainingCapacity = maximum === 0 ? Number.POSITIVE_INFINITY : Math.max(maximum - visibleTagCount, 0);
 
@@ -918,6 +925,7 @@ export const TagInput = ({
     };
 
     const handleRemove = (index: number, options: RemoveTagOptions = {}) => {
+        setTouched(true);
         const {activateInput = false, focusPreviousTag = false, commitCurrentDraft = false} = options;
         let removeIndex = index;
 
@@ -1076,6 +1084,7 @@ export const TagInput = ({
             return;
         }
 
+        setTouched(true);
         commitDraft(undefined, undefined, event.currentTarget.value);
         setIsInputActive(false);
     };
@@ -1214,7 +1223,7 @@ export const TagInput = ({
                     </ul>
                 ) : null}
             </div>
-            <FieldError message={fieldErrorText} />
+            <FieldError message={fieldMessage} />
         </div>
     );
 };
