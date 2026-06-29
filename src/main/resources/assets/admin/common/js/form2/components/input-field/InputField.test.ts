@@ -341,6 +341,41 @@ describe('InputField', () => {
         expect(propertySet.getPropertyArray('testField')?.getSize()).toBe(0);
     });
 
+    it('does not re-inject stale values into a server-replaced (shorter) PropertyArray', () => {
+        const component: SelfManagedInputTypeComponent = () => null;
+        const descriptor = makeDescriptor();
+        const definition = {mode: 'internal' as const, descriptor, component};
+        const input = makeInput('PrincipalSelector', 0);
+        const propertySet = new PropertyTree().getRoot();
+
+        const staleValues = [ValueTypes.STRING.newValue('a'), ValueTypes.STRING.newValue('b')];
+        mocks.usePropertyArray.mockReturnValue({values: staleValues, size: staleValues.length});
+
+        const sync = vi.fn(() => staleValues);
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: {...makeManagerState(), values: staleValues, occurrenceValidation: []},
+            minFill: 0,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync,
+        });
+
+        const effects: Array<{fn: () => unknown; deps?: unknown[]}> = [];
+        mocks.useEffect.mockImplementation((fn: () => unknown, deps?: unknown[]) => {
+            effects.push({fn, deps});
+        });
+
+        InputFieldResolved({input, propertySet, enabled: true, definition});
+
+        const syncEffect = effects.find(e => e.deps?.includes(sync));
+        syncEffect?.fn();
+
+        expect(sync).toHaveBeenCalledWith(staleValues);
+        expect(propertySet.getPropertyArray('testField')?.getSize() ?? 0).toBe(0);
+    });
+
     it('remaps touched indexes when internal inputs move occurrences', () => {
         const component: SelfManagedInputTypeComponent = () => null;
         const descriptor = makeDescriptor();

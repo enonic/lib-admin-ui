@@ -19,6 +19,7 @@ type UseOccurrenceManagerParams<C extends InputTypeConfig = InputTypeConfig> = {
 
 type UseOccurrenceManagerResult = {
     state: OccurrenceManagerState;
+    minFill: number;
     add: (value?: Value) => boolean;
     remove: (index: number) => boolean;
     move: (fromIndex: number, toIndex: number) => boolean;
@@ -137,6 +138,7 @@ export function useOccurrenceManager<C extends InputTypeConfig = InputTypeConfig
 
     return {
         state,
+        minFill,
         add,
         remove,
         move,
