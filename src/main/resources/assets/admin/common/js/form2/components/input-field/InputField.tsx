@@ -219,6 +219,7 @@ export const InputFieldResolved = ({
 
     const {
         state,
+        minFill,
         add,
         remove,
         move,
@@ -286,14 +287,11 @@ export const InputFieldResolved = ({
     const hasServerErrors = serverErrorsByOccurrence.size > 0;
 
     useEffect(() => {
-        const managerValues = sync(values);
-        // Push seeded values to PropertyArray so they stay in sync.
-        // OccurrenceManager seeds to minFill, but PropertyArray doesn't know about those values.
-        const paSize = propertyArray.getSize();
-        for (let i = paSize; i < managerValues.length; i++) {
-            propertyArray.add(managerValues[i]);
+        sync(values);
+        while (propertyArray.getSize() < minFill) {
+            propertyArray.add(defaultValue);
         }
-    }, [values, sync, propertyArray]);
+    }, [values, sync, propertyArray, minFill, defaultValue]);
 
     const markTouched = useCallback((index: number) => {
         setTouched(prev => {
