@@ -287,7 +287,10 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                                 <OccurrenceListItemContent
                                     {...props}
                                     errors={{...props.errors, validationResults: []}}
-                                    className={isMovable ? 'col-start-2' : 'col-start-1'}
+                                    className={cn(
+                                        isMovable ? 'col-start-2' : 'col-start-1',
+                                        !showRemove && 'col-span-2',
+                                    )}
                                 />
                                 <FieldError
                                     className={cn(
