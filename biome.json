@@ -57,7 +57,7 @@
     "linter": {
         "enabled": true,
         "rules": {
-            "recommended": true,
+            "preset": "recommended",
             "correctness": {
                 "noUnusedVariables": "off",
                 "noUnusedImports": "off",
@@ -109,7 +109,7 @@
                 "noControlCharactersInRegex": "off"
             },
             "a11y": {
-                "recommended": false
+                "preset": "none"
             }
         }
     },
