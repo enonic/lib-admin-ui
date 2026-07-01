@@ -9,7 +9,7 @@ export default defineConfig({
         ],
         environment: 'node',
         passWithNoTests: true,
-        reporters: ['dot'],
+        reporters: ['minimal'],
         onConsoleLog: () => false,
     },
     resolve: {
