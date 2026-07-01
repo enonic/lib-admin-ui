@@ -1,24 +1,26 @@
 import {Button, DatePicker, Input} from '@enonic/ui';
-import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useRef, useState} from 'react';
 
+import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
 import type {DateConfig} from '../../descriptor';
 import {DATE_PATTERN} from '../../descriptor/DateDescriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
 
 const DATE_INPUT_NAME = 'DateInput';
 
 export type DateInputProps = InputTypeComponentProps<DateConfig>;
 
-function valueToString(value: DateInputProps['value']): string {
-    return value.isNull() ? '' : (value.getString() ?? '');
+function valueToString(value: Value): string {
+    return value.getString() ?? '';
 }
 
 export const DateInput = ({
     value,
+    rawValue,
     onChange,
     onBlur,
     config,
@@ -27,29 +29,17 @@ export const DateInput = ({
     index,
     errors,
 }: DateInputProps): ReactElement => {
-    const [rawInput, setRawInput] = useState(() => valueToString(value));
     const [open, setOpen] = useState(false);
     // ? DatePicker API uses null for "no selection" — applies to draftDate, selectedDate, calendarValue
     const [draftDate, setDraftDate] = useState<Date | null>(null);
-    const isLocalChange = useRef(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
 
-    // Sync from parent only on external value changes (e.g. save, form reset).
-    // Skip when the change was triggered by handleInputChange/handleConfirm below.
-    useEffect(() => {
-        if (isLocalChange.current) {
-            isLocalChange.current = false;
-            return;
-        }
-        setRawInput(valueToString(value));
-    }, [value]);
+    const display = displayValue(value, rawValue, valueToString);
 
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
-        isLocalChange.current = true;
-        setRawInput(inputValue);
         if (inputValue === '') {
             onChange(ValueTypes.LOCAL_DATE.newNullValue());
         } else {
@@ -64,9 +54,7 @@ export const DateInput = ({
     const handleConfirm = () => {
         if (draftDate == null) return;
         const formatted = DateHelper.formatDate(draftDate);
-        isLocalChange.current = true;
-        setRawInput(formatted);
-        onChange(ValueTypes.LOCAL_DATE.newValue(formatted));
+        onChange(ValueTypes.LOCAL_DATE.newValue(formatted), formatted);
         setOpen(false);
     };
 
@@ -75,7 +63,7 @@ export const DateInput = ({
         setDraftDate(config.default);
     };
 
-    const selectedDate = DATE_PATTERN.test(rawInput) ? new Date(`${rawInput}T00:00:00`) : null;
+    const selectedDate = DATE_PATTERN.test(display) ? new Date(`${display}T00:00:00`) : null;
     const calendarValue = open ? draftDate : selectedDate;
 
     return (
@@ -100,7 +88,7 @@ export const DateInput = ({
                     aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.date.placeholder')}
-                    value={rawInput}
+                    value={display}
                     onChange={handleInputChange}
                     onBlur={onBlur}
                     disabled={!enabled}

@@ -117,6 +117,7 @@ function makeManagerState(value = ValueTypes.STRING.newValue('hello')) {
     return {
         ids: ['occurrence-0'],
         values: [value],
+        rawValues: [undefined],
         occurrenceValidation: [{index: 0, breaksRequired: false, validationResults: []}],
         totalValid: 1,
         isMinimumBreached: false,
@@ -372,7 +373,9 @@ describe('InputField', () => {
         const syncEffect = effects.find(e => e.deps?.includes(sync));
         syncEffect?.fn();
 
-        expect(sync).toHaveBeenCalledWith(staleValues);
+        // Sync receives live propertyArray contents (empty), not the stale hook snapshot,
+        // so the server-replaced (shorter) array stays at size 0.
+        expect(sync).toHaveBeenCalledWith([]);
         expect(propertySet.getPropertyArray('testField')?.getSize() ?? 0).toBe(0);
     });
 
@@ -922,6 +925,7 @@ describe('InputField', () => {
                 state: {
                     ids: [occurrenceId],
                     values: [ValueTypes.STRING.newValue('hello')],
+                    rawValues: [undefined],
                     occurrenceValidation: [{index: 0, breaksRequired: false, validationResults: []}],
                     totalValid: 1,
                     isMinimumBreached: false,

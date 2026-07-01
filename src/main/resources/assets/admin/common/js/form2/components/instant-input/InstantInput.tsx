@@ -1,12 +1,13 @@
 import {Button, DatePicker, Input, TimePicker} from '@enonic/ui';
-import {type JSX, type ReactElement, useEffect, useMemo, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useMemo, useRef, useState} from 'react';
 
+import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
 import type {InstantConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
 
 const INSTANT_INPUT_NAME = 'InstantInput';
 
@@ -42,8 +43,7 @@ function displayToStorage(s: string): string {
     return `${y}-${m}-${d}T${h}:${min}:${sec}Z`;
 }
 
-function valueToDisplay(value: InstantInputProps['value']): string {
-    if (value.isNull()) return '';
+function valueToDisplay(value: Value): string {
     const str = value.getString();
     return str ? storageToDisplay(str) : '';
 }
@@ -92,6 +92,7 @@ function formatTimezoneLabel(date: Date | null, time: string | null): string {
 
 export const InstantInput = ({
     value,
+    rawValue,
     onChange,
     onBlur,
     config,
@@ -100,32 +101,20 @@ export const InstantInput = ({
     index,
     errors,
 }: InstantInputProps): ReactElement => {
-    const [rawInput, setRawInput] = useState(() => valueToDisplay(value));
     const [open, setOpen] = useState(false);
     // ? DatePicker/TimePicker API uses null for "no selection"
     const [draftDate, setDraftDate] = useState<Date | null>(null);
     const [draftTime, setDraftTime] = useState<string | null>(null);
-    const isLocalChange = useRef(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
 
     const timezoneLabel = useMemo(() => formatTimezoneLabel(draftDate, draftTime), [draftDate, draftTime]);
 
-    // Sync from parent only on external value changes (e.g. save, form reset).
-    // Skip when the change was triggered by handleInputChange/handleConfirm below.
-    useEffect(() => {
-        if (isLocalChange.current) {
-            isLocalChange.current = false;
-            return;
-        }
-        setRawInput(valueToDisplay(value));
-    }, [value]);
+    const display = displayValue(value, rawValue, valueToDisplay);
 
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
-        isLocalChange.current = true;
-        setRawInput(inputValue);
         if (inputValue === '') {
             onChange(ValueTypes.DATE_TIME.newNullValue());
         } else {
@@ -144,11 +133,9 @@ export const InstantInput = ({
 
     const handleConfirm = () => {
         if (draftDate == null) return;
-        const display = formatDisplay(draftDate, draftTime);
-        const storageValue = displayToStorage(display);
-        isLocalChange.current = true;
-        setRawInput(display);
-        onChange(ValueTypes.DATE_TIME.newValue(storageValue));
+        const displayValueStr = formatDisplay(draftDate, draftTime);
+        const storageValue = displayToStorage(displayValueStr);
+        onChange(ValueTypes.DATE_TIME.newValue(storageValue), displayValueStr);
         setOpen(false);
         inputRef.current?.focus();
     };
@@ -161,8 +148,8 @@ export const InstantInput = ({
         setDraftTime(`${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`);
     };
 
-    const selectedDate = parseDateFromDisplay(rawInput);
-    const selectedTime = parseTimeFromDisplay(rawInput);
+    const selectedDate = parseDateFromDisplay(display);
+    const selectedTime = parseTimeFromDisplay(display);
 
     return (
         <DatePicker.Root
@@ -193,7 +180,7 @@ export const InstantInput = ({
                     aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.dateTime.placeholder')}
-                    value={rawInput}
+                    value={display}
                     onChange={handleInputChange}
                     onBlur={onBlur}
                     disabled={!enabled}

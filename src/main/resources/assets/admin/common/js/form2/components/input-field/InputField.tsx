@@ -286,8 +286,13 @@ export const InputFieldResolved = ({
     );
     const hasServerErrors = serverErrorsByOccurrence.size > 0;
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: `values` is the change-trigger; we read live data from propertyArray instead of consuming it.
     useEffect(() => {
-        sync(values);
+        // ! Read live from propertyArray instead of the hook snapshot: under fast
+        // typing, `values` from usePropertyArray can lag behind the manager's own
+        // state, and a stale sync() would reset values/rawValues, blanking input.
+        const currentValues = propertyArray.getProperties().map(p => p.getValue());
+        sync(currentValues);
         while (propertyArray.getSize() < minFill) {
             propertyArray.add(defaultValue);
         }
@@ -566,6 +571,7 @@ export const InputFieldResolved = ({
                 <div data-component={INPUT_FIELD_NAME}>
                     <Component
                         value={state.values[0] ?? descriptor.getValueType().newNullValue()}
+                        rawValue={state.rawValues[0]}
                         onChange={(value: Value, rawValue?: string) => handleChange(0, value, rawValue)}
                         onBlur={() => handleOccurrenceBlur(0)}
                         onFocus={handleOccurrenceFocus}

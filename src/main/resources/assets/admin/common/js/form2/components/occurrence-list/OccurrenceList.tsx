@@ -50,6 +50,7 @@ export type OccurrenceListRootProps<C extends InputTypeConfig = InputTypeConfig>
 type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig> = {
     Component: InputTypeComponent<C>;
     value: Value;
+    rawValue?: string;
     index: number;
     config: C;
     input: Input;
@@ -77,6 +78,7 @@ type OccurrenceListItemProps<C extends InputTypeConfig = InputTypeConfig> = Occu
 const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>({
     Component,
     value,
+    rawValue,
     index,
     config,
     input,
@@ -99,6 +101,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
             <div className={cn('min-w-0 flex-1', className)}>
                 <Component
                     value={value}
+                    rawValue={rawValue}
                     onChange={(v: Value, raw?: string) => onChange(index, v, raw)}
                     onBlur={onBlur ? () => onBlur(index) : undefined}
                     onFocus={onFocus}
@@ -204,6 +207,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                 <InputLabel input={input} />
                 <Component
                     value={value}
+                    rawValue={state.rawValues[0]}
                     onChange={(v: Value, raw?: string) => onChange(0, v, raw)}
                     onBlur={onBlur ? () => onBlur(0) : undefined}
                     onFocus={onFocus}
@@ -223,6 +227,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     const contentProps = (index: number): OccurrenceListItemContentProps<C> => ({
         Component,
         value: state.values[index],
+        rawValue: state.rawValues[index],
         index,
         config,
         input,

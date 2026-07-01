@@ -488,4 +488,38 @@ describe('OccurrenceManager', () => {
             expect(state.isValid).toBe(true);
         });
     });
+
+    describe('rawValues', () => {
+        it('exposes per-occurrence rawValues in state', () => {
+            const mgr = createManager({values: ['a', 'b']});
+            mgr.set(0, ValueTypes.STRING.newValue('a2'), 'a2-raw');
+            const state = mgr.validate();
+            expect(state.rawValues).toEqual(['a2-raw', undefined]);
+        });
+
+        it('preserves rawValue on set() and clears it when the value reference changes via setValues', () => {
+            const mgr = createManager({values: ['a']});
+            mgr.set(0, ValueTypes.STRING.newNullValue(), 'typed-invalid');
+            expect(mgr.validate().rawValues).toEqual(['typed-invalid']);
+
+            mgr.setValues([ValueTypes.STRING.newNullValue()]);
+            expect(mgr.validate().rawValues).toEqual([undefined]);
+        });
+
+        it('keeps rawValue across setValues when the value reference is unchanged', () => {
+            const mgr = createManager({values: ['a']});
+            const v = ValueTypes.STRING.newValue('a');
+            mgr.set(0, v, 'a-raw');
+            mgr.setValues([v]);
+            expect(mgr.validate().rawValues).toEqual(['a-raw']);
+        });
+
+        it('keeps rawValue when sync is called with the same Value reference handleChange just wrote', () => {
+            const mgr = createManager({values: ['a']});
+            const nullValue = ValueTypes.STRING.newNullValue();
+            mgr.set(0, nullValue, 'typed-past-maxLength');
+            mgr.setValues([nullValue]);
+            expect(mgr.validate().rawValues).toEqual(['typed-past-maxLength']);
+        });
+    });
 });

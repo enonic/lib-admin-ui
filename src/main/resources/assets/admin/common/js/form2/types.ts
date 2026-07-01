@@ -10,6 +10,7 @@ export type InputTypeMode = 'list' | 'single' | 'internal';
 /** Props every React input type component receives (one per occurrence). */
 export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig> = {
     value: Value;
+    rawValue?: string;
     onChange: (value: Value, rawValue?: string) => void;
     onBlur?: () => void;
     onFocus?: () => void;

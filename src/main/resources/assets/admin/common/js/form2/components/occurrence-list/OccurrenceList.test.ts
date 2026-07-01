@@ -64,6 +64,7 @@ function makeState(values: Value[], min: number, max: number): OccurrenceManager
     return {
         ids: values.map((_, i) => `occurrence-${i}`),
         values,
+        rawValues: values.map(() => undefined),
         occurrenceValidation: values.map((_, i) => ({
             index: i,
             breaksRequired: false,
@@ -148,6 +149,7 @@ describe('OccurrenceList', () => {
         const state: OccurrenceManagerState = {
             ids: ['occurrence-0'],
             values: [ValueTypes.STRING.newValue('a')],
+            rawValues: [undefined],
             occurrenceValidation: [{index: 0, breaksRequired: false, validationResults: []}],
             totalValid: 1,
             isMinimumBreached: true,
@@ -167,6 +169,7 @@ describe('OccurrenceList', () => {
         const state: OccurrenceManagerState = {
             ids: ['occurrence-0'],
             values: [ValueTypes.STRING.newValue('a')],
+            rawValues: [undefined],
             occurrenceValidation: [{index: 0, breaksRequired: false, validationResults: [{message: 'Invalid'}]}],
             totalValid: 0,
             isMinimumBreached: true,

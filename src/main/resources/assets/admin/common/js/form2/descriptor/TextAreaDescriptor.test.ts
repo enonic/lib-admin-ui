@@ -1,8 +1,12 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../data/Value';
 import {ValueTypes} from '../../data/ValueTypes';
 import type {TextAreaConfig} from './InputTypeConfig';
 import {TextAreaDescriptor} from './TextAreaDescriptor';
+
+vi.mock('../../util/Messages', () => ({
+    i18n: (key: string, ..._args: unknown[]) => `#${key}#`,
+}));
 
 describe('TextAreaDescriptor', () => {
     describe('getValueType', () => {
@@ -86,20 +90,26 @@ describe('TextAreaDescriptor', () => {
             const value = ValueTypes.STRING.newValue('toolong');
             const results = TextAreaDescriptor.validate(value, config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toBe('Value exceeds maximum length of 5');
+            expect(results[0].message).toContain('field.value.breaks.maxlength');
         });
 
-        it('uses hardcoded message (not i18n)', () => {
-            const config = makeConfig({maxLength: 10});
-            const value = ValueTypes.STRING.newValue('a'.repeat(11));
-            const results = TextAreaDescriptor.validate(value, config);
-            expect(results[0].message).toBe('Value exceeds maximum length of 10');
+        it('validates rawValue when stored value is null and maxLength is exceeded', () => {
+            const config = makeConfig({maxLength: 3});
+            const results = TextAreaDescriptor.validate(ValueTypes.STRING.newNullValue(), config, 'abcd');
+
+            expect(results).toHaveLength(1);
+            expect(results[0].message).toContain('field.value.breaks.maxlength');
         });
 
-        it('returns empty for null value', () => {
+        it('returns empty for null value with no rawValue', () => {
             const config = makeConfig({maxLength: 5});
             const value = ValueTypes.STRING.newNullValue();
             expect(TextAreaDescriptor.validate(value, config)).toEqual([]);
+        });
+
+        it('returns empty for null value with empty rawValue', () => {
+            const config = makeConfig({maxLength: 5});
+            expect(TextAreaDescriptor.validate(ValueTypes.STRING.newNullValue(), config, '')).toEqual([]);
         });
 
         it('returns empty when maxLength is -1 (unlimited)', () => {
@@ -154,7 +164,7 @@ describe('TextAreaDescriptor', () => {
             const config = TextAreaDescriptor.readConfig({maxLength: [{value: 5}]});
             const results = TextAreaDescriptor.validate(ValueTypes.STRING.newValue('toolong'), config);
             expect(results).toHaveLength(1);
-            expect(results[0].message).toBe('Value exceeds maximum length of 5');
+            expect(results[0].message).toContain('field.value.breaks.maxlength');
         });
 
         it('accepts any value with empty config', () => {

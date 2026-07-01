@@ -1,21 +1,24 @@
 import {Input} from '@enonic/ui';
-import {type JSX, type ReactElement, useEffect, useRef, useState} from 'react';
+import type {JSX, ReactElement} from 'react';
+
+import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {GeoPoint} from '../../../util/GeoPoint';
 import type {GeoPointConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
 
 const GEO_POINT_INPUT_NAME = 'GeoPointInput';
 
 export type GeoPointInputProps = InputTypeComponentProps<GeoPointConfig>;
 
-function valueToString(value: GeoPointInputProps['value']): string {
-    return value.isNull() ? '' : (value.getGeoPoint().toString() ?? '');
+function valueToString(value: Value): string {
+    return value.getGeoPoint().toString() ?? '';
 }
 
 export const GeoPointInput = ({
     value,
+    rawValue,
     onChange,
     onBlur,
     input,
@@ -23,23 +26,10 @@ export const GeoPointInput = ({
     index,
     errors,
 }: GeoPointInputProps): ReactElement => {
-    const [rawInput, setRawInput] = useState(() => valueToString(value));
-    const isLocalChange = useRef(false);
-
-    // Sync from parent only on external value changes (e.g. form reset).
-    // Skip when the change was triggered by handleChange below.
-    useEffect(() => {
-        if (isLocalChange.current) {
-            isLocalChange.current = false;
-            return;
-        }
-        setRawInput(valueToString(value));
-    }, [value]);
+    const display = displayValue(value, rawValue, valueToString);
 
     const handleChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
-        isLocalChange.current = true;
-        setRawInput(inputValue);
 
         if (inputValue === '') {
             onChange(ValueTypes.GEO_POINT.newNullValue());
@@ -59,7 +49,7 @@ export const GeoPointInput = ({
             data-component={GEO_POINT_INPUT_NAME}
             aria-label={getInputAccessibleName(input, index)}
             type='text'
-            value={rawInput}
+            value={display}
             onChange={handleChange}
             onBlur={onBlur}
             disabled={!enabled}
