@@ -56,7 +56,7 @@ importers:
         version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       '@enonic/ui':
         specifier: ^1.0.5
-        version: 1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.7))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(lucide-react@1.23.0(react@19.2.7))(preact@10.29.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tw-animate-css@1.4.0)
+        version: 1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.7))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(lucide-react@1.23.0(react@19.2.7))(preact@10.29.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tw-animate-css@1.4.0)
       '@rollup/plugin-inject':
         specifier: ^5.0.5
         version: 5.0.5
@@ -68,7 +68,7 @@ importers:
         version: 10.4.6(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
       '@storybook/preact-vite':
         specifier: ~10.4.6
-        version: 10.4.6(esbuild@0.28.1)(preact@10.29.2)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(vite@8.0.16(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.7))
+        version: 10.4.6(esbuild@0.28.1)(preact@10.29.4)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(vite@8.0.16(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.7))
       '@tailwindcss/vite':
         specifier: ~4.3.2
         version: 4.3.2(vite@8.0.16(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.7))
@@ -121,8 +121,8 @@ importers:
         specifier: ^6.6.2
         version: 6.6.2(postcss@8.5.15)
       preact:
-        specifier: ^10.29.2
-        version: 10.29.2
+        specifier: ^10.29.4
+        version: 10.29.4
       storybook:
         specifier: ~10.4.6
         version: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1842,8 +1842,8 @@ packages:
     resolution: {integrity: sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A==}
     engines: {node: ^10 || ^12 || >=14}
 
-  preact@10.29.2:
-    resolution: {integrity: sha512-7tNmwg/7mzzAoB/8kSg6Hl37JraAZw3Z3A0JSY7VXlZwo82Xn0G7wKbNNs2qoF4ZEEsQGTwDAroNdqKs1ofJxQ==}
+  preact@10.29.4:
+    resolution: {integrity: sha512-GMpwh9+NJ8tSmqwIaVyFRQkiKfBEzQ+k7r7tle4W+kaJ+7wJiB9hFz9BixAomMtenPPSBfM4bZhXozGxhf0uFQ==}
 
   pretty-format@27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
@@ -2275,7 +2275,7 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@enonic/ui@1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.7))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(lucide-react@1.23.0(react@19.2.7))(preact@10.29.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tw-animate-css@1.4.0)':
+  '@enonic/ui@1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.7))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(lucide-react@1.23.0(react@19.2.7))(preact@10.29.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tw-animate-css@1.4.0)':
     dependencies:
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.14)(react@19.2.7)
       class-variance-authority: 0.7.1
@@ -2284,7 +2284,7 @@ snapshots:
       lucide-react: 1.23.0(react@19.2.7)
       tailwind-merge: 3.4.1
     optionalDependencies:
-      preact: 10.29.2
+      preact: 10.29.4
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
       tw-animate-css: 1.4.0
@@ -2672,11 +2672,11 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@storybook/preact-vite@10.4.6(esbuild@0.28.1)(preact@10.29.2)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(vite@8.0.16(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.7))':
+  '@storybook/preact-vite@10.4.6(esbuild@0.28.1)(preact@10.29.4)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(vite@8.0.16(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.7))':
     dependencies:
       '@storybook/builder-vite': 10.4.6(esbuild@0.28.1)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(vite@8.0.16(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.7))
-      '@storybook/preact': 10.4.6(preact@10.29.2)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
-      preact: 10.29.2
+      '@storybook/preact': 10.4.6(preact@10.29.4)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
+      preact: 10.29.4
       storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       vite: 8.0.16(@types/node@26.1.0)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.7)
     transitivePeerDependencies:
@@ -2684,10 +2684,10 @@ snapshots:
       - rollup
       - webpack
 
-  '@storybook/preact@10.4.6(preact@10.29.2)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))':
+  '@storybook/preact@10.4.6(preact@10.29.4)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))':
     dependencies:
       '@storybook/global': 5.0.0
-      preact: 10.29.2
+      preact: 10.29.4
       storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       ts-dedent: 2.3.0
 
@@ -3592,7 +3592,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  preact@10.29.2: {}
+  preact@10.29.4: {}
 
   pretty-format@27.5.1:
     dependencies:
