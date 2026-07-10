@@ -10,14 +10,15 @@ import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FormItem} from './FormItem';
 import {Input} from './Input';
 import {FieldSet} from './set/fieldset/FieldSet';
-import {Store} from '../store/Store';
 import {ApplicationKey} from '../application/ApplicationKey';
-
-export const FORM_ITEM_FACTORY_KEY: string = 'FormItemFactory';
 
 export interface FormItemFactory {
     createFormItem(formItemTypeWrapperJson: FormItemTypeWrapperJson, applicationKey?: ApplicationKey): FormItem;
 }
+
+// Not cached in the window-global Store: bundles sharing it would reuse a foreign
+// factory whose objects fail this bundle's instanceof checks (lib-admin-ui#4588).
+let instance: FormItemFactoryImpl;
 
 export class FormItemFactoryImpl
     implements FormItemFactory {
@@ -26,11 +27,8 @@ export class FormItemFactoryImpl
     }
 
     static get(): FormItemFactoryImpl {
-        let instance: FormItemFactoryImpl = Store.parentInstance().get(FORM_ITEM_FACTORY_KEY);
-
         if (instance == null) {
             instance = new FormItemFactoryImpl();
-            Store.parentInstance().set(FORM_ITEM_FACTORY_KEY, instance);
         }
 
         return instance;
