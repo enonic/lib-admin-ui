@@ -1,7 +1,85 @@
-import {describe, expect, it} from 'vitest';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
 import {ValueTypes} from '../../../data/ValueTypes';
+import {Occurrences} from '../../../form/Occurrences';
 import {ComboBoxDescriptor} from '../../descriptor/ComboBoxDescriptor';
 import type {ComboBoxConfig} from '../../descriptor/InputTypeConfig';
+import type {SelfManagedComponentProps} from '../../types';
+import {ComboBoxInput} from './ComboBoxInput';
+
+const mocks = vi.hoisted(() => ({
+    useState: vi.fn((initial: unknown) => [
+        typeof initial === 'function' ? (initial as () => unknown)() : initial,
+        vi.fn(),
+    ]),
+    useMemo: vi.fn((factory: () => unknown) => factory()),
+    useCallback: vi.fn((callback: unknown) => callback),
+    useI18n: vi.fn(() => (key: string) => key),
+    useValidationVisibility: vi.fn(() => 'all'),
+}));
+
+vi.mock('react', () => ({
+    useState: mocks.useState,
+    useMemo: mocks.useMemo,
+    useCallback: mocks.useCallback,
+}));
+
+// ? Component mocks are string tags — the element tree is inspected, never rendered
+vi.mock('@enonic/ui', () => ({
+    Combobox: {
+        Root: 'Combobox.Root',
+        Content: 'Combobox.Content',
+        Control: 'Combobox.Control',
+        Search: 'Combobox.Search',
+        SearchIcon: 'Combobox.SearchIcon',
+        Input: 'Combobox.Input',
+        Apply: 'Combobox.Apply',
+        Toggle: 'Combobox.Toggle',
+        Popup: 'Combobox.Popup',
+    },
+    Listbox: {Content: 'Listbox.Content', Item: 'Listbox.Item'},
+    cn: (...tokens: unknown[]) => tokens.filter(Boolean).join(' '),
+    FilledSquareCheck: 'FilledSquareCheck',
+    IconButton: 'IconButton',
+}));
+
+vi.mock('../../I18nContext', () => ({
+    useI18n: mocks.useI18n,
+}));
+
+vi.mock('../../ValidationContext', () => ({
+    useValidationVisibility: mocks.useValidationVisibility,
+}));
+
+vi.mock('../field-error', () => ({FieldError: 'FieldError'}));
+
+vi.mock('../sortable-grid-list', () => ({SortableGridList: 'SortableGridList'}));
+
+type ComboBoxInputProps = SelfManagedComponentProps<ComboBoxConfig>;
+
+function makeProps(overrides: Partial<ComboBoxInputProps> = {}): ComboBoxInputProps {
+    return {
+        values: [],
+        onChange: vi.fn(),
+        onAdd: vi.fn(),
+        onRemove: vi.fn(),
+        onMove: vi.fn(),
+        occurrences: Occurrences.minmax(1, 3),
+        config: {options: [{label: 'Alpha', value: 'a'}]},
+        input: null as never,
+        enabled: true,
+        errors: [],
+        ...overrides,
+    };
+}
+
+function getElementProps(type: string, overrides: Partial<ComboBoxInputProps> = {}): Record<string, any> {
+    const element = ComboBoxInput(makeProps(overrides)) as {props: {children: any[]}};
+    const child = element.props.children.find(c => c && c.type === type);
+    if (!child) {
+        throw new Error(`${type} was not rendered`);
+    }
+    return child.props;
+}
 
 describe('ComboBoxInput', () => {
     describe('selected values derivation', () => {
@@ -137,6 +215,46 @@ describe('ComboBoxInput', () => {
 
             expect(value.isNull()).toBe(false);
             expect(value.getString()).toBe('option1');
+        });
+    });
+
+    describe('validation visibility', () => {
+        beforeEach(() => {
+            mocks.useState.mockReset();
+            mocks.useState.mockImplementation((initial: unknown) => [
+                typeof initial === 'function' ? (initial as () => unknown)() : initial,
+                vi.fn(),
+            ]);
+            mocks.useValidationVisibility.mockReturnValue('all');
+        });
+
+        const touchedStateImplementation = (initial: unknown) => [
+            initial === false ? true : typeof initial === 'function' ? (initial as () => unknown)() : initial,
+            vi.fn(),
+        ];
+
+        it('does not surface the occurrence error on untouched new content in interactive mode', () => {
+            mocks.useValidationVisibility.mockReturnValue('interactive');
+            expect(getElementProps('Combobox.Root').error).toBe(false);
+        });
+
+        it('surfaces the occurrence error for an empty required field once validation is fully visible', () => {
+            expect(getElementProps('Combobox.Root').error).toBe(true);
+        });
+
+        it('surfaces the occurrence error on new content once the field has been interacted with', () => {
+            mocks.useValidationVisibility.mockReturnValue('interactive');
+            mocks.useState.mockImplementation(touchedStateImplementation);
+            expect(getElementProps('Combobox.Root').error).toBe(true);
+        });
+
+        it('marks the field touched on selection change', () => {
+            const setTouched = vi.fn();
+            mocks.useState
+                .mockImplementationOnce(() => [undefined, vi.fn()])
+                .mockImplementationOnce(() => [false, setTouched]);
+            getElementProps('Combobox.Root').onSelectionChange([]);
+            expect(setTouched).toHaveBeenCalledWith(true);
         });
     });
 });
