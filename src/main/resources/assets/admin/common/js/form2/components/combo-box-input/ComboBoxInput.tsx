@@ -9,6 +9,7 @@ import type {ComboBoxConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {SelfManagedComponentProps} from '../../types';
 import {getFirstError, getOccurrenceErrorMessage} from '../../utils';
+import {useValidationVisibility} from '../../ValidationContext';
 import {FieldError} from '../field-error';
 import {SortableGridList} from '../sortable-grid-list';
 
@@ -29,7 +30,9 @@ export const ComboBoxInput = ({
     errors,
 }: SelfManagedComponentProps<ComboBoxConfig>): ReactElement => {
     const t = useI18n();
+    const visibility = useValidationVisibility();
     const [searchValue, setSearchValue] = useState<string | undefined>();
+    const [touched, setTouched] = useState(false);
 
     const selectedStrings = useMemo(() => values.filter(v => !v.isNull()).map(v => v.getString()), [values]);
     const selectedSet = useMemo(() => new Set(selectedStrings), [selectedStrings]);
@@ -45,13 +48,15 @@ export const ComboBoxInput = ({
 
     const isMultiSelect = occurrences.getMaximum() === 0 || occurrences.getMaximum() > 1;
     const canAdd = occurrences.getMaximum() === 0 || values.length < occurrences.getMaximum();
-    // ? Occurrence errors are rendered by InputField — only field errors shown here
-    const occurrenceError = getOccurrenceErrorMessage(occurrences, errors, t);
+    const occurrenceErrorVisible = visibility === 'all' || (visibility === 'interactive' && touched);
+    const occurrenceError = occurrenceErrorVisible ? getOccurrenceErrorMessage(occurrences, errors, t) : undefined;
     const firstFieldError = errors.map(entry => getFirstError(entry.validationResults)).find(Boolean);
+    const fieldMessage = firstFieldError ?? (visibility !== 'all' ? occurrenceError : undefined);
     const hasErrors = occurrenceError != null || firstFieldError != null;
 
     const handleSelectionChange = useCallback(
         (newSelection: readonly string[]) => {
+            setTouched(true);
             const newSet = new Set(newSelection);
 
             // ? Reverse order keeps indices stable during batch removal
@@ -71,6 +76,13 @@ export const ComboBoxInput = ({
             setSearchValue(undefined);
         },
         [selectedSet, values, onAdd, onRemove],
+    );
+    const handleRemove = useCallback(
+        (index: number) => {
+            setTouched(true);
+            onRemove(index);
+        },
+        [onRemove],
     );
 
     // ? Stable reference for SortableGridList — used in its internal useMemo for IDs
@@ -148,7 +160,7 @@ export const ComboBoxInput = ({
                                     className='size-8'
                                     disabled={!enabled}
                                     aria-label={t('field.occurrence.action.remove')}
-                                    onClick={() => onRemove(index)}
+                                    onClick={() => handleRemove(index)}
                                 />
                             </>
                         );
@@ -156,7 +168,7 @@ export const ComboBoxInput = ({
                 />
             )}
 
-            <FieldError message={firstFieldError} />
+            <FieldError message={fieldMessage} />
         </div>
     );
 };
