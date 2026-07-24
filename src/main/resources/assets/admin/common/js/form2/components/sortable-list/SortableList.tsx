@@ -76,6 +76,25 @@ export type SortableDropHint = {
     allowed: boolean;
 };
 
+/** Semantic attributes applied to the list container. */
+export type SortableListContainerProps = {
+    role?: JSX.AriaRole;
+    'aria-label'?: string;
+};
+
+/** Semantic attributes applied to a sortable row. */
+export type SortableListItemProps = {
+    role?: JSX.AriaRole;
+    tabIndex?: number;
+    'aria-disabled'?: boolean;
+    'aria-expanded'?: boolean;
+    'aria-level'?: number;
+    'aria-posinset'?: number;
+    'aria-roledescription'?: string;
+    'aria-selected'?: boolean;
+    'aria-setsize'?: number;
+};
+
 /** Vertical drag-to-reorder list with built-in drag handles. */
 export type SortableListProps<T> = {
     'data-component'?: string;
@@ -116,6 +135,12 @@ export type SortableListProps<T> = {
     resolveDrop?: (info: SortableDragInfo, items: T[]) => SortableDropHint | null;
     /** Extra classes on each row wrapper; function form receives item context. */
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
+    /** Semantic attributes applied to the list container. */
+    containerProps?: SortableListContainerProps;
+    /** Returns semantic attributes for each row. */
+    getItemProps?: (context: SortableListItemContext<T>) => SortableListItemProps;
+    /** Whether dnd-kit restores focus to the original activator after a keyboard drag. Defaults to `true`. */
+    restoreFocus?: boolean;
     className?: string;
 };
 
@@ -163,7 +188,7 @@ type SortableListItemInternalProps<T> = {
     animateLayoutChanges?: (args: {isSorting: boolean; wasDragging: boolean}) => boolean;
     renderItem: (context: SortableListItemContext<T>, grip?: ReactNode) => ReactNode;
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
-    itemTabIndex?: number;
+    getItemProps?: (context: SortableListItemContext<T>) => SortableListItemProps;
 };
 
 const SortableListItem = <T,>({
@@ -181,12 +206,12 @@ const SortableListItem = <T,>({
     animateLayoutChanges,
     renderItem,
     itemClassName,
-    itemTabIndex,
+    getItemProps,
 }: SortableListItemInternalProps<T>): ReactElement => {
     const [isFocused, setIsFocused] = useState(false);
     const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id,
-        disabled: !isMovable,
+        disabled: !enabled || !isMovable,
         animateLayoutChanges,
     });
 
@@ -225,6 +250,9 @@ const SortableListItem = <T,>({
     };
 
     const resolvedClassName = typeof itemClassName === 'function' ? itemClassName(context) : itemClassName;
+    const resolvedItemProps = getItemProps?.(context);
+    const resolvedRole = resolvedItemProps?.role ?? (attributes.role as JSX.AriaRole);
+    const hasCustomRole = resolvedItemProps?.role != null;
 
     const grip = isMovable && (
         <button
@@ -253,12 +281,21 @@ const SortableListItem = <T,>({
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            role={attributes.role as JSX.AriaRole}
-            tabIndex={itemTabIndex ?? (isMovable ? attributes.tabIndex : undefined)}
-            aria-disabled={attributes['aria-disabled']}
-            aria-pressed={attributes['aria-pressed']}
-            aria-roledescription={attributes['aria-roledescription']}
-            aria-describedby={attributes['aria-describedby']}
+            role={resolvedRole}
+            tabIndex={resolvedItemProps?.tabIndex ?? (isMovable && enabled ? attributes.tabIndex : undefined)}
+            aria-disabled={resolvedItemProps?.['aria-disabled'] ?? attributes['aria-disabled']}
+            aria-pressed={hasCustomRole ? undefined : attributes['aria-pressed']}
+            aria-roledescription={
+                resolvedItemProps?.['aria-roledescription'] ??
+                (hasCustomRole ? undefined : attributes['aria-roledescription'])
+            }
+            aria-describedby={isMovable && enabled ? attributes['aria-describedby'] : undefined}
+            aria-expanded={resolvedItemProps?.['aria-expanded']}
+            aria-level={resolvedItemProps?.['aria-level']}
+            aria-posinset={resolvedItemProps?.['aria-posinset']}
+            aria-selected={resolvedItemProps?.['aria-selected']}
+            aria-setsize={resolvedItemProps?.['aria-setsize']}
+            data-dragging={isDragging || undefined}
             style={style}
             className={cn(
                 'relative flex items-center rounded outline-none',
@@ -300,6 +337,9 @@ export const SortableList = <T,>({
     renderItem,
     itemClassName,
     className,
+    containerProps,
+    getItemProps,
+    restoreFocus = true,
 
     'data-component': dataComponent = SORTABLE_LIST_NAME,
 }: SortableListProps<T>): ReactElement => {
@@ -433,9 +473,12 @@ export const SortableList = <T,>({
             data-component={dataComponent}
             data-drag-active={isDragActive || undefined}
             className={cn(isDragActive && '[&_*]:pointer-events-none', className)}
+            role={containerProps?.role}
+            aria-label={containerProps?.['aria-label']}
         >
             <DndContext
                 sensors={sensors}
+                accessibility={{restoreFocus, container: document.body}}
                 collisionDetection={closestCenter}
                 modifiers={[restrictToVerticalAxis]}
                 measuring={resolveDrop != null ? PROJECTION_MEASURING : undefined}
@@ -465,6 +508,7 @@ export const SortableList = <T,>({
                             animateLayoutChanges={animateLayoutChanges}
                             renderItem={renderItem}
                             itemClassName={itemClassName}
+                            getItemProps={getItemProps}
                         />
                     ))}
                 </SortableContext>
