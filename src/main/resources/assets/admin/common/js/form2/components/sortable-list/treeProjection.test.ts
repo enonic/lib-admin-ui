@@ -101,10 +101,10 @@ describe('projectTreeDrop — reorder within a region', () => {
 });
 
 //
-// * The walker: up enters, down steps out (the two reported examples)
+// * Explicit empty targets and step-out behavior
 //
 
-describe('projectTreeDrop — enter / step out via direction', () => {
+describe('projectTreeDrop — empty target / step out', () => {
     it('enters the empty region when dragging the trailing item up onto it', () => {
         const result = projectTreeDrop({
             nodes: footerInMain(),
@@ -116,7 +116,7 @@ describe('projectTreeDrop — enter / step out via direction', () => {
         expect(result).toEqual({containerId: '/main/1/right', index: 0, depth: 5, allowed: true});
     });
 
-    it('steps out past the layout when dragging the same gap down', () => {
+    it('enters the explicitly hovered empty region when dragging down onto it', () => {
         const result = projectTreeDrop({
             nodes: footerInMain(),
             activeId: '/main/2',
@@ -124,7 +124,7 @@ describe('projectTreeDrop — enter / step out via direction', () => {
             side: 'below',
             direction: 'down',
         });
-        expect(result).toEqual({containerId: '/main', index: 2, depth: 3, allowed: true});
+        expect(result).toEqual({containerId: '/main/1/right', index: 0, depth: 5, allowed: true});
     });
 
     it('steps out below the last row when the item is alone inside the trailing region', () => {
@@ -183,6 +183,18 @@ describe('projectTreeDrop — allowed predicate', () => {
             isContainerAllowed: () => false,
         });
         expect(result).toEqual({containerId: '/r', index: 2, depth: 3, allowed: false});
+    });
+
+    it('flags an explicitly hovered empty container disallowed when rejected', () => {
+        const result = projectTreeDrop({
+            nodes: footerInMain(),
+            activeId: '/main/2',
+            overId: '/main/1/right',
+            side: 'below',
+            direction: 'down',
+            isContainerAllowed: containerId => containerId !== '/main/1/right',
+        });
+        expect(result).toEqual({containerId: '/main/1/right', index: 0, depth: 5, allowed: false});
     });
 });
 
