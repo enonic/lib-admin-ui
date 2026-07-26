@@ -277,9 +277,11 @@ function TreeDemo() {
     return (
         <div className='w-96'>
             <p className='mb-3 text-subtle text-xs'>
-                Drag a row up or down — it walks through the valid drop slots. Dragging up enters the region above
-                (incl. the empty one); dragging down steps out past the layout when a region ends. The dragged row
-                re-indents to show its level. It dims when the drop is not allowed (no layout in a layout).
+                Drag a row up or down — it walks through the valid drop slots. A region row's upper half inserts before
+                it; its lower half enters the region at the start; moving past its lower edge selects the gap after it.
+                A trailing item's lower half appends inside its region; moving past that item exits the region. Dragging
+                down at the list edge steps out past the layout. Rows shift around a faded placeholder while the dragged
+                clone re-indents to show its level. It dims when the drop is not allowed.
             </p>
             <SortableList
                 items={rows}
