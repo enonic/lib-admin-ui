@@ -9,6 +9,9 @@
  * stack — dragging up enters the deeper slot, dragging down steps out to the
  * shallower one. The horizontal axis stays locked; level comes from the neighbours
  * plus travel direction, so a small up/down nudge moves between levels.
+ * A container row has two semantic zones: its upper half is the gap before it,
+ * while its lower half targets index 0 inside the container. Drag direction only
+ * selects among ambiguous gap slots.
  */
 
 export type DropNodeKind = 'container' | 'item';
@@ -71,10 +74,16 @@ export function projectTreeDrop(params: ProjectTreeDropParams): DropProjection |
     // reflects the post-removal list (matching the move semantics).
     const visible = excludeSubtree(nodes, active);
 
-    const gap = resolveGap(params, nodes, visible, active);
-    if (gap == null) return null;
+    const target = resolveTarget(params, nodes, visible, active);
+    if (target == null) return null;
 
-    const stack = buildSlotStack(gap.before, gap.after, gap.flatIndex, visible, byId);
+    if (target.type === 'container') {
+        const {container} = target;
+        const allowed = isContainerAllowed?.(container.id, activeId) ?? true;
+        return {containerId: container.id, index: 0, depth: container.depth + 1, allowed};
+    }
+
+    const stack = buildSlotStack(target.before, target.after, target.flatIndex, visible, byId);
     if (stack.length === 0) return null;
 
     const chosen = direction === 'up' ? stack[0] : stack[stack.length - 1];
@@ -84,18 +93,26 @@ export function projectTreeDrop(params: ProjectTreeDropParams): DropProjection |
 }
 
 type Gap = {
+    type: 'gap';
     before: DropNode | undefined;
     after: DropNode | undefined;
     /** Insertion position within `visible` (number of visible rows above the gap). */
     flatIndex: number;
 };
 
-function resolveGap(
+type ContainerTarget = {
+    type: 'container';
+    container: DropNode;
+};
+
+type ResolvedTarget = Gap | ContainerTarget;
+
+function resolveTarget(
     params: ProjectTreeDropParams,
     nodes: DropNode[],
     visible: DropNode[],
     active: DropNode,
-): Gap | null {
+): ResolvedTarget | null {
     const {activeId, overId, side} = params;
 
     // Hovering own slot (typically the list edge): anchor on the dragged item's own
@@ -109,16 +126,26 @@ function resolveGap(
         const after = nodes[end];
         const beforeVisibleIndex = visible.findIndex(node => node.id === before.id);
         if (beforeVisibleIndex === -1) return null;
-        return {before, after, flatIndex: beforeVisibleIndex + 1};
+        return {type: 'gap', before, after, flatIndex: beforeVisibleIndex + 1};
     }
 
     const overIndex = visible.findIndex(node => node.id === overId);
     if (overIndex === -1) return null;
+    const over = visible[overIndex];
+
+    if (over.kind === 'container' && side === 'below') {
+        return {type: 'container', container: over};
+    }
 
     if (side === 'below') {
-        return {before: visible[overIndex], after: visible[overIndex + 1], flatIndex: overIndex + 1};
+        return {
+            type: 'gap',
+            before: visible[overIndex],
+            after: visible[overIndex + 1],
+            flatIndex: overIndex + 1,
+        };
     }
-    return {before: visible[overIndex - 1], after: visible[overIndex], flatIndex: overIndex};
+    return {type: 'gap', before: visible[overIndex - 1], after: over, flatIndex: overIndex};
 }
 
 function buildSlotStack(
