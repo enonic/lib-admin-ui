@@ -39,8 +39,8 @@ importers:
         specifier: ~6.0.0
         version: 6.0.0
       nanostores:
-        specifier: ~1.4.0
-        version: 1.4.0
+        specifier: ~1.4.1
+        version: 1.4.1
       q:
         specifier: ^1.5.1
         version: 1.5.1
@@ -1712,8 +1712,8 @@ packages:
     engines: {node: ^22 || ^24 || >=26}
     hasBin: true
 
-  nanostores@1.4.0:
-    resolution: {integrity: sha512-i0tloweeudshAEuddpDxcg9Ik6pkPfVsHIgKyf143JrgG7/MOh0+q7BypdLXZPoOP7fOYt1eTcwGkyiVmhJFkA==}
+  nanostores@1.4.1:
+    resolution: {integrity: sha512-PGd3uPojJB9Z07d5NX3Db/SOSBbyy3wLMUGq0GpnEEJfVzY9mq7daPMAZ3jObV5D3Jn+YKND636eI5ULg7F80Q==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   needle@3.5.0:
@@ -3510,7 +3510,7 @@ snapshots:
 
   nanoid@6.0.0: {}
 
-  nanostores@1.4.0: {}
+  nanostores@1.4.1: {}
 
   needle@3.5.0:
     dependencies:
