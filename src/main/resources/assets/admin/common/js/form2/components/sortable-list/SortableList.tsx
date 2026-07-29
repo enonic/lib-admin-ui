@@ -137,7 +137,12 @@ export type SortableListProps<T> = {
     itemClassName?: string | ((context: SortableListItemContext<T>) => string);
     /** Semantic attributes applied to the list container. */
     containerProps?: SortableListContainerProps;
-    /** Returns semantic attributes for each row. */
+    /**
+     * Returns semantic attributes for each row. Overriding `role` drops dnd-kit's button-specific
+     * ARIA, so supply `aria-disabled` and `aria-roledescription` here when the role needs them.
+     * Rows keep dnd-kit's tab stop unless `tabIndex` is returned — roving tab stop consumers
+     * (trees, listboxes) must return it, otherwise every row lands in the tab order.
+     */
     getItemProps?: (context: SortableListItemContext<T>) => SortableListItemProps;
     /** Whether dnd-kit restores focus to the original activator after a keyboard drag. Defaults to `true`. */
     restoreFocus?: boolean;
@@ -253,6 +258,8 @@ const SortableListItem = <T,>({
     const resolvedItemProps = getItemProps?.(context);
     const resolvedRole = resolvedItemProps?.role ?? (attributes.role as JSX.AriaRole);
     const hasCustomRole = resolvedItemProps?.role != null;
+    // ? dnd-kit's aria-disabled reports "not draggable", which only reads correctly on its own button role
+    const defaultAriaDisabled = hasCustomRole ? !enabled || undefined : attributes['aria-disabled'];
 
     const grip = isMovable && (
         <button
@@ -283,7 +290,7 @@ const SortableListItem = <T,>({
             onBlur={handleBlur}
             role={resolvedRole}
             tabIndex={resolvedItemProps?.tabIndex ?? (isMovable && enabled ? attributes.tabIndex : undefined)}
-            aria-disabled={resolvedItemProps?.['aria-disabled'] ?? attributes['aria-disabled']}
+            aria-disabled={resolvedItemProps?.['aria-disabled'] ?? defaultAriaDisabled}
             aria-pressed={hasCustomRole ? undefined : attributes['aria-pressed']}
             aria-roledescription={
                 resolvedItemProps?.['aria-roledescription'] ??
