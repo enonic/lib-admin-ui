@@ -5,7 +5,7 @@ import {
     type DragStartEvent,
     type KeyboardCoordinateGetter,
     KeyboardSensor,
-    PointerSensor,
+    TouchSensor,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -23,6 +23,7 @@ import type {SelfManagedComponentProps} from '../../types';
 import {getFirstError, getInputAccessibleName, getOccurrenceErrorMessage} from '../../utils';
 import {useValidationVisibility} from '../../ValidationContext';
 import {FieldError} from '../field-error';
+import {HANDLE_TOUCH_SENSOR_OPTIONS, MOUSE_SENSOR_OPTIONS, PrimaryButtonMouseSensor} from '../sortableSensors';
 import {
     getPastedTagLabels,
     getSuggestedTagLabels,
@@ -244,6 +245,7 @@ const tagKeyboardCoordinates: KeyboardCoordinateGetter = (event, args) => {
         y: targetRect.top,
     };
 };
+const KEYBOARD_SENSOR_OPTIONS = {coordinateGetter: tagKeyboardCoordinates};
 
 function toTransformCSS(transform: SortableTransform | null): string | undefined {
     if (transform == null) {
@@ -584,7 +586,7 @@ const TagItem = ({
                     iconSize='sm'
                     variant='text'
                     className={cn(
-                        'size-5 focus-visible:ring-2 focus-visible:ring-offset-2',
+                        'size-5 touch-none focus-visible:ring-2 focus-visible:ring-offset-2',
                         enabled && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
                     )}
                     disabled={!enabled}
@@ -684,8 +686,9 @@ export const TagInput = ({
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const [touched, setTouched] = useState(false);
     const sensors = useSensors(
-        useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
-        useSensor(KeyboardSensor, {coordinateGetter: tagKeyboardCoordinates}),
+        useSensor(PrimaryButtonMouseSensor, MOUSE_SENSOR_OPTIONS),
+        useSensor(TouchSensor, HANDLE_TOUCH_SENSOR_OPTIONS),
+        useSensor(KeyboardSensor, KEYBOARD_SENSOR_OPTIONS),
     );
 
     const ids = tagEntries.map(entry => entry.id);
@@ -719,7 +722,7 @@ export const TagInput = ({
     const hasErrors = fieldErrorText != null || occurrenceError != null;
     const focusInput = () => {
         setIsInputActive(true);
-        requestAnimationFrame(() => inputRef.current?.focus());
+        inputRef.current?.focus();
     };
 
     useEffect(() => {
@@ -972,7 +975,7 @@ export const TagInput = ({
         focusTagAt(targetIndex);
     };
 
-    const handleFieldPointerDown: preact.JSX.PointerEventHandler<HTMLElement> = event => {
+    const handleFieldClick: preact.JSX.MouseEventHandler<HTMLElement> = event => {
         if (event.target === event.currentTarget) {
             handleFieldActivate();
         }
@@ -1146,7 +1149,7 @@ export const TagInput = ({
                     canAdd && 'cursor-text',
                     hasErrors && 'border-error focus-within:border-error focus-within:ring-error hover:outline-error',
                 )}
-                onPointerDown={handleFieldPointerDown}
+                onClick={handleFieldClick}
                 onFocus={() => setHasFocusWithin(true)}
                 onBlur={() => {
                     requestAnimationFrame(() => {
@@ -1166,7 +1169,7 @@ export const TagInput = ({
                     onDragCancel={handleDragCancel}
                 >
                     <SortableContext items={ids} strategy={rectSortingStrategy}>
-                        <ul className='flex flex-wrap items-center gap-2' onPointerDown={handleFieldPointerDown}>
+                        <ul className='flex flex-wrap items-center gap-2' onClick={handleFieldClick}>
                             {tagEntries.map((entry, index) => (
                                 <TagItem key={entry.id} {...getTagItemProps(entry, index)} />
                             ))}

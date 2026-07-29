@@ -8,7 +8,7 @@ import {
     KeyboardSensor,
     type MeasuringConfiguration,
     MeasuringStrategy,
-    PointerSensor,
+    TouchSensor,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -22,6 +22,12 @@ import {cn} from '@enonic/ui';
 import {GripVertical} from 'lucide-react';
 import type {JSX, ReactElement, ReactNode} from 'react';
 import {useCallback, useMemo, useState} from 'react';
+import {
+    FULL_ROW_TOUCH_SENSOR_OPTIONS,
+    HANDLE_TOUCH_SENSOR_OPTIONS,
+    MOUSE_SENSOR_OPTIONS,
+    PrimaryButtonMouseSensor,
+} from '../sortableSensors';
 
 //
 // * Types
@@ -173,6 +179,9 @@ function restrictToVerticalAxis({transform}: {transform: {x: number; y: number; 
 const PROJECTION_MEASURING: MeasuringConfiguration = {
     droppable: {strategy: MeasuringStrategy.Always},
 };
+const KEYBOARD_SENSOR_OPTIONS = {
+    coordinateGetter: sortableKeyboardCoordinates,
+};
 
 //
 // * SortableListItem
@@ -268,7 +277,7 @@ const SortableListItem = <T,>({
                 'flex shrink-0 items-center text-subtle',
                 fullRowDraggable
                     ? 'pointer-events-none'
-                    : cn('cursor-grab', 'hover:text-foreground', isDragging && 'cursor-grabbing'),
+                    : cn('cursor-grab touch-none', 'hover:text-foreground', isDragging && 'cursor-grabbing'),
                 'focus-visible:outline-none',
                 !enabled && 'pointer-events-none opacity-30',
             )}
@@ -310,8 +319,8 @@ const SortableListItem = <T,>({
                 isDragging && 'bg-surface-neutral shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5',
                 isDragging && !dropAllowed && 'opacity-40',
                 // Full-row drag targets must not turn a press-drag into a text selection.
-                fullRowDraggable && isMovable && 'touch-none select-none',
-                fullRowDraggable && isMovable && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
+                enabled && fullRowDraggable && isMovable && 'select-none',
+                enabled && fullRowDraggable && isMovable && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
                 resolvedClassName,
             )}
             {...rowListenersSafe}
@@ -357,10 +366,9 @@ export const SortableList = <T,>({
     const [drop, setDrop] = useState<{info: SortableDragInfo; hint: SortableDropHint | null} | null>(null);
 
     const sensors = useSensors(
-        useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        }),
+        useSensor(PrimaryButtonMouseSensor, MOUSE_SENSOR_OPTIONS),
+        useSensor(TouchSensor, fullRowDraggable ? FULL_ROW_TOUCH_SENSOR_OPTIONS : HANDLE_TOUCH_SENSOR_OPTIONS),
+        useSensor(KeyboardSensor, KEYBOARD_SENSOR_OPTIONS),
     );
 
     const handleDragStart = useCallback(
