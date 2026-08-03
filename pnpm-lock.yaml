@@ -118,8 +118,8 @@ importers:
         specifier: ^13.0.1
         version: 13.0.1(browserslist@4.28.7)(postcss@8.5.23)
       postcss-sort-media-queries:
-        specifier: ^6.6.2
-        version: 6.6.2(postcss@8.5.23)
+        specifier: ^6.7.1
+        version: 6.7.1(postcss@8.5.23)
       preact:
         specifier: ^10.29.7
         version: 10.29.7
@@ -2014,11 +2014,11 @@ packages:
     resolution: {integrity: sha512-HeP7D2wyhkR+XaK6v4W8oRF62Dsz4flyuczALJp61GckGm42u1saSSJ/0auvcBqxs3jMRFEcPK34At/0JBKdOg==}
     engines: {node: '>=4'}
 
-  postcss-sort-media-queries@6.6.2:
-    resolution: {integrity: sha512-4whmLOUtFFX2V0w5JM7Wqp1Du+DiOsfgFhJuxdy1d5kBoNy/dfkq4He8eNDGI3ZEJlCk95yQhG75aVcEMKGaFQ==}
+  postcss-sort-media-queries@6.7.1:
+    resolution: {integrity: sha512-NU+cVdLaPMYspggR6JSpk7YdAoRY9Y9jNacHRjA/5vJ0iP6/Stgg2FV82IVnryTQKbtp7B5cQ33KrWbVe07VSQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
-      postcss: ^8.5.6
+      postcss: ^8.5.21
 
   postcss-svgo@8.0.1:
     resolution: {integrity: sha512-HpnvWii7W0/FPrsejJa6ZTi0kNtTJP/Iba7CUMPX0xPV6QpnndOp+SDP74tFtgjA2cYKYNWJPOlmLXMsvi/9yA==}
@@ -3880,7 +3880,7 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-sort-media-queries@6.6.2(postcss@8.5.23):
+  postcss-sort-media-queries@6.7.1(postcss@8.5.23):
     dependencies:
       postcss: 8.5.23
       sort-css-media-queries: 3.0.5
