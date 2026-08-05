@@ -22,6 +22,9 @@ import {cn} from '@enonic/ui';
 import {GripVertical} from 'lucide-react';
 import type {JSX, ReactElement, ReactNode} from 'react';
 import {useCallback, useMemo, useState} from 'react';
+import {getProjectionDragInfo, type SortableDragDirection, type SortableDragInfo} from './projectionDragInfo';
+
+export type {SortableDragDirection, SortableDragInfo, SortableDropSide} from './projectionDragInfo';
 
 //
 // * Types
@@ -47,25 +50,6 @@ export type SortableListItemContext<T> = {
      * the dragged element itself shows the level it will land at.
      */
     projectedIndent?: number;
-};
-
-/** Which side of the over row the dragged item lands on. */
-export type SortableDropSide = 'above' | 'below';
-
-/** Net vertical travel direction during a drag. */
-export type SortableDragDirection = 'up' | 'down';
-
-/** Live drag state surfaced in projection mode for resolving a tree-shaped drop. */
-export type SortableDragInfo = {
-    /** Index of the dragged item. */
-    activeIndex: number;
-    /** Index of the row currently under the pointer (equals `activeIndex` at the list edge). */
-    overIndex: number;
-    /** Side relative to the over row, from the dnd-kit displacement gap (below when the
-     *  dragged item comes from above the over row, above when it comes from below). */
-    side: SortableDropSide;
-    /** Net vertical travel from the drag start (sign of the cumulative offset). */
-    direction: SortableDragDirection;
 };
 
 /** Consumer's resolution of a drag state into a drop hint for the dragged row. */
@@ -106,7 +90,8 @@ export type SortableListProps<T> = {
     onDragStart?: (index: number) => void;
     /**
      * Called after a drag completes with the old and new indices. In projection mode
-     * (`resolveDrop` set) it also receives the final drag state for tree-aware commits.
+     * (`resolveDrop` set), it receives the final drag state only when the final projection
+     * returns a non-null, allowed hint.
      */
     onMove: (fromIndex: number, toIndex: number, info?: SortableDragInfo) => void;
     /** Controls whether drag handles are interactive. */
@@ -127,10 +112,11 @@ export type SortableListProps<T> = {
     animateLayoutChanges?: (args: {isSorting: boolean; wasDragging: boolean}) => boolean;
     /**
      * Projection mode for tree-shaped lists. When provided, the list reports the live drag
-     * state (hovered row, displacement `side`, travel `direction`) and feeds `hint.indent` back
+     * state (hovered row, midpoint-relative `side`, travel `direction`) and feeds `hint.indent` back
      * to the dragged row (via `context.projectedIndent`) so it re-indents to its projected drop
      * level. The drag stays vertical; the level comes from the neighbours plus travel direction.
-     * Return `null` for no projection. The commit arrives through `onMove`'s `info` argument.
+     * Return `null` for no projection; it is shown as disallowed and `onMove` is not called.
+     * An allowed commit arrives through `onMove`'s `info` argument.
      */
     resolveDrop?: (info: SortableDragInfo, items: T[]) => SortableDropHint | null;
     /** Extra classes on each row wrapper; function form receives item context. */
@@ -173,6 +159,42 @@ function restrictToVerticalAxis({transform}: {transform: {x: number; y: number; 
 const PROJECTION_MEASURING: MeasuringConfiguration = {
     droppable: {strategy: MeasuringStrategy.Always},
 };
+
+type ProjectionDragEvent = DragMoveEvent | DragEndEvent;
+
+type ProjectionDrop = {
+    info: SortableDragInfo;
+    hint: SortableDropHint | null;
+};
+
+function getOverId(event: ProjectionDragEvent): string {
+    return event.over == null ? String(event.active.id) : String(event.over.id);
+}
+
+function getProjectionDragInfoFromEvent(event: ProjectionDragEvent, ids: string[]): SortableDragInfo | null {
+    const {active, over, delta} = event;
+    const activeId = String(active.id);
+    const overId = getOverId(event);
+    const activeIndex = ids.indexOf(activeId);
+    const overIndex = ids.indexOf(overId);
+    if (activeIndex === -1 || overIndex === -1) return null;
+
+    return getProjectionDragInfo({
+        activeIndex,
+        overIndex,
+        deltaY: delta.y,
+        activeTranslatedRect: active.rect.current.translated,
+        activeInitialRect: active.rect.current.initial,
+        overRect: over?.rect ?? null,
+    });
+}
+
+function hasProjectionIntent(event: ProjectionDragEvent): boolean {
+    const {active, over, delta} = event;
+    const direction: SortableDragDirection = delta.y < 0 ? 'up' : 'down';
+    const atOwnSlot = over == null || active.id === over.id;
+    return !atOwnSlot || (direction === 'down' && delta.y > 0);
+}
 
 //
 // * SortableListItem
@@ -354,7 +376,12 @@ export const SortableList = <T,>({
     const isMovable = items.length >= 2;
     const [dropAllowed, setDropAllowed] = useState(true);
     const [isDragActive, setIsDragActive] = useState(false);
-    const [drop, setDrop] = useState<{info: SortableDragInfo; hint: SortableDropHint | null} | null>(null);
+    const [drop, setDrop] = useState<ProjectionDrop | null>(null);
+
+    const applyDrop = useCallback((nextDrop: ProjectionDrop | null) => {
+        setDrop(nextDrop);
+        setDropAllowed(nextDrop == null ? true : (nextDrop.hint?.allowed ?? false));
+    }, []);
 
     const sensors = useSensors(
         useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
@@ -365,7 +392,7 @@ export const SortableList = <T,>({
 
     const handleDragStart = useCallback(
         (event: DragStartEvent) => {
-            setDropAllowed(true);
+            applyDrop(null);
             setIsDragActive(true);
             if (onDragStartProp != null) {
                 const index = ids.indexOf(String(event.active.id));
@@ -374,7 +401,7 @@ export const SortableList = <T,>({
                 }
             }
         },
-        [ids, onDragStartProp],
+        [ids, onDragStartProp, applyDrop],
     );
 
     // Projection mode: recompute the drop from the live drag state. Driven by both
@@ -384,35 +411,23 @@ export const SortableList = <T,>({
         (event: DragMoveEvent) => {
             if (resolveDrop == null) return;
 
-            const {active, over, delta} = event;
-            const direction: SortableDragDirection = delta.y < 0 ? 'up' : 'down';
-
             // `over === active` only carries intent at the list edge — a down-drag past the
             // last row, which steps the item out a level. Otherwise it means "no move yet".
-            const atOwnSlot = over == null || active.id === over.id;
-            if (atOwnSlot && (direction !== 'down' || delta.y <= 0)) {
-                setDrop(null);
-                setDropAllowed(true);
+            if (!hasProjectionIntent(event)) {
+                applyDrop(null);
                 return;
             }
 
-            const overId = over == null ? String(active.id) : String(over.id);
-            const activeIndex = ids.indexOf(String(active.id));
-            const overIndex = ids.indexOf(overId);
-            if (activeIndex === -1 || overIndex === -1) {
-                setDrop(null);
+            const info = getProjectionDragInfoFromEvent(event, ids);
+            if (info == null) {
+                applyDrop(null);
                 return;
             }
 
-            // Side matches dnd-kit's displacement gap: the item lands at the over row's slot,
-            // so it sits after the over row when coming from above and before it when from below.
-            const side: SortableDropSide = overIndex > activeIndex ? 'below' : 'above';
-            const info: SortableDragInfo = {activeIndex, overIndex, side, direction};
             const hint = resolveDrop(info, items);
-            setDrop({info, hint});
-            setDropAllowed(hint?.allowed ?? true);
+            applyDrop({info, hint});
         },
-        [ids, items, resolveDrop],
+        [ids, items, resolveDrop, applyDrop],
     );
 
     const handleDragOver = useCallback(
@@ -440,40 +455,34 @@ export const SortableList = <T,>({
 
     const handleDragEnd = useCallback(
         (event: DragEndEvent) => {
-            setDropAllowed(true);
             setIsDragActive(false);
-            setDrop(null);
-
-            const {active, over, delta} = event;
-            const oldIndex = ids.indexOf(String(active.id));
-            if (oldIndex === -1) return;
+            applyDrop(null);
 
             if (resolveDrop != null) {
-                const direction: SortableDragDirection = delta.y < 0 ? 'up' : 'down';
-                const atOwnSlot = over == null || active.id === over.id;
-                if (atOwnSlot && (direction !== 'down' || delta.y <= 0)) return;
-                const overId = over == null ? String(active.id) : String(over.id);
-                const overIndex = ids.indexOf(overId);
-                if (overIndex === -1) return;
-                const side: SortableDropSide = overIndex > oldIndex ? 'below' : 'above';
-                onMove(oldIndex, overIndex, {activeIndex: oldIndex, overIndex, side, direction});
+                if (!hasProjectionIntent(event)) return;
+                const finalInfo = getProjectionDragInfoFromEvent(event, ids);
+                if (finalInfo == null) return;
+                const finalHint = resolveDrop(finalInfo, items);
+                if (!finalHint?.allowed) return;
+                onMove(finalInfo.activeIndex, finalInfo.overIndex, finalInfo);
                 return;
             }
 
+            const {active, over} = event;
             if (over == null || active.id === over.id) return;
+            const oldIndex = ids.indexOf(String(active.id));
             const newIndex = ids.indexOf(String(over.id));
-            if (newIndex === -1) return;
+            if (oldIndex === -1 || newIndex === -1) return;
 
             onMove(oldIndex, newIndex);
         },
-        [ids, onMove, resolveDrop],
+        [ids, items, onMove, resolveDrop, applyDrop],
     );
 
     const handleDragCancel = useCallback(() => {
-        setDropAllowed(true);
         setIsDragActive(false);
-        setDrop(null);
-    }, []);
+        applyDrop(null);
+    }, [applyDrop]);
 
     return (
         <div

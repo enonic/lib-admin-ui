@@ -9,6 +9,8 @@
  * stack — dragging up enters the deeper slot, dragging down steps out to the
  * shallower one. The horizontal axis stays locked; level comes from the neighbours
  * plus travel direction, so a small up/down nudge moves between levels.
+ * Explicitly hovering an empty container overrides the gap walker and targets that
+ * container at index 0, regardless of `side` or `direction`.
  */
 
 export type DropNodeKind = 'container' | 'item';
@@ -70,6 +72,17 @@ export function projectTreeDrop(params: ProjectTreeDropParams): DropProjection |
     // Indices/neighbours are computed with the dragged subtree removed, so the result
     // reflects the post-removal list (matching the move semantics).
     const visible = excludeSubtree(nodes, active);
+
+    // An explicitly hovered empty container is an unambiguous target. Resolve it
+    // directly instead of interpreting either adjacent gap, whose slot stack may
+    // point at a neighbouring or parent container depending on drag direction.
+    const over = visible.find(node => node.id === params.overId);
+    const isEmptyContainer =
+        over?.kind === 'container' && !visible.some(node => node.kind === 'item' && node.parentId === over.id);
+    if (over != null && isEmptyContainer) {
+        const allowed = isContainerAllowed?.(over.id, activeId) ?? true;
+        return {containerId: over.id, index: 0, depth: over.depth + 1, allowed};
+    }
 
     const gap = resolveGap(params, nodes, visible, active);
     if (gap == null) return null;

@@ -277,9 +277,9 @@ function TreeDemo() {
     return (
         <div className='w-96'>
             <p className='mb-3 text-subtle text-xs'>
-                Drag a row up or down — it walks through the valid drop slots. Dragging up enters the region above
-                (incl. the empty one); dragging down steps out past the layout when a region ends. The dragged row
-                re-indents to show its level. It dims when the drop is not allowed (no layout in a layout).
+                Drag a row up or down — it walks through the valid drop slots. Hovering an empty region always enters
+                it; dragging down at the list edge steps out past the layout. The dragged row re-indents to show its
+                level. It dims when the drop is not allowed (no layout in a layout).
             </p>
             <SortableList
                 items={rows}
