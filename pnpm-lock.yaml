@@ -56,7 +56,7 @@ importers:
         version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)
       '@enonic/ui':
         specifier: ^1.0.5
-        version: 1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.28.0(react@19.2.8))(preact@10.29.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)
+        version: 1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.30.0(react@19.2.8))(preact@10.29.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)
       '@rollup/plugin-inject':
         specifier: ^5.0.5
         version: 5.0.5
@@ -112,8 +112,8 @@ importers:
         specifier: ^4.8.1
         version: 4.8.1
       lucide-react:
-        specifier: ^1.28.0
-        version: 1.28.0(react@19.2.8)
+        specifier: ^1.30.0
+        version: 1.30.0(react@19.2.8)
       postcss-normalize:
         specifier: ^13.0.1
         version: 13.0.1(browserslist@4.28.8)(postcss@8.5.26)
@@ -1766,8 +1766,8 @@ packages:
   loupe@3.2.1:
     resolution: {integrity: sha512-CdzqowRJCeLU72bHvWqwRBBlLcMEtIvGrlvef74kMnV2AolS9Y8xUv1I0U/MNAWMhBlKIoyuEgoJ0t/bbwHbLQ==}
 
-  lucide-react@1.28.0:
-    resolution: {integrity: sha512-fARAFJULsGuDDydjp6+6blekG/sBIM29TerzLjc9bQUKAcEfrSc4ZQKb25KRz4OMKd87cZTb5dgq0w/T6KufVg==}
+  lucide-react@1.30.0:
+    resolution: {integrity: sha512-tUIr2jXLbWpCkdtH8XP7P7YppM9ueWgTky99lpWDY6z5REs6B+O6ZQ3U5tHkUUY59ANyOv/PBcs8E4Fe3KO3eA==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -2510,13 +2510,13 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@enonic/ui@1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.28.0(react@19.2.8))(preact@10.29.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)':
+  '@enonic/ui@1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.30.0(react@19.2.8))(preact@10.29.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)':
     dependencies:
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.14)(react@19.2.8)
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       focus-trap-react: 11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      lucide-react: 1.28.0(react@19.2.8)
+      lucide-react: 1.30.0(react@19.2.8)
       tailwind-merge: 3.4.1
     optionalDependencies:
       preact: 10.29.8
@@ -3662,7 +3662,7 @@ snapshots:
 
   loupe@3.2.1: {}
 
-  lucide-react@1.28.0(react@19.2.8):
+  lucide-react@1.30.0(react@19.2.8):
     dependencies:
       react: 19.2.8
 
