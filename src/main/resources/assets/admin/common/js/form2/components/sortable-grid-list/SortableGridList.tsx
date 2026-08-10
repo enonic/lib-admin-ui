@@ -4,7 +4,7 @@ import {
     type DragEndEvent,
     type DragStartEvent,
     KeyboardSensor,
-    PointerSensor,
+    TouchSensor,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -18,6 +18,12 @@ import {cn} from '@enonic/ui';
 import {GripVertical} from 'lucide-react';
 import type {JSX, ReactElement, ReactNode} from 'react';
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
+import {
+    FULL_ROW_TOUCH_SENSOR_OPTIONS,
+    HANDLE_TOUCH_SENSOR_OPTIONS,
+    MOUSE_SENSOR_OPTIONS,
+    PrimaryButtonMouseSensor,
+} from '../sortableSensors';
 
 //
 // * Types
@@ -105,6 +111,9 @@ const NON_EDITABLE_INPUT_TYPES = new Set([
     'reset',
     'submit',
 ]);
+const KEYBOARD_SENSOR_OPTIONS = {
+    coordinateGetter: sortableKeyboardCoordinates,
+};
 
 function clampIndex(index: number, itemCount: number): number {
     if (itemCount <= 0) {
@@ -339,7 +348,7 @@ const SortableGridListItem = <T,>({
     const rowRef = useRef<HTMLDivElement | null>(null);
     const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id,
-        disabled: !isMovable,
+        disabled: !enabled || !isMovable,
     });
 
     const handleNodeRef = (node: HTMLDivElement | null) => {
@@ -409,7 +418,6 @@ const SortableGridListItem = <T,>({
         (listeners?.onKeyDown as JSX.KeyboardEventHandler<HTMLDivElement>)?.(e);
     };
 
-    // ? useSortable returns a fresh listeners object each render, so memoizing is a no-op
     // When fullRowDraggable, dnd-kit listeners must not override the guarded handleKeyDown
     let rowListenersSafe: Omit<NonNullable<typeof listeners>, 'onKeyDown'> | undefined;
     if (fullRowDraggable && isMovable && listeners != null) {
@@ -471,7 +479,8 @@ const SortableGridListItem = <T,>({
                 'relative flex items-center rounded outline-none',
                 'focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-inset',
                 isDragging && 'bg-surface-neutral shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5',
-                fullRowDraggable && isMovable && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
+                enabled && fullRowDraggable && isMovable && 'select-none',
+                enabled && fullRowDraggable && isMovable && (isDragging ? 'cursor-grabbing' : 'cursor-grab'),
                 resolvedClassName,
             )}
             {...rowListenersSafe}
@@ -483,7 +492,7 @@ const SortableGridListItem = <T,>({
                         'flex shrink-0 items-center text-subtle',
                         fullRowDraggable
                             ? 'pointer-events-none'
-                            : cn('cursor-grab', 'hover:text-foreground', isDragging && 'cursor-grabbing'),
+                            : cn('cursor-grab touch-none', 'hover:text-foreground', isDragging && 'cursor-grabbing'),
                         'focus-visible:outline-none',
                         !enabled && 'pointer-events-none opacity-30',
                     )}
@@ -530,10 +539,9 @@ export const SortableGridList = <T,>({
     const pendingBlurClearVersionRef = useRef(0);
 
     const sensors = useSensors(
-        useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
-        useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
-        }),
+        useSensor(PrimaryButtonMouseSensor, MOUSE_SENSOR_OPTIONS),
+        useSensor(TouchSensor, fullRowDraggable ? FULL_ROW_TOUCH_SENSOR_OPTIONS : HANDLE_TOUCH_SENSOR_OPTIONS),
+        useSensor(KeyboardSensor, KEYBOARD_SENSOR_OPTIONS),
     );
 
     const getIsItemMovable = useCallback(

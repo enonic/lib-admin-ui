@@ -49,6 +49,7 @@ const mocks = vi.hoisted(() => ({
     tooltip: vi.fn(({children}: {children: unknown}) => children),
     cn: vi.fn((...tokens: Array<string | false | undefined>) => tokens.filter(Boolean).join(' ')),
     useValidationVisibility: vi.fn(() => 'all'),
+    mouseSensor: class MouseSensor {},
 }));
 
 const SUGGESTION_DEBOUNCE_MS = 300;
@@ -72,7 +73,8 @@ vi.mock('@dnd-kit/core', () => ({
     DndContext: mocks.dndContext,
     closestCenter: 'closestCenter',
     KeyboardSensor: 'KeyboardSensor',
-    PointerSensor: 'PointerSensor',
+    MouseSensor: mocks.mouseSensor,
+    TouchSensor: 'TouchSensor',
     useSensor: mocks.useSensor,
     useSensors: mocks.useSensors,
 }));
@@ -436,6 +438,21 @@ describe('TagInput', () => {
         expect(mocks.button).not.toHaveBeenCalled();
     });
 
+    it('focuses the mounted input after a completed field tap', () => {
+        const focus = vi.fn();
+        const requestFrame = vi.fn();
+        vi.stubGlobal('requestAnimationFrame', requestFrame);
+        mocks.useRef.mockImplementationOnce(() => ({current: null})).mockImplementationOnce(() => ({current: {focus}}));
+        const wrapperProps = getFieldWrapperProps({values: [], errors: []});
+        const field = {};
+
+        wrapperProps.onClick({target: field, currentTarget: field});
+
+        expect(wrapperProps.onPointerDown).toBeUndefined();
+        expect(focus).toHaveBeenCalledOnce();
+        expect(requestFrame).not.toHaveBeenCalled();
+    });
+
     it('keeps the tag wrapper out of the tab order', () => {
         const wrapperProps = getFieldWrapperProps({
             values: [ValueTypes.STRING.newValue('alpha')],
@@ -674,6 +691,17 @@ describe('TagInput', () => {
         expect(mocks.useSortable).toHaveBeenCalledTimes(2);
         expect(mocks.useSortable).toHaveBeenNthCalledWith(1, expect.objectContaining({disabled: true}));
         expect(mocks.useSortable).toHaveBeenNthCalledWith(2, expect.objectContaining({disabled: true}));
+    });
+
+    it('configures immediate handle dragging for mouse and touch', () => {
+        renderDraggableTagInput();
+
+        expect(mocks.useSensor.mock.calls.slice(-3)).toEqual([
+            [expect.any(Function), {activationConstraint: {distance: 5}}],
+            ['TouchSensor', {activationConstraint: {distance: 5}}],
+            ['KeyboardSensor', {coordinateGetter: expect.any(Function)}],
+        ]);
+        expect(getFirstDragButtonProps().className).toContain('touch-none');
     });
 
     it('disables dnd-kit auto-scroll for tag dragging', () => {

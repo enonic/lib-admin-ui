@@ -66,6 +66,7 @@ const mocks = vi.hoisted(() => ({
     sortableContext: vi.fn(({children}: {children: unknown}) => children),
     cn: vi.fn((...tokens: Array<string | false | undefined>) => tokens.filter(Boolean).join(' ')),
     gripVertical: vi.fn(() => null),
+    mouseSensor: class MouseSensor {},
 }));
 
 vi.mock('react', () => ({
@@ -81,7 +82,8 @@ vi.mock('@dnd-kit/core', () => ({
     DndContext: mocks.dndContext,
     closestCenter: 'closestCenter',
     KeyboardSensor: 'KeyboardSensor',
-    PointerSensor: 'PointerSensor',
+    MouseSensor: mocks.mouseSensor,
+    TouchSensor: 'TouchSensor',
     useSensor: mocks.useSensor,
     useSensors: mocks.useSensors,
 }));
@@ -489,6 +491,54 @@ describe('SortableGridList', () => {
             .map(([config]) => config as {disabled: boolean});
 
         expect(sortableConfigs.map(config => config.disabled)).toEqual([false, true, false]);
+    });
+
+    it('configures primary-button mouse and mode-specific touch activation', () => {
+        getRowElements();
+
+        const handleSensorCalls = mocks.useSensor.mock.calls.slice(-3);
+        expect(handleSensorCalls).toEqual([
+            [expect.any(Function), {activationConstraint: {distance: 5}}],
+            ['TouchSensor', {activationConstraint: {distance: 5}}],
+            ['KeyboardSensor', {coordinateGetter: expect.any(Function)}],
+        ]);
+
+        const mouseSensor = handleSensorCalls[0]?.[0] as {
+            activators: Array<{
+                handler: (
+                    event: {nativeEvent: {button: number}},
+                    options: {onActivation?: (args: {event: {button: number}}) => void},
+                ) => boolean;
+            }>;
+        };
+        const mouseActivator = mouseSensor.activators[0]?.handler;
+        const onActivation = vi.fn();
+
+        expect(mouseActivator?.({nativeEvent: {button: 1}}, {onActivation})).toBe(false);
+        expect(mouseActivator?.({nativeEvent: {button: 2}}, {onActivation})).toBe(false);
+        expect(onActivation).not.toHaveBeenCalled();
+
+        const primaryEvent = {button: 0};
+        expect(mouseActivator?.({nativeEvent: primaryEvent}, {onActivation})).toBe(true);
+        expect(onActivation).toHaveBeenCalledWith({event: primaryEvent});
+
+        getRowElements({fullRowDraggable: true});
+
+        expect(mocks.useSensor.mock.calls.slice(-3)).toEqual([
+            [expect.any(Function), {activationConstraint: {distance: 5}}],
+            ['TouchSensor', {activationConstraint: {delay: 200, tolerance: 5}}],
+            ['KeyboardSensor', {coordinateGetter: expect.any(Function)}],
+        ]);
+    });
+
+    it('disables every sortable row when enabled is false', () => {
+        getRowElements({enabled: false});
+
+        const sortableConfigs = mocks.useSortable.mock.calls
+            .slice(-ITEMS.length)
+            .map(([config]) => config as {disabled: boolean});
+
+        expect(sortableConfigs.map(config => config.disabled)).toEqual([true, true, true]);
     });
 
     it('omits draggable semantics for rows where isItemMovable returns false', () => {
