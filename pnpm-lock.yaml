@@ -56,7 +56,7 @@ importers:
         version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)
       '@enonic/ui':
         specifier: ^1.0.5
-        version: 1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.28.0(react@19.2.8))(preact@10.29.7)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)
+        version: 1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.28.0(react@19.2.8))(preact@10.29.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)
       '@rollup/plugin-inject':
         specifier: ^5.0.5
         version: 5.0.5
@@ -68,7 +68,7 @@ importers:
         version: 10.5.5(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))
       '@storybook/preact-vite':
         specifier: ~10.5.5
-        version: 10.5.5(esbuild@0.28.1)(preact@10.29.7)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1))
+        version: 10.5.5(esbuild@0.28.1)(preact@10.29.8)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1))
       '@tailwindcss/vite':
         specifier: ~4.3.3
         version: 4.3.3(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1))
@@ -121,8 +121,8 @@ importers:
         specifier: ^6.7.1
         version: 6.7.1(postcss@8.5.26)
       preact:
-        specifier: ^10.29.7
-        version: 10.29.7
+        specifier: ^10.29.8
+        version: 10.29.8
       storybook:
         specifier: ~10.5.5
         version: 10.5.5(@types/react@19.2.14)(react@19.2.8)
@@ -2051,8 +2051,8 @@ packages:
     resolution: {integrity: sha512-u82N74LFzG8ca+dD8puPnplTXoGH4fTPpVGuIbt36G3qvNlkvfD0lEAZSxaly3KX8TS/L1A1gsCEmvKmBcVbkQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  preact@10.29.7:
-    resolution: {integrity: sha512-DCHYrK/B10yUD3ZjLfhZ3WIE/9Vf9VFUODcRE2dRomTYDpJk6z6L9wecSfhfE6M9ZTHUdyQkoC46arIDhEV84Q==}
+  preact@10.29.8:
+    resolution: {integrity: sha512-ej2aVZ+vZ8WO7tvlQWRM9N63A0KzF9q4mWJfDUHgYaIofWY9hu74QdnQrjoPMmZi2/nZ5gN0bJCQF49xQqx09Q==}
     peerDependencies:
       preact-render-to-string: '>=5'
     peerDependenciesMeta:
@@ -2484,7 +2484,7 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@enonic/ui@1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.28.0(react@19.2.8))(preact@10.29.7)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)':
+  '@enonic/ui@1.0.5(@radix-ui/react-slot@1.2.4(@types/react@19.2.14)(react@19.2.8))(focus-trap-react@11.0.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(lucide-react@1.28.0(react@19.2.8))(preact@10.29.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tw-animate-css@1.4.0)':
     dependencies:
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.14)(react@19.2.8)
       class-variance-authority: 0.7.1
@@ -2493,7 +2493,7 @@ snapshots:
       lucide-react: 1.28.0(react@19.2.8)
       tailwind-merge: 3.4.1
     optionalDependencies:
-      preact: 10.29.7
+      preact: 10.29.8
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       tw-animate-css: 1.4.0
@@ -2866,11 +2866,11 @@ snapshots:
     dependencies:
       react: 19.2.8
 
-  '@storybook/preact-vite@10.5.5(esbuild@0.28.1)(preact@10.29.7)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1))':
+  '@storybook/preact-vite@10.5.5(esbuild@0.28.1)(preact@10.29.8)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1))':
     dependencies:
       '@storybook/builder-vite': 10.5.5(esbuild@0.28.1)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))(vite@8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1))
-      '@storybook/preact': 10.5.5(preact@10.29.7)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))
-      preact: 10.29.7
+      '@storybook/preact': 10.5.5(preact@10.29.8)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))
+      preact: 10.29.8
       storybook: 10.5.5(@types/react@19.2.14)(react@19.2.8)
       vite: 8.2.1(@types/node@26.1.2)(esbuild@0.28.1)(jiti@2.7.0)(less@4.8.1)
     transitivePeerDependencies:
@@ -2878,10 +2878,10 @@ snapshots:
       - rollup
       - webpack
 
-  '@storybook/preact@10.5.5(preact@10.29.7)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))':
+  '@storybook/preact@10.5.5(preact@10.29.8)(storybook@10.5.5(@types/react@19.2.14)(react@19.2.8))':
     dependencies:
       '@storybook/global': 5.0.0
-      preact: 10.29.7
+      preact: 10.29.8
       storybook: 10.5.5(@types/react@19.2.14)(react@19.2.8)
       ts-dedent: 2.3.0
 
@@ -3929,7 +3929,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  preact@10.29.7: {}
+  preact@10.29.8: {}
 
   pretty-format@27.5.1:
     dependencies:
