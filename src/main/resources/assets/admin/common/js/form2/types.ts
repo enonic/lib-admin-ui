@@ -42,6 +42,7 @@ export type InputTypeComponent<C extends InputTypeConfig = InputTypeConfig> = Co
 
 /** Props for self-managed input type components (e.g. ComboBox) that handle their own multi-value UI. */
 export type SelfManagedComponentProps<C extends InputTypeConfig = InputTypeConfig> = {
+    occurrenceIds: string[];
     values: Value[];
     onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;

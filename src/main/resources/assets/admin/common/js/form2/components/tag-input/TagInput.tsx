@@ -61,6 +61,15 @@ export {
 const TAG_INPUT_NAME = 'TagInput';
 const SUGGESTION_LIST_ID = 'tag-input-suggestions';
 const SUGGESTION_DEBOUNCE_MS = 300;
+const FOCUSABLE_SELECTOR = [
+    'a[href]',
+    'button',
+    'input:not([type="hidden"])',
+    'select',
+    'textarea',
+    '[contenteditable]:not([contenteditable="false"])',
+    '[tabindex]',
+].join(',');
 
 //
 // * Types
@@ -291,41 +300,67 @@ function getTagViewState(occurrences: Occurrences, enabled: boolean, valueCount:
     };
 }
 
-function getOrCreateTagId(idsByValue: WeakMap<Value, string>, nextId: RefObject<number>, value: Value): string {
-    let id = idsByValue.get(value);
-    if (id == null) {
-        id = `tag-${nextId.current}`;
-        nextId.current += 1;
-        idsByValue.set(value, id);
-    }
-    return id;
-}
-
 function focusElementNextFrame(element: HTMLElement | null | undefined): void {
     requestAnimationFrame(() => element?.focus());
 }
 
-function getNextFocusableElement(element: HTMLElement): HTMLElement | undefined {
-    const container = element.closest('[data-component="TagInput"]');
-    const focusableElements = Array.from(
-        element.ownerDocument.querySelectorAll<HTMLElement>(
-            'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])',
-        ),
-    );
-    const currentIndex = focusableElements.indexOf(element);
-    if (currentIndex < 0) {
-        return undefined;
+function isTabTarget(element: HTMLElement): boolean {
+    if (!element.isConnected || element.tabIndex < 0 || element.matches(':disabled')) {
+        return false;
     }
 
-    return focusableElements
-        .slice(currentIndex + 1)
-        .find(
-            candidate =>
-                !container?.contains(candidate) &&
-                candidate.tabIndex >= 0 &&
-                !candidate.hidden &&
-                !('disabled' in candidate && candidate.disabled === true),
-        );
+    if (element.closest('[hidden], [inert]') != null) {
+        return false;
+    }
+
+    const style = element.ownerDocument.defaultView?.getComputedStyle(element);
+    if (style?.display === 'none' || style?.visibility === 'hidden' || style?.visibility === 'collapse') {
+        return false;
+    }
+
+    return element.getClientRects().length > 0;
+}
+
+function getNextFocusableElements(element: HTMLElement): HTMLElement[] {
+    const container = element.closest('[data-component="TagInput"]');
+    const focusableElements = Array.from(element.ownerDocument.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
+        .map((candidate, domIndex) => ({candidate, domIndex}))
+        .sort((first, second) => {
+            const firstTabIndex = first.candidate.tabIndex;
+            const secondTabIndex = second.candidate.tabIndex;
+            const firstIsPositive = firstTabIndex > 0;
+            const secondIsPositive = secondTabIndex > 0;
+
+            if (firstIsPositive && secondIsPositive && firstTabIndex !== secondTabIndex) {
+                return firstTabIndex - secondTabIndex;
+            }
+            if (firstIsPositive !== secondIsPositive) {
+                return firstIsPositive ? -1 : 1;
+            }
+            return first.domIndex - second.domIndex;
+        })
+        .map(({candidate}) => candidate);
+    const currentIndex = focusableElements.indexOf(element);
+    if (currentIndex < 0) {
+        return [];
+    }
+
+    return focusableElements.slice(currentIndex + 1).filter(candidate => !container?.contains(candidate));
+}
+
+function focusFirstAvailable(candidates: HTMLElement[]): boolean {
+    for (const candidate of candidates) {
+        if (!isTabTarget(candidate)) {
+            continue;
+        }
+
+        candidate.focus();
+        if (candidate.ownerDocument.activeElement === candidate) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function clearCleanupRef(cleanupRef: RefObject<(() => void) | null>): void {
@@ -737,6 +772,7 @@ const TagItem = ({
                     className={cn('h-5 w-36 bg-transparent font-semibold outline-none', editInvalid && 'text-error')}
                     value={editDraft}
                     disabled={!enabled}
+                    aria-label={`${t('action.edit')}: ${label}`}
                     aria-invalid={editInvalid || undefined}
                     onChange={event => onEditChange(event.currentTarget.value)}
                     onKeyDown={handleEditKeyDown}
@@ -790,6 +826,7 @@ const TagItem = ({
 //
 
 export const TagInput = ({
+    occurrenceIds,
     values,
     onChange,
     onAdd,
@@ -814,8 +851,6 @@ export const TagInput = ({
     const removeTagRefs = useRef<Array<HTMLButtonElement | null>>([]);
     const draftRef = useRef(draft);
     const skipBlurCommit = useRef(false);
-    const idsByValue = useRef(new WeakMap<Value, string>());
-    const nextId = useRef(0);
     const isDraggingRef = useRef(false);
     const dragScrollListener = useDragScrollListener();
     draftRef.current = draft;
@@ -827,7 +862,7 @@ export const TagInput = ({
         entries.push({
             value,
             originalIndex: index,
-            id: getOrCreateTagId(idsByValue.current, nextId, value),
+            id: occurrenceIds[index],
         });
 
         return entries;
@@ -1032,8 +1067,8 @@ export const TagInput = ({
 
         const nextVisibleTagCount = visibleTagCount + labelsToCommit.length;
         const hasRoomForAnother = maximum === 0 || nextVisibleTagCount < maximum;
-        const nextFocusableElement =
-            isMobile && focusTarget != null && !hasRoomForAnother ? getNextFocusableElement(focusTarget) : undefined;
+        const nextFocusableElements =
+            isMobile && focusTarget != null && !hasRoomForAnother ? getNextFocusableElements(focusTarget) : [];
         const usedHiddenSlots = Math.min(Math.max(values.length - visibleTagCount, 0), labelsToCommit.length);
 
         if (usedHiddenSlots > 0) {
@@ -1063,11 +1098,9 @@ export const TagInput = ({
                 const lastTagIndex = nextVisibleTagCount - 1;
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        (
-                            nextFocusableElement ??
-                            removeTagRefs.current[lastTagIndex] ??
-                            tagRefs.current[lastTagIndex]
-                        )?.focus();
+                        if (!focusFirstAvailable(nextFocusableElements)) {
+                            (removeTagRefs.current[lastTagIndex] ?? tagRefs.current[lastTagIndex])?.focus();
+                        }
                     });
                 });
             }
@@ -1150,7 +1183,7 @@ export const TagInput = ({
         if (direction === -1) {
             focusRemoveAt(index + direction);
         } else {
-            focusLabelAt(index + direction);
+            focusTagAt(index + direction);
         }
     };
 
@@ -1207,8 +1240,8 @@ export const TagInput = ({
         }
 
         const editingVisibleIndex = tagEntries.findIndex(entry => entry.id === editingEntry.id);
-        const nextFocusableElement =
-            explicit && isMobile && !canAdd && focusTarget != null ? getNextFocusableElement(focusTarget) : undefined;
+        const nextFocusableElements =
+            explicit && isMobile && !canAdd && focusTarget != null ? getNextFocusableElements(focusTarget) : [];
         const currentLabel = normalizeTagDraft(getTagLabel(editingEntry.value));
         if (normalized !== currentLabel) {
             onChange(editingEntry.originalIndex, ValueTypes.STRING.newValue(normalized), normalized);
@@ -1220,11 +1253,11 @@ export const TagInput = ({
             } else {
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        (
-                            nextFocusableElement ??
-                            removeTagRefs.current[editingVisibleIndex] ??
-                            tagRefs.current[editingVisibleIndex]
-                        )?.focus();
+                        if (!focusFirstAvailable(nextFocusableElements)) {
+                            (
+                                removeTagRefs.current[editingVisibleIndex] ?? tagRefs.current[editingVisibleIndex]
+                            )?.focus();
+                        }
                     });
                 });
             }
