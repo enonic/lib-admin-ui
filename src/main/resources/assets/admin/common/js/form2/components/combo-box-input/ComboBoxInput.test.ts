@@ -58,6 +58,7 @@ type ComboBoxInputProps = SelfManagedComponentProps<ComboBoxConfig>;
 
 function makeProps(overrides: Partial<ComboBoxInputProps> = {}): ComboBoxInputProps {
     return {
+        occurrenceIds: [],
         values: [],
         onChange: vi.fn(),
         onAdd: vi.fn(),

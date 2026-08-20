@@ -259,7 +259,7 @@ describe('InputField', () => {
         const propertySet = new PropertyTree().getRoot();
         const move = vi.fn(() => false);
         mocks.useOccurrenceManager.mockReturnValue({
-            state: {...makeManagerState(), values: [], occurrenceValidation: []},
+            state: {...makeManagerState(), ids: [], values: [], occurrenceValidation: []},
             add: vi.fn(() => true),
             remove: vi.fn(() => true),
             move,
@@ -271,6 +271,7 @@ describe('InputField', () => {
         const child = getChildAt(element, 1);
 
         expect(child.type).toBe(component);
+        expect(child.props.occurrenceIds).toEqual([]);
         expect(mocks.occurrenceListRoot).not.toHaveBeenCalled();
         expect(mocks.useOccurrenceManager).toHaveBeenCalledWith(
             expect.objectContaining({
