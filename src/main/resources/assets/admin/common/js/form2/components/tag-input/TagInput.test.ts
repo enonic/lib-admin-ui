@@ -24,7 +24,9 @@ const mocks = vi.hoisted(() => ({
     ]),
     useEffect: vi.fn(),
     useId: vi.fn(() => 'test-id'),
+    useLayoutEffect: vi.fn(),
     useRef: vi.fn((initial: unknown) => ({current: initial})),
+    useSyncExternalStore: vi.fn((_subscribe: unknown, getSnapshot: () => unknown) => getSnapshot()),
     useSensor: vi.fn(() => null),
     useSensors: vi.fn((...sensors: unknown[]) => sensors),
     sortableKeyboardCoordinates: vi.fn(() => ({x: 999, y: 555})),
@@ -49,6 +51,8 @@ const mocks = vi.hoisted(() => ({
     tooltip: vi.fn(({children}: {children: unknown}) => children),
     cn: vi.fn((...tokens: Array<string | false | undefined>) => tokens.filter(Boolean).join(' ')),
     useValidationVisibility: vi.fn(() => 'all'),
+    getIsMobile: vi.fn(() => false),
+    subscribeToMobileChanges: vi.fn(),
     mouseSensor: class MouseSensor {},
 }));
 
@@ -58,7 +62,9 @@ vi.mock('react', () => ({
     useState: mocks.useState,
     useEffect: mocks.useEffect,
     useId: mocks.useId,
+    useLayoutEffect: mocks.useLayoutEffect,
     useRef: mocks.useRef,
+    useSyncExternalStore: mocks.useSyncExternalStore,
 }));
 
 vi.mock('@enonic/ui', () => ({
@@ -67,6 +73,8 @@ vi.mock('@enonic/ui', () => ({
     IconButton: mocks.iconButton,
     Tooltip: mocks.tooltip,
     cn: mocks.cn,
+    getIsMobile: mocks.getIsMobile,
+    subscribeToMobileChanges: mocks.subscribeToMobileChanges,
 }));
 
 vi.mock('@dnd-kit/core', () => ({
@@ -341,6 +349,70 @@ function getSuggestionButton(label: string, overrides: Partial<TagInputProps> = 
     return match.props;
 }
 
+function getTagLabelButton(overrides: Partial<TagInputProps> = {}, index = 0): Record<string, any> {
+    let currentIndex = 0;
+    const match = findElementInTree(getTagInputElement(overrides), element => {
+        if (element.type !== 'button' || element.props['data-tag-label'] !== true) {
+            return false;
+        }
+        return currentIndex++ === index;
+    });
+
+    if (match == null) {
+        throw new Error('Tag label button was not rendered');
+    }
+
+    return match.props;
+}
+
+function getTagEditorElement(overrides: Partial<TagInputProps> = {}) {
+    const match = findElementInTree(
+        getTagInputElement(overrides),
+        element => element.type === 'input' && element.props['data-tag-editor'] === true,
+    );
+
+    if (match == null) {
+        throw new Error('Tag editor was not rendered');
+    }
+
+    return match;
+}
+
+function getTagEditor(overrides: Partial<TagInputProps> = {}): Record<string, any> {
+    return getTagEditorElement(overrides).props;
+}
+
+function mockTagEditingState({
+    draft = '',
+    isInputActive = false,
+    editingId = null,
+    selectText = true,
+    editDraft = '',
+    setEditingId = vi.fn(),
+    setEditDraft = vi.fn(),
+    setIsInputActive = vi.fn(),
+}: {
+    draft?: string;
+    isInputActive?: boolean;
+    editingId?: string | null;
+    selectText?: boolean;
+    editDraft?: string;
+    setEditingId?: ReturnType<typeof vi.fn>;
+    setEditDraft?: ReturnType<typeof vi.fn>;
+    setIsInputActive?: ReturnType<typeof vi.fn>;
+} = {}): void {
+    mocks.useState
+        .mockImplementationOnce(() => [draft, vi.fn()])
+        .mockImplementationOnce(() => [isInputActive, setIsInputActive])
+        .mockImplementationOnce(() => [false, vi.fn()])
+        .mockImplementationOnce(() => [0, vi.fn()])
+        .mockImplementationOnce(() => [[], vi.fn()])
+        .mockImplementationOnce(() => [-1, vi.fn()])
+        .mockImplementationOnce(() => [false, vi.fn()])
+        .mockImplementationOnce(() => [editingId == null ? null : {id: editingId, selectText}, setEditingId])
+        .mockImplementationOnce(() => [editDraft, setEditDraft]);
+}
+
 describe('TagInput helpers', () => {
     it('trims whitespace and trailing separators from draft values', () => {
         expect(normalizeTagDraft('  alpha,  ')).toBe('alpha');
@@ -424,6 +496,7 @@ describe('TagInput', () => {
             vi.fn(),
         ]);
         mocks.useValidationVisibility.mockReturnValue('all');
+        mocks.getIsMobile.mockReturnValue(false);
     });
 
     afterEach(() => {
@@ -622,27 +695,32 @@ describe('TagInput', () => {
         expect(getFirstDragButtonProps().tabIndex).toBe(-1);
     });
 
-    it('makes the last drag handle the tab entry point when max tags hide the inline input', () => {
-        renderTagInput({
+    it('makes the last tag label the tab entry point when max tags hide the inline input', () => {
+        const props = {
             values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
             occurrences: Occurrences.minmax(0, 2),
             errors: [makeOccurrenceValidation(0), makeOccurrenceValidation(1)],
-        });
+        };
+        renderTagInput(props);
 
         expect(getIconButtonProps('field.occurrence.action.reorder', 0).tabIndex).toBe(-1);
-        expect(getIconButtonProps('field.occurrence.action.reorder', 1).tabIndex).toBe(0);
+        expect(getIconButtonProps('field.occurrence.action.reorder', 1).tabIndex).toBe(-1);
         expect(getIconButtonProps('field.occurrence.action.remove', 0).tabIndex).toBe(-1);
         expect(getIconButtonProps('field.occurrence.action.remove', 1).tabIndex).toBe(-1);
+        expect(getTagLabelButton(props).tabIndex).toBe(-1);
+        expect(getTagLabelButton(props, 1).tabIndex).toBe(0);
     });
 
-    it('makes the last remove button the tab entry point when max tags hide the inline input and dragging is unavailable', () => {
-        renderTagInput({
+    it('makes the tag label the tab entry point when max tags hide the inline input and dragging is unavailable', () => {
+        const props = {
             values: [ValueTypes.STRING.newValue('alpha')],
             occurrences: Occurrences.minmax(0, 1),
             errors: [makeOccurrenceValidation(0)],
-        });
+        };
+        renderTagInput(props);
 
-        expect(getFirstRemoveButtonProps().tabIndex).toBe(0);
+        expect(getFirstRemoveButtonProps().tabIndex).toBe(-1);
+        expect(getTagLabelButton(props).tabIndex).toBe(0);
     });
 
     it('keeps tag items themselves out of the tab order when focus is within the component', () => {
@@ -654,6 +732,257 @@ describe('TagInput', () => {
 
         expect(tagItemProps.tabIndex).toBeUndefined();
         expect(tagItemProps.onKeyDown).toBeUndefined();
+    });
+
+    it('starts editing a tag when its label is clicked', () => {
+        const setEditingIndex = vi.fn();
+        const setEditDraft = vi.fn();
+        mockTagEditingState({setEditingId: setEditingIndex, setEditDraft});
+
+        getTagLabelButton({
+            values: [ValueTypes.STRING.newValue('alpha')],
+        }).onClick();
+
+        expect(setEditingIndex).toHaveBeenCalledWith({id: 'tag-0', selectText: true});
+        expect(setEditDraft).toHaveBeenCalledWith('alpha');
+    });
+
+    it.each([
+        {key: 'Enter', draft: 'alpha', selectText: true},
+        {key: ' ', draft: 'alpha', selectText: true},
+        {key: 'z', draft: 'z', selectText: false},
+    ])('starts editing a focused tag label with "$key"', ({key, draft, selectText}) => {
+        const setEditingState = vi.fn();
+        const setEditDraft = vi.fn();
+        const preventDefault = vi.fn();
+        const stopPropagation = vi.fn();
+        mockTagEditingState({setEditingId: setEditingState, setEditDraft});
+
+        const labelButton = getTagLabelButton({values: [ValueTypes.STRING.newValue('alpha')]});
+        labelButton.onKeyDown({
+            key,
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault,
+            stopPropagation,
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(stopPropagation).toHaveBeenCalledOnce();
+        expect(labelButton['aria-label']).toBe('action.edit: alpha');
+        expect(setEditingState).toHaveBeenCalledWith({id: 'tag-0', selectText});
+        expect(setEditDraft).toHaveBeenCalledWith(draft);
+    });
+
+    it('commits an edited tag with Enter', () => {
+        const onChange = vi.fn();
+        const setEditingIndex = vi.fn();
+        const setEditDraft = vi.fn();
+        const setIsInputActive = vi.fn();
+        const focusDraft = vi.fn();
+        const preventDefault = vi.fn();
+        const stopPropagation = vi.fn();
+        mocks.useRef
+            .mockImplementationOnce(() => ({current: null}))
+            .mockImplementationOnce(() => ({current: {focus: focusDraft}}));
+        mockTagEditingState({
+            editingId: 'tag-0',
+            editDraft: 'stale draft',
+            setEditingId: setEditingIndex,
+            setEditDraft,
+            setIsInputActive,
+        });
+
+        const editor = getTagEditor({
+            onChange,
+            values: [ValueTypes.STRING.newValue('alpha')],
+        });
+        editor.onKeyDown({key: 'Enter', preventDefault, stopPropagation, currentTarget: {value: 'renamed'}});
+        editor.onBlur({currentTarget: {value: 'stale draft'}});
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(stopPropagation).toHaveBeenCalledOnce();
+        expect(onChange).toHaveBeenCalledWith(0, ValueTypes.STRING.newValue('renamed'), 'renamed');
+        expect(setEditingIndex).toHaveBeenCalledWith(null);
+        expect(setEditDraft).toHaveBeenCalledWith('');
+        expect(setIsInputActive).toHaveBeenCalledWith(true);
+        expect(focusDraft).toHaveBeenCalledOnce();
+    });
+
+    it.each([
+        {name: 'selects existing text', draft: 'alpha', selectText: true},
+        {name: 'places caret after typed text', draft: 'z', selectText: false},
+    ])('$name when editing starts', ({draft, selectText}) => {
+        const layoutEffects: Array<() => void> = [];
+        const focus = vi.fn();
+        const select = vi.fn();
+        const setSelectionRange = vi.fn();
+        mocks.useLayoutEffect.mockImplementation((effect: () => void) => {
+            layoutEffects.push(effect);
+        });
+        mockTagEditingState({editingId: 'tag-0', editDraft: draft, selectText});
+
+        const editor = getTagEditorElement({
+            values: [ValueTypes.STRING.newValue('alpha')],
+        }) as {props: Record<string, any>; ref?: {current: unknown}};
+        if (editor.ref == null) {
+            throw new Error('Tag editor ref was not rendered');
+        }
+        editor.ref.current = {value: draft, focus, select, setSelectionRange};
+        layoutEffects.at(-1)?.();
+
+        expect(focus).toHaveBeenCalledOnce();
+        expect(select).toHaveBeenCalledTimes(selectText ? 1 : 0);
+        expect(setSelectionRange).toHaveBeenCalledTimes(selectText ? 0 : 1);
+        if (!selectText) {
+            expect(setSelectionRange).toHaveBeenCalledWith(draft.length, draft.length);
+        }
+    });
+
+    it('returns focus to the tag controls when Escape cancels editing', () => {
+        const focusTag = vi.fn();
+        const setEditingId = vi.fn();
+        const setEditDraft = vi.fn();
+        const preventDefault = vi.fn();
+        const stopPropagation = vi.fn();
+        mocks.useRef.mockImplementationOnce(() => ({
+            current: {querySelectorAll: vi.fn(() => ({item: vi.fn(() => ({focus: focusTag}))}))},
+        }));
+        mockTagEditingState({editingId: 'tag-0', editDraft: 'alpha', setEditingId, setEditDraft});
+
+        getTagEditor({values: [ValueTypes.STRING.newValue('alpha')]}).onKeyDown({
+            key: 'Escape',
+            preventDefault,
+            stopPropagation,
+        });
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(stopPropagation).toHaveBeenCalledOnce();
+        expect(setEditingId).toHaveBeenCalledWith(null);
+        expect(setEditDraft).toHaveBeenCalledWith('');
+        expect(focusTag).toHaveBeenCalledOnce();
+    });
+
+    it('does not suppress blur when editing starts again after Escape', () => {
+        const layoutEffects: Array<() => void> = [];
+        const onChange = vi.fn();
+        mocks.useLayoutEffect.mockImplementation((effect: () => void) => {
+            layoutEffects.push(effect);
+        });
+        mockTagEditingState({editingId: 'tag-0', editDraft: 'alpha'});
+
+        const editor = getTagEditor({
+            onChange,
+            values: [ValueTypes.STRING.newValue('alpha')],
+        });
+        editor.onKeyDown({
+            key: 'Escape',
+            preventDefault: vi.fn(),
+            stopPropagation: vi.fn(),
+        });
+        layoutEffects.at(-1)?.();
+        editor.onBlur({currentTarget: {value: 'renamed'}});
+
+        expect(onChange).toHaveBeenCalledWith(0, ValueTypes.STRING.newValue('renamed'), 'renamed');
+    });
+
+    it('does not suppress a later blur after Enter rejects a duplicate edit', () => {
+        const onChange = vi.fn();
+        const preventDefault = vi.fn();
+        const stopPropagation = vi.fn();
+        mockTagEditingState({editingId: 'tag-1', editDraft: 'alpha'});
+
+        const editor = getTagEditor({
+            onChange,
+            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
+        });
+        editor.onKeyDown({key: 'Enter', preventDefault, stopPropagation, currentTarget: {value: 'alpha'}});
+        editor.onBlur({currentTarget: {value: 'renamed'}});
+
+        expect(onChange).toHaveBeenCalledOnce();
+        expect(onChange).toHaveBeenCalledWith(1, ValueTypes.STRING.newValue('renamed'), 'renamed');
+    });
+
+    it('focuses the next field after mobile Enter edits a tag at the maximum', () => {
+        const onChange = vi.fn();
+        const focusDisabled = vi.fn();
+        const focusNext = vi.fn();
+        const disabledInput = {focus: focusDisabled, disabled: true, hidden: false, tabIndex: 0};
+        const nextInput = {focus: focusNext, hidden: false, tabIndex: 0};
+        const currentInput: Record<string, any> = {
+            value: 'renamed',
+            closest: vi.fn(() => null),
+        };
+        currentInput.ownerDocument = {
+            querySelectorAll: vi.fn(() => [currentInput, disabledInput, nextInput]),
+        };
+        mocks.getIsMobile.mockReturnValue(true);
+        mockTagEditingState({editingId: 'tag-0', editDraft: 'alpha'});
+
+        const editor = getTagEditor({
+            onChange,
+            values: [ValueTypes.STRING.newValue('alpha')],
+            occurrences: Occurrences.minmax(0, 1),
+        });
+        editor.onKeyDown({
+            key: 'Enter',
+            preventDefault: vi.fn(),
+            stopPropagation: vi.fn(),
+            currentTarget: currentInput,
+        });
+
+        expect(onChange).toHaveBeenCalledWith(0, ValueTypes.STRING.newValue('renamed'), 'renamed');
+        expect(focusDisabled).not.toHaveBeenCalled();
+        expect(focusNext).toHaveBeenCalledOnce();
+    });
+
+    it('removes an empty edited tag and starts editing the previous tag on Backspace', () => {
+        const onRemove = vi.fn();
+        const setEditingId = vi.fn();
+        const setEditDraft = vi.fn();
+        const preventDefault = vi.fn();
+        const stopPropagation = vi.fn();
+        mockTagEditingState({editingId: 'tag-1', setEditingId, setEditDraft});
+
+        const editor = getTagEditor({
+            onRemove,
+            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
+        });
+        editor.onKeyDown({key: 'Backspace', preventDefault, stopPropagation, currentTarget: {value: ''}});
+        editor.onBlur({currentTarget: {value: ''}});
+
+        expect(preventDefault).toHaveBeenCalledOnce();
+        expect(stopPropagation).toHaveBeenCalledOnce();
+        expect(onRemove).toHaveBeenCalledOnce();
+        expect(onRemove).toHaveBeenCalledWith(1);
+        expect(setEditingId).toHaveBeenCalledWith({id: 'tag-0', selectText: true});
+        expect(setEditDraft).toHaveBeenCalledWith('alpha');
+    });
+
+    it('removes an edited tag when its empty editor loses focus', () => {
+        const onChange = vi.fn();
+        const onRemove = vi.fn();
+        const setEditingId = vi.fn();
+        const setEditDraft = vi.fn();
+        mockTagEditingState({
+            editingId: 'tag-0',
+            editDraft: 'previous value',
+            setEditingId,
+            setEditDraft,
+        });
+
+        const editor = getTagEditor({
+            onChange,
+            onRemove,
+            values: [ValueTypes.STRING.newValue('previous value')],
+        });
+        editor.onBlur({currentTarget: {value: ''}});
+
+        expect(onRemove).toHaveBeenCalledWith(0);
+        expect(onChange).not.toHaveBeenCalled();
+        expect(setEditingId).toHaveBeenCalledWith(null);
+        expect(setEditDraft).toHaveBeenCalledWith('');
     });
 
     it('keeps tag removal available when the current count matches the minimum occurrences', () => {
@@ -930,6 +1259,67 @@ describe('TagInput', () => {
         expect(focus).toHaveBeenCalledOnce();
     });
 
+    it.each([
+        {
+            name: 'focuses next field at maximum',
+            values: ['one', 'two', 'three', 'four'],
+            maximum: 5,
+            focusesNext: true,
+        },
+        {name: 'keeps focus while another tag fits', values: ['one'], maximum: 3, focusesNext: false},
+    ])('mobile Enter $name', ({values, maximum, focusesNext}) => {
+        const onAdd = vi.fn();
+        const focusCurrent = vi.fn();
+        const focusNext = vi.fn();
+        const stopPropagation = vi.fn();
+        const nextInput = {focus: focusNext, hidden: false, tabIndex: 0};
+        const currentInput: Record<string, any> = {
+            focus: focusCurrent,
+            closest: vi.fn(() => null),
+        };
+        currentInput.ownerDocument = {
+            querySelectorAll: vi.fn(() => [currentInput, nextInput]),
+        };
+        mocks.getIsMobile.mockReturnValue(true);
+        mocks.useState.mockImplementationOnce(() => ['new', vi.fn()]).mockImplementationOnce(() => [true, vi.fn()]);
+
+        renderTagInput({
+            onAdd,
+            values: values.map(value => ValueTypes.STRING.newValue(value)),
+            occurrences: Occurrences.minmax(0, maximum),
+        });
+
+        getLastInputProps().onKeyDown({
+            key: 'Enter',
+            altKey: false,
+            ctrlKey: false,
+            metaKey: false,
+            preventDefault: vi.fn(),
+            stopPropagation,
+            currentTarget: currentInput,
+        });
+
+        expect(onAdd).toHaveBeenCalledWith(ValueTypes.STRING.newValue('new'));
+        expect(stopPropagation).toHaveBeenCalledOnce();
+        expect(focusCurrent).toHaveBeenCalledTimes(focusesNext ? 0 : 1);
+        expect(focusNext).toHaveBeenCalledTimes(focusesNext ? 1 : 0);
+    });
+
+    it('uses mobile keyboard action hints without changing the desktop input', () => {
+        for (const {mobile, maximum, expected} of [
+            {mobile: true, maximum: 2, expected: 'next'},
+            {mobile: true, maximum: 3, expected: 'enter'},
+            {mobile: false, maximum: 2, expected: undefined},
+        ]) {
+            mocks.getIsMobile.mockReturnValue(mobile);
+            renderTagInput({
+                values: [ValueTypes.STRING.newValue('alpha')],
+                occurrences: Occurrences.minmax(0, maximum),
+            });
+            expect(getLastInputProps().enterKeyHint).toBe(expected);
+        }
+    });
+
     it('creates one tag per pasted spreadsheet cell', () => {
         const onAdd = vi.fn();
         const preventDefault = vi.fn();
@@ -1152,13 +1542,17 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => [[], vi.fn()])
             .mockImplementationOnce(() => [-1, vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [null, vi.fn()])
+            .mockImplementationOnce(() => ['', vi.fn()])
             .mockImplementationOnce(() => ['beta', vi.fn()])
             .mockImplementationOnce(() => [true, vi.fn()])
             .mockImplementationOnce(() => [false, vi.fn()])
             .mockImplementationOnce(() => [0, vi.fn()])
             .mockImplementationOnce(() => [[], vi.fn()])
             .mockImplementationOnce(() => [-1, vi.fn()])
-            .mockImplementationOnce(() => [false, vi.fn()]);
+            .mockImplementationOnce(() => [false, vi.fn()])
+            .mockImplementationOnce(() => [null, vi.fn()])
+            .mockImplementationOnce(() => ['', vi.fn()]);
 
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
@@ -1551,11 +1945,13 @@ describe('TagInput', () => {
         expect(setIsInputActive).toHaveBeenCalledWith(false);
     });
 
-    it('closes an empty draft input and moves focus to the previous tag on Backspace', () => {
+    it('starts editing the last tag from an empty draft on Backspace', () => {
         const onRemove = vi.fn();
         const blur = vi.fn();
         const focusPreviousTag = vi.fn();
         const setIsInputActive = vi.fn();
+        const setEditingIndex = vi.fn();
+        const setEditDraft = vi.fn();
         const wrapperRef = {current: null};
         const inputRef = {current: null};
         const tagRefs = {current: [{focus: vi.fn()}, {focus: vi.fn()}]};
@@ -1567,9 +1963,7 @@ describe('TagInput', () => {
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
 
-        mocks.useState
-            .mockImplementationOnce(() => ['', vi.fn()])
-            .mockImplementationOnce(() => [true, setIsInputActive]);
+        mockTagEditingState({isInputActive: true, setEditingId: setEditingIndex, setEditDraft, setIsInputActive});
         mocks.useRef
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
@@ -1600,7 +1994,9 @@ describe('TagInput', () => {
 
         expect(onRemove).not.toHaveBeenCalled();
         expect(blur).toHaveBeenCalledOnce();
-        expect(focusPreviousTag).toHaveBeenCalledOnce();
+        expect(focusPreviousTag).not.toHaveBeenCalled();
+        expect(setEditingIndex).toHaveBeenCalledWith({id: 'tag-1', selectText: true});
+        expect(setEditDraft).toHaveBeenCalledWith('beta');
         expect(setIsInputActive).toHaveBeenCalledWith(false);
     });
 
@@ -1708,6 +2104,24 @@ describe('TagInput', () => {
         expect(blur).toHaveBeenCalledOnce();
         expect(focusPreviousTag).toHaveBeenCalledOnce();
         expect(setIsInputActive).toHaveBeenCalledWith(false);
+    });
+
+    it('moves focus from an empty draft to the last tag label on ArrowLeft', () => {
+        const focusLabel = vi.fn();
+        const blur = vi.fn();
+        mocks.useRef.mockImplementationOnce(() => ({
+            current: {querySelectorAll: vi.fn(() => ({item: vi.fn(() => ({focus: focusLabel}))}))},
+        }));
+
+        renderTagInput({values: [ValueTypes.STRING.newValue('alpha')]});
+        getLastInputProps().onKeyDown({
+            key: 'ArrowLeft',
+            preventDefault: vi.fn(),
+            currentTarget: {blur, value: '', selectionStart: 0, selectionEnd: 0},
+        });
+
+        expect(blur).toHaveBeenCalledOnce();
+        expect(focusLabel).toHaveBeenCalledOnce();
     });
 
     it('removes the focused tag when the remove button handles a keyboard activation', () => {
@@ -2016,6 +2430,7 @@ describe('TagInput', () => {
             ctrlKey: false,
             metaKey: false,
             preventDefault,
+            currentTarget: {closest: vi.fn(() => null)},
         });
 
         expect(preventDefault).toHaveBeenCalledOnce();
@@ -2069,127 +2484,38 @@ describe('TagInput', () => {
         expect(sortableKeyDown).not.toHaveBeenCalled();
     });
 
-    it('moves focus from drag button to remove button on ArrowRight', () => {
-        const focus = vi.fn();
-        const wrapperRef = {current: null};
-        const inputRef = {current: null};
-        const tagRefs = {current: []};
-        const removeTagRefs = {current: []};
-        const draftRef = {current: ''};
-        const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
-        const scrollListenerCleanupRef = {current: null};
-        const isDraggingRef = {current: false};
-        const dragButtonRef = {current: null};
-        const removeButtonRef = {current: {focus}};
-
-        mocks.useRef
-            .mockImplementationOnce(() => wrapperRef)
-            .mockImplementationOnce(() => inputRef)
-            .mockImplementationOnce(() => tagRefs)
-            .mockImplementationOnce(() => removeTagRefs)
-            .mockImplementationOnce(() => draftRef)
-            .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef)
-            .mockImplementationOnce(() => dragButtonRef)
-            .mockImplementationOnce(() => removeButtonRef);
-
-        renderTagInput({
+    it('navigates drag, label, and remove controls with arrow keys', () => {
+        const props = {
             values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
             occurrences: Occurrences.minmax(0, 3),
-            errors: [makeOccurrenceValidation(0), makeOccurrenceValidation(1)],
-        });
+        };
+        renderTagInput(props);
 
-        const preventDefault = vi.fn();
-        getFirstDragButtonProps().onKeyDown({
-            key: 'ArrowRight',
-            shiftKey: false,
-            altKey: false,
-            ctrlKey: false,
-            metaKey: false,
-            preventDefault,
-        });
+        const navigate = (handler: (event: Record<string, any>) => void, key: string) => {
+            const focus = vi.fn();
+            const preventDefault = vi.fn();
+            handler({
+                key,
+                altKey: false,
+                ctrlKey: false,
+                metaKey: false,
+                preventDefault,
+                currentTarget: {closest: vi.fn(() => ({querySelector: vi.fn(() => ({focus}))}))},
+            });
+            expect(preventDefault).toHaveBeenCalledOnce();
+            expect(focus).toHaveBeenCalledOnce();
+        };
 
-        expect(preventDefault).toHaveBeenCalledOnce();
-        expect(focus).toHaveBeenCalledOnce();
-    });
-
-    it('moves focus from remove button to drag button on ArrowLeft', () => {
-        const focus = vi.fn();
-        const wrapperRef = {current: null};
-        const inputRef = {current: null};
-        const tagRefs = {current: []};
-        const removeTagRefs = {current: []};
-        const draftRef = {current: ''};
-        const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
-        const scrollListenerCleanupRef = {current: null};
-        const isDraggingRef = {current: false};
-        const dragButtonRef = {current: {focus}};
-        const removeButtonRef = {current: null};
-
-        mocks.useRef
-            .mockImplementationOnce(() => wrapperRef)
-            .mockImplementationOnce(() => inputRef)
-            .mockImplementationOnce(() => tagRefs)
-            .mockImplementationOnce(() => removeTagRefs)
-            .mockImplementationOnce(() => draftRef)
-            .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef)
-            .mockImplementationOnce(() => dragButtonRef)
-            .mockImplementationOnce(() => removeButtonRef);
-
-        renderTagInput({
-            values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
-            occurrences: Occurrences.minmax(0, 3),
-            errors: [makeOccurrenceValidation(0), makeOccurrenceValidation(1)],
-        });
-
-        const preventDefault = vi.fn();
-        getFirstRemoveButtonProps().onKeyDown({
-            key: 'ArrowLeft',
-            altKey: false,
-            ctrlKey: false,
-            metaKey: false,
-            preventDefault,
-        });
-
-        expect(preventDefault).toHaveBeenCalledOnce();
-        expect(focus).toHaveBeenCalledOnce();
+        navigate(getFirstDragButtonProps().onKeyDown, 'ArrowRight');
+        navigate(getTagLabelButton(props).onKeyDown, 'ArrowRight');
+        navigate(getFirstRemoveButtonProps().onKeyDown, 'ArrowLeft');
     });
 
     it('navigates to the next tag on ArrowRight from remove button', () => {
         const focusNextTag = vi.fn();
-        const wrapperRef = {current: null};
-        const inputRef = {current: null};
-        const tagRefs = {current: [null, {focus: focusNextTag}]};
-        const removeTagRefs = {current: []};
-        const draftRef = {current: ''};
-        const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
-        const scrollListenerCleanupRef = {current: null};
-        const isDraggingRef = {current: false};
-
-        mocks.useRef
-            .mockImplementationOnce(() => wrapperRef)
-            .mockImplementationOnce(() => inputRef)
-            .mockImplementationOnce(() => tagRefs)
-            .mockImplementationOnce(() => removeTagRefs)
-            .mockImplementationOnce(() => draftRef)
-            .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef);
+        mocks.useRef.mockImplementationOnce(() => ({
+            current: {querySelectorAll: vi.fn(() => ({item: vi.fn(() => ({focus: focusNextTag}))}))},
+        }));
 
         renderTagInput({
             values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
@@ -2213,6 +2539,11 @@ describe('TagInput', () => {
     it('reorders immediately with left and right arrow keys during keyboard drag', () => {
         const sortableKeyDown = vi.fn();
         const onMove = vi.fn();
+        const focusMovedDragHandle = vi.fn();
+        mocks.useRef
+            .mockImplementationOnce(() => ({current: null}))
+            .mockImplementationOnce(() => ({current: null}))
+            .mockImplementationOnce(() => ({current: [null, {focus: focusMovedDragHandle}]}));
         mocks.useSortable.mockImplementation(() => ({
             attributes: {tabIndex: 0, 'aria-pressed': 'true'},
             listeners: {onKeyDown: sortableKeyDown},
@@ -2241,6 +2572,7 @@ describe('TagInput', () => {
 
         expect(preventDefault).toHaveBeenCalledOnce();
         expect(onMove).toHaveBeenCalledWith(0, 1);
+        expect(focusMovedDragHandle).toHaveBeenCalledOnce();
         expect(sortableKeyDown).not.toHaveBeenCalled();
     });
 

@@ -10,9 +10,19 @@ import {
     useSensors,
 } from '@dnd-kit/core';
 import {rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable} from '@dnd-kit/sortable';
-import {cn, IconButton, Input, Tooltip} from '@enonic/ui';
+import {cn, getIsMobile, IconButton, Input, subscribeToMobileChanges, Tooltip} from '@enonic/ui';
 import {GripVertical, X} from 'lucide-react';
-import {type JSX, type ReactElement, type RefObject, useEffect, useId, useRef, useState} from 'react';
+import {
+    type JSX,
+    type ReactElement,
+    type RefObject,
+    useEffect,
+    useId,
+    useLayoutEffect,
+    useRef,
+    useState,
+    useSyncExternalStore,
+} from 'react';
 
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
@@ -63,6 +73,10 @@ type TagItemProps = {
     label: string;
     error?: string;
     enabled: boolean;
+    editing: boolean;
+    editDraft: string;
+    editInvalid: boolean;
+    selectEditText: boolean;
     isTabStop: boolean;
     showDrag: boolean;
     showRemove: boolean;
@@ -71,6 +85,11 @@ type TagItemProps = {
     onNavigate: (direction: -1 | 1) => void;
     onDragMove: (direction: -1 | 1) => void;
     onDeleteKey: () => void;
+    onEditStart: (initialDraft?: string, selectText?: boolean) => void;
+    onEditChange: (value: string) => void;
+    onEditCommit: (rawDraft: string, explicit?: boolean, focusTarget?: HTMLInputElement) => boolean;
+    onEditCancel: () => void;
+    onEditRemovePrevious: () => void;
     onRemovePointerDown: () => void;
     onRemoveKey: () => void;
     onRemove: () => void;
@@ -91,6 +110,7 @@ type TagViewState = {
 type TagDraftInputProps = {
     draft: string;
     accessibleName: string;
+    enterKeyHint?: 'enter' | 'next';
     enabled: boolean;
     invalid: boolean;
     visible: boolean;
@@ -145,6 +165,11 @@ type TagEntry = {
     value: Value;
     originalIndex: number;
     id: string;
+};
+
+type EditingState = {
+    id: string;
+    selectText: boolean;
 };
 
 type DragScrollListener = {
@@ -280,6 +305,29 @@ function focusElementNextFrame(element: HTMLElement | null | undefined): void {
     requestAnimationFrame(() => element?.focus());
 }
 
+function getNextFocusableElement(element: HTMLElement): HTMLElement | undefined {
+    const container = element.closest('[data-component="TagInput"]');
+    const focusableElements = Array.from(
+        element.ownerDocument.querySelectorAll<HTMLElement>(
+            'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled])',
+        ),
+    );
+    const currentIndex = focusableElements.indexOf(element);
+    if (currentIndex < 0) {
+        return undefined;
+    }
+
+    return focusableElements
+        .slice(currentIndex + 1)
+        .find(
+            candidate =>
+                !container?.contains(candidate) &&
+                candidate.tabIndex >= 0 &&
+                !candidate.hidden &&
+                !('disabled' in candidate && candidate.disabled === true),
+        );
+}
+
 function clearCleanupRef(cleanupRef: RefObject<(() => void) | null>): void {
     cleanupRef.current?.();
     cleanupRef.current = null;
@@ -340,6 +388,7 @@ function getCompactedTagIndex(values: Value[], index: number): number {
 function renderTagDraftInput({
     draft,
     accessibleName,
+    enterKeyHint,
     enabled,
     invalid,
     visible,
@@ -365,6 +414,7 @@ function renderTagDraftInput({
             <Input
                 ref={inputRef}
                 aria-label={accessibleName}
+                enterKeyHint={enterKeyHint}
                 className={cn(
                     '[&_input]:px-2.5 [&_input]:text-sm',
                     '[&>div[data-state]]:h-7 [&>div[data-state]]:border-transparent! [&>div[data-state]]::text-sm',
@@ -398,6 +448,10 @@ const TagItem = ({
     label,
     error,
     enabled,
+    editing,
+    editDraft,
+    editInvalid,
+    selectEditText,
     isTabStop,
     showDrag,
     showRemove,
@@ -406,6 +460,11 @@ const TagItem = ({
     onNavigate,
     onDragMove,
     onDeleteKey,
+    onEditStart,
+    onEditChange,
+    onEditCommit,
+    onEditCancel,
+    onEditRemovePrevious,
     onRemovePointerDown,
     onRemoveKey,
     onRemove,
@@ -413,20 +472,29 @@ const TagItem = ({
     const t = useI18n();
     const visibleLabel = getVisibleTagLabel(label);
     const tooltipValue = isTagLabelCropped(label) ? label : undefined;
-    const dragButtonRef = useRef<HTMLButtonElement | null>(null);
-    const removeButtonRef = useRef<HTMLButtonElement | null>(null);
+    const editInputRef = useRef<HTMLInputElement | null>(null);
+    const skipEditBlur = useRef(false);
     const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({
         id,
-        disabled: !showDrag,
+        disabled: !showDrag || editing,
     });
     const isKeyboardDragging = isKeyboardDragPressed(attributes['aria-pressed']);
+
+    useLayoutEffect(() => {
+        if (editing) {
+            skipEditBlur.current = false;
+            editInputRef.current?.focus();
+            if (selectEditText) {
+                editInputRef.current?.select();
+            } else {
+                const draftLength = editInputRef.current?.value.length ?? 0;
+                editInputRef.current?.setSelectionRange(draftLength, draftLength);
+            }
+        }
+    }, [editing, selectEditText]);
+
     const setRefs = (node: HTMLLIElement | null) => setNodeRef(node);
-    const setDragButtonRef = (node: HTMLButtonElement | null) => {
-        dragButtonRef.current = node;
-        registerFocusableRef(node);
-    };
     const setRemoveButtonRef = (node: HTMLButtonElement | null) => {
-        removeButtonRef.current = node;
         registerRemoveRef(node);
         if (!showDrag) {
             registerFocusableRef(node);
@@ -449,7 +517,7 @@ const TagItem = ({
     const dragAccessibilityProps = showDrag
         ? {
               role: attributes.role as preact.JSX.AriaRole,
-              tabIndex: enabled && isTabStop ? (attributes.tabIndex ?? 0) : -1,
+              tabIndex: -1,
               'aria-disabled': attributes['aria-disabled'],
               'aria-pressed': attributes['aria-pressed'],
               'aria-roledescription': attributes['aria-roledescription'],
@@ -504,11 +572,7 @@ const TagItem = ({
 
         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
             event.preventDefault();
-            if (showRemove && removeButtonRef.current != null) {
-                removeButtonRef.current.focus();
-            } else {
-                onNavigate(1);
-            }
+            event.currentTarget.closest('li')?.querySelector<HTMLButtonElement>('[data-tag-label]')?.focus();
             return;
         }
 
@@ -520,6 +584,52 @@ const TagItem = ({
 
         if (event.key === ' ' || event.key === 'Enter') {
             (listeners?.onKeyDown as preact.JSX.KeyboardEventHandler<HTMLButtonElement>)?.(event);
+        }
+    };
+
+    const handleLabelButtonKeyDown: preact.JSX.KeyboardEventHandler<HTMLButtonElement> = event => {
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+            return;
+        }
+
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.currentTarget.blur();
+            return;
+        }
+
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            const dragButton = event.currentTarget.closest('li')?.querySelector<HTMLButtonElement>('[data-tag-drag]');
+            if (dragButton != null) {
+                dragButton.focus();
+            } else {
+                onNavigate(-1);
+            }
+            return;
+        }
+
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            const removeButton = event.currentTarget
+                .closest('li')
+                ?.querySelector<HTMLButtonElement>('[data-tag-remove]');
+            if (removeButton != null) {
+                removeButton.focus();
+            } else {
+                onNavigate(1);
+            }
+            return;
+        }
+
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            event.stopPropagation();
+            onEditStart();
+        } else if (event.key.length === 1) {
+            event.preventDefault();
+            event.stopPropagation();
+            onEditStart(event.key, false);
         }
     };
 
@@ -536,11 +646,7 @@ const TagItem = ({
 
         if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
             event.preventDefault();
-            if (showDrag && dragButtonRef.current != null) {
-                dragButtonRef.current.focus();
-            } else {
-                onNavigate(-1);
-            }
+            event.currentTarget.closest('li')?.querySelector<HTMLButtonElement>('[data-tag-label]')?.focus();
             return;
         }
 
@@ -557,6 +663,32 @@ const TagItem = ({
         event.preventDefault();
         event.stopPropagation();
         onRemoveKey();
+    };
+
+    const handleEditKeyDown: preact.JSX.KeyboardEventHandler<HTMLInputElement> = event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            skipEditBlur.current = onEditCommit(event.currentTarget.value, true, event.currentTarget);
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            skipEditBlur.current = true;
+            onEditCancel();
+        } else if (event.key === 'Backspace' && event.currentTarget.value.length === 0) {
+            event.preventDefault();
+            event.stopPropagation();
+            skipEditBlur.current = true;
+            onEditRemovePrevious();
+        }
+    };
+
+    const handleEditBlur: preact.JSX.FocusEventHandler<HTMLInputElement> = event => {
+        if (skipEditBlur.current) {
+            skipEditBlur.current = false;
+            return;
+        }
+        onEditCommit(event.currentTarget.value);
     };
 
     return (
@@ -579,9 +711,10 @@ const TagItem = ({
                 !enabled && 'cursor-default border-bdr-subtle',
             )}
         >
-            {showDrag && (
+            {showDrag && !editing && (
                 <IconButton
-                    ref={setDragButtonRef}
+                    ref={registerFocusableRef}
+                    data-tag-drag
                     icon={GripVertical}
                     iconSize='sm'
                     variant='text'
@@ -597,17 +730,43 @@ const TagItem = ({
                     {...dragAccessibilityProps}
                 />
             )}
-            <Tooltip value={tooltipValue} side='top' className='max-w-64 whitespace-normal break-words'>
-                <span className='font-semibold'>{visibleLabel}</span>
-            </Tooltip>
-            {showRemove && (
+            {editing ? (
+                <input
+                    ref={editInputRef}
+                    data-tag-editor
+                    className={cn('h-5 w-36 bg-transparent font-semibold outline-none', editInvalid && 'text-error')}
+                    value={editDraft}
+                    disabled={!enabled}
+                    aria-invalid={editInvalid || undefined}
+                    onChange={event => onEditChange(event.currentTarget.value)}
+                    onKeyDown={handleEditKeyDown}
+                    onBlur={handleEditBlur}
+                />
+            ) : (
+                <Tooltip value={tooltipValue} side='top' className='max-w-64 whitespace-normal break-words'>
+                    <button
+                        data-tag-label
+                        type='button'
+                        className='font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
+                        tabIndex={enabled && isTabStop ? 0 : -1}
+                        disabled={!enabled}
+                        aria-label={`${t('action.edit')}: ${label}`}
+                        onKeyDown={handleLabelButtonKeyDown}
+                        onClick={() => onEditStart()}
+                    >
+                        {visibleLabel}
+                    </button>
+                </Tooltip>
+            )}
+            {showRemove && !editing && (
                 <IconButton
                     ref={setRemoveButtonRef}
+                    data-tag-remove
                     icon={X}
                     iconSize='sm'
                     variant='text'
                     className='size-5 focus-visible:ring-2 focus-visible:ring-offset-2'
-                    tabIndex={enabled && isTabStop && !showDrag ? 0 : -1}
+                    tabIndex={-1}
                     disabled={!enabled}
                     aria-label={t('field.occurrence.action.remove')}
                     onPointerDown={event => {
@@ -644,6 +803,7 @@ export const TagInput = ({
 }: TagInputProps): ReactElement => {
     const t = useI18n();
     const visibility = useValidationVisibility();
+    const isMobile = useSyncExternalStore(subscribeToMobileChanges, getIsMobile);
     const suggestionListId = `${SUGGESTION_LIST_ID}-${useId()}`;
     const [draft, setDraft] = useState('');
     const [isInputActive, setIsInputActive] = useState(false);
@@ -679,12 +839,17 @@ export const TagInput = ({
     const hiddenErrors = errors.filter((_, index) => !visibleTagIndexes.has(index));
     const visibleTagCount = tagEntries.length;
     const {canAdd, canRemove, showDrag} = getTagViewState(occurrences, enabled, visibleTagCount);
-    const showInlineInput = canAdd;
+    const maximum = occurrences.getMaximum();
+    const nextTagReachesMaximum = maximum > 0 && visibleTagCount + 1 >= maximum;
+    const enterKeyHint = isMobile ? (nextTagReachesMaximum ? 'next' : 'enter') : undefined;
     const isDraftInputVisible = isInputActive || draft.length > 0;
     const [dragContextKey, setDragContextKey] = useState(0);
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const [touched, setTouched] = useState(false);
+    const [editingState, setEditingState] = useState<EditingState | null>(null);
+    const [editDraft, setEditDraft] = useState('');
+    const showInlineInput = canAdd && editingState == null;
     const sensors = useSensors(
         useSensor(PrimaryButtonMouseSensor, MOUSE_SENSOR_OPTIONS),
         useSensor(TouchSensor, HANDLE_TOUCH_SENSOR_OPTIONS),
@@ -693,7 +858,8 @@ export const TagInput = ({
 
     const ids = tagEntries.map(entry => entry.id);
     const normalizedDraft = normalizeTagDraft(draft);
-    const suggestionsVisible = enabled && canAdd && hasRenderableTagLabel(normalizedDraft) && suggestions.length > 0;
+    const suggestionsVisible =
+        editingState == null && enabled && canAdd && hasRenderableTagLabel(normalizedDraft) && suggestions.length > 0;
     const activeSuggestion =
         suggestionsVisible && activeSuggestionIndex >= 0 ? suggestions[activeSuggestionIndex] : undefined;
     const activeSuggestionId = activeSuggestion != null ? `${suggestionListId}-${activeSuggestionIndex}` : undefined;
@@ -701,6 +867,12 @@ export const TagInput = ({
         tagEntries.map(entry => entry.value),
         normalizedDraft,
     );
+    const normalizedEditDraft = normalizeTagDraft(editDraft);
+    const editingEntry = tagEntries.find(entry => entry.id === editingState?.id);
+    const isEditInvalid =
+        editingEntry != null &&
+        (!hasRenderableTagLabel(normalizedEditDraft) ||
+            hasTagLabel(values, normalizedEditDraft, editingEntry.originalIndex));
 
     const hasSuppressedHiddenEntries = hiddenErrors.some(
         entry => !entry.breaksRequired && entry.validationResults.length === 0,
@@ -783,6 +955,19 @@ export const TagInput = ({
         });
     };
 
+    const focusLabelAt = (index: number) => {
+        requestAnimationFrame(() => {
+            if (index < 0) {
+                return;
+            }
+            if (index >= visibleTagCount) {
+                inputRef.current?.focus();
+                return;
+            }
+            wrapperRef.current?.querySelectorAll<HTMLButtonElement>('[data-tag-label]').item(index)?.focus();
+        });
+    };
+
     const focusRemoveAt = (index: number) => {
         requestAnimationFrame(() => {
             if (index < 0) {
@@ -816,7 +1001,6 @@ export const TagInput = ({
         {focusTarget, clearDraft = false}: CommitTagLabelsOptions = {},
     ): CommitTagLabelsResult => {
         setTouched(true);
-        const maximum = occurrences.getMaximum();
         const remainingCapacity = maximum === 0 ? Number.POSITIVE_INFINITY : Math.max(maximum - visibleTagCount, 0);
 
         if (remainingCapacity === 0) {
@@ -846,6 +1030,10 @@ export const TagInput = ({
             return {committedCount: 0, usedHiddenSlots: 0};
         }
 
+        const nextVisibleTagCount = visibleTagCount + labelsToCommit.length;
+        const hasRoomForAnother = maximum === 0 || nextVisibleTagCount < maximum;
+        const nextFocusableElement =
+            isMobile && focusTarget != null && !hasRoomForAnother ? getNextFocusableElement(focusTarget) : undefined;
         const usedHiddenSlots = Math.min(Math.max(values.length - visibleTagCount, 0), labelsToCommit.length);
 
         if (usedHiddenSlots > 0) {
@@ -862,9 +1050,6 @@ export const TagInput = ({
             onAdd(nextValue);
         });
 
-        const nextVisibleTagCount = visibleTagCount + labelsToCommit.length;
-        const hasRoomForAnother = maximum === 0 || nextVisibleTagCount < maximum;
-
         if (clearDraft || !hasRoomForAnother) {
             setDraftValue('');
         }
@@ -878,7 +1063,11 @@ export const TagInput = ({
                 const lastTagIndex = nextVisibleTagCount - 1;
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        (removeTagRefs.current[lastTagIndex] ?? tagRefs.current[lastTagIndex])?.focus();
+                        (
+                            nextFocusableElement ??
+                            removeTagRefs.current[lastTagIndex] ??
+                            tagRefs.current[lastTagIndex]
+                        )?.focus();
                     });
                 });
             }
@@ -961,7 +1150,7 @@ export const TagInput = ({
         if (direction === -1) {
             focusRemoveAt(index + direction);
         } else {
-            focusTagAt(index + direction);
+            focusLabelAt(index + direction);
         }
     };
 
@@ -975,6 +1164,102 @@ export const TagInput = ({
         focusTagAt(targetIndex);
     };
 
+    const startEditing = (id: string, label: string, selectText = true) => {
+        setEditingState({id, selectText});
+        setEditDraft(label);
+        setIsInputActive(false);
+    };
+
+    const cancelEditing = (focusIndex?: number) => {
+        setEditingState(null);
+        setEditDraft('');
+        if (focusIndex != null) {
+            focusLabelAt(focusIndex);
+        }
+    };
+
+    const focusDraftInput = () => {
+        setIsInputActive(true);
+        requestAnimationFrame(() => inputRef.current?.focus());
+    };
+
+    const commitEditing = (rawDraft: string, explicit = false, focusTarget?: HTMLInputElement): boolean => {
+        if (editingEntry == null) {
+            return false;
+        }
+
+        const normalized = normalizeTagDraft(rawDraft);
+        if (!hasRenderableTagLabel(normalized)) {
+            onRemove(editingEntry.originalIndex);
+            cancelEditing();
+            if (explicit) {
+                focusDraftInput();
+            }
+            return true;
+        }
+
+        if (hasTagLabel(values, normalized, editingEntry.originalIndex)) {
+            if (!explicit) {
+                cancelEditing();
+                return true;
+            }
+            return false;
+        }
+
+        const editingVisibleIndex = tagEntries.findIndex(entry => entry.id === editingEntry.id);
+        const nextFocusableElement =
+            explicit && isMobile && !canAdd && focusTarget != null ? getNextFocusableElement(focusTarget) : undefined;
+        const currentLabel = normalizeTagDraft(getTagLabel(editingEntry.value));
+        if (normalized !== currentLabel) {
+            onChange(editingEntry.originalIndex, ValueTypes.STRING.newValue(normalized), normalized);
+        }
+        cancelEditing();
+        if (explicit) {
+            if (canAdd) {
+                focusDraftInput();
+            } else {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        (
+                            nextFocusableElement ??
+                            removeTagRefs.current[editingVisibleIndex] ??
+                            tagRefs.current[editingVisibleIndex]
+                        )?.focus();
+                    });
+                });
+            }
+        }
+        return true;
+    };
+
+    const removeEditingAndEditPrevious = () => {
+        if (editingEntry == null) {
+            return;
+        }
+
+        const visibleIndex = tagEntries.findIndex(entry => entry.id === editingEntry.id);
+        const previousEntry = tagEntries[visibleIndex - 1];
+        onRemove(editingEntry.originalIndex);
+
+        if (previousEntry != null) {
+            startEditing(previousEntry.id, getTagLabel(previousEntry.value));
+        } else {
+            cancelEditing();
+            focusDraftInput();
+        }
+    };
+
+    const editLastTagFromInput = (input: HTMLInputElement) => {
+        const lastEntry = tagEntries[visibleTagCount - 1];
+        if (lastEntry == null) {
+            return;
+        }
+
+        skipBlurCommit.current = true;
+        input.blur();
+        startEditing(lastEntry.id, getTagLabel(lastEntry.value));
+    };
+
     const handleFieldClick: preact.JSX.MouseEventHandler<HTMLElement> = event => {
         if (event.target === event.currentTarget) {
             handleFieldActivate();
@@ -986,6 +1271,10 @@ export const TagInput = ({
         label: getTagLabel(entry.value),
         error: getFirstError(errors[entry.originalIndex]?.validationResults ?? []),
         enabled,
+        editing: editingState?.id === entry.id,
+        editDraft,
+        editInvalid: editingState?.id === entry.id && isEditInvalid,
+        selectEditText: editingState?.selectText ?? true,
         isTabStop: !showInlineInput && !hasFocusWithin && index === visibleTagCount - 1,
         showDrag,
         showRemove: canRemove,
@@ -998,6 +1287,12 @@ export const TagInput = ({
         onNavigate: direction => handleTagNavigate(index, direction),
         onDragMove: direction => handleKeyboardDragMove(index, direction),
         onDeleteKey: () => handleRemove(entry.originalIndex, {focusPreviousTag: true}),
+        onEditStart: (initialDraft = getTagLabel(entry.value), selectText = true) =>
+            startEditing(entry.id, initialDraft, selectText),
+        onEditChange: setEditDraft,
+        onEditCommit: commitEditing,
+        onEditCancel: () => cancelEditing(index),
+        onEditRemovePrevious: removeEditingAndEditPrevious,
         onRemovePointerDown: prepareRemove,
         onRemoveKey: () => handleRemove(entry.originalIndex, {activateInput: true, commitCurrentDraft: true}),
         onRemove: () => handleRemove(entry.originalIndex, {commitCurrentDraft: true}),
@@ -1013,6 +1308,10 @@ export const TagInput = ({
     };
 
     const handleKeyDown = (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+        if (isMobile && event.key === 'Enter') {
+            event.stopPropagation?.();
+        }
+
         if (suggestionsVisible && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
             event.preventDefault();
             setActiveSuggestionIndex(current => {
@@ -1041,13 +1340,20 @@ export const TagInput = ({
 
         if (visibleTagCount > 0 && isAtStart && (event.key === 'ArrowLeft' || event.key === 'ArrowUp')) {
             event.preventDefault();
-            commitAndLeaveInput(event.currentTarget, focusRemoveAt);
+            commitAndLeaveInput(
+                event.currentTarget,
+                event.key === 'ArrowLeft' && draftRef.current.length === 0 ? focusLabelAt : focusRemoveAt,
+            );
             return;
         }
 
         if (visibleTagCount > 0 && isAtStart && event.key === 'Backspace') {
             event.preventDefault();
-            commitAndLeaveInput(event.currentTarget, focusRemoveAt);
+            if (draftRef.current.length === 0) {
+                editLastTagFromInput(event.currentTarget);
+            } else {
+                commitAndLeaveInput(event.currentTarget, focusRemoveAt);
+            }
             return;
         }
 
@@ -1177,6 +1483,7 @@ export const TagInput = ({
                                 renderTagDraftInput({
                                     draft,
                                     accessibleName: getInputAccessibleName(input),
+                                    enterKeyHint,
                                     enabled,
                                     invalid: isDraftDuplicate,
                                     visible: isDraftInputVisible,
