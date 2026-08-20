@@ -80,6 +80,7 @@ function DemoTagInput({
     return (
         <div className='flex w-[32rem] flex-col gap-y-2'>
             <TagInput
+                occurrenceIds={state.ids}
                 values={values}
                 onChange={(index, value) =>
                     setValues(prev => prev.map((current, currentIndex) => (currentIndex === index ? value : current)))

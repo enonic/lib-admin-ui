@@ -121,6 +121,33 @@ function makeOccurrenceValidation(index: number, message?: string): OccurrenceVa
     };
 }
 
+function makeFocusableElement(
+    ownerDocument: Record<string, any>,
+    {
+        disabled = false,
+        hiddenAncestor = false,
+        rendered = true,
+    }: {
+        disabled?: boolean;
+        hiddenAncestor?: boolean;
+        rendered?: boolean;
+    } = {},
+): {element: Record<string, any>; focus: ReturnType<typeof vi.fn>} {
+    const element: Record<string, any> = {
+        ownerDocument,
+        isConnected: true,
+        tabIndex: 0,
+        matches: vi.fn((selector: string) => selector === ':disabled' && disabled),
+        closest: vi.fn((selector: string) => (selector === '[hidden], [inert]' && hiddenAncestor ? {} : null)),
+        getClientRects: vi.fn(() => (rendered ? [{}] : [])),
+    };
+    const focus = vi.fn(() => {
+        ownerDocument.activeElement = element;
+    });
+    element.focus = focus;
+    return {element, focus};
+}
+
 function makeHiddenBlankValidation(
     index: number,
     message?: string,
@@ -140,6 +167,7 @@ function makeProps(overrides: Partial<TagInputProps> = {}): TagInputProps {
     const input = overrides.input ?? makeInput(0, 3);
 
     return {
+        occurrenceIds: values.map((_, index) => `tag-${index}`),
         values,
         onChange: vi.fn(),
         onAdd: vi.fn(),
@@ -810,6 +838,33 @@ describe('TagInput', () => {
         expect(focusDraft).toHaveBeenCalledOnce();
     });
 
+    it('gives the inline editor an accessible name', () => {
+        mockTagEditingState({editingId: 'tag-0', editDraft: 'alpha'});
+
+        expect(
+            getTagEditor({
+                values: [ValueTypes.STRING.newValue('alpha')],
+            })['aria-label'],
+        ).toBe('action.edit: alpha');
+    });
+
+    it('keeps editing when a value instance is replaced under the same occurrence id', () => {
+        const props = {
+            occurrenceIds: ['stable-occurrence'],
+            values: [ValueTypes.STRING.newValue('alpha')],
+        };
+        mockTagEditingState({editingId: 'stable-occurrence', editDraft: 'draft'});
+        expect(getTagEditor(props).value).toBe('draft');
+
+        mockTagEditingState({editingId: 'stable-occurrence', editDraft: 'draft'});
+        expect(
+            getTagEditor({
+                ...props,
+                values: [ValueTypes.STRING.newValue('alpha')],
+            }).value,
+        ).toBe('draft');
+    });
+
     it.each([
         {name: 'selects existing text', draft: 'alpha', selectText: true},
         {name: 'places caret after typed text', draft: 'z', selectText: false},
@@ -906,17 +961,20 @@ describe('TagInput', () => {
 
     it('focuses the next field after mobile Enter edits a tag at the maximum', () => {
         const onChange = vi.fn();
-        const focusDisabled = vi.fn();
-        const focusNext = vi.fn();
-        const disabledInput = {focus: focusDisabled, disabled: true, hidden: false, tabIndex: 0};
-        const nextInput = {focus: focusNext, hidden: false, tabIndex: 0};
-        const currentInput: Record<string, any> = {
-            value: 'renamed',
-            closest: vi.fn(() => null),
+        const ownerDocument: Record<string, any> = {
+            activeElement: null,
+            defaultView: {
+                getComputedStyle: vi.fn(() => ({display: 'block', visibility: 'visible'})),
+            },
         };
-        currentInput.ownerDocument = {
-            querySelectorAll: vi.fn(() => [currentInput, disabledInput, nextInput]),
-        };
+        const {element: currentInput} = makeFocusableElement(ownerDocument);
+        const {element: hiddenInput, focus: focusHidden} = makeFocusableElement(ownerDocument, {
+            hiddenAncestor: true,
+        });
+        const {element: disabledInput, focus: focusDisabled} = makeFocusableElement(ownerDocument, {disabled: true});
+        const {element: nextInput, focus: focusNext} = makeFocusableElement(ownerDocument);
+        currentInput.value = 'renamed';
+        ownerDocument.querySelectorAll = vi.fn(() => [currentInput, hiddenInput, disabledInput, nextInput]);
         mocks.getIsMobile.mockReturnValue(true);
         mockTagEditingState({editingId: 'tag-0', editDraft: 'alpha'});
 
@@ -933,6 +991,7 @@ describe('TagInput', () => {
         });
 
         expect(onChange).toHaveBeenCalledWith(0, ValueTypes.STRING.newValue('renamed'), 'renamed');
+        expect(focusHidden).not.toHaveBeenCalled();
         expect(focusDisabled).not.toHaveBeenCalled();
         expect(focusNext).toHaveBeenCalledOnce();
     });
@@ -1269,17 +1328,16 @@ describe('TagInput', () => {
         {name: 'keeps focus while another tag fits', values: ['one'], maximum: 3, focusesNext: false},
     ])('mobile Enter $name', ({values, maximum, focusesNext}) => {
         const onAdd = vi.fn();
-        const focusCurrent = vi.fn();
-        const focusNext = vi.fn();
         const stopPropagation = vi.fn();
-        const nextInput = {focus: focusNext, hidden: false, tabIndex: 0};
-        const currentInput: Record<string, any> = {
-            focus: focusCurrent,
-            closest: vi.fn(() => null),
+        const ownerDocument: Record<string, any> = {
+            activeElement: null,
+            defaultView: {
+                getComputedStyle: vi.fn(() => ({display: 'block', visibility: 'visible'})),
+            },
         };
-        currentInput.ownerDocument = {
-            querySelectorAll: vi.fn(() => [currentInput, nextInput]),
-        };
+        const {element: currentInput, focus: focusCurrent} = makeFocusableElement(ownerDocument);
+        const {element: nextInput, focus: focusNext} = makeFocusableElement(ownerDocument);
+        ownerDocument.querySelectorAll = vi.fn(() => [currentInput, nextInput]);
         mocks.getIsMobile.mockReturnValue(true);
         mocks.useState.mockImplementationOnce(() => ['new', vi.fn()]).mockImplementationOnce(() => [true, vi.fn()]);
 
@@ -1531,9 +1589,6 @@ describe('TagInput', () => {
         const removeTagRefs = {current: []};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
-
         mocks.useState
             .mockImplementationOnce(() => ['alpha', vi.fn()])
             .mockImplementationOnce(() => [true, vi.fn()])
@@ -1563,20 +1618,16 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
             .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => scrollListenerCleanupRef)
             .mockImplementationOnce(() => wrapperRef)
             .mockImplementationOnce(() => inputRef)
             .mockImplementationOnce(() => tagRefs)
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef);
+            .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => scrollListenerCleanupRef);
 
         renderTagInput({onAdd, values: [], errors: []});
         getLastInputProps().onKeyDown({
@@ -1897,8 +1948,6 @@ describe('TagInput', () => {
         const removeTagRefs = {current: []};
         const draftRef = {current: 'gamma'};
         const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
         const setIsInputActive = vi.fn();
@@ -1913,10 +1962,8 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef);
+            .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => scrollListenerCleanupRef);
 
         renderTagInput({
             onAdd,
@@ -1958,8 +2005,6 @@ describe('TagInput', () => {
         const removeTagRefs = {current: [{focus: vi.fn()}, {focus: focusPreviousTag}]};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
 
@@ -1971,10 +2016,8 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef);
+            .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => scrollListenerCleanupRef);
 
         renderTagInput({
             onRemove,
@@ -2011,8 +2054,6 @@ describe('TagInput', () => {
         const removeTagRefs = {current: [{focus: vi.fn()}, {focus: focusPreviousTag}]};
         const draftRef = {current: 'gamma'};
         const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
 
@@ -2026,10 +2067,8 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef);
+            .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => scrollListenerCleanupRef);
 
         renderTagInput({
             onAdd,
@@ -2063,8 +2102,6 @@ describe('TagInput', () => {
         const removeTagRefs = {current: [{focus: focusPreviousTag}]};
         const draftRef = {current: 'beta'};
         const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
         const scrollListenerCleanupRef = {current: null};
         const isDraggingRef = {current: false};
 
@@ -2078,10 +2115,8 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
             .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId)
-            .mockImplementationOnce(() => scrollListenerCleanupRef)
-            .mockImplementationOnce(() => isDraggingRef);
+            .mockImplementationOnce(() => isDraggingRef)
+            .mockImplementationOnce(() => scrollListenerCleanupRef);
 
         renderTagInput({
             onAdd,
@@ -2159,9 +2194,6 @@ describe('TagInput', () => {
         const removeTagRefs = {current: []};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
-
         mocks.useState
             .mockImplementationOnce(() => ['', vi.fn()])
             .mockImplementationOnce(() => [false, setIsInputActive]);
@@ -2171,9 +2203,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => tagRefs)
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
-            .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId);
+            .mockImplementationOnce(() => skipBlurCommit);
 
         renderTagInput({
             onRemove,
@@ -2284,9 +2314,6 @@ describe('TagInput', () => {
         const removeTagRefs = {current: []};
         const draftRef = {current: ''};
         const skipBlurCommit = {current: false};
-        const idsByValue = {current: new WeakMap()};
-        const nextId = {current: 0};
-
         mocks.useState
             .mockImplementationOnce(() => ['gamma', setDraft])
             .mockImplementationOnce(() => [true, setIsInputActive])
@@ -2297,9 +2324,7 @@ describe('TagInput', () => {
             .mockImplementationOnce(() => tagRefs)
             .mockImplementationOnce(() => removeTagRefs)
             .mockImplementationOnce(() => draftRef)
-            .mockImplementationOnce(() => skipBlurCommit)
-            .mockImplementationOnce(() => idsByValue)
-            .mockImplementationOnce(() => nextId);
+            .mockImplementationOnce(() => skipBlurCommit);
 
         renderTagInput({
             onAdd,
@@ -2511,11 +2536,12 @@ describe('TagInput', () => {
         navigate(getFirstRemoveButtonProps().onKeyDown, 'ArrowLeft');
     });
 
-    it('navigates to the next tag on ArrowRight from remove button', () => {
-        const focusNextTag = vi.fn();
-        mocks.useRef.mockImplementationOnce(() => ({
-            current: {querySelectorAll: vi.fn(() => ({item: vi.fn(() => ({focus: focusNextTag}))}))},
-        }));
+    it("navigates to the next tag's drag handle on ArrowRight from remove button", () => {
+        const focusNextDragHandle = vi.fn();
+        mocks.useRef
+            .mockImplementationOnce(() => ({current: null}))
+            .mockImplementationOnce(() => ({current: null}))
+            .mockImplementationOnce(() => ({current: [null, {focus: focusNextDragHandle}]}));
 
         renderTagInput({
             values: [ValueTypes.STRING.newValue('alpha'), ValueTypes.STRING.newValue('beta')],
@@ -2533,7 +2559,7 @@ describe('TagInput', () => {
         });
 
         expect(preventDefault).toHaveBeenCalledOnce();
-        expect(focusNextTag).toHaveBeenCalledOnce();
+        expect(focusNextDragHandle).toHaveBeenCalledOnce();
     });
 
     it('reorders immediately with left and right arrow keys during keyboard drag', () => {

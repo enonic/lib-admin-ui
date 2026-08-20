@@ -604,6 +604,7 @@ export const InputFieldResolved = ({
                 <div data-component={INPUT_FIELD_NAME} className='flex flex-col'>
                     <InputLabel className='mb-2' input={input} />
                     <Component
+                        occurrenceIds={state.ids}
                         values={state.values}
                         onChange={handleChange}
                         onAdd={handleAdd}

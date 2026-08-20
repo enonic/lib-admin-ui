@@ -51,6 +51,7 @@ function makeState(values: string[], min: number, max: number): OccurrenceManage
 function makeDefaultArgs(values: string[], min: number, max: number): SelfManagedComponentProps<ComboBoxConfig> {
     const state = makeState(values, min, max);
     return {
+        occurrenceIds: state.ids,
         values: state.values,
         onChange: () => {
             /* empty */
@@ -266,6 +267,7 @@ const InteractiveDemo = (): ReactElement => {
                 </ul>
             </div>
             <ComboBoxInput
+                occurrenceIds={state.ids}
                 values={state.values}
                 onChange={handleChange}
                 onAdd={handleAdd}
