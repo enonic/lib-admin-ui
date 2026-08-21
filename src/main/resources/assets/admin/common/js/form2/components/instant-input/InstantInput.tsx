@@ -29,10 +29,12 @@ export function storageToDisplay(s: string): string {
     return `${y}-${m}-${d} ${h}:${min}`;
 }
 
-// ? Parses local display string, formats as UTC for storage
+// ? Parses local display string, formats as UTC for storage.
+// ? Unparseable input is returned without the 'Z' on purpose: with it, an impossible date such as
+// ? '2025-99-99T14:30Z' would satisfy the instant pattern and make ValueTypeDateTime.newValue() throw
 export function displayToStorage(s: string): string {
     const date = new Date(s.replace(' ', 'T'));
-    if (Number.isNaN(date.getTime())) return `${s.replace(' ', 'T')}Z`;
+    if (Number.isNaN(date.getTime())) return s.replace(' ', 'T');
     const y = date.getUTCFullYear();
     const m = DateHelper.padNumber(date.getUTCMonth() + 1);
     const d = DateHelper.padNumber(date.getUTCDate());

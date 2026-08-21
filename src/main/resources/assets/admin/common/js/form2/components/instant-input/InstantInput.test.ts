@@ -98,7 +98,22 @@ describe('InstantInput', () => {
 
         it('falls back gracefully for unparseable input', () => {
             const display = displayToStorage('invalid');
-            expect(display).toBe('invalidZ');
+            expect(display).toBe('invalid');
+        });
+
+        it('does not mark an impossible date as a valid instant', () => {
+            // ? '2025-99-99T14:30Z' would match the instant pattern, and newValue() would then throw
+            const storage = displayToStorage('2025-99-99 14:30');
+
+            expect(() => ValueTypes.DATE_TIME.newValue(storage)).not.toThrow();
+            expect(ValueTypes.DATE_TIME.newValue(storage).isNull()).toBe(true);
+        });
+
+        it('does not mark an out-of-range time as a valid instant', () => {
+            const storage = displayToStorage('2025-06-15 25:99');
+
+            expect(() => ValueTypes.DATE_TIME.newValue(storage)).not.toThrow();
+            expect(ValueTypes.DATE_TIME.newValue(storage).isNull()).toBe(true);
         });
     });
 
