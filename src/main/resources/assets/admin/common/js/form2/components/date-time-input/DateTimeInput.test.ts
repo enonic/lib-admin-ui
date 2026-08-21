@@ -1,7 +1,16 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
+import {valueToDisplay} from './DateTimeInput';
+
+// ? The real package pulls in DOM-only React internals, unavailable in the node test environment
+vi.mock('@enonic/ui', () => ({
+    Button: () => null,
+    DatePicker: () => null,
+    Input: () => null,
+    TimePicker: () => null,
+}));
 
 // ? Display uses space separator (2025-06-15 14:30), storage uses T (2025-06-15T14:30)
 const DISPLAY_PATTERN = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
@@ -64,11 +73,27 @@ describe('DateTimeInput', () => {
 
         it('should produce display string for valid value', () => {
             const value = ValueTypes.LOCAL_DATE_TIME.newValue('2025-06-15T14:30');
-            const str = value.isNull() ? '' : storageToDisplay(value.getString() ?? '');
 
             expect(value.isNull()).toBe(false);
-            // LocalDateTime.toString() always includes seconds
-            expect(str).toBe('2025-06-15 14:30:00');
+            expect(valueToDisplay(value)).toBe('2025-06-15 14:30');
+        });
+
+        it('should drop the zero seconds LocalDateTime always serialises', () => {
+            const value = ValueTypes.LOCAL_DATE_TIME.newValue('2025-06-15T14:30:00');
+
+            expect(valueToDisplay(value)).toBe('2025-06-15 14:30');
+        });
+
+        it('should truncate a value carrying seconds to minutes', () => {
+            const value = ValueTypes.LOCAL_DATE_TIME.newValue('2025-06-15T14:30:45');
+
+            expect(valueToDisplay(value)).toBe('2025-06-15 14:30');
+        });
+
+        it('should truncate a value carrying fractions to minutes', () => {
+            const value = ValueTypes.LOCAL_DATE_TIME.newValue('2025-06-15T14:30:45.123');
+
+            expect(valueToDisplay(value)).toBe('2025-06-15 14:30');
         });
 
         it('should produce correct Value type on onChange with valid datetime', () => {

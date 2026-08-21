@@ -16,8 +16,9 @@ const DISPLAY_PATTERN = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 
 export type InstantInputProps = InputTypeComponentProps<InstantConfig>;
 
-// ? Parses UTC storage string, formats as local time for display
-function storageToDisplay(s: string): string {
+// ? Parses UTC storage string, formats as local time for display.
+// ? The picker is minute-granular, so seconds and fractions are dropped
+export function storageToDisplay(s: string): string {
     const date = new Date(s);
     if (Number.isNaN(date.getTime())) return s.replace('T', ' ').replace(/Z$/, '');
     const y = date.getFullYear();
@@ -25,13 +26,11 @@ function storageToDisplay(s: string): string {
     const d = DateHelper.padNumber(date.getDate());
     const h = DateHelper.padNumber(date.getHours());
     const min = DateHelper.padNumber(date.getMinutes());
-    const sec = date.getSeconds();
-    const timePart = sec > 0 ? `${h}:${min}:${DateHelper.padNumber(sec)}` : `${h}:${min}`;
-    return `${y}-${m}-${d} ${timePart}`;
+    return `${y}-${m}-${d} ${h}:${min}`;
 }
 
 // ? Parses local display string, formats as UTC for storage
-function displayToStorage(s: string): string {
+export function displayToStorage(s: string): string {
     const date = new Date(s.replace(' ', 'T'));
     if (Number.isNaN(date.getTime())) return `${s.replace(' ', 'T')}Z`;
     const y = date.getUTCFullYear();
@@ -43,7 +42,7 @@ function displayToStorage(s: string): string {
     return `${y}-${m}-${d}T${h}:${min}:${sec}Z`;
 }
 
-function valueToDisplay(value: Value): string {
+export function valueToDisplay(value: Value): string {
     const str = value.getString();
     return str ? storageToDisplay(str) : '';
 }

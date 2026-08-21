@@ -5,6 +5,7 @@ import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
 import type {DateTimeConfig} from '../../descriptor';
+import {truncateToMinutes} from '../../descriptor/DateTimeDescriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
 import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
@@ -24,9 +25,10 @@ function displayToStorage(s: string): string {
     return s.replace(' ', 'T');
 }
 
-function valueToDisplay(value: Value): string {
+// ? Storage always carries seconds, the field shows minutes only
+export function valueToDisplay(value: Value): string {
     const str = value.getString();
-    return str ? storageToDisplay(str) : '';
+    return str ? storageToDisplay(truncateToMinutes(str)) : '';
 }
 
 function formatDisplay(date: Date, time: string | null): string {

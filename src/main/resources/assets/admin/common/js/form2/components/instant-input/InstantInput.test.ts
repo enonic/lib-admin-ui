@@ -1,35 +1,21 @@
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
+import {displayToStorage, storageToDisplay, valueToDisplay} from './InstantInput';
+
+// ? The real package pulls in DOM-only React internals, unavailable in the node test environment
+vi.mock('@enonic/ui', () => ({
+    Button: () => null,
+    DatePicker: () => null,
+    Input: () => null,
+    TimePicker: () => null,
+}));
 
 // ? Display shows local time with space separator, storage is UTC with T and Z
 const DISPLAY_PATTERN = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
-
-function storageToDisplay(s: string): string {
-    const date = new Date(s);
-    if (Number.isNaN(date.getTime())) return s.replace('T', ' ').replace(/Z$/, '');
-    const y = date.getFullYear();
-    const m = DateHelper.padNumber(date.getMonth() + 1);
-    const d = DateHelper.padNumber(date.getDate());
-    const h = DateHelper.padNumber(date.getHours());
-    const min = DateHelper.padNumber(date.getMinutes());
-    const sec = date.getSeconds();
-    const timePart = sec > 0 ? `${h}:${min}:${DateHelper.padNumber(sec)}` : `${h}:${min}`;
-    return `${y}-${m}-${d} ${timePart}`;
-}
-
-function displayToStorage(s: string): string {
-    const date = new Date(s.replace(' ', 'T'));
-    if (Number.isNaN(date.getTime())) return `${s.replace(' ', 'T')}Z`;
-    const y = date.getUTCFullYear();
-    const m = DateHelper.padNumber(date.getUTCMonth() + 1);
-    const d = DateHelper.padNumber(date.getUTCDate());
-    const h = DateHelper.padNumber(date.getUTCHours());
-    const min = DateHelper.padNumber(date.getUTCMinutes());
-    const sec = DateHelper.padNumber(date.getUTCSeconds());
-    return `${y}-${m}-${d}T${h}:${min}:${sec}Z`;
-}
+// ? The picker is minute-granular, so the field never shows seconds
+const DISPLAY_IN_MINUTES = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
 
 function parseDateFromDisplay(raw: string): Date | null {
     if (!DISPLAY_PATTERN.test(raw)) return null;
@@ -92,12 +78,22 @@ describe('InstantInput', () => {
             expect(roundTripped).toBe(storage);
         });
 
-        it('preserves seconds in round-trip', () => {
-            const storage = '2025-06-15T12:30:45Z';
-            const display = storageToDisplay(storage);
-            expect(display).toMatch(/\d{2}:\d{2}:\d{2}$/);
-            const roundTripped = displayToStorage(display);
-            expect(roundTripped).toBe(storage);
+        it('drops seconds from the display', () => {
+            const display = storageToDisplay('2025-06-15T12:30:45Z');
+
+            expect(display).toMatch(DISPLAY_IN_MINUTES);
+        });
+
+        it('drops milliseconds from the display', () => {
+            const display = storageToDisplay('2025-06-15T12:30:45.123Z');
+
+            expect(display).toMatch(DISPLAY_IN_MINUTES);
+        });
+
+        it('round-trips a value with seconds back as minute precision', () => {
+            const display = storageToDisplay('2025-06-15T12:30:45Z');
+
+            expect(displayToStorage(display)).toBe('2025-06-15T12:30:00Z');
         });
 
         it('falls back gracefully for unparseable input', () => {
@@ -115,10 +111,21 @@ describe('InstantInput', () => {
 
         it('should produce local display string for valid UTC value', () => {
             const value = ValueTypes.DATE_TIME.newValue('2025-06-15T14:30:00Z');
-            const display = value.isNull() ? '' : storageToDisplay(value.getString() ?? '');
 
             expect(value.isNull()).toBe(false);
-            expect(DISPLAY_PATTERN.test(display)).toBe(true);
+            expect(valueToDisplay(value)).toMatch(DISPLAY_IN_MINUTES);
+        });
+
+        it('should not display seconds carried by the value', () => {
+            const value = ValueTypes.DATE_TIME.newValue('2025-06-15T14:30:45Z');
+
+            expect(valueToDisplay(value)).toMatch(DISPLAY_IN_MINUTES);
+        });
+
+        it('should not display milliseconds carried by the value', () => {
+            const value = ValueTypes.DATE_TIME.newValue('2025-06-15T14:30:45.123Z');
+
+            expect(valueToDisplay(value)).toMatch(DISPLAY_IN_MINUTES);
         });
 
         it('should produce correct Value type via display→storage conversion', () => {

@@ -14,6 +14,13 @@ const OFFSET_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?[+-]\
 const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 const RELATIVE_EXPR = /^(?:now|(?:[+-]\d+[a-zA-Z]+\s*)+)$/;
 
+// ? The Instant picker is minute-granular, so defaults keep no seconds or fractions
+function truncateToMinutes(date: Date): Date {
+    const truncated = new Date(date);
+    truncated.setUTCSeconds(0, 0);
+    return truncated;
+}
+
 export const InstantDescriptor: InputTypeDescriptor<InstantConfig> = {
     name: 'Instant',
 
@@ -56,20 +63,13 @@ export const InstantDescriptor: InputTypeDescriptor<InstantConfig> = {
             return ValueTypes.DATE_TIME.newNullValue();
         }
 
-        if (INSTANT_PATTERN.test(raw)) {
-            return ValueTypes.DATE_TIME.newValue(raw);
-        }
-
-        if (OFFSET_PATTERN.test(raw)) {
-            // ? Parse offset datetime and convert to UTC
-            const value = DateTime.fromDate(new Date(raw));
-            return new Value(value, ValueTypes.DATE_TIME);
-        }
-
-        if (DATETIME_PATTERN.test(raw)) {
-            // ? Parse as local time (JS spec: naive datetime → local), then convert to UTC
-            const value = DateTime.fromDate(new Date(raw));
-            return new Value(value, ValueTypes.DATE_TIME);
+        // ? 'Z' and offset strings carry their own zone, a naive datetime is parsed as local time (JS spec)
+        if (INSTANT_PATTERN.test(raw) || OFFSET_PATTERN.test(raw) || DATETIME_PATTERN.test(raw)) {
+            const parsed = new Date(raw);
+            if (Number.isNaN(parsed.getTime())) {
+                return ValueTypes.DATE_TIME.newNullValue();
+            }
+            return new Value(DateTime.fromDate(truncateToMinutes(parsed)), ValueTypes.DATE_TIME);
         }
 
         if (!RELATIVE_EXPR.test(raw)) {
@@ -77,7 +77,7 @@ export const InstantDescriptor: InputTypeDescriptor<InstantConfig> = {
         }
 
         try {
-            const value = DateTime.fromDate(RelativeTimeParser.parseToDateTime(raw));
+            const value = DateTime.fromDate(truncateToMinutes(RelativeTimeParser.parseToDateTime(raw)));
             return new Value(value, ValueTypes.DATE_TIME);
         } catch {
             return ValueTypes.DATE_TIME.newNullValue();

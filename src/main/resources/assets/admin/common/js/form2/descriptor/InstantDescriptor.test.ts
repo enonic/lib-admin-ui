@@ -168,9 +168,12 @@ describe('InstantDescriptor', () => {
     });
 
     describe('createDefaultValue', () => {
+        // ? Instant defaults are minute-granular, the exact value depends on the local TZ
+        const INSTANT_IN_MINUTES = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00Z$/;
+
         beforeEach(() => {
             vi.useFakeTimers();
-            vi.setSystemTime(new Date('2025-06-15T14:30:00Z'));
+            vi.setSystemTime(new Date('2025-06-15T14:30:45.123Z'));
         });
 
         afterEach(() => {
@@ -196,14 +199,25 @@ describe('InstantDescriptor', () => {
             expect(value.getString()).toBe(expected);
         });
 
-        it('creates value from naive datetime with seconds by converting local time to UTC', () => {
-            const input = '2025-06-15T14:30:45';
-            const value = InstantDescriptor.createDefaultValue(input);
-            const expected = new Date(input).toISOString().replace(/\.000Z$/, 'Z');
+        it('drops seconds from a naive datetime while converting local time to UTC', () => {
+            const value = InstantDescriptor.createDefaultValue('2025-06-15T14:30:45');
+            const expected = new Date('2025-06-15T14:30').toISOString().replace(/\.000Z$/, 'Z');
 
             expect(value.isNull()).toBe(false);
             expect(value.getType()).toBe(ValueTypes.DATE_TIME);
             expect(value.getString()).toBe(expected);
+        });
+
+        it('drops seconds from an instant string', () => {
+            const value = InstantDescriptor.createDefaultValue('2025-06-15T14:30:45Z');
+
+            expect(value.getString()).toBe('2025-06-15T14:30:00Z');
+        });
+
+        it('drops seconds and fractions from an instant string', () => {
+            const value = InstantDescriptor.createDefaultValue('2025-06-15T14:30:45.123Z');
+
+            expect(value.getString()).toBe('2025-06-15T14:30:00Z');
         });
 
         it('creates value from instant with seconds', () => {
@@ -241,11 +255,11 @@ describe('InstantDescriptor', () => {
             expect(value.getString()).toBe('2025-06-15T12:30:00Z');
         });
 
-        it('converts offset with seconds to UTC', () => {
+        it('drops seconds while converting an offset to UTC', () => {
             const value = InstantDescriptor.createDefaultValue('2025-06-15T14:30:45+02:00');
 
             expect(value.isNull()).toBe(false);
-            expect(value.getString()).toBe('2025-06-15T12:30:45Z');
+            expect(value.getString()).toBe('2025-06-15T12:30:00Z');
         });
 
         it('creates value from relative expression "now"', () => {
@@ -255,11 +269,23 @@ describe('InstantDescriptor', () => {
             expect(value.getType()).toBe(ValueTypes.DATE_TIME);
         });
 
+        it('truncates "now" to minutes', () => {
+            const value = InstantDescriptor.createDefaultValue('now');
+
+            expect(value.getString()).toMatch(INSTANT_IN_MINUTES);
+        });
+
         it('creates value from relative expression "+1d"', () => {
             const value = InstantDescriptor.createDefaultValue('+1d');
 
             expect(value.isNull()).toBe(false);
             expect(value.getType()).toBe(ValueTypes.DATE_TIME);
+        });
+
+        it('truncates relative offset to minutes', () => {
+            const value = InstantDescriptor.createDefaultValue('+1d');
+
+            expect(value.getString()).toMatch(INSTANT_IN_MINUTES);
         });
 
         it('returns null Value for date-only string', () => {
