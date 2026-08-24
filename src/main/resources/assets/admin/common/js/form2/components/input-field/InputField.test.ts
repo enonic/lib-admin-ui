@@ -19,6 +19,8 @@ const mocks = vi.hoisted(() => ({
         vi.fn(),
     ]),
     useRef: vi.fn((initial: unknown) => ({current: initial})),
+    useIsMobile: vi.fn(() => false),
+    getNextMobileFocusTarget: vi.fn(),
     useRawValueMap: vi.fn(() => undefined),
     usePropertyArray: vi.fn(),
     useOccurrenceManager: vi.fn(),
@@ -33,6 +35,14 @@ vi.mock('react', () => ({
     useCallback: mocks.useCallback,
     useState: mocks.useState,
     useRef: mocks.useRef,
+}));
+
+vi.mock('../../hooks/useIsMobile', () => ({
+    useIsMobile: mocks.useIsMobile,
+}));
+
+vi.mock('../../utils/accessibility', () => ({
+    getNextMobileFocusTarget: mocks.getNextMobileFocusTarget,
 }));
 
 vi.mock('../../I18nContext', () => ({
@@ -142,6 +152,9 @@ describe('InputField', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mocks.useMemo.mockImplementation((factory: () => unknown) => factory());
+        mocks.useRef.mockImplementation((initial: unknown) => ({current: initial}));
+        mocks.useIsMobile.mockReturnValue(false);
+        mocks.getNextMobileFocusTarget.mockReturnValue(undefined);
         mocks.useRawValueMap.mockReturnValue(undefined);
         mocks.usePropertyArray.mockReturnValue({values: [], size: 0});
         mocks.useOccurrenceManager.mockReturnValue({
@@ -206,6 +219,83 @@ describe('InputField', () => {
 
         expect(child.type).toBe(mocks.occurrenceListRoot);
         expect(child.props.Component).toBe(component);
+        expect(child.props.onMobileComplete).toBeUndefined();
+    });
+
+    it('moves mobile completion to the next existing occurrence', () => {
+        const focusNext = vi.fn();
+        const inputRefs = new Map<string, HTMLElement>([
+            ['occurrence-0', {focus: vi.fn()} as unknown as HTMLElement],
+            ['occurrence-1', {focus: focusNext} as unknown as HTMLElement],
+        ]);
+        const state = {
+            ...makeManagerState(),
+            ids: ['occurrence-0', 'occurrence-1'],
+            values: [ValueTypes.STRING.newValue('first'), ValueTypes.STRING.newValue('second')],
+            rawValues: [undefined, undefined],
+            occurrenceValidation: [
+                {index: 0, breaksRequired: false, validationResults: []},
+                {index: 1, breaksRequired: false, validationResults: []},
+            ],
+        };
+        mocks.useIsMobile.mockReturnValue(true);
+        mocks.useRef.mockImplementationOnce(() => ({current: inputRefs}));
+        mocks.useOccurrenceManager.mockReturnValue({
+            state,
+            add: vi.fn(() => true),
+            remove: vi.fn(() => true),
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+            callback(0);
+            return 0;
+        });
+
+        const element = InputFieldResolved({
+            input: makeInput('TextLine', 3),
+            propertySet: new PropertyTree().getRoot(),
+            enabled: true,
+            definition: {mode: 'list', descriptor: makeDescriptor(), component: () => null},
+        });
+        getOnlyChild(element).props.onMobileComplete(0, {} as HTMLElement);
+
+        expect(focusNext).toHaveBeenCalledOnce();
+        vi.unstubAllGlobals();
+    });
+
+    it('moves mobile completion out of the field without changing occurrences', () => {
+        const add = vi.fn(() => true);
+        const remove = vi.fn(() => true);
+        const focusNext = vi.fn();
+        mocks.useIsMobile.mockReturnValue(true);
+        mocks.getNextMobileFocusTarget.mockReturnValue({focus: focusNext});
+        mocks.useOccurrenceManager.mockReturnValue({
+            state: makeManagerState(ValueTypes.STRING.newValue('complete')),
+            add,
+            remove,
+            move: vi.fn(() => true),
+            set: vi.fn(),
+            sync: vi.fn(),
+        });
+        vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+            callback(0);
+            return 0;
+        });
+
+        const element = InputFieldResolved({
+            input: makeInput('TextLine', 3),
+            propertySet: new PropertyTree().getRoot(),
+            enabled: true,
+            definition: {mode: 'list', descriptor: makeDescriptor(), component: () => null},
+        });
+        getOnlyChild(element).props.onMobileComplete(0, {} as HTMLElement);
+
+        expect(focusNext).toHaveBeenCalledOnce();
+        expect(add).not.toHaveBeenCalled();
+        expect(remove).not.toHaveBeenCalled();
+        vi.unstubAllGlobals();
     });
 
     it('stores null plus rawValue for invalid TextLine edits', () => {

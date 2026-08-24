@@ -72,6 +72,7 @@ export const TextAreaInput = ({
     return (
         <TextArea
             ref={textAreaRef}
+            data-mobile-focus-target
             {...langAttrs}
             aria-label={getInputAccessibleName(input, index)}
             autoSize

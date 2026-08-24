@@ -7,7 +7,13 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import type {TextLineConfig} from '../../descriptor';
 import {useLocale} from '../../LocaleContext';
 import type {InputTypeComponentProps} from '../../types';
-import {displayValue, getFirstError, getInputAccessibleName, getLangAttributes} from '../../utils';
+import {
+    displayValue,
+    getFirstError,
+    getInputAccessibleName,
+    getLangAttributes,
+    handleMobileCompletionKeyDown,
+} from '../../utils';
 import {Counter} from '../counter';
 
 export type TextLineInputProps = InputTypeComponentProps<TextLineConfig>;
@@ -24,6 +30,7 @@ export const TextLineInput = ({
     onChange,
     onBlur,
     onFocus,
+    onMobileComplete,
     config,
     input,
     enabled,
@@ -71,12 +78,15 @@ export const TextLineInput = ({
     return (
         <Input
             ref={inputRef}
+            data-mobile-focus-target
             {...langAttrs}
             aria-label={getInputAccessibleName(input, index)}
             value={display}
             onChange={handleChange}
             onBlur={onBlur}
             onFocus={onFocus}
+            enterKeyHint={onMobileComplete ? 'next' : undefined}
+            onKeyDown={onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined}
             disabled={!enabled}
             readOnly={readOnly}
             processing={processing}
