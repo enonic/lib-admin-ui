@@ -14,6 +14,8 @@ export type InputTypeComponentProps<C extends InputTypeConfig = InputTypeConfig>
     onChange: (value: Value, rawValue?: string) => void;
     onBlur?: () => void;
     onFocus?: () => void;
+    /** Mobile soft-keyboard completion. Leaf inputs call this for Enter/Next and pass their focusable element. */
+    onMobileComplete?: (element: HTMLElement) => void;
     config: C;
     input: Input;
     enabled: boolean;

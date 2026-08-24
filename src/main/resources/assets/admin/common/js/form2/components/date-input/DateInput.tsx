@@ -1,14 +1,15 @@
 import {Button, DatePicker, Input} from '@enonic/ui';
-import {type JSX, type ReactElement, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useCallback, useRef, useState} from 'react';
 
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
 import type {DateConfig} from '../../descriptor';
 import {DATE_PATTERN} from '../../descriptor/DateDescriptor';
+import {useIsMobile} from '../../hooks/useIsMobile';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName, handleMobileCompletionKeyDown} from '../../utils';
 
 const DATE_INPUT_NAME = 'DateInput';
 
@@ -23,11 +24,13 @@ export const DateInput = ({
     rawValue,
     onChange,
     onBlur,
+    onMobileComplete,
     config,
     input,
     enabled,
     index,
     errors,
+    inputRef: externalInputRef,
 }: DateInputProps): ReactElement => {
     const [open, setOpen] = useState(false);
     // ? DatePicker API uses null for "no selection" — applies to draftDate, selectedDate, calendarValue
@@ -35,6 +38,14 @@ export const DateInput = ({
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
+    const isMobile = useIsMobile();
+    const setInputRef = useCallback(
+        (element: HTMLInputElement | null) => {
+            inputRef.current = element;
+            externalInputRef?.(element);
+        },
+        [externalInputRef],
+    );
 
     const display = displayValue(value, rawValue, valueToString);
 
@@ -66,6 +77,28 @@ export const DateInput = ({
     const selectedDate = DATE_PATTERN.test(display) ? new Date(`${display}T00:00:00`) : null;
     const calendarValue = open ? draftDate : selectedDate;
 
+    if (isMobile) {
+        return (
+            <div data-component={DATE_INPUT_NAME}>
+                <Input
+                    ref={setInputRef}
+                    data-mobile-focus-target
+                    aria-label={getInputAccessibleName(input, index)}
+                    type='date'
+                    value={display}
+                    onChange={handleInputChange}
+                    onBlur={onBlur}
+                    enterKeyHint={onMobileComplete ? 'next' : undefined}
+                    onKeyDown={
+                        onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined
+                    }
+                    disabled={!enabled}
+                    error={getFirstError(errors)}
+                />
+            </div>
+        );
+    }
+
     return (
         <DatePicker.Root
             // ? @enonic/ui composables forward data attrs to the DOM root
@@ -73,6 +106,7 @@ export const DateInput = ({
             value={calendarValue}
             onValueChange={handleDraftChange}
             closeOnSelect={false}
+            native={false}
             open={open}
             onOpenChange={isOpen => {
                 if (isOpen) {
@@ -84,13 +118,18 @@ export const DateInput = ({
         >
             <div ref={inputWrapperRef}>
                 <Input
-                    ref={inputRef}
+                    ref={setInputRef}
+                    data-mobile-focus-target
                     aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.date.placeholder')}
                     value={display}
                     onChange={handleInputChange}
                     onBlur={onBlur}
+                    enterKeyHint={onMobileComplete ? 'next' : undefined}
+                    onKeyDown={
+                        onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined
+                    }
                     disabled={!enabled}
                     error={getFirstError(errors)}
                     endAddon={

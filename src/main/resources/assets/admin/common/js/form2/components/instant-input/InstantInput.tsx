@@ -1,5 +1,5 @@
 import {Button, DatePicker, Input, TimePicker} from '@enonic/ui';
-import {type JSX, type ReactElement, useMemo, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useCallback, useMemo, useRef, useState} from 'react';
 
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
@@ -8,7 +8,7 @@ import {DateTime} from '../../../util/DateTime';
 import type {InstantConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName, handleMobileCompletionKeyDown} from '../../utils';
 
 const INSTANT_INPUT_NAME = 'InstantInput';
 
@@ -67,11 +67,13 @@ export const InstantInput = ({
     rawValue,
     onChange,
     onBlur,
+    onMobileComplete,
     config,
     input,
     enabled,
     index,
     errors,
+    inputRef: externalInputRef,
 }: InstantInputProps): ReactElement => {
     const [open, setOpen] = useState(false);
     // ? DatePicker/TimePicker API uses null for "no selection"
@@ -80,6 +82,13 @@ export const InstantInput = ({
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
+    const setInputRef = useCallback(
+        (element: HTMLInputElement | null) => {
+            inputRef.current = element;
+            externalInputRef?.(element);
+        },
+        [externalInputRef],
+    );
 
     const timezoneLabel = useMemo(() => formatTimezoneLabel(draftDate, draftTime), [draftDate, draftTime]);
 
@@ -117,7 +126,11 @@ export const InstantInput = ({
         const displayValueStr = formatDisplay(draftDate, draftTime);
         onChange(displayToValue(displayValueStr), displayValueStr);
         setOpen(false);
-        inputRef.current?.focus();
+        if (onMobileComplete != null && inputRef.current != null) {
+            onMobileComplete(inputRef.current);
+        } else {
+            inputRef.current?.focus();
+        }
     };
 
     const handleSetDefault = () => {
@@ -132,6 +145,7 @@ export const InstantInput = ({
             value={open ? draftDate : selected.date}
             onValueChange={handleDraftDateChange}
             closeOnSelect={false}
+            native={false}
             open={open}
             onOpenChange={isOpen => {
                 if (isOpen) {
@@ -144,13 +158,18 @@ export const InstantInput = ({
         >
             <div ref={inputWrapperRef}>
                 <Input
-                    ref={inputRef}
+                    ref={setInputRef}
+                    data-mobile-focus-target
                     aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.dateTime.placeholder')}
                     value={display}
                     onChange={handleInputChange}
                     onBlur={onBlur}
+                    enterKeyHint={onMobileComplete ? 'next' : undefined}
+                    onKeyDown={
+                        onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined
+                    }
                     disabled={!enabled}
                     error={getFirstError(errors)}
                     endAddon={

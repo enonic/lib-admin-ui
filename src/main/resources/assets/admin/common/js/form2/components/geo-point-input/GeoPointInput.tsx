@@ -6,7 +6,7 @@ import {ValueTypes} from '../../../data/ValueTypes';
 import {GeoPoint} from '../../../util/GeoPoint';
 import type {GeoPointConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName, handleMobileCompletionKeyDown} from '../../utils';
 
 const GEO_POINT_INPUT_NAME = 'GeoPointInput';
 
@@ -21,10 +21,12 @@ export const GeoPointInput = ({
     rawValue,
     onChange,
     onBlur,
+    onMobileComplete,
     input,
     enabled,
     index,
     errors,
+    inputRef,
 }: GeoPointInputProps): ReactElement => {
     const display = displayValue(value, rawValue, valueToString);
 
@@ -46,12 +48,16 @@ export const GeoPointInput = ({
 
     return (
         <Input
+            ref={inputRef}
             data-component={GEO_POINT_INPUT_NAME}
+            data-mobile-focus-target
             aria-label={getInputAccessibleName(input, index)}
             type='text'
             value={display}
             onChange={handleChange}
             onBlur={onBlur}
+            enterKeyHint={onMobileComplete ? 'next' : undefined}
+            onKeyDown={onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined}
             disabled={!enabled}
             error={getFirstError(errors)}
         />

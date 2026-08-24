@@ -2,7 +2,7 @@ import {RadioGroup} from '@enonic/ui';
 import type {ReactElement} from 'react';
 
 import {ValueTypes} from '../../../data/ValueTypes';
-import type {RadioButtonConfig} from '../../descriptor/InputTypeConfig';
+import type {RadioButtonConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
 import {getFirstError} from '../../utils';
 import {InputLabel} from '../input-label';
@@ -18,9 +18,11 @@ export const RadioButtonInput = ({
     enabled,
     index,
     errors,
+    inputRef,
 }: InputTypeComponentProps<RadioButtonConfig>): ReactElement => {
     const stringValue = value.isNull() ? '' : (value.getString() ?? '');
     const hasErrors = errors.length > 0;
+    const primaryValue = stringValue || config.options[0]?.value;
 
     const handleValueChange = (newValue: string): void => {
         onChange(ValueTypes.STRING.newValue(newValue));
@@ -38,7 +40,13 @@ export const RadioButtonInput = ({
                 errorMessage={getFirstError(errors)}
             >
                 {config.options.map(option => (
-                    <RadioGroup.Item key={option.value} value={option.value} disabled={!enabled}>
+                    <RadioGroup.Item
+                        key={option.value}
+                        ref={option.value === primaryValue ? inputRef : undefined}
+                        data-mobile-focus-target={option.value === primaryValue || undefined}
+                        value={option.value}
+                        disabled={!enabled}
+                    >
                         <RadioGroup.Indicator />
                         {option.label}
                     </RadioGroup.Item>

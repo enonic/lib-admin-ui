@@ -24,6 +24,7 @@ export type OccurrenceListRootProps<C extends InputTypeConfig = InputTypeConfig>
     onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
     onFocus?: () => void;
+    onMobileComplete?: (index: number, element: HTMLElement) => void;
     config: C;
     input: Input;
     enabled: boolean;
@@ -64,6 +65,7 @@ type OccurrenceListItemContentProps<C extends InputTypeConfig = InputTypeConfig>
     onChange: (index: number, value: Value, rawValue?: string) => void;
     onBlur?: (index: number) => void;
     onFocus?: () => void;
+    onMobileComplete?: (index: number, element: HTMLElement) => void;
     onRemove: (index: number) => void;
 };
 
@@ -92,6 +94,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
     onChange,
     onBlur,
     onFocus,
+    onMobileComplete,
     onRemove,
 }: OccurrenceListItemContentProps<C>): ReactNode => {
     const t = useI18n();
@@ -105,6 +108,7 @@ const OccurrenceListItemContent = <C extends InputTypeConfig = InputTypeConfig>(
                     onChange={(v: Value, raw?: string) => onChange(index, v, raw)}
                     onBlur={onBlur ? () => onBlur(index) : undefined}
                     onFocus={onFocus}
+                    onMobileComplete={onMobileComplete ? element => onMobileComplete(index, element) : undefined}
                     config={config}
                     input={input}
                     enabled={enabled}
@@ -158,6 +162,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
     onChange,
     onBlur,
     onFocus,
+    onMobileComplete,
     config,
     input,
     enabled,
@@ -211,6 +216,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
                     onChange={(v: Value, raw?: string) => onChange(0, v, raw)}
                     onBlur={onBlur ? () => onBlur(0) : undefined}
                     onFocus={onFocus}
+                    onMobileComplete={onMobileComplete ? element => onMobileComplete(0, element) : undefined}
                     config={config}
                     input={input}
                     enabled={enabled}
@@ -242,6 +248,7 @@ const OccurrenceListRoot = <C extends InputTypeConfig = InputTypeConfig>({
         onChange,
         onBlur,
         onFocus,
+        onMobileComplete,
         onRemove,
     });
 

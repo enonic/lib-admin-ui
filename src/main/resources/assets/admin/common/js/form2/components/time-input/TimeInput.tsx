@@ -1,5 +1,5 @@
 import {Button, Input, TimePicker} from '@enonic/ui';
-import {type JSX, type ReactElement, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useCallback, useRef, useState} from 'react';
 
 import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
@@ -8,7 +8,7 @@ import type {TimeConfig} from '../../descriptor';
 import {TIME_PATTERN} from '../../descriptor/TimeDescriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName, handleMobileCompletionKeyDown} from '../../utils';
 
 const TIME_INPUT_NAME = 'TimeInput';
 
@@ -38,11 +38,13 @@ export const TimeInput = ({
     rawValue,
     onChange,
     onBlur,
+    onMobileComplete,
     config,
     input,
     enabled,
     index,
     errors,
+    inputRef: externalInputRef,
 }: TimeInputProps): ReactElement => {
     const [open, setOpen] = useState(false);
     // ? Uses `null` instead of `undefined` because TimePicker API uses `null` for empty value
@@ -50,6 +52,13 @@ export const TimeInput = ({
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
+    const setInputRef = useCallback(
+        (element: HTMLInputElement | null) => {
+            inputRef.current = element;
+            externalInputRef?.(element);
+        },
+        [externalInputRef],
+    );
 
     const display = displayValue(value, rawValue, valueToString);
 
@@ -70,7 +79,11 @@ export const TimeInput = ({
         if (draftTime == null) return;
         onChange(ValueTypes.LOCAL_TIME.newValue(draftTime), draftTime);
         setOpen(false);
-        inputRef.current?.focus();
+        if (onMobileComplete != null && inputRef.current != null) {
+            onMobileComplete(inputRef.current);
+        } else {
+            inputRef.current?.focus();
+        }
     };
 
     const handleSetDefault = () => {
@@ -94,13 +107,18 @@ export const TimeInput = ({
         >
             <div data-component={TIME_INPUT_NAME} ref={inputWrapperRef}>
                 <Input
-                    ref={inputRef}
+                    ref={setInputRef}
+                    data-mobile-focus-target
                     aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.time.placeholder')}
                     value={display}
                     onChange={handleInputChange}
                     onBlur={onBlur}
+                    enterKeyHint={onMobileComplete ? 'next' : undefined}
+                    onKeyDown={
+                        onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined
+                    }
                     disabled={!enabled}
                     error={getFirstError(errors)}
                     endAddon={
