@@ -36,7 +36,7 @@
     "jquery-ui": "^1.14.2",
     "mousetrap": "^1.6.5",
     "nanoid": "~6.0.1",
-    "nanostores": "~1.4.2",
+    "nanostores": "~1.5.2",
     "q": "^1.5.1"
   },
   "peerDependencies": {
