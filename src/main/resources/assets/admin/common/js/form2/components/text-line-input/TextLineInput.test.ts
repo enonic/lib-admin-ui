@@ -149,6 +149,29 @@ describe('TextLineInput', () => {
 
             expect(element.props.value).toBe('typed-but-invalid');
         });
+
+        it('uses the mobile Next action and completes on Enter', () => {
+            const onMobileComplete = vi.fn();
+            const preventDefault = vi.fn();
+            const stopPropagation = vi.fn();
+            const currentTarget = {} as HTMLInputElement;
+            const element = TextLineInput(makeProps({onMobileComplete})) as VNode;
+
+            element.props.onKeyDown({key: 'Enter', currentTarget, preventDefault, stopPropagation});
+
+            expect(element.props.enterKeyHint).toBe('next');
+            expect(element.props['data-mobile-focus-target']).toBe(true);
+            expect(preventDefault).toHaveBeenCalledOnce();
+            expect(stopPropagation).toHaveBeenCalledOnce();
+            expect(onMobileComplete).toHaveBeenCalledWith(currentTarget);
+        });
+
+        it('keeps desktop keyboard behavior unchanged without mobile completion', () => {
+            const element = TextLineInput(makeProps()) as VNode;
+
+            expect(element.props.enterKeyHint).toBeUndefined();
+            expect(element.props.onKeyDown).toBeUndefined();
+        });
     });
 
     describe('locale attributes', () => {

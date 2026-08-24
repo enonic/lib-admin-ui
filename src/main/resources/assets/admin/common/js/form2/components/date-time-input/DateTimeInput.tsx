@@ -1,5 +1,5 @@
 import {Button, DatePicker, Input, TimePicker} from '@enonic/ui';
-import {type JSX, type ReactElement, useMemo, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useCallback, useMemo, useRef, useState} from 'react';
 
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
@@ -7,9 +7,10 @@ import {DateHelper} from '../../../util/DateHelper';
 import {LocalDateTime} from '../../../util/LocalDateTime';
 import type {DateTimeConfig} from '../../descriptor';
 import {truncateToMinutes} from '../../descriptor/DateTimeDescriptor';
+import {useIsMobile} from '../../hooks/useIsMobile';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
-import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName, handleMobileCompletionKeyDown} from '../../utils';
 
 const DATE_TIME_INPUT_NAME = 'DateTimeInput';
 
@@ -45,11 +46,13 @@ export const DateTimeInput = ({
     rawValue,
     onChange,
     onBlur,
+    onMobileComplete,
     config,
     input,
     enabled,
     index,
     errors,
+    inputRef: externalInputRef,
 }: DateTimeInputProps): ReactElement => {
     const [open, setOpen] = useState(false);
     // ? DatePicker/TimePicker API uses null for "no selection"
@@ -58,6 +61,14 @@ export const DateTimeInput = ({
     const inputRef = useRef<HTMLInputElement>(null);
     const inputWrapperRef = useRef<HTMLDivElement>(null);
     const t = useI18n();
+    const isMobile = useIsMobile();
+    const setInputRef = useCallback(
+        (element: HTMLInputElement | null) => {
+            inputRef.current = element;
+            externalInputRef?.(element);
+        },
+        [externalInputRef],
+    );
 
     const display = displayValue(value, rawValue, valueToDisplay);
 
@@ -77,6 +88,16 @@ export const DateTimeInput = ({
             onChange(ValueTypes.LOCAL_DATE_TIME.newNullValue());
         } else {
             onChange(displayToValue(inputValue), inputValue);
+        }
+    };
+
+    const handleNativeInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
+        const inputValue = e.currentTarget.value;
+        if (inputValue === '') {
+            onChange(ValueTypes.LOCAL_DATE_TIME.newNullValue());
+        } else {
+            const displayValueStr = storageToDisplay(inputValue);
+            onChange(displayToValue(displayValueStr), displayValueStr);
         }
     };
 
@@ -102,12 +123,41 @@ export const DateTimeInput = ({
         setDraftTime(formatTime(config.default));
     };
 
+    if (isMobile) {
+        const nativeValue =
+            selected.date != null && selected.time != null
+                ? `${DateHelper.formatDate(selected.date)}T${selected.time}`
+                : '';
+
+        return (
+            <div data-component={DATE_TIME_INPUT_NAME}>
+                <Input
+                    ref={setInputRef}
+                    data-mobile-focus-target
+                    aria-label={getInputAccessibleName(input, index)}
+                    type='datetime-local'
+                    step={60}
+                    value={nativeValue}
+                    onChange={handleNativeInputChange}
+                    onBlur={onBlur}
+                    enterKeyHint={onMobileComplete ? 'next' : undefined}
+                    onKeyDown={
+                        onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined
+                    }
+                    disabled={!enabled}
+                    error={getFirstError(errors)}
+                />
+            </div>
+        );
+    }
+
     return (
         <DatePicker.Root
             data-component={DATE_TIME_INPUT_NAME}
             value={open ? draftDate : selected.date}
             onValueChange={handleDraftDateChange}
             closeOnSelect={false}
+            native={false}
             open={open}
             onOpenChange={isOpen => {
                 if (isOpen) {
@@ -120,13 +170,18 @@ export const DateTimeInput = ({
         >
             <div ref={inputWrapperRef}>
                 <Input
-                    ref={inputRef}
+                    ref={setInputRef}
+                    data-mobile-focus-target
                     aria-label={getInputAccessibleName(input, index)}
                     type='text'
                     placeholder={t('field.dateTime.placeholder')}
                     value={display}
                     onChange={handleInputChange}
                     onBlur={onBlur}
+                    enterKeyHint={onMobileComplete ? 'next' : undefined}
+                    onKeyDown={
+                        onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined
+                    }
                     disabled={!enabled}
                     error={getFirstError(errors)}
                     endAddon={

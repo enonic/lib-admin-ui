@@ -5,7 +5,7 @@ import type {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import type {NumberConfig} from '../../descriptor';
 import type {InputTypeComponentProps} from '../../types';
-import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
+import {displayValue, getFirstError, getInputAccessibleName, handleMobileCompletionKeyDown} from '../../utils';
 import {getStep} from './utils';
 
 const DOUBLE_INPUT_NAME = 'DoubleInput';
@@ -21,11 +21,13 @@ export const DoubleInput = ({
     rawValue,
     onChange,
     onBlur,
+    onMobileComplete,
     config,
     input,
     enabled,
     index,
     errors,
+    inputRef,
 }: DoubleInputProps): ReactElement => {
     const display = displayValue(value, rawValue, valueToString);
     // ? Step is precision-sticky: shrinks to match user-typed decimals, but holds steady
@@ -62,13 +64,17 @@ export const DoubleInput = ({
 
     return (
         <Input
+            ref={inputRef}
             data-component={DOUBLE_INPUT_NAME}
+            data-mobile-focus-target
             aria-label={getInputAccessibleName(input, index)}
             type='number'
             step={step}
             value={display}
             onChange={handleChange}
             onBlur={onBlur}
+            enterKeyHint={onMobileComplete ? 'next' : undefined}
+            onKeyDown={onMobileComplete ? event => handleMobileCompletionKeyDown(event, onMobileComplete) : undefined}
             disabled={!enabled}
             error={getFirstError(errors)}
             min={config.min}

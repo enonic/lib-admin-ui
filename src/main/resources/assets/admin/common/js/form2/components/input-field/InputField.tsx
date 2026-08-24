@@ -5,19 +5,23 @@ import {PropertyPath, PropertyPathElement} from '../../../data/PropertyPath';
 import type {PropertySet} from '../../../data/PropertySet';
 import type {Value} from '../../../data/Value';
 import type {Input} from '../../../form/Input';
-import {getEffectiveOccurrences} from '../../descriptor/getEffectiveOccurrences';
-import type {OccurrenceValidationState} from '../../descriptor/OccurrenceManager';
+import type {OccurrenceValidationState} from '../../descriptor';
+import {getEffectiveOccurrences} from '../../descriptor';
 import {generateProcessingToken, type ProcessingToken, type RevealOptions} from '../../FieldRegistry';
 import {useFieldRegistry} from '../../FieldRegistryContext';
-import {useOccurrenceManager} from '../../hooks/useOccurrenceManager';
-import {usePropertyArray} from '../../hooks/usePropertyArray';
+import {useOccurrenceManager, usePropertyArray} from '../../hooks';
+import {useIsMobile} from '../../hooks/useIsMobile';
 import {useI18n} from '../../I18nContext';
 import {useRawValueMap} from '../../RawValueContext';
-import {InputTypeRegistry} from '../../registry/InputTypeRegistry';
+import {InputTypeRegistry} from '../../registry';
 import {useServerErrors} from '../../ServerErrorsContext';
 import type {InputTypeComponent, InputTypeDefinition, SelfManagedInputTypeComponent} from '../../types';
-import {bucketServerErrorsByOccurrence, mergeServerErrors} from '../../utils/serverErrors';
-import {getOccurrenceErrorMessage} from '../../utils/validation';
+import {
+    bucketServerErrorsByOccurrence,
+    getNextMobileFocusTarget,
+    getOccurrenceErrorMessage,
+    mergeServerErrors,
+} from '../../utils';
 import {useValidationVisibility} from '../../ValidationContext';
 import {FieldError} from '../field-error';
 import {InputLabel} from '../input-label';
@@ -188,6 +192,7 @@ export const InputFieldResolved = ({
     );
     const t = useI18n();
     const visibility = useValidationVisibility();
+    const isMobile = useIsMobile();
     const rawValueMap = useRawValueMap();
     const [touched, setTouched] = useState<Set<number>>(() => new Set());
 
@@ -402,6 +407,23 @@ export const InputFieldResolved = ({
     const displayValidation = mergeServerErrors(filteredValidation, serverErrorsByOccurrence);
     const filteredState =
         visibility === 'all' && !hasServerErrors ? state : {...state, occurrenceValidation: displayValidation};
+
+    const handleMobileComplete = useCallback(
+        (index: number, element: HTMLElement): void => {
+            for (let nextIndex = index + 1; nextIndex < state.ids.length; nextIndex += 1) {
+                const nextOccurrenceId = state.ids[nextIndex];
+                const nextOccurrence = inputRefsRef.current.get(nextOccurrenceId);
+                if (nextOccurrence != null && !processingTokensRef.current.has(nextOccurrenceId)) {
+                    requestAnimationFrame(() => nextOccurrence.focus());
+                    return;
+                }
+            }
+
+            const nextTarget = getNextMobileFocusTarget(element);
+            requestAnimationFrame(() => nextTarget?.focus());
+        },
+        [state.ids],
+    );
 
     const isOccurrenceProcessing = useCallback((occurrenceId: string | undefined): boolean => {
         if (occurrenceId == null) return false;
@@ -638,6 +660,7 @@ export const InputFieldResolved = ({
                         onChange={handleChange}
                         onBlur={handleOccurrenceBlur}
                         onFocus={handleOccurrenceFocus}
+                        onMobileComplete={isMobile ? handleMobileComplete : undefined}
                         config={config}
                         input={input}
                         enabled={enabled}

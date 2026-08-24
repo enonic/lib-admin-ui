@@ -17,7 +17,15 @@ const ALIGNMENT_CLASSES: Record<Alignment, string | undefined> = {
 
 export type CheckboxInputProps = InputTypeComponentProps<CheckboxConfig>;
 
-export const CheckboxInput = ({value, onChange, config, input, enabled, errors}: CheckboxInputProps): ReactElement => {
+export const CheckboxInput = ({
+    value,
+    onChange,
+    config,
+    input,
+    enabled,
+    errors,
+    inputRef,
+}: CheckboxInputProps): ReactElement => {
     const isChecked = value.isNull() ? false : (value.getBoolean() ?? false);
     const isRequired = input.getOccurrences().getMinimum() > 0;
 
@@ -32,6 +40,8 @@ export const CheckboxInput = ({value, onChange, config, input, enabled, errors}:
     return (
         <div data-component={CHECKBOX_INPUT_NAME}>
             <Checkbox
+                ref={inputRef}
+                data-mobile-focus-target
                 checked={isChecked}
                 label={input.getLabel()}
                 className={ALIGNMENT_CLASSES[config.alignment]}
