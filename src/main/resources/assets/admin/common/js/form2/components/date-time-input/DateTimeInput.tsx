@@ -1,9 +1,10 @@
 import {Button, DatePicker, Input, TimePicker} from '@enonic/ui';
-import {type JSX, type ReactElement, useRef, useState} from 'react';
+import {type JSX, type ReactElement, useMemo, useRef, useState} from 'react';
 
-import type {Value} from '../../../data/Value';
+import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
+import {LocalDateTime} from '../../../util/LocalDateTime';
 import type {DateTimeConfig} from '../../descriptor';
 import {truncateToMinutes} from '../../descriptor/DateTimeDescriptor';
 import {useI18n} from '../../I18nContext';
@@ -12,49 +13,31 @@ import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
 
 const DATE_TIME_INPUT_NAME = 'DateTimeInput';
 
-// ? Display uses space separator (2025-06-15 14:30), storage uses T (2025-06-15T14:30)
-const DISPLAY_PATTERN = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
-
 export type DateTimeInputProps = InputTypeComponentProps<DateTimeConfig>;
 
 function storageToDisplay(s: string): string {
     return s.replace('T', ' ');
 }
 
-function displayToStorage(s: string): string {
-    return s.replace(' ', 'T');
-}
-
-// ? Storage always carries seconds, the field shows minutes only
 export function valueToDisplay(value: Value): string {
     const str = value.getString();
     return str ? storageToDisplay(truncateToMinutes(str)) : '';
 }
 
+// ? parseDateTime, unlike `new Date`, rejects impossible dates instead of rolling 2025-06-31 into July 1
+export function displayToValue(display: string): Value {
+    const parsed = DateHelper.parseDateTime(display);
+    if (parsed == null) return ValueTypes.LOCAL_DATE_TIME.newNullValue();
+
+    return new Value(LocalDateTime.fromDate(parsed), ValueTypes.LOCAL_DATE_TIME);
+}
+
+function formatTime(date: Date): string {
+    return `${DateHelper.padNumber(date.getHours())}:${DateHelper.padNumber(date.getMinutes())}`;
+}
+
 function formatDisplay(date: Date, time: string | null): string {
-    const datePart = DateHelper.formatDate(date);
-    const timePart = time ?? `${DateHelper.padNumber(date.getHours())}:${DateHelper.padNumber(date.getMinutes())}`;
-    return `${datePart} ${timePart}`;
-}
-
-function parseDateFromDisplay(raw: string): Date | null {
-    if (!DISPLAY_PATTERN.test(raw)) return null;
-    const datePart = raw.slice(0, 10);
-    const parsed = new Date(`${datePart}T00:00:00`);
-    if (Number.isNaN(parsed.getTime())) return null;
-    return parsed;
-}
-
-// ? Truncates to HH:MM — picker only supports hours and minutes
-function parseTimeFromDisplay(raw: string): string | null {
-    if (!DISPLAY_PATTERN.test(raw)) return null;
-    const timePart = raw.slice(11);
-    const parts = timePart.split(':');
-    const hour = Number.parseInt(parts[0] ?? '', 10);
-    const minute = Number.parseInt(parts[1] ?? '', 10);
-    if (!Number.isInteger(hour) || !Number.isInteger(minute)) return null;
-    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
-    return `${DateHelper.padNumber(hour)}:${DateHelper.padNumber(minute)}`;
+    return `${DateHelper.formatDate(date)} ${time ?? formatTime(date)}`;
 }
 
 export const DateTimeInput = ({
@@ -78,13 +61,22 @@ export const DateTimeInput = ({
 
     const display = displayValue(value, rawValue, valueToDisplay);
 
+    const selected = useMemo(() => {
+        const parsed = DateHelper.parseDateTime(display);
+        if (parsed == null) return {date: null, time: null};
+
+        return {
+            date: new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()),
+            time: formatTime(parsed),
+        };
+    }, [display]);
+
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
         if (inputValue === '') {
             onChange(ValueTypes.LOCAL_DATE_TIME.newNullValue());
         } else {
-            const storageValue = displayToStorage(inputValue);
-            onChange(ValueTypes.LOCAL_DATE_TIME.newValue(storageValue), inputValue);
+            onChange(displayToValue(inputValue), inputValue);
         }
     };
 
@@ -99,8 +91,7 @@ export const DateTimeInput = ({
     const handleConfirm = () => {
         if (draftDate == null) return;
         const displayValueStr = formatDisplay(draftDate, draftTime);
-        const storageValue = displayToStorage(displayValueStr);
-        onChange(ValueTypes.LOCAL_DATE_TIME.newValue(storageValue), displayValueStr);
+        onChange(displayToValue(displayValueStr), displayValueStr);
         setOpen(false);
         inputRef.current?.focus();
     };
@@ -108,32 +99,20 @@ export const DateTimeInput = ({
     const handleSetDefault = () => {
         if (config.default == null) return;
         setDraftDate(config.default);
-        const hours = config.default.getHours();
-        const minutes = config.default.getMinutes();
-        setDraftTime(`${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`);
+        setDraftTime(formatTime(config.default));
     };
-
-    const selectedDate = parseDateFromDisplay(display);
-    const selectedTime = parseTimeFromDisplay(display);
 
     return (
         <DatePicker.Root
             data-component={DATE_TIME_INPUT_NAME}
-            value={open ? draftDate : selectedDate}
+            value={open ? draftDate : selected.date}
             onValueChange={handleDraftDateChange}
             closeOnSelect={false}
             open={open}
             onOpenChange={isOpen => {
                 if (isOpen) {
-                    setDraftDate(selectedDate);
-                    if (selectedTime != null) {
-                        setDraftTime(selectedTime);
-                    } else {
-                        const now = new Date();
-                        setDraftTime(
-                            `${DateHelper.padNumber(now.getHours())}:${DateHelper.padNumber(now.getMinutes())}`,
-                        );
-                    }
+                    setDraftDate(selected.date);
+                    setDraftTime(selected.time ?? formatTime(new Date()));
                 }
                 setOpen(isOpen);
             }}

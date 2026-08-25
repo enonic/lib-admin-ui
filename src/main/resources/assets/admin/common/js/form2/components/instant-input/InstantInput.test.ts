@@ -2,7 +2,7 @@ import {describe, expect, it, vi} from 'vitest';
 import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
-import {displayToStorage, storageToDisplay, valueToDisplay} from './InstantInput';
+import {displayToValue, formatTimezoneLabel, storageToDisplay, valueToDisplay} from './InstantInput';
 
 // ? The real package pulls in DOM-only React internals, unavailable in the node test environment
 vi.mock('@enonic/ui', () => ({
@@ -12,116 +12,30 @@ vi.mock('@enonic/ui', () => ({
     TimePicker: () => null,
 }));
 
-// ? Display shows local time with space separator, storage is UTC with T and Z
-const DISPLAY_PATTERN = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
-// ? The picker is minute-granular, so the field never shows seconds
 const DISPLAY_IN_MINUTES = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
 
-function parseDateFromDisplay(raw: string): Date | null {
-    if (!DISPLAY_PATTERN.test(raw)) return null;
-    const datePart = raw.slice(0, 10);
-    const parsed = new Date(`${datePart}T00:00:00`);
-    if (Number.isNaN(parsed.getTime())) return null;
-    return parsed;
-}
-
-function parseTimeFromDisplay(raw: string): string | null {
-    if (!DISPLAY_PATTERN.test(raw)) return null;
-    const timePart = raw.slice(11);
-    const parts = timePart.split(':');
-    const hour = Number.parseInt(parts[0] ?? '', 10);
-    const minute = Number.parseInt(parts[1] ?? '', 10);
-    if (!Number.isInteger(hour) || !Number.isInteger(minute)) return null;
-    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
-    return `${DateHelper.padNumber(hour)}:${DateHelper.padNumber(minute)}`;
-}
-
-function formatDisplay(date: Date, time: string | null): string {
-    const datePart = DateHelper.formatDate(date);
-    const timePart = time ?? `${DateHelper.padNumber(date.getHours())}:${DateHelper.padNumber(date.getMinutes())}`;
-    return `${datePart} ${timePart}`;
-}
-
-function formatTimezoneLabel(date: Date | null, time: string | null): string {
-    let ref = date ?? new Date();
-    if (date != null && time != null) {
-        const [h, m] = time.split(':').map(Number);
-        ref = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h ?? 0, m ?? 0);
-    }
-    const offset = ref.getTimezoneOffset();
-    const sign = offset <= 0 ? '+' : '-';
-    const absOffset = Math.abs(offset);
-    const hours = Math.floor(absOffset / 60);
-    const minutes = absOffset % 60;
-    return `UTC${sign}${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`;
-}
-
 describe('InstantInput', () => {
-    describe('display ↔ storage conversion', () => {
-        it('converts storage UTC to local display', () => {
-            const storage = '2025-06-15T12:00:00Z';
-            const display = storageToDisplay(storage);
-            // ? Verify it produces a valid display string (exact value depends on local TZ)
-            expect(DISPLAY_PATTERN.test(display)).toBe(true);
-        });
-
-        it('converts local display to storage UTC', () => {
-            const display = '2025-06-15 14:30';
-            const storage = displayToStorage(display);
-            expect(storage).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/);
-        });
-
-        it('round-trips correctly', () => {
-            const storage = '2025-06-15T12:00:00Z';
-            const display = storageToDisplay(storage);
-            const roundTripped = displayToStorage(display);
-            expect(roundTripped).toBe(storage);
+    describe('storageToDisplay', () => {
+        it('converts storage UTC to a minute-precision local display string', () => {
+            expect(storageToDisplay('2025-06-15T12:00:00Z')).toMatch(DISPLAY_IN_MINUTES);
         });
 
         it('drops seconds from the display', () => {
-            const display = storageToDisplay('2025-06-15T12:30:45Z');
-
-            expect(display).toMatch(DISPLAY_IN_MINUTES);
+            expect(storageToDisplay('2025-06-15T12:30:45Z')).toMatch(DISPLAY_IN_MINUTES);
         });
 
         it('drops milliseconds from the display', () => {
-            const display = storageToDisplay('2025-06-15T12:30:45.123Z');
-
-            expect(display).toMatch(DISPLAY_IN_MINUTES);
+            expect(storageToDisplay('2025-06-15T12:30:45.123Z')).toMatch(DISPLAY_IN_MINUTES);
         });
 
-        it('round-trips a value with seconds back as minute precision', () => {
-            const display = storageToDisplay('2025-06-15T12:30:45Z');
-
-            expect(displayToStorage(display)).toBe('2025-06-15T12:30:00Z');
-        });
-
-        it('falls back gracefully for unparseable input', () => {
-            const display = displayToStorage('invalid');
-            expect(display).toBe('invalid');
-        });
-
-        it('does not mark an impossible date as a valid instant', () => {
-            // ? '2025-99-99T14:30Z' would match the instant pattern, and newValue() would then throw
-            const storage = displayToStorage('2025-99-99 14:30');
-
-            expect(() => ValueTypes.DATE_TIME.newValue(storage)).not.toThrow();
-            expect(ValueTypes.DATE_TIME.newValue(storage).isNull()).toBe(true);
-        });
-
-        it('does not mark an out-of-range time as a valid instant', () => {
-            const storage = displayToStorage('2025-06-15 25:99');
-
-            expect(() => ValueTypes.DATE_TIME.newValue(storage)).not.toThrow();
-            expect(ValueTypes.DATE_TIME.newValue(storage).isNull()).toBe(true);
+        it('falls back to the bare storage string when it cannot be parsed', () => {
+            expect(storageToDisplay('invalid')).toBe('invalid');
         });
     });
 
-    describe('value transformation', () => {
+    describe('valueToDisplay', () => {
         it('should produce empty string for null value', () => {
-            const value = ValueTypes.DATE_TIME.newNullValue();
-
-            expect(value.isNull()).toBe(true);
+            expect(valueToDisplay(ValueTypes.DATE_TIME.newNullValue())).toBe('');
         });
 
         it('should produce local display string for valid UTC value', () => {
@@ -142,157 +56,61 @@ describe('InstantInput', () => {
 
             expect(valueToDisplay(value)).toMatch(DISPLAY_IN_MINUTES);
         });
-
-        it('should produce correct Value type via display→storage conversion', () => {
-            const display = '2025-06-15 09:15';
-            const newValue = ValueTypes.DATE_TIME.newValue(displayToStorage(display));
-
-            expect(newValue).toBeInstanceOf(Value);
-            expect(newValue.getType()).toBe(ValueTypes.DATE_TIME);
-            expect(newValue.isNull()).toBe(false);
-        });
     });
 
-    describe('handleInputChange logic', () => {
-        it('should produce null value for empty input', () => {
-            const nullValue = ValueTypes.DATE_TIME.newNullValue();
+    describe('displayToValue', () => {
+        it('converts local display input to a UTC instant value', () => {
+            const value = displayToValue('2025-06-15 09:15');
 
-            expect(nullValue.isNull()).toBe(true);
+            expect(value).toBeInstanceOf(Value);
+            expect(value.getType()).toBe(ValueTypes.DATE_TIME);
+            expect(value.getString()).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00Z$/);
         });
 
-        it('should produce null value for partial display input', () => {
-            const display = '2025-06-15 ';
-            const newValue = ValueTypes.DATE_TIME.newValue(displayToStorage(display));
-
-            expect(newValue.isNull()).toBe(true);
+        // ? Round-trip, because the exact stored UTC value depends on the local TZ
+        it('preserves the local wall-clock time through the local-to-UTC conversion', () => {
+            expect(valueToDisplay(displayToValue('2025-06-15 14:30'))).toBe('2025-06-15 14:30');
         });
 
-        it('should produce valid value for complete display input', () => {
-            const display = '2025-06-15 14:30';
-            const newValue = ValueTypes.DATE_TIME.newValue(displayToStorage(display));
+        it.each(['2025-06-15 00:00', '2025-06-15 23:59', '2024-02-29 12:00'])(
+            'accepts the edge but valid input "%s"',
+            input => {
+                expect(displayToValue(input).isNull()).toBe(false);
+            },
+        );
 
-            expect(newValue.isNull()).toBe(false);
-            expect(newValue.getString()).toMatch(/Z$/);
+        it('always stores zero seconds', () => {
+            expect(displayToValue('2025-06-15 14:30').getString()).toMatch(/:00Z$/);
         });
+
+        it.each(['', '2025-06-15 ', '2025-06-15', '2025-06-15T14:30', '2025-06-15T14:30:00Z', '14:30', 'garbage'])(
+            'rejects malformed input "%s"',
+            input => {
+                const value = displayToValue(input);
+
+                expect(value.isNull()).toBe(true);
+                expect(value.getType()).toBe(ValueTypes.DATE_TIME);
+            },
+        );
+
+        it.each(['2025-06-15 14:30:45', '2025-06-15 14:30:45.123'])('rejects input carrying seconds "%s"', input => {
+            expect(displayToValue(input).isNull()).toBe(true);
+        });
+
+        it.each(['2025-06-15 25:00', '2025-06-15 14:60'])('rejects out-of-range time "%s"', input => {
+            expect(displayToValue(input).isNull()).toBe(true);
+        });
+
+        it.each(['2025-06-31 12:00', '2025-02-30 09:15', '2025-13-01 12:00', '2025-06-32 12:00'])(
+            'rejects the impossible date "%s" without throwing',
+            input => {
+                expect(() => displayToValue(input)).not.toThrow();
+                expect(displayToValue(input).isNull()).toBe(true);
+            },
+        );
     });
 
-    describe('parseDateFromDisplay', () => {
-        it('should extract local date from valid display instant', () => {
-            const date = parseDateFromDisplay('2025-06-15 14:30');
-
-            expect(date).not.toBeNull();
-            expect(date?.getFullYear()).toBe(2025);
-            expect(date?.getMonth()).toBe(5);
-            expect(date?.getDate()).toBe(15);
-        });
-
-        it('should extract date from display instant with seconds', () => {
-            const date = parseDateFromDisplay('2025-06-15 14:30:45');
-
-            expect(date).not.toBeNull();
-            expect(date?.getFullYear()).toBe(2025);
-        });
-
-        it('should return null for partial input', () => {
-            expect(parseDateFromDisplay('2025-06-15 ')).toBeNull();
-        });
-
-        it('should return null for storage format with T and Z', () => {
-            expect(parseDateFromDisplay('2025-06-15T14:30:00Z')).toBeNull();
-        });
-
-        it('should return null for date-only input', () => {
-            expect(parseDateFromDisplay('2025-06-15')).toBeNull();
-        });
-
-        it('should return null for empty string', () => {
-            expect(parseDateFromDisplay('')).toBeNull();
-        });
-    });
-
-    describe('parseTimeFromDisplay', () => {
-        it('should extract time from valid display instant', () => {
-            expect(parseTimeFromDisplay('2025-06-15 14:30')).toBe('14:30');
-        });
-
-        it('should extract HH:MM from display instant with seconds', () => {
-            expect(parseTimeFromDisplay('2025-06-15 14:30:45')).toBe('14:30');
-        });
-
-        it('should return null for partial input', () => {
-            expect(parseTimeFromDisplay('2025-06-15 ')).toBeNull();
-        });
-
-        it('should return null for empty string', () => {
-            expect(parseTimeFromDisplay('')).toBeNull();
-        });
-
-        it('should return null for invalid hour', () => {
-            expect(parseTimeFromDisplay('2025-06-15 25:00')).toBeNull();
-        });
-
-        it('should return null for invalid minute', () => {
-            expect(parseTimeFromDisplay('2025-06-15 14:60')).toBeNull();
-        });
-    });
-
-    describe('formatDisplay', () => {
-        it('should combine local date and time with space separator', () => {
-            const date = new Date(2025, 5, 15);
-
-            const result = formatDisplay(date, '14:30');
-
-            expect(result).toBe('2025-06-15 14:30');
-        });
-
-        it('should use local time from date when time is null', () => {
-            const date = new Date(2025, 5, 15, 9, 5);
-
-            const result = formatDisplay(date, null);
-
-            expect(result).toBe('2025-06-15 09:05');
-        });
-
-        it('should pad single-digit values', () => {
-            const date = new Date(2025, 0, 1);
-
-            const result = formatDisplay(date, '09:05');
-
-            expect(result).toBe('2025-01-01 09:05');
-        });
-
-        it('display format converts to valid UTC storage value', () => {
-            const date = new Date(2025, 5, 15);
-            const display = formatDisplay(date, '14:30');
-            const newValue = ValueTypes.DATE_TIME.newValue(displayToStorage(display));
-
-            expect(newValue.isNull()).toBe(false);
-            expect(newValue.getString()).toMatch(/Z$/);
-        });
-    });
-
-    describe('default value handling', () => {
-        it('should format default date for date picker draft using local time', () => {
-            const defaultDate = new Date(2025, 5, 15, 14, 30);
-
-            const formatted = DateHelper.formatDate(defaultDate);
-
-            expect(formatted).toBe('2025-06-15');
-        });
-
-        it('should format default time for time picker draft using local time', () => {
-            const defaultDate = new Date(2025, 5, 15, 14, 30);
-
-            const hours = defaultDate.getHours();
-            const minutes = defaultDate.getMinutes();
-            const time = `${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`;
-
-            expect(time).toBe('14:30');
-        });
-    });
-
-    describe('timezone label', () => {
-        // ? Helper: compute expected label from a Date's getTimezoneOffset()
+    describe('formatTimezoneLabel', () => {
         function expectedLabel(ref: Date): string {
             const offset = ref.getTimezoneOffset();
             const sign = offset <= 0 ? '+' : '-';
@@ -303,9 +121,7 @@ describe('InstantInput', () => {
         }
 
         it('should produce UTC±hh:mm format', () => {
-            const label = formatTimezoneLabel(new Date(2025, 5, 15), null);
-
-            expect(label).toMatch(/^UTC[+-]\d{2}:\d{2}$/);
+            expect(formatTimezoneLabel(new Date(2025, 5, 15), null)).toMatch(/^UTC[+-]\d{2}:\d{2}$/);
         });
 
         it('(date, null) should match offset of the given date', () => {
@@ -327,8 +143,7 @@ describe('InstantInput', () => {
             const after = new Date();
 
             // ? Offset could theoretically change between before/after, accept either
-            const valid = [expectedLabel(before), expectedLabel(after)];
-            expect(valid).toContain(label);
+            expect([expectedLabel(before), expectedLabel(after)]).toContain(label);
         });
 
         it('(null, time) should ignore time and use current date', () => {
@@ -336,41 +151,7 @@ describe('InstantInput', () => {
             const label = formatTimezoneLabel(null, '14:30');
             const after = new Date();
 
-            // ? When date is null, time is ignored — falls back to new Date()
-            const valid = [expectedLabel(before), expectedLabel(after)];
-            expect(valid).toContain(label);
-        });
-
-        it('sign is + when getTimezoneOffset <= 0 (east of UTC)', () => {
-            const date = new Date(2025, 5, 15);
-            const label = formatTimezoneLabel(date, null);
-            const offset = date.getTimezoneOffset();
-
-            if (offset <= 0) {
-                expect(label).toMatch(/^UTC\+/);
-            } else {
-                expect(label).toMatch(/^UTC-/);
-            }
-        });
-
-        it('hours and minutes are correctly extracted from offset', () => {
-            const date = new Date(2025, 5, 15);
-            const label = formatTimezoneLabel(date, null);
-            const offset = date.getTimezoneOffset();
-            const absOffset = Math.abs(offset);
-            const expectedHours = DateHelper.padNumber(Math.floor(absOffset / 60));
-            const expectedMinutes = DateHelper.padNumber(absOffset % 60);
-
-            expect(label).toContain(`${expectedHours}:${expectedMinutes}`);
-        });
-
-        it('may differ between summer and winter dates', () => {
-            const summer = formatTimezoneLabel(new Date(2025, 6, 1), null);
-            const winter = formatTimezoneLabel(new Date(2025, 0, 1), null);
-
-            // ? In timezones without DST both labels are equal — test just verifies no crash
-            expect(summer).toMatch(/^UTC[+-]\d{2}:\d{2}$/);
-            expect(winter).toMatch(/^UTC[+-]\d{2}:\d{2}$/);
+            expect([expectedLabel(before), expectedLabel(after)]).toContain(label);
         });
 
         it('summer and winter labels match their respective offsets', () => {
@@ -383,45 +164,9 @@ describe('InstantInput', () => {
 
         it('different times on the same date produce correct offsets', () => {
             const date = new Date(2025, 5, 15);
-            const morning = formatTimezoneLabel(date, '06:00');
-            const evening = formatTimezoneLabel(date, '22:00');
 
-            expect(morning).toBe(expectedLabel(new Date(2025, 5, 15, 6, 0)));
-            expect(evening).toBe(expectedLabel(new Date(2025, 5, 15, 22, 0)));
-        });
-    });
-
-    describe('DISPLAY_PATTERN', () => {
-        it('should match YYYY-MM-DD hh:mm', () => {
-            expect(DISPLAY_PATTERN.test('2025-06-15 14:30')).toBe(true);
-        });
-
-        it('should match YYYY-MM-DD hh:mm:ss', () => {
-            expect(DISPLAY_PATTERN.test('2025-06-15 14:30:45')).toBe(true);
-        });
-
-        it('should match YYYY-MM-DD hh:mm:ss.mmm', () => {
-            expect(DISPLAY_PATTERN.test('2025-06-15 14:30:45.123')).toBe(true);
-        });
-
-        it('should not match storage format with T', () => {
-            expect(DISPLAY_PATTERN.test('2025-06-15T14:30')).toBe(false);
-        });
-
-        it('should not match storage format with T and Z', () => {
-            expect(DISPLAY_PATTERN.test('2025-06-15T14:30:00Z')).toBe(false);
-        });
-
-        it('should not match date only', () => {
-            expect(DISPLAY_PATTERN.test('2025-06-15')).toBe(false);
-        });
-
-        it('should not match time only', () => {
-            expect(DISPLAY_PATTERN.test('14:30')).toBe(false);
-        });
-
-        it('should not match empty string', () => {
-            expect(DISPLAY_PATTERN.test('')).toBe(false);
+            expect(formatTimezoneLabel(date, '06:00')).toBe(expectedLabel(new Date(2025, 5, 15, 6, 0)));
+            expect(formatTimezoneLabel(date, '22:00')).toBe(expectedLabel(new Date(2025, 5, 15, 22, 0)));
         });
     });
 });
