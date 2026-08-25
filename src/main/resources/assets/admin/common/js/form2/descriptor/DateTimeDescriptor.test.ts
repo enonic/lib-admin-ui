@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {Value} from '../../data/Value';
 import {ValueTypes} from '../../data/ValueTypes';
-import {DateTimeDescriptor} from './DateTimeDescriptor';
+import {DateTimeDescriptor, truncateToMinutes} from './DateTimeDescriptor';
 import type {DateTimeConfig} from './InputTypeConfig';
 
 vi.mock('../../util/Messages', () => ({
@@ -102,7 +102,7 @@ describe('DateTimeDescriptor', () => {
     describe('createDefaultValue', () => {
         beforeEach(() => {
             vi.useFakeTimers();
-            vi.setSystemTime(new Date('2025-06-15T14:30:00'));
+            vi.setSystemTime(new Date('2025-06-15T14:30:45.123'));
         });
 
         afterEach(() => {
@@ -124,11 +124,23 @@ describe('DateTimeDescriptor', () => {
             expect(value.getType()).toBe(ValueTypes.LOCAL_DATE_TIME);
         });
 
+        it('drops seconds from datetime with seconds', () => {
+            const value = DateTimeDescriptor.createDefaultValue('2025-06-15T14:30:45');
+
+            expect(value.getString()).toBe('2025-06-15T14:30:00');
+        });
+
         it('creates value from datetime with fractions', () => {
             const value = DateTimeDescriptor.createDefaultValue('2025-06-15T14:30:45.123');
 
             expect(value.isNull()).toBe(false);
             expect(value.getType()).toBe(ValueTypes.LOCAL_DATE_TIME);
+        });
+
+        it('drops seconds and fractions from datetime with fractions', () => {
+            const value = DateTimeDescriptor.createDefaultValue('2025-06-15T14:30:45.123');
+
+            expect(value.getString()).toBe('2025-06-15T14:30:00');
         });
 
         it('creates value from relative expression "now"', () => {
@@ -138,11 +150,23 @@ describe('DateTimeDescriptor', () => {
             expect(value.getType()).toBe(ValueTypes.LOCAL_DATE_TIME);
         });
 
+        it('truncates "now" to minutes', () => {
+            const value = DateTimeDescriptor.createDefaultValue('now');
+
+            expect(value.getString()).toBe('2025-06-15T14:30:00');
+        });
+
         it('creates value from relative expression "+1d"', () => {
             const value = DateTimeDescriptor.createDefaultValue('+1d');
 
             expect(value.isNull()).toBe(false);
             expect(value.getType()).toBe(ValueTypes.LOCAL_DATE_TIME);
+        });
+
+        it('truncates relative offset to minutes', () => {
+            const value = DateTimeDescriptor.createDefaultValue('+1d');
+
+            expect(value.getString()).toBe('2025-06-16T14:30:00');
         });
 
         it('returns null Value for non-datetime non-relative string', () => {
@@ -256,5 +280,19 @@ describe('DateTimeDescriptor', () => {
             // Act & Assert
             expect(DateTimeDescriptor.validate(value, config)).toEqual([]);
         });
+    });
+});
+
+describe('truncateToMinutes', () => {
+    it('keeps a minute-precision datetime unchanged', () => {
+        expect(truncateToMinutes('2025-06-15T14:30')).toBe('2025-06-15T14:30');
+    });
+
+    it('drops seconds', () => {
+        expect(truncateToMinutes('2025-06-15T14:30:45')).toBe('2025-06-15T14:30');
+    });
+
+    it('drops seconds and fractions', () => {
+        expect(truncateToMinutes('2025-06-15T14:30:45.123')).toBe('2025-06-15T14:30');
     });
 });
