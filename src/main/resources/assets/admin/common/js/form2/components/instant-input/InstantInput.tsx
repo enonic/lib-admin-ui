@@ -1,9 +1,10 @@
 import {Button, DatePicker, Input, TimePicker} from '@enonic/ui';
 import {type JSX, type ReactElement, useMemo, useRef, useState} from 'react';
 
-import type {Value} from '../../../data/Value';
+import {Value} from '../../../data/Value';
 import {ValueTypes} from '../../../data/ValueTypes';
 import {DateHelper} from '../../../util/DateHelper';
+import {DateTime} from '../../../util/DateTime';
 import type {InstantConfig} from '../../descriptor';
 import {useI18n} from '../../I18nContext';
 import type {InputTypeComponentProps} from '../../types';
@@ -11,13 +12,9 @@ import {displayValue, getFirstError, getInputAccessibleName} from '../../utils';
 
 const INSTANT_INPUT_NAME = 'InstantInput';
 
-// ? Display shows local time with space separator (2025-06-15 16:30), storage is UTC with T and Z (2025-06-15T14:30:00Z)
-const DISPLAY_PATTERN = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
-
 export type InstantInputProps = InputTypeComponentProps<InstantConfig>;
 
-// ? Parses UTC storage string, formats as local time for display
-function storageToDisplay(s: string): string {
+export function storageToDisplay(s: string): string {
     const date = new Date(s);
     if (Number.isNaN(date.getTime())) return s.replace('T', ' ').replace(/Z$/, '');
     const y = date.getFullYear();
@@ -25,58 +22,33 @@ function storageToDisplay(s: string): string {
     const d = DateHelper.padNumber(date.getDate());
     const h = DateHelper.padNumber(date.getHours());
     const min = DateHelper.padNumber(date.getMinutes());
-    const sec = date.getSeconds();
-    const timePart = sec > 0 ? `${h}:${min}:${DateHelper.padNumber(sec)}` : `${h}:${min}`;
-    return `${y}-${m}-${d} ${timePart}`;
+    return `${y}-${m}-${d} ${h}:${min}`;
 }
 
-// ? Parses local display string, formats as UTC for storage
-function displayToStorage(s: string): string {
-    const date = new Date(s.replace(' ', 'T'));
-    if (Number.isNaN(date.getTime())) return `${s.replace(' ', 'T')}Z`;
-    const y = date.getUTCFullYear();
-    const m = DateHelper.padNumber(date.getUTCMonth() + 1);
-    const d = DateHelper.padNumber(date.getUTCDate());
-    const h = DateHelper.padNumber(date.getUTCHours());
-    const min = DateHelper.padNumber(date.getUTCMinutes());
-    const sec = DateHelper.padNumber(date.getUTCSeconds());
-    return `${y}-${m}-${d}T${h}:${min}:${sec}Z`;
-}
-
-function valueToDisplay(value: Value): string {
+export function valueToDisplay(value: Value): string {
     const str = value.getString();
     return str ? storageToDisplay(str) : '';
 }
 
-// ? Combines local date and local time into display format
+// ? parseDateTime, unlike `new Date`, rejects impossible dates instead of rolling 2025-06-31 into July 1.
+// ? DateTime.fromDate then reads UTC parts off the local date, which is the local-to-UTC conversion
+export function displayToValue(display: string): Value {
+    const parsed = DateHelper.parseDateTime(display);
+    if (parsed == null) return ValueTypes.DATE_TIME.newNullValue();
+
+    return new Value(DateTime.fromDate(parsed), ValueTypes.DATE_TIME);
+}
+
+function formatTime(date: Date): string {
+    return `${DateHelper.padNumber(date.getHours())}:${DateHelper.padNumber(date.getMinutes())}`;
+}
+
 function formatDisplay(date: Date, time: string | null): string {
-    const datePart = DateHelper.formatDate(date);
-    const timePart = time ?? `${DateHelper.padNumber(date.getHours())}:${DateHelper.padNumber(date.getMinutes())}`;
-    return `${datePart} ${timePart}`;
-}
-
-function parseDateFromDisplay(raw: string): Date | null {
-    if (!DISPLAY_PATTERN.test(raw)) return null;
-    const datePart = raw.slice(0, 10);
-    const parsed = new Date(`${datePart}T00:00:00`);
-    if (Number.isNaN(parsed.getTime())) return null;
-    return parsed;
-}
-
-// ? Truncates to HH:MM — picker only supports hours and minutes
-function parseTimeFromDisplay(raw: string): string | null {
-    if (!DISPLAY_PATTERN.test(raw)) return null;
-    const timePart = raw.slice(11);
-    const parts = timePart.split(':');
-    const hour = Number.parseInt(parts[0] ?? '', 10);
-    const minute = Number.parseInt(parts[1] ?? '', 10);
-    if (!Number.isInteger(hour) || !Number.isInteger(minute)) return null;
-    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
-    return `${DateHelper.padNumber(hour)}:${DateHelper.padNumber(minute)}`;
+    return `${DateHelper.formatDate(date)} ${time ?? formatTime(date)}`;
 }
 
 // ? Offset depends on exact local date+time because DST can change mid-day (e.g. at 02:00)
-function formatTimezoneLabel(date: Date | null, time: string | null): string {
+export function formatTimezoneLabel(date: Date | null, time: string | null): string {
     let ref = date ?? new Date();
     if (date != null && time != null) {
         const [h, m] = time.split(':').map(Number);
@@ -113,13 +85,22 @@ export const InstantInput = ({
 
     const display = displayValue(value, rawValue, valueToDisplay);
 
+    const selected = useMemo(() => {
+        const parsed = DateHelper.parseDateTime(display);
+        if (parsed == null) return {date: null, time: null};
+
+        return {
+            date: new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate()),
+            time: formatTime(parsed),
+        };
+    }, [display]);
+
     const handleInputChange = (e: JSX.TargetedEvent<HTMLInputElement>) => {
         const inputValue = e.currentTarget.value;
         if (inputValue === '') {
             onChange(ValueTypes.DATE_TIME.newNullValue());
         } else {
-            const storageValue = displayToStorage(inputValue);
-            onChange(ValueTypes.DATE_TIME.newValue(storageValue), inputValue);
+            onChange(displayToValue(inputValue), inputValue);
         }
     };
 
@@ -134,8 +115,7 @@ export const InstantInput = ({
     const handleConfirm = () => {
         if (draftDate == null) return;
         const displayValueStr = formatDisplay(draftDate, draftTime);
-        const storageValue = displayToStorage(displayValueStr);
-        onChange(ValueTypes.DATE_TIME.newValue(storageValue), displayValueStr);
+        onChange(displayToValue(displayValueStr), displayValueStr);
         setOpen(false);
         inputRef.current?.focus();
     };
@@ -143,32 +123,20 @@ export const InstantInput = ({
     const handleSetDefault = () => {
         if (config.default == null) return;
         setDraftDate(config.default);
-        const hours = config.default.getHours();
-        const minutes = config.default.getMinutes();
-        setDraftTime(`${DateHelper.padNumber(hours)}:${DateHelper.padNumber(minutes)}`);
+        setDraftTime(formatTime(config.default));
     };
-
-    const selectedDate = parseDateFromDisplay(display);
-    const selectedTime = parseTimeFromDisplay(display);
 
     return (
         <DatePicker.Root
             data-component={INSTANT_INPUT_NAME}
-            value={open ? draftDate : selectedDate}
+            value={open ? draftDate : selected.date}
             onValueChange={handleDraftDateChange}
             closeOnSelect={false}
             open={open}
             onOpenChange={isOpen => {
                 if (isOpen) {
-                    setDraftDate(selectedDate);
-                    if (selectedTime != null) {
-                        setDraftTime(selectedTime);
-                    } else {
-                        const now = new Date();
-                        setDraftTime(
-                            `${DateHelper.padNumber(now.getHours())}:${DateHelper.padNumber(now.getMinutes())}`,
-                        );
-                    }
+                    setDraftDate(selected.date);
+                    setDraftTime(selected.time ?? formatTime(new Date()));
                 }
                 setOpen(isOpen);
             }}

@@ -1,4 +1,4 @@
-import {Value} from '../../data/Value';
+import type {Value} from '../../data/Value';
 import type {ValueType} from '../../data/ValueType';
 import {ValueTypes} from '../../data/ValueTypes';
 import type {RawInputConfig} from '../../form/Input';
@@ -11,6 +11,14 @@ import type {ValidationResult} from './ValidationResult';
 
 export const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/;
 const RELATIVE_EXPR = /^(?:now|(?:[+-]\d+[a-zA-Z]+\s*)+)$/;
+
+// ? Length of 'YYYY-MM-DDTHH:mm'
+const MINUTE_PRECISION_LENGTH = 16;
+
+// ? The DateTime picker is minute-granular, so seconds and fractions are dropped
+export function truncateToMinutes(dateTime: string): string {
+    return dateTime.slice(0, MINUTE_PRECISION_LENGTH);
+}
 
 export const DateTimeDescriptor: InputTypeDescriptor<DateTimeConfig> = {
     name: 'DateTime',
@@ -51,7 +59,7 @@ export const DateTimeDescriptor: InputTypeDescriptor<DateTimeConfig> = {
         }
 
         if (DATETIME_PATTERN.test(raw)) {
-            return ValueTypes.LOCAL_DATE_TIME.newValue(raw);
+            return ValueTypes.LOCAL_DATE_TIME.newValue(truncateToMinutes(raw));
         }
 
         if (!RELATIVE_EXPR.test(raw)) {
@@ -60,7 +68,7 @@ export const DateTimeDescriptor: InputTypeDescriptor<DateTimeConfig> = {
 
         try {
             const value = LocalDateTime.fromDate(RelativeTimeParser.parseToLocalDateTime(raw));
-            return new Value(value, ValueTypes.LOCAL_DATE_TIME);
+            return ValueTypes.LOCAL_DATE_TIME.newValue(truncateToMinutes(value.toString()));
         } catch {
             return ValueTypes.LOCAL_DATE_TIME.newNullValue();
         }
