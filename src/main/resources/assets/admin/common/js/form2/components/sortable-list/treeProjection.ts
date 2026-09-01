@@ -9,7 +9,14 @@
  * stack — dragging up enters the deeper slot, dragging down steps out to the
  * shallower one. The horizontal axis stays locked; level comes from the neighbours
  * plus travel direction, so a small up/down nudge moves between levels.
+ * A container row has three semantic zones: its upper half is the gap before it,
+ * its lower half targets index 0 inside it, and moving past its lower edge selects
+ * the gap after it. At a container's trailing leaf, the lower half appends inside
+ * that container while moving past the leaf selects the exit gap. Drag direction
+ * only selects among ambiguous gap slots.
  */
+
+import type {SortableDropSide} from './projectionDragInfo';
 
 export type DropNodeKind = 'container' | 'item';
 
@@ -33,8 +40,8 @@ export type ProjectTreeDropParams = {
     activeId: string;
     /** Id of the row currently under the pointer (may equal `activeId` at the list edge). */
     overId: string;
-    /** Pointer position relative to the over row's vertical midpoint. */
-    side: 'above' | 'below';
+    /** Dragged-row position within or immediately after the over row. */
+    side: SortableDropSide;
     /** Net travel direction; picks the deeper (up) or shallower (down) slot in a stack. */
     direction: DropDirection;
     /** Optional guard; when it returns false the projection is flagged not allowed. */
@@ -71,10 +78,16 @@ export function projectTreeDrop(params: ProjectTreeDropParams): DropProjection |
     // reflects the post-removal list (matching the move semantics).
     const visible = excludeSubtree(nodes, active);
 
-    const gap = resolveGap(params, nodes, visible, active);
-    if (gap == null) return null;
+    const target = resolveTarget(params, nodes, visible, active, byId);
+    if (target == null) return null;
 
-    const stack = buildSlotStack(gap.before, gap.after, gap.flatIndex, visible, byId);
+    if (target.type === 'container') {
+        const {container, index} = target;
+        const allowed = isContainerAllowed?.(container.id, activeId) ?? true;
+        return {containerId: container.id, index, depth: container.depth + 1, allowed};
+    }
+
+    const stack = buildSlotStack(target.before, target.after, target.flatIndex, visible, byId);
     if (stack.length === 0) return null;
 
     const chosen = direction === 'up' ? stack[0] : stack[stack.length - 1];
@@ -84,18 +97,28 @@ export function projectTreeDrop(params: ProjectTreeDropParams): DropProjection |
 }
 
 type Gap = {
+    type: 'gap';
     before: DropNode | undefined;
     after: DropNode | undefined;
     /** Insertion position within `visible` (number of visible rows above the gap). */
     flatIndex: number;
 };
 
-function resolveGap(
+type ContainerTarget = {
+    type: 'container';
+    container: DropNode;
+    index: number;
+};
+
+type ResolvedTarget = Gap | ContainerTarget;
+
+function resolveTarget(
     params: ProjectTreeDropParams,
     nodes: DropNode[],
     visible: DropNode[],
     active: DropNode,
-): Gap | null {
+    byId: Map<string, DropNode>,
+): ResolvedTarget | null {
     const {activeId, overId, side} = params;
 
     // Hovering own slot (typically the list edge): anchor on the dragged item's own
@@ -109,16 +132,48 @@ function resolveGap(
         const after = nodes[end];
         const beforeVisibleIndex = visible.findIndex(node => node.id === before.id);
         if (beforeVisibleIndex === -1) return null;
-        return {before, after, flatIndex: beforeVisibleIndex + 1};
+        return {type: 'gap', before, after, flatIndex: beforeVisibleIndex + 1};
     }
 
     const overIndex = visible.findIndex(node => node.id === overId);
     if (overIndex === -1) return null;
+    const over = visible[overIndex];
+
+    if (side === 'after') {
+        return {
+            type: 'gap',
+            before: over,
+            after: visible[overIndex + 1],
+            flatIndex: overIndex + 1,
+        };
+    }
+
+    if (over.kind === 'container' && side === 'below') {
+        return {type: 'container', container: over, index: 0};
+    }
+
+    const next = visible[overIndex + 1];
+    const isTrailingLeaf = over.kind === 'item' && (next == null || next.depth < over.depth);
+    if (isTrailingLeaf && side === 'below') {
+        const container = byId.get(over.parentId ?? '');
+        if (container?.kind === 'container') {
+            return {
+                type: 'container',
+                container,
+                index: countItemsBefore(visible, container.id, overIndex + 1),
+            };
+        }
+    }
 
     if (side === 'below') {
-        return {before: visible[overIndex], after: visible[overIndex + 1], flatIndex: overIndex + 1};
+        return {
+            type: 'gap',
+            before: visible[overIndex],
+            after: visible[overIndex + 1],
+            flatIndex: overIndex + 1,
+        };
     }
-    return {before: visible[overIndex - 1], after: visible[overIndex], flatIndex: overIndex};
+    return {type: 'gap', before: visible[overIndex - 1], after: over, flatIndex: overIndex};
 }
 
 function buildSlotStack(

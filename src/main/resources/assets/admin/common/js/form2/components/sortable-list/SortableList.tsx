@@ -4,6 +4,7 @@ import {
     type DragEndEvent,
     type DragMoveEvent,
     type DragOverEvent,
+    DragOverlay,
     type DragStartEvent,
     KeyboardSensor,
     type MeasuringConfiguration,
@@ -14,6 +15,7 @@ import {
 } from '@dnd-kit/core';
 import {
     SortableContext,
+    type SortingStrategy,
     sortableKeyboardCoordinates,
     useSortable,
     verticalListSortingStrategy,
@@ -28,6 +30,14 @@ import {
     MOUSE_SENSOR_OPTIONS,
     PrimaryButtonMouseSensor,
 } from '../sortableSensors';
+import {
+    getProjectionDragInfo,
+    getProjectionPlaceholderIndex,
+    type SortableDragDirection,
+    type SortableDragInfo,
+} from './projectionDragInfo';
+
+export type {SortableDragDirection, SortableDragInfo, SortableDropSide} from './projectionDragInfo';
 
 //
 // * Types
@@ -53,25 +63,6 @@ export type SortableListItemContext<T> = {
      * the dragged element itself shows the level it will land at.
      */
     projectedIndent?: number;
-};
-
-/** Which side of the over row the dragged item lands on. */
-export type SortableDropSide = 'above' | 'below';
-
-/** Net vertical travel direction during a drag. */
-export type SortableDragDirection = 'up' | 'down';
-
-/** Live drag state surfaced in projection mode for resolving a tree-shaped drop. */
-export type SortableDragInfo = {
-    /** Index of the dragged item. */
-    activeIndex: number;
-    /** Index of the row currently under the pointer (equals `activeIndex` at the list edge). */
-    overIndex: number;
-    /** Side relative to the over row, from the dnd-kit displacement gap (below when the
-     *  dragged item comes from above the over row, above when it comes from below). */
-    side: SortableDropSide;
-    /** Net vertical travel from the drag start (sign of the cumulative offset). */
-    direction: SortableDragDirection;
 };
 
 /** Consumer's resolution of a drag state into a drop hint for the dragged row. */
@@ -112,7 +103,8 @@ export type SortableListProps<T> = {
     onDragStart?: (index: number) => void;
     /**
      * Called after a drag completes with the old and new indices. In projection mode
-     * (`resolveDrop` set) it also receives the final drag state for tree-aware commits.
+     * (`resolveDrop` set), `toIndex` matches the projected placeholder and it receives the
+     * final drag state only when the final projection returns a non-null, allowed hint.
      */
     onMove: (fromIndex: number, toIndex: number, info?: SortableDragInfo) => void;
     /** Controls whether drag handles are interactive. */
@@ -123,7 +115,12 @@ export type SortableListProps<T> = {
     isItemMovable?: (item: T, index: number) => boolean;
     /** When `false`, the drag handle is not rendered. If true, the drag handle is passed to renderItem as a second argument. Defaults to `false`. */
     controlGrip?: boolean;
-    /** Renders the content inside each sortable row. */
+    /**
+     * Renders content inside each sortable row. Projection mode intentionally calls `renderItem`
+     * twice for the active item during a drag: once for the in-list placeholder and once for the
+     * inert drag overlay. Keep rendering side-effect free and account for duplicated refs, effects,
+     * and DOM IDs.
+     */
     renderItem: (context: SortableListItemContext<T>, grip?: ReactNode) => ReactNode;
     /** Accessible label for drag handle buttons (e.g. "Drag to reorder"). */
     dragLabel?: string;
@@ -133,10 +130,11 @@ export type SortableListProps<T> = {
     animateLayoutChanges?: (args: {isSorting: boolean; wasDragging: boolean}) => boolean;
     /**
      * Projection mode for tree-shaped lists. When provided, the list reports the live drag
-     * state (hovered row, displacement `side`, travel `direction`) and feeds `hint.indent` back
+     * state (hovered row, vertical `side`, travel `direction`) and feeds `hint.indent` back
      * to the dragged row (via `context.projectedIndent`) so it re-indents to its projected drop
      * level. The drag stays vertical; the level comes from the neighbours plus travel direction.
-     * Return `null` for no projection. The commit arrives through `onMove`'s `info` argument.
+     * Return `null` for no projection; it is shown as disallowed and `onMove` is not called.
+     * An allowed commit arrives through `onMove`'s `info` argument.
      */
     resolveDrop?: (info: SortableDragInfo, items: T[]) => SortableDropHint | null;
     /** Extra classes on each row wrapper; function form receives item context. */
@@ -183,6 +181,63 @@ const KEYBOARD_SENSOR_OPTIONS = {
     coordinateGetter: sortableKeyboardCoordinates,
 };
 
+type ProjectionDragEvent = DragMoveEvent | DragEndEvent;
+
+type ProjectionDrop = {
+    info: SortableDragInfo;
+    hint: SortableDropHint | null;
+    toIndex: number;
+};
+
+function getOverId(event: ProjectionDragEvent): string {
+    return event.over == null ? String(event.active.id) : String(event.over.id);
+}
+
+function getProjectionDragInfoFromEvent(event: ProjectionDragEvent, ids: string[]): SortableDragInfo | null {
+    const {active, over, delta} = event;
+    const activeId = String(active.id);
+    const overId = getOverId(event);
+    const activeIndex = ids.indexOf(activeId);
+    const overIndex = ids.indexOf(overId);
+    if (activeIndex === -1 || overIndex === -1) return null;
+
+    return getProjectionDragInfo({
+        activeIndex,
+        overIndex,
+        deltaY: delta.y,
+        activeTranslatedRect: active.rect.current.translated,
+        activeInitialRect: active.rect.current.initial,
+        overRect: over?.rect ?? null,
+    });
+}
+
+function hasProjectionIntent(event: ProjectionDragEvent): boolean {
+    const {active, over, delta} = event;
+    const direction: SortableDragDirection = delta.y < 0 ? 'up' : 'down';
+    // `over === active` only carries intent at the list edge: dragging down past
+    // the last row. Otherwise it means the item has not left its own slot.
+    const atOwnSlot = over == null || active.id === over.id;
+    return !atOwnSlot || (direction === 'down' && delta.y > 0);
+}
+
+function getProjectionDropFromEvent<T>(
+    event: ProjectionDragEvent,
+    ids: string[],
+    items: T[],
+    resolveDrop: (info: SortableDragInfo, items: T[]) => SortableDropHint | null,
+): ProjectionDrop | null {
+    if (!hasProjectionIntent(event)) return null;
+
+    const info = getProjectionDragInfoFromEvent(event, ids);
+    if (info == null) return null;
+
+    return {
+        info,
+        hint: resolveDrop(info, items),
+        toIndex: getProjectionPlaceholderIndex(info, ids.length),
+    };
+}
+
 //
 // * SortableListItem
 //
@@ -196,6 +251,7 @@ type SortableListItemInternalProps<T> = {
     enabled: boolean;
     controlGrip: boolean;
     fullRowDraggable: boolean;
+    useDragPlaceholder: boolean;
     dropAllowed: boolean;
     projectedIndent?: number;
     dragLabel?: string;
@@ -214,6 +270,7 @@ const SortableListItem = <T,>({
     enabled,
     controlGrip,
     fullRowDraggable,
+    useDragPlaceholder,
     dropAllowed,
     projectedIndent,
     dragLabel,
@@ -250,7 +307,7 @@ const SortableListItem = <T,>({
     const style = {
         transform: toTransformCSS(transform),
         transition: transition ?? undefined,
-        zIndex: isDragging ? 999 : undefined,
+        zIndex: isDragging && !useDragPlaceholder ? 999 : undefined,
     };
 
     const context: SortableListItemContext<T> = {
@@ -260,7 +317,7 @@ const SortableListItem = <T,>({
         isDragActive,
         isFocused,
         isMovable,
-        projectedIndent,
+        projectedIndent: isDragging ? projectedIndent : undefined,
     };
 
     const resolvedClassName = typeof itemClassName === 'function' ? itemClassName(context) : itemClassName;
@@ -294,6 +351,7 @@ const SortableListItem = <T,>({
     return (
         <div
             ref={setNodeRef}
+            data-drag-placeholder={(useDragPlaceholder && isDragging) || undefined}
             onKeyDown={handleKeyDown}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -316,7 +374,10 @@ const SortableListItem = <T,>({
             className={cn(
                 'relative flex items-center rounded outline-none',
                 'focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-inset',
-                isDragging && 'bg-surface-neutral shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5',
+                isDragging &&
+                    (useDragPlaceholder
+                        ? 'bg-surface-neutral opacity-30 ring-1 ring-main/15'
+                        : 'bg-surface-neutral shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5'),
                 isDragging && !dropAllowed && 'opacity-40',
                 // Full-row drag targets must not turn a press-drag into a text selection.
                 enabled && fullRowDraggable && isMovable && 'select-none',
@@ -324,6 +385,64 @@ const SortableListItem = <T,>({
                 resolvedClassName,
             )}
             {...rowListenersSafe}
+        >
+            {!controlGrip && grip}
+            {renderItem(context, grip)}
+        </div>
+    );
+};
+
+type SortableListDragOverlayProps<T> = {
+    item: T;
+    index: number;
+    isMovable: boolean;
+    controlGrip: boolean;
+    fullRowDraggable: boolean;
+    dropAllowed: boolean;
+    projectedIndent?: number;
+    renderItem: (context: SortableListItemContext<T>, grip?: ReactNode) => ReactNode;
+    itemClassName?: string | ((context: SortableListItemContext<T>) => string);
+};
+
+const SortableListDragOverlay = <T,>({
+    item,
+    index,
+    isMovable,
+    controlGrip,
+    fullRowDraggable,
+    dropAllowed,
+    projectedIndent,
+    renderItem,
+    itemClassName,
+}: SortableListDragOverlayProps<T>): ReactElement => {
+    const context: SortableListItemContext<T> = {
+        item,
+        index,
+        isDragging: true,
+        isDragActive: true,
+        isFocused: false,
+        isMovable,
+        projectedIndent,
+    };
+    const resolvedClassName = typeof itemClassName === 'function' ? itemClassName(context) : itemClassName;
+    const grip = isMovable && (
+        <span className='flex shrink-0 items-center text-subtle' aria-hidden>
+            <GripVertical className='size-5' />
+        </span>
+    );
+
+    return (
+        <div
+            data-drag-overlay
+            aria-hidden
+            inert
+            className={cn(
+                'relative flex items-center rounded bg-surface-neutral outline-none',
+                'shadow-[0_2px_8px_2px] shadow-main/10 ring-1 ring-main/5',
+                !dropAllowed && 'opacity-40',
+                fullRowDraggable && isMovable && 'cursor-grabbing',
+                resolvedClassName,
+            )}
         >
             {!controlGrip && grip}
             {renderItem(context, grip)}
@@ -363,7 +482,22 @@ export const SortableList = <T,>({
     const isMovable = items.length >= 2;
     const [dropAllowed, setDropAllowed] = useState(true);
     const [isDragActive, setIsDragActive] = useState(false);
-    const [drop, setDrop] = useState<{info: SortableDragInfo; hint: SortableDropHint | null} | null>(null);
+    const [drop, setDrop] = useState<ProjectionDrop | null>(null);
+    const [activeId, setActiveId] = useState<string | null>(null);
+    const activeIndex = activeId == null ? -1 : ids.indexOf(activeId);
+    const activeItem = activeIndex === -1 ? null : items[activeIndex];
+    const projectionSortingStrategy = useCallback<SortingStrategy>(
+        args => {
+            if (!drop?.hint?.allowed) return null;
+            return verticalListSortingStrategy({...args, overIndex: drop.toIndex});
+        },
+        [drop],
+    );
+
+    const applyDrop = useCallback((nextDrop: ProjectionDrop | null) => {
+        setDrop(nextDrop);
+        setDropAllowed(nextDrop == null ? true : (nextDrop.hint?.allowed ?? false));
+    }, []);
 
     const sensors = useSensors(
         useSensor(PrimaryButtonMouseSensor, MOUSE_SENSOR_OPTIONS),
@@ -373,8 +507,9 @@ export const SortableList = <T,>({
 
     const handleDragStart = useCallback(
         (event: DragStartEvent) => {
-            setDropAllowed(true);
+            applyDrop(null);
             setIsDragActive(true);
+            setActiveId(resolveDrop == null ? null : String(event.active.id));
             if (onDragStartProp != null) {
                 const index = ids.indexOf(String(event.active.id));
                 if (index !== -1) {
@@ -382,7 +517,7 @@ export const SortableList = <T,>({
                 }
             }
         },
-        [ids, onDragStartProp],
+        [ids, onDragStartProp, resolveDrop, applyDrop],
     );
 
     // Projection mode: recompute the drop from the live drag state. Driven by both
@@ -392,35 +527,9 @@ export const SortableList = <T,>({
         (event: DragMoveEvent) => {
             if (resolveDrop == null) return;
 
-            const {active, over, delta} = event;
-            const direction: SortableDragDirection = delta.y < 0 ? 'up' : 'down';
-
-            // `over === active` only carries intent at the list edge — a down-drag past the
-            // last row, which steps the item out a level. Otherwise it means "no move yet".
-            const atOwnSlot = over == null || active.id === over.id;
-            if (atOwnSlot && (direction !== 'down' || delta.y <= 0)) {
-                setDrop(null);
-                setDropAllowed(true);
-                return;
-            }
-
-            const overId = over == null ? String(active.id) : String(over.id);
-            const activeIndex = ids.indexOf(String(active.id));
-            const overIndex = ids.indexOf(overId);
-            if (activeIndex === -1 || overIndex === -1) {
-                setDrop(null);
-                return;
-            }
-
-            // Side matches dnd-kit's displacement gap: the item lands at the over row's slot,
-            // so it sits after the over row when coming from above and before it when from below.
-            const side: SortableDropSide = overIndex > activeIndex ? 'below' : 'above';
-            const info: SortableDragInfo = {activeIndex, overIndex, side, direction};
-            const hint = resolveDrop(info, items);
-            setDrop({info, hint});
-            setDropAllowed(hint?.allowed ?? true);
+            applyDrop(getProjectionDropFromEvent(event, ids, items, resolveDrop));
         },
-        [ids, items, resolveDrop],
+        [ids, items, resolveDrop, applyDrop],
     );
 
     const handleDragOver = useCallback(
@@ -448,40 +557,33 @@ export const SortableList = <T,>({
 
     const handleDragEnd = useCallback(
         (event: DragEndEvent) => {
-            setDropAllowed(true);
             setIsDragActive(false);
-            setDrop(null);
-
-            const {active, over, delta} = event;
-            const oldIndex = ids.indexOf(String(active.id));
-            if (oldIndex === -1) return;
+            setActiveId(null);
+            applyDrop(null);
 
             if (resolveDrop != null) {
-                const direction: SortableDragDirection = delta.y < 0 ? 'up' : 'down';
-                const atOwnSlot = over == null || active.id === over.id;
-                if (atOwnSlot && (direction !== 'down' || delta.y <= 0)) return;
-                const overId = over == null ? String(active.id) : String(over.id);
-                const overIndex = ids.indexOf(overId);
-                if (overIndex === -1) return;
-                const side: SortableDropSide = overIndex > oldIndex ? 'below' : 'above';
-                onMove(oldIndex, overIndex, {activeIndex: oldIndex, overIndex, side, direction});
+                const finalDrop = getProjectionDropFromEvent(event, ids, items, resolveDrop);
+                if (!finalDrop?.hint?.allowed) return;
+                onMove(finalDrop.info.activeIndex, finalDrop.toIndex, finalDrop.info);
                 return;
             }
 
+            const {active, over} = event;
             if (over == null || active.id === over.id) return;
+            const oldIndex = ids.indexOf(String(active.id));
             const newIndex = ids.indexOf(String(over.id));
-            if (newIndex === -1) return;
+            if (oldIndex === -1 || newIndex === -1) return;
 
             onMove(oldIndex, newIndex);
         },
-        [ids, onMove, resolveDrop],
+        [ids, items, onMove, resolveDrop, applyDrop],
     );
 
     const handleDragCancel = useCallback(() => {
-        setDropAllowed(true);
         setIsDragActive(false);
-        setDrop(null);
-    }, []);
+        setActiveId(null);
+        applyDrop(null);
+    }, [applyDrop]);
 
     return (
         <div
@@ -503,7 +605,10 @@ export const SortableList = <T,>({
                 onDragEnd={handleDragEnd}
                 onDragCancel={handleDragCancel}
             >
-                <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+                <SortableContext
+                    items={ids}
+                    strategy={resolveDrop == null ? verticalListSortingStrategy : projectionSortingStrategy}
+                >
                     {items.map((item, i) => (
                         <SortableListItem
                             key={ids[i]}
@@ -515,10 +620,9 @@ export const SortableList = <T,>({
                             controlGrip={controlGrip}
                             enabled={enabled}
                             fullRowDraggable={fullRowDraggable}
+                            useDragPlaceholder={resolveDrop != null}
                             dropAllowed={dropAllowed}
-                            projectedIndent={
-                                drop?.hint != null && i === drop.info.activeIndex ? drop.hint.indent : undefined
-                            }
+                            projectedIndent={drop?.hint != null && ids[i] === activeId ? drop.hint.indent : undefined}
                             dragLabel={dragLabel}
                             animateLayoutChanges={animateLayoutChanges}
                             renderItem={renderItem}
@@ -527,6 +631,23 @@ export const SortableList = <T,>({
                         />
                     ))}
                 </SortableContext>
+                {resolveDrop != null && (
+                    <DragOverlay>
+                        {activeItem != null && (
+                            <SortableListDragOverlay
+                                item={activeItem}
+                                index={activeIndex}
+                                isMovable={isItemMovable?.(activeItem, activeIndex) ?? isMovable}
+                                controlGrip={controlGrip}
+                                fullRowDraggable={fullRowDraggable}
+                                dropAllowed={dropAllowed}
+                                projectedIndent={drop?.hint?.indent}
+                                renderItem={renderItem}
+                                itemClassName={itemClassName}
+                            />
+                        )}
+                    </DragOverlay>
+                )}
             </DndContext>
         </div>
     );
