@@ -41,12 +41,16 @@ function getDraggedMidpoint(params: ProjectionDragInfoParams): number | null {
 }
 
 function getDropSide(
+    params: ProjectionDragInfoParams,
     draggedMidpoint: number | null,
-    overRect: VerticalRect | null,
     direction: SortableDragDirection,
 ): SortableDropSide {
+    const {activeIndex, overIndex, overRect} = params;
     if (draggedMidpoint == null || overRect == null) return direction === 'up' ? 'above' : 'below';
-    if (draggedMidpoint < getMidpoint(overRect)) return 'above';
+
+    const overMidpoint = getMidpoint(overRect);
+    if (draggedMidpoint === overMidpoint) return overIndex < activeIndex ? 'above' : 'below';
+    if (draggedMidpoint < overMidpoint) return 'above';
     return draggedMidpoint > overRect.top + overRect.height ? 'after' : 'below';
 }
 
@@ -57,13 +61,15 @@ export function getProjectionDragInfo(params: ProjectionDragInfoParams): Sortabl
     return {
         activeIndex: params.activeIndex,
         overIndex: params.overIndex,
-        side: getDropSide(draggedMidpoint, params.overRect, direction),
+        side: getDropSide(params, draggedMidpoint, direction),
         direction,
     };
 }
 
 /** Convert hovered-row drop zone to verticalListSortingStrategy's original-array index. */
 export function getProjectionPlaceholderIndex(info: SortableDragInfo, itemCount: number): number {
+    if (info.activeIndex === info.overIndex) return info.activeIndex;
+
     // Crossing downward removes the active row above the gap; crossing upward leaves it below.
     const isMovingDown = info.activeIndex < info.overIndex;
     const index =
