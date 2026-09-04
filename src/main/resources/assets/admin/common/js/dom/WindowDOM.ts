@@ -22,7 +22,7 @@ export class WindowDOM {
         this.el.onbeforeunload = (event) => {
             handle(event, this.onBeforeUnloadListeners);
         };
-        this.el.onunload = (event) => {
+        this.el.onpagehide = (event) => {
             handle(event, this.onUnloadListeners);
         };
 
