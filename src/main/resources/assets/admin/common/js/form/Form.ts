@@ -1,13 +1,9 @@
-import {Equitable} from '../Equitable';
-import {FormJson} from './json/FormJson';
-import {ObjectHelper} from '../ObjectHelper';
-import {FormItem} from './FormItem';
-import {FormItemFactoryImpl} from './FormItemFactoryImpl';
-import {FormItemContainer} from './FormItemContainer';
-import {Input} from './Input';
-import {FormItemTypeWrapperJson} from './json/FormItemTypeWrapperJson';
+import {Form as ToolkitForm, type FormItem, formItemsFromJson} from '@enonic/input-types/schema';
+import type {FormJson as XpFormJson} from '@enonic/ui-types';
 import {ApplicationKey} from '../application/ApplicationKey';
-import {FieldSet} from './set/fieldset/FieldSet';
+import {FormItemFactoryImpl} from './FormItemFactoryImpl';
+import {FormItemTypeWrapperJson} from './json/FormItemTypeWrapperJson';
+import {FormJson} from './json/FormJson';
 
 export class FormBuilder {
 
@@ -40,83 +36,22 @@ export class FormBuilder {
     }
 
     build(): Form {
-        return new Form(this);
+        return new Form(this.formItems);
     }
 }
 
 /**
- * A form consist of [[FormItem]]s.
- *
- * A [[FormItem]] can either be a [[Input]], [[FormItemSet]] or a [[FieldSet]]:
- * * A [[Input]] gives the user the possibility input one or more values.
- * * A [[FormItemSet]] groups a set of [[FormItem]]s, both visually and the data.
- * * A [[FieldSet]] is a [[Layout]] which only visually groups [[FormItem]]s.
+ * The toolkit's `Form`, reading this library's form JSON too: Content Studio's REST wraps every
+ * item in a key (`{Input: {…}}`) where XP's own libraries say `formItemType`, and both arrive here.
  */
 export class Form
-    implements Equitable, FormItemContainer {
+    extends ToolkitForm {
 
-    private formItems: FormItem[] = [];
-
-    private formItemByName: Record<string, FormItem> = {};
-
-    constructor(builder: FormBuilder) {
-        builder.formItems.forEach((formItem: FormItem) => {
-            this.addFormItem(formItem);
-        });
-    }
-
-    static fromJson(json: FormJson, applicationKey?: ApplicationKey): Form {
-        let builder: FormBuilder = new FormBuilder();
-        builder.fromJson(json, applicationKey);
-        return builder.build();
-    }
-
-    addFormItem(formItem: FormItem): void {
-        const name: string = formItem.getName();
-        if (this.formItemByName[name] && !(formItem instanceof FieldSet)) {
-            throw new Error('FormItem already added: ' + name);
+    static override fromJson(json: FormJson | XpFormJson, applicationKey?: ApplicationKey | string): Form {
+        const key = applicationKey instanceof ApplicationKey ? applicationKey.toString() : applicationKey;
+        if ('formItems' in json) {
+            return new FormBuilder().fromJson(json, key == null ? undefined : ApplicationKey.fromString(key)).build();
         }
-        this.formItemByName[formItem.getName()] = formItem;
-        this.formItems.push(formItem);
-    }
-
-    getFormItems(): FormItem[] {
-        return this.formItems;
-    }
-
-    getFormItemByName(name: string): FormItem {
-        return this.formItemByName[name];
-    }
-
-    getInputByName(name: string): Input {
-        return this.formItemByName[name] as Input;
-    }
-
-    toJson(): FormJson {
-
-        return {
-            formItems: this.getFormItems().map(formItem => formItem.toJson())
-        };
-    }
-
-    equals(o: Equitable): boolean {
-
-        if (!(ObjectHelper.iFrameSafeInstanceOf(o, Form))) {
-            return false;
-        }
-
-        let other: Form = o as Form;
-
-        if (this.formItems.length !== other.formItems.length) {
-            return false;
-        }
-
-        for (let i: number = 0; i < this.formItems.length; i++) {
-            if (!this.formItems[i].equals(other.formItems[i])) {
-                return false;
-            }
-        }
-
-        return true;
+        return new Form(formItemsFromJson(json, key));
     }
 }

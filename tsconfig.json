@@ -2,7 +2,6 @@
     "files": [],
     "references": [
         { "path": "./tsconfig.legacy.json" },
-        { "path": "./tsconfig.modern.json" },
-        { "path": "./tsconfig.storybook.json" }
+        { "path": "./tsconfig.modern.json" }
     ]
 }

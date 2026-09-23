@@ -1,3 +1,4 @@
+import type {InputConfigJson} from '@enonic/ui-types';
 import {FormItemJson} from './FormItemJson';
 import {OccurrencesJson} from './OccurrencesJson';
 
@@ -12,5 +13,5 @@ export interface InputJson
 
     inputType: string;
 
-    config?: Record<string, Record<string, unknown>[]>;
+    config?: Record<string, Record<string, unknown>[]> | InputConfigJson;
 }
