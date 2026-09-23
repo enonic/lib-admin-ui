@@ -9,22 +9,17 @@ After making changes, run `pnpm check` to verify nothing is broken. If linting f
 | Verify changes and auto-fix lint issues (default) | `pnpm check` |
 | Types only | `pnpm check:types` |
 | Lint only | `pnpm check:lint` |
-| Run tests once | `pnpm test` |
 | Run TS/CSS dev build with typechecking | `pnpm build:dev` |
-| Build Storybook | `pnpm build-storybook` |
 | Full Gradle build (JS + CSS + Gradle tasks) | `./gradlew build -Penv=dev` |
 | Fast Gradle build (skip install, check, test) | `./gradlew yolo` |
-
-**Do not run autonomously** (interactive / long-running — only if explicitly asked):
-- `pnpm storybook` — dev server, runs until stopped
-- `pnpm test:watch` — watch mode, runs until stopped
 
 Only run `./gradlew build -Penv=dev` when the task specifically requires testing the Gradle build. For most changes, `pnpm check` is sufficient.
 
 ## Code Structure
 
-- **Modern** (new code goes here): `js/ui2/`, `js/form/inputtype2/` — Preact/TSX, strict TypeScript, Tailwind
+- **Modern** (new code goes here): `js/ui2/` — Preact/TSX, strict TypeScript, Tailwind
 - **Legacy** (do not add to): `js/ui/`, `js/form/inputtype/` — class-based, jQuery, loose TypeScript
+- **Re-exports of the toolkit** (do not add to, change in [npm-enonic-ui-toolkit](https://github.com/enonic/npm-enonic-ui-toolkit)): `js/data/` (the property tree), `js/form/{Form,FormItem,Input,Occurrences,InputTypeName,FormItemPath}.ts` and the schema classes in `js/form/set/`, `js/form2/` (the Preact input types), the value classes in `js/util/`. `js/form/Form.ts` and `FormItemFactoryImpl.ts` still read Content Studio's form JSON dialect into the toolkit's classes; `js/form2/BaseInputType.ts` bridges a toolkit descriptor to a legacy `InputView`.
 
 ## Git & GitHub
 

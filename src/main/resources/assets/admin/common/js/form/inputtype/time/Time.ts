@@ -133,7 +133,9 @@ export class Time
             const localTime: LocalTime = property.getLocalTime();
 
             if (localTime) {
-                const adjustedTime: TimeHMS = localTime.getAdjustedTime();
+                const adjustedDate: Date = new Date();
+                adjustedDate.setHours(localTime.getHours(), localTime.getMinutes(), localTime.getSeconds());
+                const adjustedTime: TimeHMS = new TimeHMS(adjustedDate.getHours(), adjustedDate.getMinutes(), adjustedDate.getTime());
                 hours = adjustedTime.hours;
                 minutes = adjustedTime.minutes;
             }

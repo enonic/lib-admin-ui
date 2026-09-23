@@ -1,5 +1,6 @@
 import {Value} from '../../data/Value';
 import {ValueTypes} from '../../data/ValueTypes';
+import {DateTime} from '../../util/DateTime';
 import {ValueType} from '../../data/ValueType';
 import {Expression} from './Expression';
 
@@ -25,7 +26,7 @@ export class ValueExpr
     }
 
     public static dateTime(value: Date): ValueExpr {
-        return new ValueExpr(new Value(value, ValueTypes.DATE_TIME));
+        return new ValueExpr(new Value(DateTime.fromDate(value), ValueTypes.DATE_TIME));
     }
 
     public static geoPoint(value: string): ValueExpr {

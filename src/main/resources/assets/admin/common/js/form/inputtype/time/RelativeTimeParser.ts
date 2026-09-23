@@ -46,7 +46,7 @@ export class RelativeTimeParser {
     }
 
     static parseToDate(expr?: string): Date {
-        return this.parseRelative(expr, LocalDate.fromISOString, true, 'date');
+        return this.parseRelative(expr, LocalDate.fromString, true, 'date');
     }
 
     static parseToTime(expr?: string): Date {
