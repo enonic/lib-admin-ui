@@ -86,7 +86,7 @@ export class FormOptionSetOptionView
 
             this.appendChild(this.helpText.getHelpText());
 
-            this.toggleHelpText(this.formOptionSetOption.isHelpTextOn());
+            this.toggleHelpText(false);
         }
 
         const isDefaultAndNew: boolean = this.formOptionSetOption.isDefaultOption() && !this.isSelected() &&

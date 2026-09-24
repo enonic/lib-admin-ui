@@ -1,3 +1,4 @@
+import {RawInputConfig} from '../../Input';
 import Q from 'q';
 import {Class} from '../../../Class';
 import {Property} from '../../../data/Property';
@@ -125,7 +126,7 @@ export class Checkbox
         this.checkbox.unBlur(listener);
     }
 
-    private readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
+    private readConfig(inputConfig: RawInputConfig): void {
         if (inputConfig) {
             this.setInputAlignment(inputConfig['alignment']);
         }

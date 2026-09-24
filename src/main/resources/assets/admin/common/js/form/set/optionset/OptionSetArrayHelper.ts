@@ -1,7 +1,7 @@
+import {ValueTypes} from '../../../data/ValueTypes';
 import {PropertyArray} from '../../../data/PropertyArray';
 import {Property} from '../../../data/Property';
 import {Value} from '../../../data/Value';
-import {ValueTypeString} from '../../../data/ValueTypeString';
 
 export class OptionSetArrayHelper {
 
@@ -20,7 +20,7 @@ export class OptionSetArrayHelper {
     }
 
     private overwriteOrAddNew(name): void {
-        const value: Value = new Value(name, new ValueTypeString());
+        const value: Value = new Value(name, ValueTypes.STRING);
         const existingProperty: Property = this.propertyArray.get(0);
 
         if (existingProperty) {
@@ -31,7 +31,7 @@ export class OptionSetArrayHelper {
     }
 
     private addNewAndSort(name): void {
-        const value: Value = new Value(name, new ValueTypeString());
+        const value: Value = new Value(name, ValueTypes.STRING);
 
         if (!this.propertyArray.containsValue(value)) {
             this.propertyArray.add(value);

@@ -1,10 +1,2 @@
-import {PropertyValueJson} from './PropertyValueJson';
-
-export interface PropertyArrayJson {
-
-    name: string;
-
-    type: string;
-
-    values: PropertyValueJson[];
-}
+// Re-exported from @enonic/input-types: the property tree lives in the toolkit now (#4692).
+export type {PropertyArrayJson} from '@enonic/ui-types';

@@ -1,20 +1,57 @@
-export * from './checkbox-input';
-export * from './combo-box-input';
-export * from './counter';
-export * from './date-input';
-export * from './date-time-input';
-export * from './double-input';
-export * from './field-error';
-export * from './geo-point-input';
-export * from './input-label';
-export * from './instant-input';
-export * from './long-input';
-export * from './occurrence-list';
-export * from './radio-button-input';
-export * from './sortable-grid-list';
-export * from './sortable-list';
-export * from './tag-input';
-export * from './text-area-input';
-export * from './text-line-input';
-export * from './time-input';
-export * from './unsupported-input';
+// Re-exported from @enonic/input-types: the input types live in the toolkit now (#4692).
+
+export type {
+    CheckboxInputProps,
+    ComboBoxInputProps,
+    CounterProps,
+    DateInputProps,
+    DateTimeInputProps,
+    DoubleInputProps,
+    FieldErrorProps,
+    GeoPointInputProps,
+    InputFieldProps,
+    InputLabelRootProps,
+    InstantInputProps,
+    LongInputProps,
+    OccurrenceListRootProps,
+    RadioButtonInputProps,
+    SortableDragDirection,
+    SortableDragInfo,
+    SortableDropHint,
+    SortableDropSide,
+    SortableGridListItemContext,
+    SortableGridListProps,
+    SortableListContainerProps,
+    SortableListItemContext,
+    SortableListItemProps,
+    SortableListProps,
+    TagInputProps,
+    TagSuggester,
+    TextAreaInputProps,
+    TextLineInputProps,
+    TimeInputProps,
+    UnsupportedInputProps,
+} from '@enonic/input-types';
+export {
+    CheckboxInput,
+    ComboBoxInput,
+    Counter,
+    DateInput,
+    DateTimeInput,
+    DoubleInput,
+    FieldError,
+    GeoPointInput,
+    InputField,
+    InputLabel,
+    InstantInput,
+    LongInput,
+    OccurrenceList,
+    RadioButtonInput,
+    SortableGridList,
+    SortableList,
+    TagInput,
+    TextAreaInput,
+    TextLineInput,
+    TimeInput,
+    UnsupportedInput,
+} from '@enonic/input-types';
