@@ -9,7 +9,7 @@ export interface ContentTypeSummaryJson
 
     displayNameExpression: string;
 
-    displayNameLabel: string;
+    displayNamePlaceholder: string;
 
     final: boolean;
 
