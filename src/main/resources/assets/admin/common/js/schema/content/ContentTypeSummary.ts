@@ -208,7 +208,7 @@ export class ContentTypeSummaryBuilder
         this.abstract = json.abstract;
         this.superType = json.superType ? new ContentTypeName(json.superType) : null;
         this.displayNameExpression = json.displayNameExpression;
-        this.displayNamePlaceholder = json.displayNameLabel;
+        this.displayNamePlaceholder = json.displayNamePlaceholder;
         this.owner = json.owner;
         this.modifier = json.modifier;
         this.allowedChildContentTypes = json.allowChildContentType;
