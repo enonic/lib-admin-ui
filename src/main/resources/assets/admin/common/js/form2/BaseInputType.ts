@@ -1,3 +1,10 @@
+import {
+    type InputTypeConfig,
+    type InputTypeDescriptor,
+    inputTypesPhrases,
+    resolveValidationMessage,
+} from '@enonic/input-types';
+import {bindPhrases, fromLookup} from '@enonic/ui-utils';
 import type {Property} from '../data/Property';
 import type {Value} from '../data/Value';
 import type {ValueType} from '../data/ValueType';
@@ -8,9 +15,11 @@ import {AdditionalValidationRecord} from '../form/AdditionalValidationRecord';
 import type {InputTypeViewContext} from '../form/inputtype/InputTypeViewContext';
 import {BaseInputTypeNotManagingAdd} from '../form/inputtype/support/BaseInputTypeNotManagingAdd';
 import {Locale} from '../locale/Locale';
+import {i18n, Messages} from '../util/Messages';
 import {StringHelper} from '../util/StringHelper';
-import type {InputTypeConfig} from './descriptor/InputTypeConfig';
-import type {InputTypeDescriptor} from './descriptor/InputTypeDescriptor';
+
+// The toolkit's validators return phrase keys; this library's bundle wins where it has the key, else the English.
+const t = bindPhrases(fromLookup(Messages.hasMessage, i18n), inputTypesPhrases);
 
 /**
  * Abstract base for new-style input types that delegate pure logic to a descriptor.
@@ -49,7 +58,7 @@ export abstract class BaseInputType<C extends InputTypeConfig = InputTypeConfig>
         const results = this.descriptor.validate(value, this.typedConfig);
 
         for (const result of results) {
-            const record = AdditionalValidationRecord.create().setMessage(result.message).build();
+            const record = AdditionalValidationRecord.create().setMessage(resolveValidationMessage(result, t)).build();
             this.occurrenceValidationState.get(inputEl.getId()).addAdditionalValidation(record);
         }
     }

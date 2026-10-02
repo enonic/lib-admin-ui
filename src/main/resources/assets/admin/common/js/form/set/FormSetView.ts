@@ -50,6 +50,9 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
     protected header: FormSetHeader;
 
+
+    private helpTextOn: boolean = false;
+
     protected occurrenceViewsContainer: DivEl;
 
     protected bottomButtonRow: DivEl;
@@ -156,7 +159,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
 
             this.subscribeFormSetOccurrencesOnEvents();
 
-            this.toggleHelpText(this.formSet.isHelpTextOn());
+            this.toggleHelpText(this.helpTextOn);
 
             this.bottomButtonRow = new DivEl('bottom-button-row');
             this.appendChild(this.bottomButtonRow);
@@ -303,6 +306,7 @@ export abstract class FormSetView<V extends FormSetOccurrenceView>
     }
 
     toggleHelpText(show?: boolean) {
+        this.helpTextOn = show;
         this.formItemOccurrences.toggleHelpText(show);
         this.header.toggleHelpText(show);
     }
