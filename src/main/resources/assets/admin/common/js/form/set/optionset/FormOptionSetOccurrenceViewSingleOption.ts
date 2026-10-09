@@ -24,6 +24,8 @@ export class FormOptionSetOccurrenceViewSingleOption
 
     private resetAction: Action;
 
+    private layoutInProgress: boolean;
+
     update(dataSet: PropertySet, unchangedOnly?: boolean): Q.Promise<void> {
         return super.update(dataSet, unchangedOnly).then(() => {
             this.layoutSingleSelection();
@@ -68,8 +70,10 @@ export class FormOptionSetOccurrenceViewSingleOption
 
         if (selectedOption) {
             // doing this after parent layout to make sure all formItemViews are ready
+            this.layoutInProgress = true;
             this.selectionWrapper.select(selectedOption);
             this.expandSelectedOptionView();
+            this.layoutInProgress = false;
         } else {
             // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
             this.formSetOccurrencesContainer.hide();
@@ -126,7 +130,9 @@ export class FormOptionSetOccurrenceViewSingleOption
 
     protected handleSelectionChanged(optionView: FormOptionSetOptionView, isSelected: boolean): void {
         optionView.setVisible(isSelected);
-        this.setContainerVisible(this.isContainerExpansionRequired(optionView));
+        if (!this.layoutInProgress) {
+            this.setContainerVisible(this.isContainerExpansionRequired(optionView));
+        }
         super.handleSelectionChanged(optionView, isSelected);
     }
 
