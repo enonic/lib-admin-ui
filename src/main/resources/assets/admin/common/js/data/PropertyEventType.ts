@@ -1,8 +1,2 @@
-export enum PropertyEventType {
-
-    ADDED,
-    MOVED,
-    VALUE_CHANGED,
-    REMOVED,
-
-}
+// Re-exported from @enonic/input-types: the property tree lives in the toolkit now (#4692).
+export type {PropertyEventType} from '@enonic/input-types/data';
