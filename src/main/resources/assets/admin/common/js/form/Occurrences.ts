@@ -1,8 +1,11 @@
-// Re-exported from @enonic/input-types: the schema model lives in the toolkit now (#4692).
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
 import {Occurrences} from '@enonic/input-types/schema';
-import {OccurrencesJson} from './json/OccurrencesJson';
+import type {OccurrencesJson} from '@enonic/ui-types';
 
-export {Occurrences};
+export {
+    /** @deprecated Import from '@enonic/input-types/schema'. */
+    Occurrences,
+};
 
 export class OccurrencesBuilder {
 

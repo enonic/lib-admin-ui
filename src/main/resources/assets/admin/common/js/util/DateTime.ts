@@ -1,2 +1,5 @@
-// Re-exported from @enonic/ui-utils: the value classes live in the toolkit now (#4692).
-export {DateTime} from '@enonic/ui-utils';
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export {
+    /** @deprecated Import from '@enonic/ui-utils'. */
+    DateTime,
+} from '@enonic/ui-utils';

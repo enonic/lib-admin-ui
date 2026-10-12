@@ -1,1 +1,0 @@
-../../.claude/rules/testing.md

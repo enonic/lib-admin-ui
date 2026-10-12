@@ -1,2 +1,5 @@
-// Re-exported from @enonic/input-types: the input types live in the toolkit now (#4692).
-export {InputTypeRegistry} from '../index';
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export {
+    /** @deprecated Import `inputTypeRegistry` from '@enonic/input-types'. */
+    inputTypeRegistry as InputTypeRegistry,
+} from '@enonic/input-types';

@@ -1,2 +1,7 @@
-// Re-exported from @enonic/input-types: the property tree lives in the toolkit now (#4692).
-export {Value, type ValueData} from '@enonic/input-types/data';
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export {
+    /** @deprecated Import from '@enonic/input-types/data'. */
+    Value,
+    /** @deprecated Import from '@enonic/input-types/data'. */
+    type ValueData,
+} from '@enonic/input-types/data';

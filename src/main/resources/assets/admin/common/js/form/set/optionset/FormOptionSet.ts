@@ -1,2 +1,7 @@
-// Re-exported from @enonic/input-types: the schema model lives in the toolkit now (#4692).
-export {FormOptionSet, type FormOptionSetInit} from '@enonic/input-types/schema';
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export {
+    /** @deprecated Import from '@enonic/input-types/schema'. */
+    FormOptionSet,
+    /** @deprecated Import from '@enonic/input-types/schema'. */
+    type FormOptionSetInit,
+} from '@enonic/input-types/schema';

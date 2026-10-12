@@ -30,7 +30,7 @@ export class ValueExpr
     }
 
     public static geoPoint(value: string): ValueExpr {
-        return new ValueExpr(new Value(value, ValueTypes.GEO_POINT));
+        return new ValueExpr(ValueTypes.GEO_POINT.newValue(value));
     }
 
     getValue(): Value {

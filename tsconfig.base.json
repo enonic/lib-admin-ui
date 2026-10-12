@@ -13,7 +13,6 @@
         "strict": false,
         "allowJs": false,
         "skipLibCheck": true,
-        "removeComments": true,
         "useDefineForClassFields": false,
         "forceConsistentCasingInFileNames": true,
         "paths": {

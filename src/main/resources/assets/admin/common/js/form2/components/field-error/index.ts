@@ -1,2 +1,7 @@
-// Re-exported from @enonic/input-types: the input types live in the toolkit now (#4692).
-export {FieldError, type FieldErrorProps} from '@enonic/input-types';
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export {
+    /** @deprecated Import from '@enonic/input-types'. */
+    FieldError,
+    /** @deprecated Import from '@enonic/input-types'. */
+    type FieldErrorProps,
+} from '@enonic/input-types';

@@ -1,5 +1,5 @@
 import {ItemJson} from '../../item/ItemJson';
-import {FormJson} from '../../form/json/FormJson';
+import type {FormJson} from '@enonic/ui-types';
 
 export interface ApplicationJson
     extends ItemJson {
