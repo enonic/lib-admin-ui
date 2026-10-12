@@ -51,6 +51,15 @@
       color: @admin-font-gray2;
       padding-top: 0;
       line-height: 26px;
+
+      &:not(.custom-label) {
+        line-height: 19px !important;
+        margin-top: 0 !important;
+      }
+
+      &.custom-label {
+        line-height: 10px !important;
+      }
     }
 
     > .single-selection-header {
@@ -124,7 +133,7 @@
         margin: 5px 0;
 
         &:first-child {
-          margin-top: 0;
+          margin-top: 10px;
         }
 
         &:last-child {
