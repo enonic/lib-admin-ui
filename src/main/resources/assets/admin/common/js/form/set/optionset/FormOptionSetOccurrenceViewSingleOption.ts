@@ -71,9 +71,12 @@ export class FormOptionSetOccurrenceViewSingleOption
         if (selectedOption) {
             // doing this after parent layout to make sure all formItemViews are ready
             this.layoutInProgress = true;
-            this.selectionWrapper.select(selectedOption);
-            this.expandSelectedOptionView();
-            this.layoutInProgress = false;
+            try {
+                this.selectionWrapper.select(selectedOption);
+                this.expandSelectedOptionView();
+            } finally {
+                this.layoutInProgress = false;
+            }
         } else {
             // showing/hiding instead of css to trigger FormSetOccurrences onShow/onHide listeners
             this.formSetOccurrencesContainer.hide();
