@@ -1,83 +1,39 @@
-import type {PrincipalKey} from '../../security/PrincipalKey';
-import type {PrincipalType} from '../../security/PrincipalType';
-
-export type TextLineConfig = {
-    regexp: RegExp | undefined;
-    maxLength: number;
-    showCounter: boolean;
-};
-
-export type TextAreaConfig = {
-    maxLength: number;
-    showCounter: boolean;
-};
-
-export type NumberConfig = {
-    min: number | undefined;
-    max: number | undefined;
-};
-
-export type Alignment = 'LEFT' | 'RIGHT' | 'TOP' | 'BOTTOM';
-
-export type CheckboxConfig = {
-    alignment: Alignment;
-};
-
-export type ComboBoxOptionConfig = {
-    label: string;
-    value: string;
-};
-
-export type ComboBoxConfig = {
-    options: ComboBoxOptionConfig[];
-};
-
-export type RadioButtonOptionConfig = {
-    label: string;
-    value: string;
-};
-
-export type RadioButtonConfig = {
-    options: RadioButtonOptionConfig[];
-};
-
-export type PrincipalSelectorConfig = {
-    principalTypes: PrincipalType[];
-    skipPrincipals: PrincipalKey[];
-};
-
-export type GeoPointConfig = Record<string, never>;
-
-export type DateConfig = {
-    default?: Date | undefined;
-};
-
-export type DateTimeConfig = {
-    default?: Date | undefined;
-};
-
-export type InstantConfig = {
-    default?: Date | undefined;
-};
-
-export type TimeConfig = {
-    default?: Date | undefined;
-};
-
-export type DateTimeRangeConfig = {
-    useTimezone: boolean;
-    fromLabel: string;
-    toLabel: string;
-    errorNoStart: string;
-    errorEndInPast: string;
-    errorEndBeforeStart: string;
-    errorStartEqualsEnd: string;
-    defaultFromTime: {hours: number; minutes: number} | undefined;
-    defaultToTime: {hours: number; minutes: number} | undefined;
-    fromPlaceholder: string;
-    toPlaceholder: string;
-    optionalFrom: boolean;
-};
-
-/** Base constraint for all input type configs — open for external extensions. */
-export type InputTypeConfig = Record<string, unknown>;
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export type {
+    /** @deprecated Import from '@enonic/input-types'. */
+    Alignment,
+    /** @deprecated Import from '@enonic/input-types'. */
+    CheckboxConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    ComboBoxConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    ComboBoxOptionConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    DateConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    DateTimeConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    DateTimeRangeConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    GeoPointConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    InputTypeConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    InstantConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    NumberConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    OptionConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    PrincipalSelectorConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    RadioButtonConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    RadioButtonOptionConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    TextAreaConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    TextLineConfig,
+    /** @deprecated Import from '@enonic/input-types'. */
+    TimeConfig,
+} from '@enonic/input-types';

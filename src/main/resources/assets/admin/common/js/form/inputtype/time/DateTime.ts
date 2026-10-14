@@ -1,3 +1,4 @@
+import {RawInputConfig} from '../../Input';
 import {Property} from '../../../data/Property';
 import {Value} from '../../../data/Value';
 import {ValueType} from '../../../data/ValueType';
@@ -128,7 +129,7 @@ export class DateTime
         }
     }
 
-    private readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
+    private readConfig(inputConfig: RawInputConfig): void {
         // do nothing
     }
 

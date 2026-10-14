@@ -1,4 +1,5 @@
-import dayjs, {Dayjs} from 'dayjs';
+import {parseRelativeTime} from '@enonic/ui-utils';
+import dayjs from 'dayjs';
 import {DateTime} from '../../../util/DateTime';
 import {DateHelper} from '../../../util/DateHelper';
 import {LocalDate} from '../../../util/LocalDate';
@@ -12,29 +13,7 @@ export class RelativeTimeParser {
         omitTimezone = true,
         mode: 'datetime' | 'date' | 'time' = 'datetime'
     ): Date {
-        const base = dayjs();
-
-        if (!expr || expr.trim() === 'now') {
-            return DateHelper.isoValueToDate(base, factory, omitTimezone, mode);
-        }
-
-        const result: Dayjs = expr
-            .trim()
-            .split(/\s+/)
-            .reduce((date: Dayjs, token: string) => {
-                const match = token.match(/^([+-])(\d+)([a-zA-Z]+)$/);
-                if (!match) {
-                    return date;
-                }
-
-                const [, sign, value, unit] = match;
-
-                return sign === '+'
-                       ? date.add(Number(value), unit as dayjs.ManipulateType)
-                       : date.subtract(Number(value), unit as dayjs.ManipulateType);
-            }, base);
-
-        return DateHelper.isoValueToDate(result, factory, omitTimezone, mode);
+        return DateHelper.isoValueToDate(dayjs(parseRelativeTime(expr)), factory, omitTimezone, mode);
     }
 
     static parseToLocalDateTime(expr?: string): Date {
@@ -46,7 +25,7 @@ export class RelativeTimeParser {
     }
 
     static parseToDate(expr?: string): Date {
-        return this.parseRelative(expr, LocalDate.fromISOString, true, 'date');
+        return this.parseRelative(expr, LocalDate.fromString, true, 'date');
     }
 
     static parseToTime(expr?: string): Date {

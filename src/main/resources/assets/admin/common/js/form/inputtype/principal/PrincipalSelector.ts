@@ -121,7 +121,7 @@ export class PrincipalSelector
     }
 
     protected readInputConfig(): void {
-        const principalTypeConfig: Record<string, unknown>[] = this.context.inputConfig['principalType'] || [];
+        const principalTypeConfig: readonly Record<string, unknown>[] = this.context.inputConfig['principalType'] || [];
 
         this.principalTypes = [].concat(principalTypeConfig)
             .map((cfg: any) => {
@@ -135,7 +135,7 @@ export class PrincipalSelector
             })
             .filter((val) => val !== null);
 
-        const skipPrincipalsConfig: Record<string, unknown>[] = this.context.inputConfig['skipPrincipals'] || [];
+        const skipPrincipalsConfig: readonly Record<string, unknown>[] = this.context.inputConfig['skipPrincipals'] || [];
 
         this.skipPrincipals = [].concat(skipPrincipalsConfig)
             .map((cfg: any) => {

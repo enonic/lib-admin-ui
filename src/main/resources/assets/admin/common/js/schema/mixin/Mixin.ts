@@ -1,10 +1,8 @@
+import {Form, type FormItem, formItemsFromJson} from '@enonic/input-types/schema';
 import {Schema, SchemaBuilder} from '../Schema';
 import {Equitable} from '../../Equitable';
-import {FormItem} from '../../form/FormItem';
 import {ObjectHelper} from '../../ObjectHelper';
-import {Form, FormBuilder} from '../../form/Form';
 import {MixinJson} from './MixinJson';
-import {FormItemFactoryImpl} from '../../form/FormItemFactoryImpl';
 import {MixinName} from './MixinName';
 
 export class Mixin
@@ -61,7 +59,7 @@ export class Mixin
     }
 
     toForm(): Form {
-        return new FormBuilder().addFormItems(this.formItems).build();
+        return new Form(this.formItems);
     }
 
 }
@@ -85,15 +83,7 @@ export class MixinBuilder
 
         super.fromSchemaJson(mixinJson);
 
-        this.formItems = [];
-        if (mixinJson.form && mixinJson.form.formItems) {
-            mixinJson.form.formItems.forEach((formItemJson) => {
-                let formItem = FormItemFactoryImpl.get().createFormItem(formItemJson);
-                if (formItem) {
-                    this.formItems.push(formItem);
-                }
-            });
-        }
+        this.formItems = mixinJson.form != null ? formItemsFromJson(mixinJson.form) : [];
         this.schemaKey = 'mixin:' + this.name;
         return this;
     }

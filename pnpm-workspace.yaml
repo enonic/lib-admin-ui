@@ -6,3 +6,6 @@ minimumReleaseAge: 1440
 
 minimumReleaseAgeExclude:
   - '@enonic/ui'
+  - '@enonic/input-types'
+  - '@enonic/ui-types'
+  - '@enonic/ui-utils'

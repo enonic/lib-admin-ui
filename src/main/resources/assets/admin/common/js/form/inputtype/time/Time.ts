@@ -12,7 +12,6 @@ import {Class} from '../../../Class';
 import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
-import {TimeHMS} from '../../../util/TimeHMS';
 import {TimeHM} from '../../../util/TimeHM';
 import {RelativeTimeParser} from './RelativeTimeParser';
 
@@ -133,9 +132,8 @@ export class Time
             const localTime: LocalTime = property.getLocalTime();
 
             if (localTime) {
-                const adjustedTime: TimeHMS = localTime.getAdjustedTime();
-                hours = adjustedTime.hours;
-                minutes = adjustedTime.minutes;
+                hours = localTime.getHours();
+                minutes = localTime.getMinutes();
             }
         }
 

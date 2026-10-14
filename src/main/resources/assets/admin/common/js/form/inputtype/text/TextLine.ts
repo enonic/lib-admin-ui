@@ -1,3 +1,4 @@
+import {RawInputConfig} from '../../Input';
 import {Property} from '../../../data/Property';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {Element} from '../../../dom/Element';
@@ -52,7 +53,7 @@ export class TextLine
         input.setEnabled(enable);
     }
 
-    protected readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
+    protected readConfig(inputConfig: RawInputConfig): void {
         super.readConfig(inputConfig);
 
         const regexpConfig = inputConfig['regexp'] ? inputConfig['regexp'][0] : {};

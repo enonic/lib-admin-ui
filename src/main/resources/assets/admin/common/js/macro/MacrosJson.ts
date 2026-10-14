@@ -1,4 +1,4 @@
-import {FormJson} from '../form/json/FormJson';
+import type {FormJson} from '@enonic/ui-types';
 
 export interface MacrosJson {
     macros: MacroJson[];

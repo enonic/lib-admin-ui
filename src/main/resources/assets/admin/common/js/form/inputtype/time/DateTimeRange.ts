@@ -9,6 +9,7 @@ import {LocalDateTime} from '../../../util/LocalDateTime';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {DateTime} from '../../../util/DateTime';
 import {InputTypeViewContext} from '../InputTypeViewContext';
+import {RawInputConfig} from '../../Input';
 import {Element} from '../../../dom/Element';
 import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
@@ -161,7 +162,7 @@ export class DateTimeRange
             || ObjectHelper.isDefined(to) && ['DateTime', 'LocalDateTime'].indexOf(to.getType().toString()) === -1;
     }
 
-    private readConfig(inputConfig: Record<string, any>): void {
+    private readConfig(inputConfig: RawInputConfig): void {
         if (this.readConfigValue(inputConfig, 'timezone') === 'true') {
             this.useTimezone = true;
         }
@@ -186,10 +187,10 @@ export class DateTimeRange
         this.defaultToTime = this.getDefaultTimeFromConfig(inputConfig, 'defaultToTime');
         this.fromPlaceholder = this.readConfigValue(inputConfig, 'fromPlaceholder');
         this.toPlaceholder = this.readConfigValue(inputConfig, 'toPlaceholder');
-        this.optionalFrom = Boolean(this.readConfigValue(inputConfig, 'optionalFrom'));
+        this.optionalFrom = this.readConfigValue(inputConfig, 'optionalFrom') === 'true';
     }
 
-    private getDefaultTimeFromConfig(inputConfig: Record<string, string>, name: string): TimeHM {
+    private getDefaultTimeFromConfig(inputConfig: RawInputConfig, name: string): TimeHM {
         const time: string = this.readConfigValue(inputConfig, name);
         if (!time) {
             return null;
@@ -198,8 +199,9 @@ export class DateTimeRange
         return new TimeHM(parseInt(timeArray[0] || '0'), parseInt(timeArray[1] || '0'));
     }
 
-    private readConfigValue(inputConfig: Record<string, any>, name: string): string {
-        return inputConfig[name];
+    private readConfigValue(inputConfig: RawInputConfig, name: string): string | undefined {
+        const value = inputConfig[name]?.[0]?.value;
+        return value == null ? undefined : String(value);
     }
 
     private createInputAsLocalDateTime(property: Property): DateTimeRangePicker {

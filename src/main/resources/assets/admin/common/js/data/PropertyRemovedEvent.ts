@@ -1,16 +1,5 @@
-import {PropertyEvent} from './PropertyEvent';
-import {Property} from './Property';
-import {PropertyEventType} from './PropertyEventType';
-
-export class PropertyRemovedEvent
-    extends PropertyEvent {
-
-    constructor(property: Property) {
-        super(PropertyEventType.REMOVED, property);
-    }
-
-    toString(): string {
-        let value = this.getProperty().getValue();
-        return `${this.getPath().toString()} = ${String(value?.getObject() || '')}`;
-    }
-}
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export {
+    /** @deprecated Import from '@enonic/input-types/data'. */
+    PropertyRemovedEvent,
+} from '@enonic/input-types/data';

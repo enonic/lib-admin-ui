@@ -9,9 +9,6 @@
         "includes": [
             "src/main/resources/assets/admin/common/js/**/*.ts",
             "src/main/resources/assets/admin/common/js/**/*.tsx",
-            ".storybook/**/*.ts",
-            ".storybook/**/*.tsx",
-            ".storybook/**/*.css",
             "*.config.ts",
             "*.config.*.ts",
             "!src/main/resources/assets/admin/common/js/typings"
@@ -119,9 +116,6 @@
                 "src/main/resources/assets/admin/common/js/**/*.tsx",
                 "src/main/resources/assets/admin/common/js/form2/**/*.ts",
                 "src/main/resources/assets/admin/common/js/ui2/**/*.ts",
-                ".storybook/**/*.ts",
-                ".storybook/**/*.tsx",
-                ".storybook/**/*.css",
                 "*.config.ts",
                 "*.config.*.ts"
             ],

@@ -179,12 +179,14 @@ export abstract class BaseInputTypeManagingAdd
         return this.propertyArray;
     }
 
+    private ignoreChange: boolean = false;
+
     protected ignorePropertyChange(value: boolean) {
-        this.propertyArray.setIgnoreChange(value);
+        this.ignoreChange = value;
     }
 
     protected isPropertyChangeIgnored(): boolean {
-        return this.propertyArray.getIgnoreChange();
+        return this.ignoreChange;
     }
 
     private initListeners() {

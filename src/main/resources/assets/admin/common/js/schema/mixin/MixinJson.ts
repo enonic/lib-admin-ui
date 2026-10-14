@@ -1,5 +1,5 @@
 import {SchemaJson} from '../SchemaJson';
-import {FormJson} from '../../form/json/FormJson';
+import type {FormJson} from '@enonic/ui-types';
 
 export interface MixinJson
     extends SchemaJson {

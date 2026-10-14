@@ -1,6 +1,6 @@
 import {UploadItem} from '../ui/uploader/UploadItem';
 import {BaseItem, BaseItemBuilder} from '../item/BaseItem';
-import {Form} from '../form/Form';
+import {Form} from '@enonic/input-types/schema';
 import {ApplicationKey} from './ApplicationKey';
 import {ContentTypeName} from '../schema/content/ContentTypeName';
 import {MixinNames} from '../schema/mixin/MixinNames';

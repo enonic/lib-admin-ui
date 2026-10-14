@@ -15,9 +15,7 @@ build/
 target/
 
 # Development files
-storybook-static/
 docs/
-*storybook.log
 *.local
 
 # Build tools

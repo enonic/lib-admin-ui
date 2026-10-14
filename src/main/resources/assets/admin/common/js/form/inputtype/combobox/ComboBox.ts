@@ -160,7 +160,7 @@ export class ComboBox
 
     protected readInputConfig(): void {
         const options: ComboBoxOption[] = [];
-        const optionValues: Record<string, unknown>[] = this.context.inputConfig['options'] || [];
+        const optionValues: readonly Record<string, unknown>[] = this.context.inputConfig['options'] || [];
         const l: number = optionValues.length;
         let optionValue: Record<string, unknown>;
 

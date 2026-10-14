@@ -1,3 +1,4 @@
+import {RawInputConfig} from '../../Input';
 import Q from 'q';
 import {Property} from '../../../data/Property';
 import {Value} from '../../../data/Value';
@@ -39,7 +40,7 @@ export abstract class TextInputType
         return this.getValueType().newValue(rawValue);
     }
 
-    protected readConfig(inputConfig: Record<string, Record<string, unknown>[]>): void {
+    protected readConfig(inputConfig: RawInputConfig): void {
         const maxLengthConfig: object = inputConfig['maxLength'] ? inputConfig['maxLength'][0] : {};
         const maxLength: number = maxLengthConfig['value'];
         this.maxLength = maxLength > 0 ? maxLength : -1;

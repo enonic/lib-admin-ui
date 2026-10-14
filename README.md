@@ -16,6 +16,12 @@ dependencies {
 }
 ```
 
+## Consuming
+
+Content Studio links the dev jar's sources: `"@enonic/lib-admin-ui": "link:.xp/dev/lib-admin-ui"`. pnpm installs nothing for a `link:` dependency, so a consumer declares every package this library's modules import: the runtime ones listed in `dependencies` here and the peers (`@enonic/input-types`, `@enonic/ui`, `@enonic/ui-utils`, `lucide-react`, `preact`). `@enonic/input-types` and `@enonic/ui-utils` carry the data model classes (`PropertyTree`, `Value`, `LocalDate`, …) and must exist once on the page, which is why they are peers; `@enonic/ui-types` is types only and a plain dependency. `@enonic/input-types` imports `react`, so the consumer's bundler maps `react` and `react-dom` to `preact/compat`.
+
+One copy of this library per page: the data model compares with `instanceof`, so `lib.js` and a bundle of the dev sources must not both be loaded.
+
 ## Building
 
 #### Default

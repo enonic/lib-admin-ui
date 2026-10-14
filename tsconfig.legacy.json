@@ -23,9 +23,5 @@
     "include": [
         "src/main/resources/assets/admin/common/js/**/*.ts",
         "src/main/resources/assets/admin/common/js/**/*.tsx"
-    ],
-    "exclude": [
-        "src/**/*.stories.tsx",
-        "src/**/*.test.ts"
     ]
 }

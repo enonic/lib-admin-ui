@@ -1,31 +1,5 @@
-import {Property} from './Property';
-import {PropertyEventType} from './PropertyEventType';
-import {PropertyPath} from './PropertyPath';
-
-export class PropertyEvent {
-
-    private readonly type: PropertyEventType;
-
-    private readonly property: Property;
-
-    constructor(type: PropertyEventType, property: Property) {
-        this.type = type;
-        this.property = property;
-    }
-
-    getType(): PropertyEventType {
-        return this.type;
-    }
-
-    getProperty(): Property {
-        return this.property;
-    }
-
-    getPath(): PropertyPath {
-        return this.property.getPath();
-    }
-
-    toString(): string {
-        return this.getPath().toString();
-    }
-}
+// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
+export {
+    /** @deprecated Import from '@enonic/input-types/data'. */
+    PropertyEvent,
+} from '@enonic/input-types/data';
