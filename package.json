@@ -41,7 +41,7 @@
     "@enonic/ui": "^1.4.0",
     "@enonic/ui-utils": "^0.5.2",
     "lucide-react": ">=0.500.0",
-    "preact": "^10.29.8"
+    "preact": "^11.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "~2.5.15",
@@ -65,7 +65,7 @@
     "lucide-react": "^1.55.0",
     "postcss-normalize": "^13.0.1",
     "postcss-sort-media-queries": "^6.7.1",
-    "preact": "^10.29.8",
+    "preact": "^11.0.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.4"
   },
