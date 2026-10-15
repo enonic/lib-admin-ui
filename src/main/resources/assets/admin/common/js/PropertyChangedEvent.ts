@@ -1,4 +1,4 @@
-import {ValueData} from './data/Value';
+import {type ValueData} from '@enonic/input-types/data';
 
 /**
  * An event representing that a property of an object have changed.

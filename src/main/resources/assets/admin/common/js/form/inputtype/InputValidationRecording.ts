@@ -1,5 +1,5 @@
 import {Equitable} from '../../Equitable';
-import {Occurrences} from '../Occurrences';
+import {Occurrences} from '@enonic/input-types/schema';
 import {StringHelper} from '../../util/StringHelper';
 
 export class InputValidationRecording

@@ -1,6 +1,7 @@
-import {PropertyPath} from '../data/PropertyPath';
+import {PropertyPath} from '@enonic/input-types/data';
 import {InputTypeViewContext} from './inputtype/InputTypeViewContext';
-import {Input, type RawInputConfig} from './Input';
+import {Input} from '@enonic/input-types/schema';
+import {type RawInputConfig} from './Input';
 import {FormState} from '../app/wizard/WizardPanel';
 import {ValidationError} from '../ValidationError';
 

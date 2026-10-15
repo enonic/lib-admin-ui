@@ -1,7 +1,4 @@
-import {ValueTypes} from '../../../data/ValueTypes';
-import {ValueType} from '../../../data/ValueType';
-import {Value} from '../../../data/Value';
-import {Property} from '../../../data/Property';
+import {ValueTypes, ValueType, Value, Property, ValueTypeConverter} from '@enonic/input-types/data';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {Element} from '../../../dom/Element';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
@@ -9,7 +6,6 @@ import {GeoPoint as GeoPointEl} from '../../../ui/geo/GeoPoint';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 

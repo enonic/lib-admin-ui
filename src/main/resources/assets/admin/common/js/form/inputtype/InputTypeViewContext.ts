@@ -1,6 +1,7 @@
 import {FormContext} from '../FormContext';
-import {Input, type RawInputConfig} from '../Input';
-import {PropertyPath} from '../../data/PropertyPath';
+import {Input} from '@enonic/input-types/schema';
+import {type RawInputConfig} from '../Input';
+import {PropertyPath} from '@enonic/input-types/data';
 
 export interface InputTypeViewContext {
 

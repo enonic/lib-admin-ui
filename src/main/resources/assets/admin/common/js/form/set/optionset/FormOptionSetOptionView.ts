@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Q from 'q';
-import {PropertySet} from '../../../data/PropertySet';
+import {PropertySet} from '@enonic/input-types/data';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
@@ -13,12 +13,10 @@ import {CreatedFormItemLayerConfig, FormItemLayerFactory} from '../../FormItemLa
 import {FormItemState} from '../../FormItemState';
 import {FormItemView, FormItemViewConfig} from '../../FormItemView';
 import {HelpTextContainer} from '../../HelpTextContainer';
-import {Occurrences} from '../../Occurrences';
+import {Occurrences, FormOptionSet, FormOptionSetOption} from '@enonic/input-types/schema';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../../ValidationRecording';
-import {FormOptionSet} from './FormOptionSet';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
-import {FormOptionSetOption} from './FormOptionSetOption';
 
 export interface FormOptionSetOptionViewConfig
     extends CreatedFormItemLayerConfig {

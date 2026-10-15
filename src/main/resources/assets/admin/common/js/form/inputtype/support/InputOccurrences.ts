@@ -1,13 +1,10 @@
 import Q from 'q';
-import {Property} from '../../../data/Property';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
+import {Property, PropertyArray, Value} from '@enonic/input-types/data';
 import {assertNotNull} from '../../../util/Assert';
 import {FormItemOccurrence} from '../../FormItemOccurrence';
 import {FormItemOccurrences, FormItemOccurrencesConfig} from '../../FormItemOccurrences';
 import {FormItemOccurrenceView} from '../../FormItemOccurrenceView';
-import {Input} from '../../Input';
-import {Occurrences} from '../../Occurrences';
+import {Input, Occurrences} from '@enonic/input-types/schema';
 import {RemoveButtonClickedEvent} from '../../RemoveButtonClickedEvent';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 import {InputOccurrence} from './InputOccurrence';

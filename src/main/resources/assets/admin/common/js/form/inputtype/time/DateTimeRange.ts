@@ -1,13 +1,8 @@
-import {Property} from '../../../data/Property';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {Property, Value, ValueType, ValueTypes, PropertySet} from '@enonic/input-types/data';
 import {DateTimeRangePicker, DateTimeRangePickerBuilder} from '../../../ui/time/DateTimeRangePicker';
 import {i18n} from '../../../util/Messages';
-import {PropertySet} from '../../../data/PropertySet';
-import {LocalDateTime} from '../../../util/LocalDateTime';
+import {LocalDateTime, DateTime} from '@enonic/ui-utils';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
-import {DateTime} from '../../../util/DateTime';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {RawInputConfig} from '../../Input';
 import {Element} from '../../../dom/Element';
@@ -15,7 +10,7 @@ import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEven
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
-import {InputTypeName} from '../../InputTypeName';
+import {InputTypeName} from '@enonic/input-types/schema';
 import {TimeHM} from '../../../util/TimeHM';
 import {ObjectHelper} from '../../../ObjectHelper';
 

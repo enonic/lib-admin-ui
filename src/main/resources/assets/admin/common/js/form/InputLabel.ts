@@ -1,6 +1,6 @@
 import {DivEl} from '../dom/DivEl';
 import {StyleHelper} from '../StyleHelper';
-import {Input} from './Input';
+import {Input} from '@enonic/input-types/schema';
 
 export class InputLabel
     extends DivEl {

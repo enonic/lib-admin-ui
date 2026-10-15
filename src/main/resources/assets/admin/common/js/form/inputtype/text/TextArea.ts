@@ -1,9 +1,9 @@
-import {Property} from '../../../data/Property';
+import {Property} from '@enonic/input-types/data';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {Element} from '../../../dom/Element';
 import {TextArea as TextAreaEl} from '../../../ui/text/TextArea';
-import {InputTypeName} from '../../InputTypeName';
+import {InputTypeName} from '@enonic/input-types/schema';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
 import {TextInputType} from './TextInputType';

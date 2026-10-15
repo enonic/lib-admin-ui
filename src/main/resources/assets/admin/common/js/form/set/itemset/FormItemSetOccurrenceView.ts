@@ -1,7 +1,6 @@
-import {FormItemSet} from './FormItemSet';
+import {FormItemSet, FormItem} from '@enonic/input-types/schema';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
-import {FormItem} from '../../FormItem';
-import {PropertyArray} from '../../../data/PropertyArray';
+import {PropertyArray} from '@enonic/input-types/data';
 
 export class FormItemSetOccurrenceView
     extends FormSetOccurrenceView {

@@ -1,10 +1,6 @@
 import {RawInputConfig} from '../../Input';
 import Q from 'q';
-import {Property} from '../../../data/Property';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {Property, Value, ValueType, ValueTypeConverter, ValueTypes} from '@enonic/input-types/data';
 import {Element, LangDirection} from '../../../dom/Element';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {Locale} from '../../../locale/Locale';

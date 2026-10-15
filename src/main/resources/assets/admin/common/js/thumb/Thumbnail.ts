@@ -1,5 +1,5 @@
 import {Equitable} from '../Equitable';
-import {BinaryReference} from '../util/BinaryReference';
+import {BinaryReference} from '@enonic/ui-utils';
 import {ObjectHelper} from '../ObjectHelper';
 import {ThumbnailJson} from './ThumbnailJson';
 

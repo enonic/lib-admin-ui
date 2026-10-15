@@ -1,5 +1,5 @@
 import {Filter} from './Filter';
-import {Value} from '../../data/Value';
+import {Value} from '@enonic/input-types/data';
 import {FilterTypeWrapperJson} from './FilterTypeWrapperJson';
 import {RangeFilterJson} from './RangeFilterJson';
 

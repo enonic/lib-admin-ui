@@ -1,10 +1,4 @@
-// Deprecated re-exports of the toolkit, removed in 7.0 (#4713): import from the package named below instead.
 import {Form, type FormItem} from '@enonic/input-types/schema';
-
-export {
-    /** @deprecated Import from '@enonic/input-types/schema'. */
-    Form,
-};
 
 export class FormBuilder {
 

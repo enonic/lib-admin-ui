@@ -1,5 +1,5 @@
 import Q from 'q';
-import {PropertyPath} from '../data/PropertyPath';
+import {PropertyPath} from '@enonic/input-types/data';
 import {DivEl} from '../dom/DivEl';
 import {FormItemOccurrence} from './FormItemOccurrence';
 import {HelpTextContainer} from './HelpTextContainer';

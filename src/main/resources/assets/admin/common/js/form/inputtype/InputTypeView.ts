@@ -1,9 +1,7 @@
 import Q from 'q';
-import {PropertyArray} from '../../data/PropertyArray';
-import {Value} from '../../data/Value';
-import {ValueType} from '../../data/ValueType';
+import {PropertyArray, Value, ValueType} from '@enonic/input-types/data';
 import {Element} from '../../dom/Element';
-import {Input} from '../Input';
+import {Input} from '@enonic/input-types/schema';
 import {InputValidationRecording} from './InputValidationRecording';
 import {InputValidityChangedEvent} from './InputValidityChangedEvent';
 import {ValueChangedEvent} from './ValueChangedEvent';

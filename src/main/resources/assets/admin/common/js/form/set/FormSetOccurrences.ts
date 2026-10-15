@@ -1,6 +1,5 @@
 import Q from 'q';
-import {PropertyArray} from '../../data/PropertyArray';
-import {PropertySet} from '../../data/PropertySet';
+import {PropertyArray, PropertySet} from '@enonic/input-types/data';
 import {Element} from '../../dom/Element';
 import {FormContext} from '../FormContext';
 import {FormItemLayer} from '../FormItemLayer';
@@ -8,9 +7,8 @@ import {FormItemLayerFactory} from '../FormItemLayerFactory';
 import {FormItemOccurrence} from '../FormItemOccurrence';
 import {FormItemOccurrences} from '../FormItemOccurrences';
 import {FormItemState} from '../FormItemState';
-import {Occurrences} from '../Occurrences';
+import {Occurrences, FormSet} from '@enonic/input-types/schema';
 import {RemoveButtonClickedEvent} from '../RemoveButtonClickedEvent';
-import {FormSet} from './FormSet';
 import {FormSetOccurrence} from './FormSetOccurrence';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from './FormSetOccurrenceView';
 

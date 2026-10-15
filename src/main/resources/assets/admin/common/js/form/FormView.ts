@@ -1,12 +1,11 @@
 import Q from 'q';
-import {PropertySet} from '../data/PropertySet';
+import {PropertySet} from '@enonic/input-types/data';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {DivEl} from '../dom/DivEl';
 import {WindowDOM} from '../dom/WindowDOM';
 import {assert} from '../util/Assert';
-import {Form} from './Form';
+import {Form, FormItem} from '@enonic/input-types/schema';
 import {FormContext} from './FormContext';
-import {FormItem} from './FormItem';
 import {FormItemLayer} from './FormItemLayer';
 import {FormItemLayerFactoryImpl} from './FormItemLayerFactory';
 import {FormItemView} from './FormItemView';

@@ -1,5 +1,4 @@
-import {PropertySet} from '../data/PropertySet';
-import {PropertyTree} from '../data/PropertyTree';
+import {PropertySet, PropertyTree} from '@enonic/input-types/data';
 import {ApplicationKey} from './ApplicationKey';
 import {Equitable} from '../Equitable';
 import {Cloneable} from '../Cloneable';

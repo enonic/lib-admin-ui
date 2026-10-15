@@ -1,5 +1,5 @@
 import Q from 'q';
-import {PropertySet} from '../../../data/PropertySet';
+import {PropertySet} from '@enonic/input-types/data';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {Action} from '../../../ui/Action';
@@ -7,9 +7,8 @@ import {FilterableListBoxWrapper} from '../../../ui/selector/list/FilterableList
 import {ListBox} from '../../../ui/selector/list/ListBox';
 import {i18n} from '../../../util/Messages';
 import {SelectionChange} from '../../../util/SelectionChange';
-import {FormOptionSet} from './FormOptionSet';
+import {FormOptionSet, FormOptionSetOption} from '@enonic/input-types/schema';
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
-import {FormOptionSetOption} from './FormOptionSetOption';
 import {FormOptionSetOptionView} from './FormOptionSetOptionView';
 import {FormOptionSetOptionViewer} from './FormOptionSetOptionViewer';
 

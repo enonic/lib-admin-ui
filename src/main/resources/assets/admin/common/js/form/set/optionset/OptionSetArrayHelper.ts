@@ -1,7 +1,4 @@
-import {ValueTypes} from '../../../data/ValueTypes';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {Property} from '../../../data/Property';
-import {Value} from '../../../data/Value';
+import {ValueTypes, PropertyArray, Property, Value} from '@enonic/input-types/data';
 
 export class OptionSetArrayHelper {
 

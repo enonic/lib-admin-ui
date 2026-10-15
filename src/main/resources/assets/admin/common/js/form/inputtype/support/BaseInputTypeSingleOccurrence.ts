@@ -1,11 +1,8 @@
 import Q from 'q';
 import {ClassHelper} from '../../../ClassHelper';
-import {Property} from '../../../data/Property';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
-import {Value} from '../../../data/Value';
+import {Property, PropertyArray, PropertyValueChangedEvent, Value} from '@enonic/input-types/data';
 import {assertNotNull} from '../../../util/Assert';
-import {Input} from '../../Input';
+import {Input} from '@enonic/input-types/schema';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {ValueChangedEvent} from '../ValueChangedEvent';

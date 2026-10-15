@@ -1,8 +1,5 @@
 import Q from 'q';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {PropertyArray, Value, ValueType, ValueTypes} from '@enonic/input-types/data';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {Principal} from '../../../security/Principal';
 import {PrincipalKey} from '../../../security/PrincipalKey';
@@ -10,8 +7,7 @@ import {PrincipalType} from '../../../security/PrincipalType';
 import {PrincipalComboBox} from '../../../ui/security/PrincipalComboBox';
 import {SelectedOption} from '../../../ui/selector/combobox/SelectedOption';
 import {SelectionChange} from '../../../util/SelectionChange';
-import {Input} from '../../Input';
-import {InputTypeName} from '../../InputTypeName';
+import {Input, InputTypeName} from '@enonic/input-types/schema';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';
 

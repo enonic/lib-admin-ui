@@ -1,18 +1,12 @@
 import Q from 'q';
-import {Property} from '../../../data/Property';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {PropertySet} from '../../../data/PropertySet';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {Property, PropertyArray, PropertySet, ValueTypes} from '@enonic/input-types/data';
 import {DivEl} from '../../../dom/DivEl';
 import {i18n} from '../../../util/Messages';
-import {FormItem} from '../../FormItem';
-import {Occurrences} from '../../Occurrences';
+import {FormItem, Occurrences, FormOptionSet, FormOptionSetOption} from '@enonic/input-types/schema';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../../ValidationRecording';
 import {ValidationRecordingPath} from '../../ValidationRecordingPath';
 import {FormSetOccurrenceView, FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
-import {FormOptionSet} from './FormOptionSet';
-import {FormOptionSetOption} from './FormOptionSetOption';
 import {FormOptionSetOptionView} from './FormOptionSetOptionView';
 import {OptionSetArrayHelper} from './OptionSetArrayHelper';
 
