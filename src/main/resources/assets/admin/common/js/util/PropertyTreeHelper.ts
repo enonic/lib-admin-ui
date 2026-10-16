@@ -1,4 +1,4 @@
-import {PropertyTree} from '../data/PropertyTree';
+import {PropertyTree} from '@enonic/input-types/data';
 import {ObjectHelper} from '../ObjectHelper';
 
 export class PropertyTreeHelper {

@@ -1,5 +1,4 @@
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {ValueType, ValueTypes} from '@enonic/input-types/data';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';

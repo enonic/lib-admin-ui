@@ -1,9 +1,6 @@
-import {parseRelativeTime} from '@enonic/ui-utils';
+import {parseRelativeTime, DateTime, LocalDate, LocalDateTime} from '@enonic/ui-utils';
 import dayjs from 'dayjs';
-import {DateTime} from '../../../util/DateTime';
 import {DateHelper} from '../../../util/DateHelper';
-import {LocalDate} from '../../../util/LocalDate';
-import {LocalDateTime} from '../../../util/LocalDateTime';
 
 export class RelativeTimeParser {
 

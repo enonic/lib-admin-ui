@@ -3,13 +3,11 @@ import {NumberHelper} from '../../../util/NumberHelper';
 import {i18n} from '../../../util/Messages';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {FormInputEl} from '../../../dom/FormInputEl';
-import {Property} from '../../../data/Property';
+import {Property, ValueTypeConverter, Value} from '@enonic/input-types/data';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {Element} from '../../../dom/Element';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {TextInput} from '../../../ui/text/TextInput';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
-import {Value} from '../../../data/Value';
 
 export abstract class NumberInputType
     extends BaseInputTypeNotManagingAdd {

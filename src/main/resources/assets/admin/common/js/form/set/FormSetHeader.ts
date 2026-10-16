@@ -2,7 +2,7 @@ import {DivEl} from '../../dom/DivEl';
 import {H5El} from '../../dom/H5El';
 import {SpanEl} from '../../dom/SpanEl';
 import {HelpTextContainer} from '../HelpTextContainer';
-import {FormSet} from './FormSet';
+import {FormSet} from '@enonic/input-types/schema';
 
 export class FormSetHeader
     extends DivEl {

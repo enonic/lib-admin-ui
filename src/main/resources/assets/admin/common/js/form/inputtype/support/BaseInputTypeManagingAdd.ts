@@ -1,11 +1,10 @@
 import Q from 'q';
 import {ClassHelper} from '../../../ClassHelper';
-import {PropertyArray} from '../../../data/PropertyArray';
+import {PropertyArray} from '@enonic/input-types/data';
 import {FocusSwitchEvent} from '../../../ui/FocusSwitchEvent';
 import {SelectedOptionEvent} from '../../../ui/selector/combobox/SelectedOptionEvent';
 import {ValidationError} from '../../../ValidationError';
-import {FormItemPath} from '../../FormItemPath';
-import {Input} from '../../Input';
+import {FormItemPath, Input} from '@enonic/input-types/schema';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputValidationRecording} from '../InputValidationRecording';
 import {InputValidityChangedEvent} from '../InputValidityChangedEvent';

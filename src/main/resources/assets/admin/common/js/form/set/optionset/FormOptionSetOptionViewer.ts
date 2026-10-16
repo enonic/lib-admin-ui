@@ -1,4 +1,4 @@
-import {FormOptionSetOption} from './FormOptionSetOption';
+import {FormOptionSetOption} from '@enonic/input-types/schema';
 import {NamesAndIconViewer} from '../../../ui/NamesAndIconViewer';
 import {i18n} from '../../../util/Messages';
 

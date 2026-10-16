@@ -1,5 +1,5 @@
 import Q from 'q';
-import {PropertySet} from '../../../data/PropertySet';
+import {PropertySet} from '@enonic/input-types/data';
 import {DefaultErrorHandler} from '../../../DefaultErrorHandler';
 import {DivEl} from '../../../dom/DivEl';
 import {FormItemLayer} from '../../FormItemLayer';
@@ -9,7 +9,7 @@ import {FormItemView, FormItemViewConfig} from '../../FormItemView';
 import {InputView} from '../../InputView';
 import {RecordingValidityChangedEvent} from '../../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../../ValidationRecording';
-import {FieldSet} from './FieldSet';
+import {FieldSet} from '@enonic/input-types/schema';
 import {FieldSetLabel} from './FieldSetLabel';
 
 export interface FieldSetViewConfig extends CreatedFormItemLayerConfig {

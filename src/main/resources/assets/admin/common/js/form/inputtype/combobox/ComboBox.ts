@@ -1,14 +1,10 @@
 import Q from 'q';
 import {Class} from '../../../Class';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {PropertyArray, Value, ValueType, ValueTypeConverter, ValueTypes} from '@enonic/input-types/data';
 import {ObjectHelper} from '../../../ObjectHelper';
 import {SelectionChange} from '../../../util/SelectionChange';
 import {StringHelper} from '../../../util/StringHelper';
-import {Input} from '../../Input';
+import {Input} from '@enonic/input-types/schema';
 import {InputTypeManager} from '../InputTypeManager';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {BaseInputTypeManagingAdd} from '../support/BaseInputTypeManagingAdd';

@@ -1,8 +1,5 @@
 import Q from 'q';
-import {Property} from '../../../data/Property';
-import {PropertyPath} from '../../../data/PropertyPath';
-import {PropertyValueChangedEvent} from '../../../data/PropertyValueChangedEvent';
-import {Value} from '../../../data/Value';
+import {Property, PropertyPath, PropertyValueChangedEvent, Value} from '@enonic/input-types/data';
 import {ButtonEl} from '../../../dom/ButtonEl';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';

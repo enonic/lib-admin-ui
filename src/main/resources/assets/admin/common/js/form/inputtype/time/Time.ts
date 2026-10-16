@@ -1,15 +1,11 @@
-import {Property} from '../../../data/Property';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {Property, Value, ValueType, ValueTypes, ValueTypeConverter} from '@enonic/input-types/data';
 import {BaseInputTypeNotManagingAdd} from '../support/BaseInputTypeNotManagingAdd';
 import {Element} from '../../../dom/Element';
 import {TimePicker, TimePickerBuilder} from '../../../ui/time/TimePicker';
 import {SelectedDateChangedEvent} from '../../../ui/time/SelectedDateChangedEvent';
-import {LocalTime} from '../../../util/LocalTime';
+import {LocalTime} from '@enonic/ui-utils';
 import {InputTypeManager} from '../InputTypeManager';
 import {Class} from '../../../Class';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
 import {AdditionalValidationRecord} from '../../AdditionalValidationRecord';
 import {i18n} from '../../../util/Messages';
 import {TimeHM} from '../../../util/TimeHM';

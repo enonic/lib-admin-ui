@@ -1,14 +1,9 @@
 import {RawInputConfig} from '../../Input';
 import Q from 'q';
 import {Class} from '../../../Class';
-import {Property} from '../../../data/Property';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypeConverter} from '../../../data/ValueTypeConverter';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {Property, Value, ValueType, ValueTypeConverter, ValueTypes} from '@enonic/input-types/data';
 import {Checkbox as CheckboxEl, InputAlignment} from '../../../ui/Checkbox';
-import {Input} from '../../Input';
-import {Occurrences} from '../../Occurrences';
+import {Input, Occurrences} from '@enonic/input-types/schema';
 import {InputTypeManager} from '../InputTypeManager';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputValidationRecording} from '../InputValidationRecording';

@@ -4,11 +4,9 @@ import {
     inputTypesPhrases,
     resolveValidationMessage,
 } from '@enonic/input-types';
+import type {Property, Value, ValueType} from '@enonic/input-types/data';
+import {ValueTypeConverter} from '@enonic/input-types/data';
 import {bindPhrases, fromLookup} from '@enonic/ui-utils';
-import type {Property} from '../data/Property';
-import type {Value} from '../data/Value';
-import type {ValueType} from '../data/ValueType';
-import {ValueTypeConverter} from '../data/ValueTypeConverter';
 import {type Element, LangDirection} from '../dom/Element';
 import type {FormInputEl} from '../dom/FormInputEl';
 import {AdditionalValidationRecord} from '../form/AdditionalValidationRecord';

@@ -1,25 +1,19 @@
 import Q from 'q';
-import {PropertyArray} from '../data/PropertyArray';
-import {PropertySet} from '../data/PropertySet';
+import {PropertyArray, PropertySet} from '@enonic/input-types/data';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {Element} from '../dom/Element';
 import {ObjectHelper} from '../ObjectHelper';
 import {FocusSwitchEvent} from '../ui/FocusSwitchEvent';
 import {FormContext} from './FormContext';
-import {FormItem} from './FormItem';
+import {FormItem, Input, FieldSet, FormItemSet, FormOptionSet, FormOptionSetOption} from '@enonic/input-types/schema';
 import {FormItemLayerFactory} from './FormItemLayerFactory';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {FormItemState} from './FormItemState';
 import {FormItemView} from './FormItemView';
-import {Input} from './Input';
 import {InputView, InputViewConfig} from './InputView';
-import {FieldSet} from './set/fieldset/FieldSet';
 import {FieldSetView, FieldSetViewConfig} from './set/fieldset/FieldSetView';
 import {FormSetOccurrenceView} from './set/FormSetOccurrenceView';
-import {FormItemSet} from './set/itemset/FormItemSet';
 import {FormItemSetView} from './set/itemset/FormItemSetView';
-import {FormOptionSet} from './set/optionset/FormOptionSet';
-import {FormOptionSetOption} from './set/optionset/FormOptionSetOption';
 import {FormOptionSetOptionView, FormOptionSetOptionViewConfig} from './set/optionset/FormOptionSetOptionView';
 import {FormOptionSetView} from './set/optionset/FormOptionSetView';
 

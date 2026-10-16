@@ -1,11 +1,9 @@
 import Q from 'q';
 import {ClassHelper} from '../../../ClassHelper';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
+import {PropertyArray, Value, ValueType} from '@enonic/input-types/data';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
-import {Input} from '../../Input';
+import {Input} from '@enonic/input-types/schema';
 import {InputTypeView} from '../InputTypeView';
 import {InputTypeViewContext} from '../InputTypeViewContext';
 import {InputValidationRecording} from '../InputValidationRecording';

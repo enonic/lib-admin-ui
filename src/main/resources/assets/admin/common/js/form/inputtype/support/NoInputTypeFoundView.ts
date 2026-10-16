@@ -1,17 +1,13 @@
 import Q from 'q';
 import {Class} from '../../../Class';
-import {Property} from '../../../data/Property';
-import {PropertyArray} from '../../../data/PropertyArray';
-import {Value} from '../../../data/Value';
-import {ValueType} from '../../../data/ValueType';
-import {ValueTypes} from '../../../data/ValueTypes';
+import {Property, PropertyArray, Value, ValueType, ValueTypes} from '@enonic/input-types/data';
 import {DivEl} from '../../../dom/DivEl';
 import {Element} from '../../../dom/Element';
 import {FormInputEl} from '../../../dom/FormInputEl';
 import {TextInput} from '../../../ui/text/TextInput';
 import {StringHelper} from '../../../util/StringHelper';
 import {ValueChangedEvent} from '../../../ValueChangedEvent';
-import {Input} from '../../Input';
+import {Input} from '@enonic/input-types/schema';
 import {InputTypeManager} from '../InputTypeManager';
 import {BaseInputTypeNotManagingAdd} from './BaseInputTypeNotManagingAdd';
 

@@ -1,17 +1,15 @@
 import Q from 'q';
-import {Property} from '../data/Property';
-import {PropertyArray} from '../data/PropertyArray';
+import {Property, PropertyArray} from '@enonic/input-types/data';
 import {DefaultErrorHandler} from '../DefaultErrorHandler';
 import {Element} from '../dom/Element';
 import {ArrayHelper} from '../util/ArrayHelper';
-import {FormItem} from './FormItem';
+import {FormItem, Occurrences} from '@enonic/input-types/schema';
 import {FormItemOccurrence} from './FormItemOccurrence';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {FormItemState} from './FormItemState';
 import {OccurrenceAddedEvent} from './OccurrenceAddedEvent';
 import {OccurrenceRemovedEvent} from './OccurrenceRemovedEvent';
 import {OccurrenceRenderedEvent} from './OccurrenceRenderedEvent';
-import {Occurrences} from './Occurrences';
 
 export interface FormItemOccurrencesConfig {
 

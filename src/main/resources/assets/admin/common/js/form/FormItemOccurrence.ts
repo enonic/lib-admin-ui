@@ -1,7 +1,7 @@
 import Q from 'q';
 import {FormItemOccurrenceView} from './FormItemOccurrenceView';
 import {FormItemOccurrences} from './FormItemOccurrences';
-import {Occurrences} from './Occurrences';
+import {Occurrences} from '@enonic/input-types/schema';
 
 export class FormItemOccurrence<V extends FormItemOccurrenceView> {
 

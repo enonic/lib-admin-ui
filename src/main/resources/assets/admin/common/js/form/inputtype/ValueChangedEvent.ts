@@ -1,4 +1,4 @@
-import {Value} from '../../data/Value';
+import {Value} from '@enonic/input-types/data';
 
 export class ValueChangedEvent {
 

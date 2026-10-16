@@ -1,14 +1,5 @@
 import Q from 'q';
-import {Property} from '../../data/Property';
-import {PropertyAddedEvent} from '../../data/PropertyAddedEvent';
-import {PropertyArray} from '../../data/PropertyArray';
-import {PropertyPath} from '../../data/PropertyPath';
-import {PropertyRemovedEvent} from '../../data/PropertyRemovedEvent';
-import {PropertySet} from '../../data/PropertySet';
-import {PropertyValueChangedEvent} from '../../data/PropertyValueChangedEvent';
-import {Value} from '../../data/Value';
-import {ValueType} from '../../data/ValueType';
-import {ValueTypes} from '../../data/ValueTypes';
+import {Property, PropertyAddedEvent, PropertyArray, PropertyPath, PropertyRemovedEvent, PropertySet, PropertyValueChangedEvent, Value, ValueType, ValueTypes} from '@enonic/input-types/data';
 import {DivEl} from '../../dom/DivEl';
 import {Element} from '../../dom/Element';
 import {ObjectHelper} from '../../ObjectHelper';
@@ -19,20 +10,15 @@ import {KeyBindings} from '../../ui/KeyBindings';
 import {ConfirmationMask} from '../../ui/mask/ConfirmationMask';
 import {i18n} from '../../util/Messages';
 import {FormContext} from '../FormContext';
-import {FormItem} from '../FormItem';
+import {FormItem, Input, FormSet, FormItemSet, FormOptionSet, FormOptionSetOption} from '@enonic/input-types/schema';
 import {FormItemLayer} from '../FormItemLayer';
 import {FormItemOccurrence} from '../FormItemOccurrence';
 import {FormItemOccurrenceView, FormItemOccurrenceViewConfig} from '../FormItemOccurrenceView';
 import {FormItemView} from '../FormItemView';
 import {FormOccurrenceDraggableLabel} from '../FormOccurrenceDraggableLabel';
-import {Input} from '../Input';
 import {RecordingValidityChangedEvent} from '../RecordingValidityChangedEvent';
 import {ValidationRecording} from '../ValidationRecording';
 import {ValidationRecordingPath} from '../ValidationRecordingPath';
-import {FormSet} from './FormSet';
-import {FormItemSet} from './itemset/FormItemSet';
-import {FormOptionSet} from './optionset/FormOptionSet';
-import {FormOptionSetOption} from './optionset/FormOptionSetOption';
 
 export interface FormSetOccurrenceViewConfig<V extends FormSetOccurrenceView> {
     context: FormContext;

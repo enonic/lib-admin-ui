@@ -1,6 +1,6 @@
 import {TextInput} from '../text/TextInput';
 import {StringHelper} from '../../util/StringHelper';
-import {GeoPoint as GeoPointUtil} from '../../util/GeoPoint';
+import {GeoPoint as GeoPointUtil} from '@enonic/ui-utils';
 
 export class GeoPoint
     extends TextInput {

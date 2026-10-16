@@ -1,5 +1,5 @@
 import {DivEl} from '../../../dom/DivEl';
-import {FieldSet} from './FieldSet';
+import {FieldSet} from '@enonic/input-types/schema';
 
 export class FieldSetLabel
     extends DivEl {

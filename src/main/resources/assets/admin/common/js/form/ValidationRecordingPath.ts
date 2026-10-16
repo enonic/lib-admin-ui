@@ -1,4 +1,4 @@
-import {PropertyPath} from '../data/PropertyPath';
+import {PropertyPath} from '@enonic/input-types/data';
 import {Equitable} from '../Equitable';
 import {ObjectHelper} from '../ObjectHelper';
 

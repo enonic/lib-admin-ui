@@ -1,7 +1,5 @@
-import {Value} from '../../data/Value';
-import {ValueTypes} from '../../data/ValueTypes';
-import {DateTime} from '../../util/DateTime';
-import {ValueType} from '../../data/ValueType';
+import {Value, ValueTypes, ValueType} from '@enonic/input-types/data';
+import {DateTime} from '@enonic/ui-utils';
 import {Expression} from './Expression';
 
 export class ValueExpr

@@ -1,8 +1,7 @@
 import {FormOptionSetOccurrenceView} from './FormOptionSetOccurrenceView';
 import {FormSetOccurrences} from '../FormSetOccurrences';
 import {FormSetOccurrenceViewConfig} from '../FormSetOccurrenceView';
-import {Occurrences} from '../../Occurrences';
-import {FormOptionSet} from './FormOptionSet';
+import {Occurrences, FormOptionSet} from '@enonic/input-types/schema';
 import {FormOptionSetOccurrenceViewSingleOption} from './FormOptionSetOccurrenceViewSingleOption';
 import {FormOptionSetOccurrenceViewMultiOptions} from './FormOptionSetOccurrenceViewMultiOptions';
 
