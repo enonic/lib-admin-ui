@@ -26,7 +26,7 @@
   "dependencies": {
     "@enonic/ui-types": "^0.5.2",
     "dayjs": "^1.11.23",
-    "dompurify": "~3.4.16",
+    "dompurify": "~3.4.17",
     "fine-uploader": "^5.16.2",
     "jquery": "~3.7.1",
     "jquery-simulate": "^1.0.2",
