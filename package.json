@@ -38,7 +38,7 @@
   },
   "peerDependencies": {
     "@enonic/input-types": "^0.5.2",
-    "@enonic/ui": "^1.4.0",
+    "@enonic/ui": "^1.5.0",
     "@enonic/ui-utils": "^0.5.2",
     "lucide-react": ">=0.500.0",
     "preact": "^10.29.8"
@@ -46,7 +46,7 @@
   "devDependencies": {
     "@biomejs/biome": "~2.5.15",
     "@enonic/input-types": "^0.5.2",
-    "@enonic/ui": "^1.4.0",
+    "@enonic/ui": "^1.5.0",
     "@enonic/ui-utils": "^0.5.2",
     "@rollup/plugin-inject": "^5.0.5",
     "@types/jquery": "^3.5.33",
