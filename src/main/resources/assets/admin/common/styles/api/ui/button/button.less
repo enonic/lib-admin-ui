@@ -59,26 +59,3 @@
     .button-background(@admin-black, lighten(@admin-black, 30%));
   }
 }
-
-.close-button {
-  .button(@admin-white, rgba(55, 55, 55, 0.2), @admin-white, rgba(55, 55, 55, 0.5));
-
-  &.transparent {
-    .button(@admin-white, transparent, @admin-almost-white, transparent);
-  }
-
-  // should go last to override button defaults
-  box-sizing: content-box; // for firefox to center the icon
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
-
-  &::before {
-    vertical-align: bottom;
-  }
-
-  span {
-    display: none;
-  }
-}
