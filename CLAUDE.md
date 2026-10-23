@@ -19,7 +19,7 @@ Only run `./gradlew build -Penv=dev` when the task specifically requires testing
 
 - **Modern** (new code goes here): `js/ui2/` — Preact/TSX, strict TypeScript, Tailwind
 - **Legacy** (do not add to): `js/ui/`, `js/form/inputtype/` — class-based, jQuery, loose TypeScript
-- **The toolkit** ([npm-enonic-ui-toolkit](https://github.com/enonic/npm-enonic-ui-toolkit)) owns the property tree, the schema classes, the value classes and the Preact input types: import them from `@enonic/input-types`, `@enonic/ui-utils` and `@enonic/ui-types` directly. `js/form2/BaseInputType.ts` bridges a toolkit descriptor to a legacy `InputView`.
+- **The toolkit** ([npm-enonic-ui-toolkit](https://github.com/enonic/npm-enonic-ui-toolkit)) owns the property tree, the schema classes, the value classes and the Preact input types: import them from `@enonic/input-types`, `@enonic/ui-utils` and `@enonic/ui-types` directly.
 
 ## Git & GitHub
 
