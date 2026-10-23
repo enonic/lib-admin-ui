@@ -96,8 +96,6 @@ tasks.named( 'processResources' ).configure {
     exclude 'assets/admin/common/fonts/**'
     // Images are inlined to the CSS
     exclude 'assets/admin/common/images/**'
-    // Bundled into lib.js
-    exclude 'assets/admin/common/lib/**'
 }
 
 tasks.named( 'jar' ).configure {
@@ -113,7 +111,7 @@ tasks.register( 'devJar', Jar ) {
     archiveClassifier = 'dev-resources'
     from sourceSets.main.output
     include 'dev/**'
-    exclude 'dev/lib-admin-ui/lib.js', 'dev/lib-admin-ui/lib.d.ts', 'dev/lib-admin-ui/*.tsbuildinfo'
+    exclude 'dev/lib-admin-ui/*.tsbuildinfo'
 
     into( "dev/${base.archivesName.get()}/fonts" ) {
         from layout.buildDirectory.dir( 'resources/main/assets/admin/common/fonts' )

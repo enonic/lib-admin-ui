@@ -114,7 +114,6 @@
         {
             "includes": [
                 "src/main/resources/assets/admin/common/js/**/*.tsx",
-                "src/main/resources/assets/admin/common/js/form2/**/*.ts",
                 "src/main/resources/assets/admin/common/js/ui2/**/*.ts",
                 "*.config.ts",
                 "*.config.*.ts"
@@ -198,17 +197,6 @@
                 "rules": {
                     "suspicious": {
                         "noExplicitAny": "off"
-                    }
-                }
-            }
-        },
-        {
-            "includes": ["src/main/resources/assets/admin/common/js/form2/**/*.test.ts"],
-            "linter": {
-                "rules": {
-                    "suspicious": {
-                        "noExplicitAny": "off",
-                        "noEmptyBlockStatements": "off"
                     }
                 }
             }
