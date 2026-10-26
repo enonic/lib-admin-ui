@@ -42,7 +42,7 @@
     "preact": "^10.29.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.5.15",
+    "@biomejs/biome": "~2.6.2",
     "@enonic/input-types": "^0.6.0",
     "@enonic/ui": "^1.5.0",
     "@enonic/ui-utils": "^0.6.0",
