@@ -53,7 +53,7 @@
     "@types/q": "^1.5.8",
     "autoprefixer": "^10.6.1",
     "browserslist-config-enonic": "^1.0.8",
-    "cssnano": "^9.8.0",
+    "cssnano": "^9.9.0",
     "enonic-admin-artifacts": "^2.5.0",
     "husky": "^9.1.7",
     "jiti": "~2.7.0",
