@@ -91,8 +91,8 @@ importers:
         specifier: ^4.9.1
         version: 4.9.1
       lucide-react:
-        specifier: ^1.58.0
-        version: 1.58.0(@types/react@19.2.14)(react@19.3.0)
+        specifier: ^1.61.0
+        version: 1.61.0(@types/react@19.2.14)(react@19.3.0)
       postcss-normalize:
         specifier: ^13.0.1
         version: 13.0.1(browserslist@4.29.3)(postcss@8.5.31)
@@ -946,8 +946,8 @@ packages:
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
-  lucide-react@1.58.0:
-    resolution: {integrity: sha512-hXaFNm6mk6QVtBnDGBn1YAs8j2tGUk0A4s/CpclIcczfxeXiW1rdOLVo6zCsoIih9XXsGvDODQerl749a2n7bA==}
+  lucide-react@1.61.0:
+    resolution: {integrity: sha512-v2SQPPPNjnr+BlhL9Spuzmo5yR+hLkftfuE4E3jaxdNPgSH0hJKPcLJBP7yAta87jQNPsSERS59PJjCJ/CorBA==}
     peerDependencies:
       '@types/react': '*'
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -1424,7 +1424,7 @@ snapshots:
       '@enonic/ui-types': 0.6.0
       '@enonic/ui-utils': 0.6.0
       focus-trap-react: 12.0.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      lucide-react: 1.58.0(@types/react@19.2.14)(react@19.3.0)
+      lucide-react: 1.61.0(@types/react@19.2.14)(react@19.3.0)
     optionalDependencies:
       preact: 10.29.8
       react: 19.3.0
@@ -1444,7 +1444,7 @@ snapshots:
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       focus-trap-react: 12.0.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      lucide-react: 1.58.0(@types/react@19.2.14)(react@19.3.0)
+      lucide-react: 1.61.0(@types/react@19.2.14)(react@19.3.0)
       tailwind-merge: 3.7.0
     optionalDependencies:
       preact: 10.29.8
@@ -1957,7 +1957,7 @@ snapshots:
   lodash.merge@4.6.2:
     optional: true
 
-  lucide-react@1.58.0(@types/react@19.2.14)(react@19.3.0):
+  lucide-react@1.61.0(@types/react@19.2.14)(react@19.3.0):
     dependencies:
       react: 19.3.0
     optionalDependencies:
