@@ -63,7 +63,7 @@
     "postcss-sort-media-queries": "^6.7.1",
     "preact": "^10.29.8",
     "typescript": "^7.0.2",
-    "vite": "^8.3.4"
+    "vite": "^8.3.5"
   },
   "browserslist": [
     "extends browserslist-config-enonic"
