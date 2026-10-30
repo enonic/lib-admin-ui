@@ -6,6 +6,7 @@ import {ObjectHelper} from '../../../ObjectHelper';
 import {FormItemContainer} from '../../FormItemContainer';
 import {FormItemFactory} from '../../FormItemFactoryImpl';
 import {ApplicationKey} from '../../../application/ApplicationKey';
+import {FieldSet} from '../fieldset/FieldSet';
 
 export class FormOptionSetOption
     extends FormItem
@@ -46,7 +47,7 @@ export class FormOptionSetOption
 
     addFormItem(formItem: FormItem): void {
         const name: string = formItem.getName();
-        if (this.formItemByName[name]) {
+        if (this.formItemByName[name] && !(formItem instanceof FieldSet)) {
             throw new Error(`FormItem already added: ${name}`);
         }
         formItem.setParent(this);
