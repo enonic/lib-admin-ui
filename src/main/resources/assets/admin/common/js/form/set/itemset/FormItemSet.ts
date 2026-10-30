@@ -8,6 +8,7 @@ import {FormItem} from '../../FormItem';
 import {FormItemFactory} from '../../FormItemFactoryImpl';
 import {Input} from '../../Input';
 import {ApplicationKey} from '../../../application/ApplicationKey';
+import {FieldSet} from '../fieldset/FieldSet';
 
 /**
  * A set of [[FormItem]]s.
@@ -35,7 +36,7 @@ export class FormItemSet
 
     addFormItem(formItem: FormItem): void {
         const name: string = formItem.getName();
-        if (this.formItemByName[name]) {
+        if (this.formItemByName[name] && !(formItem instanceof FieldSet)) {
             throw new Error('FormItem already added: ' + name);
         }
         formItem.setParent(this);
