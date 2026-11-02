@@ -51,7 +51,7 @@
     "@types/mousetrap": "^1.6.15",
     "@types/node": "~26.6.6",
     "@types/q": "^1.5.8",
-    "autoprefixer": "^10.6.1",
+    "autoprefixer": "^10.6.2",
     "browserslist-config-enonic": "^1.0.8",
     "cssnano": "^9.9.0",
     "enonic-admin-artifacts": "^2.5.0",
