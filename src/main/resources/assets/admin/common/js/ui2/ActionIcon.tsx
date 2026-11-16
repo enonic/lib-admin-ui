@@ -11,7 +11,7 @@ export type ActionIconProps = {
     className?: string;
 };
 
-export type ActionProps = Pick<UI.ButtonProps, 'className' | 'label' | 'title' | 'disabled'>;
+export type ActionProps = Pick<UI.IconButtonProps, 'className' | 'aria-label' | 'title' | 'disabled'>;
 
 export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
     private actionProps: ActionIconProps;
@@ -81,15 +81,10 @@ export class ActionIcon extends LegacyElement<typeof UI.IconButton> {
 function createPropsFromAction({action, className}: ActionIconProps): ActionProps {
     return {
         className: UI.cn('action-button', action.getClass(), action.getIconClass(), className),
-        label: createLabel(action),
+        'aria-label': action.getLabel(),
         title: createTooltipText(action),
         disabled: !action.isEnabled(),
     };
-}
-
-function createLabel(action: Action): string {
-    const label = action.getLabel();
-    return action.getMnemonic()?.underlineMnemonic(label) ?? label;
 }
 
 function createTooltipText(action: Action): string {
