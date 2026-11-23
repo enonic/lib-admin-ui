@@ -1,5 +1,8 @@
 {
     "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "tailwind": {
+        "mergeFunctions": ["clsx", "cva", "cn", "twMerge", "twJoin"]
+    },
     "vcs": {
         "enabled": true,
         "clientKind": "git",
@@ -177,12 +180,9 @@
                         "noGlobalIsFinite": { "level": "error", "fix": "safe" }
                     },
                     "nursery": {
-                        "useSortedClasses": {
+                        "useTailwindSortedClasses": {
                             "level": "warn",
-                            "fix": "safe",
-                            "options": {
-                                "functions": ["clsx", "cva", "cn", "twMerge", "twJoin"]
-                            }
+                            "fix": "safe"
                         }
                     }
                 }
