@@ -21,8 +21,8 @@ importers:
         specifier: ^5.16.2
         version: 5.16.2
       jquery:
-        specifier: ~3.7.1
-        version: 3.7.1
+        specifier: ~3.8.0
+        version: 3.8.0
       jquery-simulate:
         specifier: ^1.0.2
         version: 1.0.2
@@ -852,8 +852,8 @@ packages:
   jquery-ui@1.14.2:
     resolution: {integrity: sha512-1gSl7PUjyipa2adSr780Ujk16faicrV7PjPPzPtvWk7tTqBnsqp67NNV9jZK2+BIxUPXWSnIUU/LBCgwgGZE+Q==}
 
-  jquery@3.7.1:
-    resolution: {integrity: sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==}
+  jquery@3.8.0:
+    resolution: {integrity: sha512-AOYt0viqPysMUTq45O8gF9DuOnBT3Il/8WtM/TT8z/2QeGsZ70ImwSJtNFxznn2R71v8yIgaEunOGo82OY/f0g==}
 
   less@4.9.1:
     resolution: {integrity: sha512-orp15PfJvvNDIqJdVWzMI9Sjpjp3VTiw3sfvbB+67LlISTEn8uVT2EdYSuyl02BLvaftv6sdk9Umnxmm5rckmg==}
@@ -1693,9 +1693,9 @@ snapshots:
 
   jquery-ui@1.14.2:
     dependencies:
-      jquery: 3.7.1
+      jquery: 3.8.0
 
-  jquery@3.7.1: {}
+  jquery@3.8.0: {}
 
   less@4.9.1:
     dependencies:
