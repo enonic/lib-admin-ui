@@ -44,9 +44,9 @@ export abstract class BaseInputTypeNotManagingAdd
             containment: 'parent',
             handle: '.drag-control',
             tolerance: 'pointer',
-            start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-            stop: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui),
-            update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
+            start: (_event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+            stop: (_event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) => this.handleDnDStop(ui),
+            update: (_event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui)
         });
     }
 
