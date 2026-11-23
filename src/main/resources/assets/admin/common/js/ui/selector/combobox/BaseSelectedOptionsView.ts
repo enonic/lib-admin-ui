@@ -308,8 +308,8 @@ export class BaseSelectedOptionsView<T>
                 cursor: 'move',
                 tolerance: 'pointer',
                 placeholder: 'selected-option placeholder',
-                start: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
-                update: (_event: Event, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
+                start: (_event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) => this.handleDnDStart(ui),
+                update: (_event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) => this.handleDnDUpdate(ui),
                 stop: () => this.handleDnDStop()
             });
         }
