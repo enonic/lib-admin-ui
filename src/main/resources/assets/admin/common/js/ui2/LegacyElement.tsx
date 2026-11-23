@@ -1,19 +1,19 @@
 import {IdProvider} from '@enonic/ui';
 import {nanoid} from 'nanoid';
 import {type MapStore, map} from 'nanostores';
-import type {ComponentProps, ComponentType} from 'react';
+import type {ComponentType} from 'react';
 import {render} from 'react-dom';
 import {Element as BaseElement, NewElementBuilder} from '../dom/Element';
 
-export class LegacyElement<
-    C extends ComponentType<any>,
-    P extends ComponentProps<C> = ComponentProps<C>,
-> extends BaseElement {
+// ? preact 11 `ComponentProps` as both constraint and default of a generic hits TS2589
+type PropsOf<C> = C extends ComponentType<infer P> ? P : never;
+
+export class LegacyElement<C extends ComponentType<any>, P extends PropsOf<C> = PropsOf<C>> extends BaseElement {
     protected readonly props: MapStore<P>;
 
     protected readonly component: C;
 
-    constructor(props: ComponentProps<C>, component: C) {
+    constructor(props: PropsOf<C>, component: C) {
         super(new NewElementBuilder().setTagName('div').setClassName('contents'));
         this.component = component;
         this.props = map({...props});
