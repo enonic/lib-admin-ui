@@ -2,6 +2,6 @@ apply plugin: 'com.github.node-gradle.node'
 
 node {
     version = '24.22.3'
-    pnpmVersion = '10.33.4'
+    pnpmVersion = '10.34.9'
     download = true
 }
